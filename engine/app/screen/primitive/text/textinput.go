@@ -11,6 +11,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/position"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/block"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/buffer"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
@@ -23,7 +24,7 @@ const input_limit = 20
 const input_max_limit = 30
 
 type TextInput struct {
-	limit    uint64
+	limit    winsize.Cols
 	label    []text.Fragment
 	textarea *TextArea
 }
@@ -46,7 +47,7 @@ func (c *TextInput) SetName(name string) *TextInput {
 	return c
 }
 
-func (c *TextInput) SetType(limit uint64, input buffer.InputType) *TextInput {
+func (c *TextInput) SetType(limit winsize.Cols, input buffer.InputType) *TextInput {
 	assert.True(
 		limit <= input_max_limit,
 		"longer text fields should use the text area screen instead of the input one.",
@@ -124,7 +125,7 @@ func (c *TextInput) makeDrawables(vm viewmodel.ViewModel) []drawable.Drawable {
 		PaddingY(0).
 		PaddingX(1).
 		TextAlign(style.Left).
-		MinSize(uint(c.limit)).
+		MinSize(c.limit).
 		ToDrawable()
 
 	pst := position.New(inp).

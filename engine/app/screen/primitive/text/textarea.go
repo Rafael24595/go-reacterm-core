@@ -8,7 +8,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/line"
-	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/block"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/textarea"
@@ -19,6 +18,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/help"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/param"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
@@ -259,7 +259,7 @@ func (c *TextArea) pushRune(state *state.UIState, ky key.Key) screen.ScreenResul
 	insert, delete := c.buffer.TransformAndReplace([]rune{ky.Rune}, start, end)
 	c.history.PushEvent(event.Insert, start, fixEnd, string(delete), string(insert))
 
-	position := start + uint(len(insert))
+	position := start + offset.Offset(len(insert))
 	c.caret.MoveCaretTo(c.buffer.Buffer(), position)
 
 	return screen.ScreenResultFromUIState(state)
@@ -298,7 +298,7 @@ func (c *TextArea) copyCut(state *state.UIState, cut bool) screen.ScreenResult {
 		return result
 	}
 
-	start := math.SubClampZero(c.caret.SelectStart(), 1)
+	start := c.caret.SelectStart().Clamp(1)
 	end := c.caret.SelectEnd()
 
 	c.clipboard.Put(c.buffer.Range(start, end))
@@ -318,7 +318,7 @@ func (c *TextArea) paste(state *state.UIState) screen.ScreenResult {
 	insert, delete := c.buffer.Replace(c.clipboard.Buffer(), start, end)
 	c.history.PushEvent(event.Paste, start, fixEnd, string(delete), string(insert))
 
-	position := start + uint(len(insert))
+	position := start + offset.Offset(len(insert))
 	c.caret.MoveCaretTo(c.buffer.Buffer(), position)
 
 	return screen.ScreenResultFromUIState(state)
@@ -376,10 +376,10 @@ func (c *TextArea) moveUp(state *state.UIState, event screen.ScreenEvent) screen
 	buffer := c.buffer.Buffer()
 
 	start := c.caret.Caret()
-	distance := line.DistanceFromLF(buffer, int(start))
+	distance := line.DistanceFromLF(buffer, start)
 
-	prevLineStart := line.FindPrevLineStart(buffer, int(start))
-	if prevLineStart == -1 {
+	prevLineStart, ok := line.FindPrevLineStart(buffer, start)
+	if !ok {
 		if event.Key.Mod.HasAny(key.ModShift) {
 			c.caret.MoveSelectTo(buffer, 0, c.caret.Anchor())
 			return result
@@ -392,9 +392,9 @@ func (c *TextArea) moveUp(state *state.UIState, event screen.ScreenEvent) screen
 	position := line.ClampToLine(buffer, prevLineStart, distance)
 
 	if event.Key.Mod.HasAny(key.ModShift) {
-		c.caret.MoveSelectTo(buffer, uint(position), c.caret.Anchor())
+		c.caret.MoveSelectTo(buffer, position, c.caret.Anchor())
 	} else {
-		c.caret.MoveCaretTo(buffer, uint(position))
+		c.caret.MoveCaretTo(buffer, position)
 	}
 
 	return result
@@ -407,10 +407,10 @@ func (c *TextArea) moveDown(state *state.UIState, event screen.ScreenEvent) scre
 	size := c.buffer.Size()
 
 	start := c.caret.Caret()
-	distance := line.DistanceFromLF(buffer, int(start))
+	distance := line.DistanceFromLF(buffer, start)
 
-	nextLineStart := line.FindNextLineStart(buffer, int(start))
-	if nextLineStart == -1 {
+	nextLineStart, ok := line.FindNextLineStart(buffer, start)
+	if !ok {
 		if event.Key.Mod.HasAny(key.ModShift) {
 			c.caret.MoveSelectTo(buffer, size, c.caret.Anchor())
 			return result
@@ -423,9 +423,9 @@ func (c *TextArea) moveDown(state *state.UIState, event screen.ScreenEvent) scre
 	position := line.ClampToLine(buffer, nextLineStart, distance)
 
 	if event.Key.Mod.HasAny(key.ModShift) {
-		c.caret.MoveSelectTo(buffer, uint(position), c.caret.Anchor())
+		c.caret.MoveSelectTo(buffer, position, c.caret.Anchor())
 	} else {
-		c.caret.MoveCaretTo(buffer, uint(position))
+		c.caret.MoveCaretTo(buffer, position)
 	}
 
 	return result
@@ -437,14 +437,14 @@ func (c *TextArea) moveBackward(state *state.UIState, event screen.ScreenEvent) 
 	buffer := c.buffer.Buffer()
 
 	if event.Key.Mod.HasNone(key.ModShift, key.ModCtrl) {
-		caret := math.SubClampZero(c.caret.Caret(), 1)
+		caret := c.caret.Caret().Clamp(1)
 		c.caret.MoveCaretTo(buffer, caret)
 		return result
 	}
 
 	anchor := c.caret.Anchor()
 	if event.Key.Mod.HasNone(key.ModCtrl) {
-		caret := math.SubClampZero(c.caret.Caret(), 1)
+		caret := c.caret.Caret().Clamp(1)
 		c.caret.MoveSelectTo(buffer, caret, anchor)
 		return result
 	}
@@ -500,7 +500,7 @@ func (c *TextArea) deleteBackward(state *state.UIState, word bool) screen.Screen
 	if word {
 		start = runes.BackwardIndex(c.buffer.Buffer(), runes.NextWordRunes, start)
 	} else {
-		start = math.SubClampZero(start, 1)
+		start = start.Clamp(1)
 	}
 
 	end := c.caret.SelectEnd()
@@ -527,7 +527,7 @@ func (c *TextArea) deleteForward(state *state.UIState, word bool) screen.ScreenR
 		end = min(c.buffer.Size(), end+1)
 	}
 
-	start := math.SubClampZero(c.caret.SelectStart(), 1)
+	start := c.caret.SelectStart().Clamp(1)
 
 	delete := c.buffer.Delete(start, end)
 	c.history.PushEvent(event.DeleteForward, start, end, string(delete), "")
@@ -580,12 +580,12 @@ func (c *TextArea) mainDrawableCode() string {
 	return "main_" + c.reference
 }
 
-func (c *TextArea) insertSelection() (uint, uint, uint) {
+func (c *TextArea) insertSelection() (offset.Offset, offset.Offset, offset.Offset) {
 	start := c.caret.SelectStart()
 	end := c.caret.SelectEnd()
 
 	if start != end {
-		return math.SubClampZero(start, 1), end, end + 1
+		return start.Clamp(1), end, end + 1
 	}
 
 	return start, end, end
