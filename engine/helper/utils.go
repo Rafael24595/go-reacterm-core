@@ -5,12 +5,14 @@ import (
 	"strings"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 )
 
 type TextLayoutOpts struct {
-	LogicalSize int
-	Runes       string
+	Text        string
+	LogicalSize winsize.Cols
 }
 
 func fixDirectionOps(text string, opts TextLayoutOpts) TextLayoutOpts {
@@ -18,15 +20,15 @@ func fixDirectionOps(text string, opts TextLayoutOpts) TextLayoutOpts {
 		opts.LogicalSize = runes.Measure(text)
 	}
 
-	if opts.Runes == "" {
-		opts.Runes = marker.DefaultPaddingText
+	if opts.Text == "" {
+		opts.Text = marker.DefaultPaddingText
 	}
 
 	return opts
 }
 
 type LogicalSizeOpts struct {
-	LogicalSize int
+	LogicalSize winsize.Cols
 }
 
 func fixLogicalSizeOpts(text string, opts LogicalSizeOpts) LogicalSizeOpts {
@@ -38,9 +40,9 @@ func fixLogicalSizeOpts(text string, opts LogicalSizeOpts) LogicalSizeOpts {
 }
 
 type TextTrimOpts struct {
-	LogicalSize  int
+	LogicalSize  winsize.Cols
 	EllipsisText string
-	EllipsisSize uint
+	EllipsisSize winsize.Cols
 }
 
 func fixTextTrimOpts(text string, opts TextTrimOpts) TextTrimOpts {
@@ -55,11 +57,11 @@ func fixTextTrimOpts(text string, opts TextTrimOpts) TextTrimOpts {
 	return opts
 }
 
-func Center(item any, width int) string {
+func Center(item any, width winsize.Cols) string {
 	return CenterWithOpts(item, width, TextLayoutOpts{})
 }
 
-func CenterWithOpts(item any, width int, opts TextLayoutOpts) string {
+func CenterWithOpts(item any, width winsize.Cols, opts TextLayoutOpts) string {
 	text := fmt.Sprintf("%v", item)
 
 	opts = fixDirectionOps(text, opts)
@@ -67,18 +69,19 @@ func CenterWithOpts(item any, width int, opts TextLayoutOpts) string {
 		return text
 	}
 
-	padding := width - opts.LogicalSize
-	left := padding / 2
-	right := padding - left
+	padding := width.Clamp(opts.LogicalSize)
 
-	return strings.Repeat(opts.Runes, left) + text + strings.Repeat(opts.Runes, right)
+	left := int(padding / 2)
+	right := int(padding) - left
+
+	return strings.Repeat(opts.Text, left) + text + strings.Repeat(opts.Text, right)
 }
 
-func Left(item any, width int) string {
+func Left(item any, width winsize.Cols) string {
 	return LeftWithOpts(item, width, TextLayoutOpts{})
 }
 
-func LeftWithOpts(item any, width int, opts TextLayoutOpts) string {
+func LeftWithOpts(item any, width winsize.Cols, opts TextLayoutOpts) string {
 	text := fmt.Sprintf("%v", item)
 
 	opts = fixDirectionOps(text, opts)
@@ -86,16 +89,16 @@ func LeftWithOpts(item any, width int, opts TextLayoutOpts) string {
 		return text
 	}
 
-	padding := width - opts.LogicalSize
+	padding := width.Clamp(opts.LogicalSize)
 
-	return strings.Repeat(opts.Runes, padding) + text
+	return strings.Repeat(opts.Text, int(padding)) + text
 }
 
-func Right(item any, width int) string {
+func Right(item any, width winsize.Cols) string {
 	return RightWithOpts(item, width, TextLayoutOpts{})
 }
 
-func RightWithOpts(item any, width int, opts TextLayoutOpts) string {
+func RightWithOpts(item any, width winsize.Cols, opts TextLayoutOpts) string {
 	text := fmt.Sprintf("%v", item)
 
 	opts = fixDirectionOps(text, opts)
@@ -103,16 +106,16 @@ func RightWithOpts(item any, width int, opts TextLayoutOpts) string {
 		return text
 	}
 
-	padding := width - opts.LogicalSize
+	padding := width.Clamp(opts.LogicalSize)
 
-	return text + strings.Repeat(opts.Runes, padding)
+	return text + strings.Repeat(opts.Text, int(padding))
 }
 
-func FillLeft(item any, width int) string {
+func FillLeft(item any, width winsize.Cols) string {
 	return FillLeftWithOpts(item, width, LogicalSizeOpts{})
 }
 
-func FillLeftWithOpts(item any, width int, opts LogicalSizeOpts) string {
+func FillLeftWithOpts(item any, width winsize.Cols, opts LogicalSizeOpts) string {
 	text := fmt.Sprintf("%v", item)
 
 	opts = fixLogicalSizeOpts(text, opts)
@@ -124,21 +127,23 @@ func FillLeftWithOpts(item any, width int, opts LogicalSizeOpts) string {
 		text = marker.DefaultPaddingText
 	}
 
+	textLen := runes.Measure(text)
+
 	fix := ""
-	if rest := width % len(text); rest != 0 {
+	if rest := width % textLen; rest != 0 {
 		fix = text[rest:]
 	}
 
-	width = width / len(text)
+	width = width / textLen
 
-	return fix + strings.Repeat(text, width)
+	return fix + strings.Repeat(text, int(width))
 }
 
-func FillRight(item any, width int) string {
+func FillRight(item any, width winsize.Cols) string {
 	return FillRightWithOpts(item, width, LogicalSizeOpts{})
 }
 
-func FillRightWithOpts(item any, width int, opts LogicalSizeOpts) string {
+func FillRightWithOpts(item any, width winsize.Cols, opts LogicalSizeOpts) string {
 	text := fmt.Sprintf("%v", item)
 
 	opts = fixLogicalSizeOpts(text, opts)
@@ -150,69 +155,71 @@ func FillRightWithOpts(item any, width int, opts LogicalSizeOpts) string {
 		text = marker.DefaultPaddingText
 	}
 
+	textLen := runes.Measure(text)
+
 	fix := ""
-	if rest := width % len(text); rest != 0 {
+	if rest := width % textLen; rest != 0 {
 		fix = text[:rest]
 	}
 
-	width = width / len(text)
+	width = width / textLen
 
-	return strings.Repeat(text, width) + fix
+	return strings.Repeat(text, int(width)) + fix
 }
 
-func RepeatLeft(item any, runes string, width int) string {
+func RepeatLeft(item any, runes string, width winsize.Cols) string {
 	return RepeatLeftWithOpts(item, runes, width, LogicalSizeOpts{})
 }
 
-func RepeatLeftWithOpts(item any, runes string, width int, opts LogicalSizeOpts) string {
+func RepeatLeftWithOpts(item any, runes string, width winsize.Cols, opts LogicalSizeOpts) string {
 	text := fmt.Sprintf("%v", item)
 	return FillLeftWithOpts(runes, width, opts) + text
 }
 
-func RepeatRight(item any, runes string, width int) string {
+func RepeatRight(item any, runes string, width winsize.Cols) string {
 	return RepeatRightWithOpts(item, runes, width, LogicalSizeOpts{})
 }
 
-func RepeatRightWithOpts(item any, runes string, width int, opts LogicalSizeOpts) string {
+func RepeatRightWithOpts(item any, runes string, width winsize.Cols, opts LogicalSizeOpts) string {
 	text := fmt.Sprintf("%v", item)
 	return text + FillRightWithOpts(runes, width, opts)
 }
 
-func TrimLeft(data string, width int, opts TextTrimOpts) string {
+func TrimLeft(data string, width winsize.Cols, opts TextTrimOpts) string {
 	if data == "" {
 		return data
 	}
 
 	opts = fixTextTrimOpts(data, opts)
 
-	elipSize := runes.Measure(opts.EllipsisText) * int(opts.EllipsisSize)
+	elipSize := runes.Measure(opts.EllipsisText) * opts.EllipsisSize
 
 	realSize := runes.Measure(data)
 	if width >= opts.LogicalSize || width > realSize {
 		return data
 	}
 
-	width = realSize - width
+	width = realSize.Clamp(width)
 
 	if elipSize+width >= realSize {
-		index, _ := runes.RuneIndexToByteIndex(data, width)
+		index, _ := runes.RuneIndexToByteIndex(data, offset.Offset(width))
 		return data[index:]
 	}
 
 	elipTotal := strings.Repeat(opts.EllipsisText, int(opts.EllipsisSize))
 
-	index, _ := runes.RuneIndexToByteIndex(data, width+elipSize)
+	index, _ := runes.RuneIndexToByteIndex(data, offset.Offset(width+elipSize))
 	return elipTotal + data[index:]
 }
 
-func TrimRight(data string, width int, opts TextTrimOpts) string {
+func TrimRight(data string, width winsize.Cols, opts TextTrimOpts) string {
 	if data == "" {
 		return data
 	}
 
 	opts = fixTextTrimOpts(data, opts)
 
-	elipSize := runes.Measure(opts.EllipsisText) * int(opts.EllipsisSize)
+	elipSize := runes.Measure(opts.EllipsisText) * opts.EllipsisSize
 
 	realSize := runes.Measure(data)
 	if width >= opts.LogicalSize || width > realSize {
@@ -220,13 +227,15 @@ func TrimRight(data string, width int, opts TextTrimOpts) string {
 	}
 
 	if elipSize > width {
-		index, _ := runes.RuneIndexToByteIndex(data, width)
+		index, _ := runes.RuneIndexToByteIndex(data, offset.Offset(width))
 		return data[:index]
 	}
 
 	elipTotal := strings.Repeat(opts.EllipsisText, int(opts.EllipsisSize))
 
-	index, _ := runes.RuneIndexToByteIndex(data, width-elipSize)
+	size := width.Clamp(elipSize)
+	index, _ := runes.RuneIndexToByteIndex(data, offset.Offset(size))
+
 	return data[:index] + elipTotal
 }
 

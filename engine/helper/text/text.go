@@ -1,5 +1,7 @@
 package text
 
+import "github.com/Rafael24595/go-reacterm-core/engine/model/offset"
+
 var wrapperMap = map[rune]rune{
 	'{': '}',
 	'(': ')',
@@ -19,7 +21,7 @@ var VoidTextTransformer = NewTextTransformer()
 type textTransform func(
 	text []rune,
 	start,
-	end uint,
+	end offset.Offset,
 	buff []rune,
 ) ([]rune, bool)
 
@@ -33,7 +35,7 @@ func NewTextTransformer(helpers ...textTransform) TextTransformer {
 	}
 }
 
-func (h TextTransformer) Apply(text []rune, start, end uint, buff []rune) []rune {
+func (h TextTransformer) Apply(text []rune, start, end offset.Offset, buff []rune) []rune {
 	for _, h := range h.helpers {
 		if text, ok := h(text, start, end, buff); ok {
 			return text
@@ -43,7 +45,7 @@ func (h TextTransformer) Apply(text []rune, start, end uint, buff []rune) []rune
 	return text
 }
 
-func WrappRunes(text []rune, start, end uint, buff []rune) ([]rune, bool) {
+func WrappRunes(text []rune, start, end offset.Offset, buff []rune) ([]rune, bool) {
 	size := len(text)
 	if size < 1 || size > 1 {
 		return text, false
@@ -64,7 +66,7 @@ func WrappRunes(text []rune, start, end uint, buff []rune) ([]rune, bool) {
 	return text, true
 }
 
-func AppendSpaceAfterRune(text []rune, start, end uint, _ []rune) ([]rune, bool) {
+func AppendSpaceAfterRune(text []rune, start, end offset.Offset, _ []rune) ([]rune, bool) {
 	size := len(text)
 	if size < 1 || size > 1 {
 		return text, false

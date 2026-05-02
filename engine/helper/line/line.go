@@ -1,46 +1,60 @@
 package line
 
-import "github.com/Rafael24595/go-reacterm-core/engine/model/ascii"
+import (
+	"github.com/Rafael24595/go-reacterm-core/engine/model/ascii"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
+)
 
-func DistanceFromLF(buffer []rune, from int) int {
-	return from - FindLineStart(buffer, from)
+func DistanceFromLF(buffer []rune, from offset.Offset) offset.Offset {
+	return from.Clamp(
+		FindLineStart(buffer, from),
+	)
 }
 
-func FindLineStart(buf []rune, from int) int {
-	for i := from - 1; i >= 0; i-- {
-		if buf[i] == ascii.ENTER_LF {
+func FindLineStart(buffer []rune, from offset.Offset) offset.Offset {
+	if from == 0 {
+		return 0
+	}
+
+	for i := from - 1; ; i-- {
+		if buffer[i] == ascii.ENTER_LF {
 			return i + 1
 		}
+
+		if i == 0 {
+			break
+		}
 	}
+
 	return 0
 }
 
-func FindLineEnd(buf []rune, start int) int {
+func FindLineEnd(buffer []rune, start offset.Offset) offset.Offset {
 	i := start
-	for i < len(buf) && buf[i] != ascii.ENTER_LF {
+	for i < offset.Offset(len(buffer)) && buffer[i] != ascii.ENTER_LF {
 		i++
 	}
 	return i
 }
 
-func FindNextLineStart(buf []rune, from int) int {
-	for i := from; i < len(buf); i++ {
+func FindNextLineStart(buf []rune, from offset.Offset) (offset.Offset, bool) {
+	for i := from; i < offset.Offset(len(buf)); i++ {
 		if buf[i] == ascii.ENTER_LF {
-			return i + 1
+			return i + 1, true
 		}
 	}
-	return -1
+	return 0, false
 }
 
-func FindPrevLineStart(buf []rune, from int) int {
+func FindPrevLineStart(buf []rune, from offset.Offset) (offset.Offset, bool) {
 	prevLineStart := FindLineStart(buf, from)
 	if prevLineStart == 0 {
-		return -1
+		return 0, false
 	}
-	return FindLineStart(buf, prevLineStart-1)
+	return FindLineStart(buf, prevLineStart-1), true
 }
 
-func ClampToLine(buf []rune, lineStart, col int) int {
+func ClampToLine(buf []rune, lineStart, col offset.Offset) offset.Offset {
 	end := FindLineEnd(buf, lineStart)
 	lineLen := end - lineStart
 
