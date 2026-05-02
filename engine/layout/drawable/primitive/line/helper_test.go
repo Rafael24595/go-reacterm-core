@@ -7,6 +7,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
@@ -17,8 +18,7 @@ func TestSplitLineWords_Simple(t *testing.T) {
 		style.SpecFromKind(style.SpcKindPaddingLeft),
 	)
 
-	maxWidth := 5
-	lines := WrapLineWords(maxWidth, line)
+	lines := WrapLineWords(5, line)
 
 	expected := []string{"HELLO", " ", "WORLD"}
 
@@ -41,8 +41,7 @@ func TestSplitLineWords_Styles(t *testing.T) {
 		*text.NewFragment("WORLD"),
 	).SetSpec(style.SpecFromKind(style.SpcKindPaddingLeft))
 
-	maxWidth := 7
-	lines := WrapLineWords(maxWidth, line)
+	lines := WrapLineWords(7, line)
 
 	assert.Equal(t, 2, len(lines))
 
@@ -62,7 +61,7 @@ func TestSplitLineWords_LongWord(t *testing.T) {
 		style.SpecFromKind(style.SpcKindPaddingLeft),
 	)
 
-	maxWidth := 10
+	maxWidth := winsize.Cols(10)
 	lines := WrapLineWords(maxWidth, line)
 
 	for i, l := range lines {
@@ -75,7 +74,7 @@ func TestSplitLineWords_LongWord(t *testing.T) {
 		}
 	}
 
-	totalRunes := 0
+	totalRunes := winsize.Cols(0)
 	for _, l := range lines {
 		for _, f := range l.Text {
 			totalRunes += runes.Measure(f.Text)
@@ -93,11 +92,11 @@ func TestSplitLineWords_MultipleFragments(t *testing.T) {
 		*text.NewFragment("GO"),
 	).SetSpec(style.SpecFromKind(style.SpcKindPaddingLeft))
 
-	maxWidth := 8
+	maxWidth := winsize.Cols(8)
 	lines := WrapLineWords(maxWidth, line)
 
 	for _, l := range lines {
-		width := 0
+		width := winsize.Cols(0)
 		for _, f := range l.Text {
 			width += runes.Measure(f.Text)
 		}

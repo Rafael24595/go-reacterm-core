@@ -5,6 +5,8 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/helper"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
+	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
@@ -25,14 +27,14 @@ func TokenizeLines(lines ...text.Line) []text.Line {
 	return buffer
 }
 
-func WrapLineWords(cols int, line *text.Line) []text.Line {
+func WrapLineWords(cols winsize.Cols, line *text.Line) []text.Line {
 	if cols >= text.FragmentMeasure(cols, line.Text...) {
 		return []text.Line{*line}
 	}
 
 	result := make([]text.Line, 0)
 	current := text.EmptyLine().AddSpec(line.Spec)
-	width := 0
+	width := winsize.Cols(0)
 
 	words := text.TokenizeLineWords(line)
 
@@ -71,7 +73,7 @@ func WrapLineWords(cols int, line *text.Line) []text.Line {
 	return result
 }
 
-func WrapNextLine(cols uint16, lines []text.Line, meta *indexMeta) (*text.Line, []text.Line) {
+func WrapNextLine(cols winsize.Cols, lines []text.Line, meta *indexMeta) (*text.Line, []text.Line) {
 	if cols == 0 || len(lines) == 0 {
 		return nil, make([]text.Line, 0)
 	}
@@ -81,7 +83,7 @@ func WrapNextLine(cols uint16, lines []text.Line, meta *indexMeta) (*text.Line, 
 
 	cursor := text.EmptyLine().CopyMeta(&target)
 
-	width := int(cols)
+	width := cols
 
 	emptyLen := 0
 	if meta != nil {
@@ -94,18 +96,18 @@ func WrapNextLine(cols uint16, lines []text.Line, meta *indexMeta) (*text.Line, 
 		}
 
 		cursor.PushFragments(*text.NewFragment(prefix))
-		width = math.SubClampZero(width, int(meta.totalWidth))
+		width = width.Clamp(meta.totalWidth)
 
 		emptyLen = len(cursor.Text)
 	}
 
 	for len(target.Text) > 0 {
 		frag := target.Text[0]
-		fragMeasure := text.FragmentMeasure(int(cols), frag)
+		fragMeasure := text.FragmentMeasure(cols, frag)
 
 		if fragMeasure <= width {
 			cursor.PushFragments(frag)
-			width = math.SubClampZero(width, fragMeasure)
+			width = width.Clamp(fragMeasure)
 			target.Text = target.Text[1:]
 			continue
 		}
@@ -134,13 +136,15 @@ func WrapNextLine(cols uint16, lines []text.Line, meta *indexMeta) (*text.Line, 
 }
 
 func computeIndexMeta(lines []text.Line) *indexMeta {
-	size := uint32(0)
+	size := winsize.Cols(0)
 
 	for _, line := range lines {
 		if line.Order == 0 {
 			continue
 		}
-		size = max(size, math.Digits(line.Order))
+
+		digits := math.Digits(line.Order)
+		size = max(size, winsize.Cols(digits))
 	}
 
 	if size == 0 {
@@ -149,8 +153,8 @@ func computeIndexMeta(lines []text.Line) *indexMeta {
 
 	return &indexMeta{
 		sufix:      separator,
-		prefixBody: helper.FillRight(marker.DefaultPaddingText, int(size)),
+		prefixBody: helper.FillRight(marker.DefaultPaddingText, size),
 		digits:     uint16(size),
-		totalWidth: size + uint32(len(separator)),
+		totalWidth: size + runes.Measure(separator),
 	}
 }
