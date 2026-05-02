@@ -5,9 +5,9 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/delta"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/engine/platform/clock"
 )
 
@@ -30,8 +30,8 @@ const (
 
 type textAction struct {
 	kind      ActionKind
-	start     uint
-	end       uint
+	start     offset.Offset
+	end       offset.Offset
 	delete    string
 	insert    string
 	timestamp int64
@@ -39,23 +39,23 @@ type textAction struct {
 
 type mergeAction struct {
 	kind   ActionKind
-	origin uint
-	extent uint
-	probe  uint
+	origin offset.Offset
+	extent offset.Offset
+	probe  offset.Offset
 	delete []string
 	insert []string
 }
 
-func (m *mergeAction) len() uint {
-	var n uint
+func (m *mergeAction) len() offset.Offset {
+	var n offset.Offset
 	for _, t := range m.insert {
-		n += runes.Measureu(t)
+		n += runes.Measureo(t)
 	}
 	return n
 }
 
 type textEvent struct {
-	start  uint
+	start  offset.Offset
 	insert string
 	delete string
 }
@@ -126,7 +126,7 @@ func (s *TextEventService) isConsistentAction(action textAction, event mergeActi
 	case Insert:
 		return event.origin+event.len() == action.start
 	case DeleteBackward:
-		return action.start == math.SubClampZero(event.probe, uint(1))
+		return action.start == event.probe.Clamp(1)
 	case DeleteForward:
 		return action.start == event.probe+1
 	}
@@ -163,7 +163,12 @@ func (s *TextEventService) forgeEvent(action mergeAction) textEvent {
 	}
 }
 
-func (s *TextEventService) PushEvent(action ActionKind, start uint, end uint, delete, insert string) {
+func (s *TextEventService) PushEvent(
+	action ActionKind,
+	start offset.Offset,
+	end offset.Offset,
+	delete, insert string,
+) {
 	s.events = s.events[:s.cursor]
 
 	if s.shouldFlush(action, insert) {
@@ -195,7 +200,7 @@ func (s *TextEventService) Undo() *delta.Delta {
 
 	return &delta.Delta{
 		Start: event.start,
-		End:   event.start + runes.Measureu(event.insert),
+		End:   event.start + runes.Measureo(event.insert),
 		Text:  event.delete,
 	}
 }
@@ -213,7 +218,7 @@ func (s *TextEventService) Redo() *delta.Delta {
 
 	return &delta.Delta{
 		Start: event.start,
-		End:   event.start + runes.Measureu(event.delete),
+		End:   event.start + runes.Measureo(event.delete),
 		Text:  event.insert,
 	}
 }

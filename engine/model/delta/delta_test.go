@@ -11,7 +11,7 @@ func TestDeltaMeasure(t *testing.T) {
 		Text: "a🙂b",
 	}
 
-	assert.Equal(t, uint(3), d.Measure())
+	assert.Equal(t, 3, d.Measure())
 }
 
 func TestApplyBasic(t *testing.T) {

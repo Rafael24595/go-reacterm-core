@@ -1,15 +1,18 @@
 package delta
 
-import "github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
+import (
+	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
+)
 
 type Delta struct {
-	Start uint
-	End   uint
+	Start offset.Offset
+	End   offset.Offset
 	Text  string
 }
 
-func (d Delta) Measure() uint {
-	return runes.Measureu(d.Text)
+func (d Delta) Measure() offset.Offset {
+	return runes.Measureo(d.Text)
 }
 
 func Apply(buffer []rune, d *Delta) []rune {
@@ -17,12 +20,12 @@ func Apply(buffer []rune, d *Delta) []rune {
 		return buffer
 	}
 
-	size := uint(len(buffer))
+	size := offset.Offset(len(buffer))
 	if d.Start > size || d.End > size {
 		return buffer
 	}
 
-	runesSize := runes.Measureu(d.Text)
+	runesSize := runes.Measureo(d.Text)
 
 	tail := size - d.End
 	total := d.Start + runesSize + tail

@@ -7,7 +7,9 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
+	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/delta"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/test/support/mock"
 )
 
@@ -28,8 +30,8 @@ func TestForgeEvent_Insert(t *testing.T) {
 
 	ev := s.forgeEvent(m)
 
-	assert.Equal(t, uint(5), ev.start)
-	assert.Equal(t, uint(8), ev.start+uint(len(ev.insert)))
+	assert.Equal(t, 5, ev.start)
+	assert.Equal(t, 8, ev.start+runes.Measureo(ev.insert))
 	assert.Equal(t, "abc", ev.insert)
 	assert.Equal(t, "", ev.delete)
 }
@@ -48,8 +50,8 @@ func TestForgeEvent_Replace(t *testing.T) {
 
 	ev := s.forgeEvent(m)
 
-	assert.Equal(t, uint(5), ev.start)
-	assert.Equal(t, uint(8), ev.start+uint(len(ev.insert)))
+	assert.Equal(t, 5, ev.start)
+	assert.Equal(t, 8, ev.start+runes.Measureo(ev.insert))
 	assert.Equal(t, "abc", ev.insert)
 	assert.Equal(t, "AZ", ev.delete)
 }
@@ -67,8 +69,8 @@ func TestForgeEvent_DeleteBackward(t *testing.T) {
 
 	ev := s.forgeEvent(m)
 
-	assert.Equal(t, uint(2), ev.start)
-	assert.Equal(t, uint(5), ev.start+uint(len(ev.delete)))
+	assert.Equal(t, 2, ev.start)
+	assert.Equal(t, 5, ev.start+runes.Measureo(ev.delete))
 	assert.Equal(t, "abc", ev.delete)
 	assert.Equal(t, "", ev.insert)
 }
@@ -86,8 +88,8 @@ func TestForgeEvent_DeleteForward(t *testing.T) {
 
 	ev := s.forgeEvent(m)
 
-	assert.Equal(t, uint(2), ev.start)
-	assert.Equal(t, uint(5), ev.start+uint(len(ev.delete)))
+	assert.Equal(t, 2, ev.start)
+	assert.Equal(t, 5, ev.start+runes.Measureo(ev.delete))
 	assert.Equal(t, "abc", ev.delete)
 	assert.Equal(t, "", ev.insert)
 }
@@ -106,8 +108,8 @@ func TestForgeEvent_SelectionActive(t *testing.T) {
 
 	ev := s.forgeEvent(m)
 
-	assert.Equal(t, uint(3), ev.start)
-	assert.Equal(t, uint(7), ev.start+uint(len(ev.delete)))
+	assert.Equal(t, 3, ev.start)
+	assert.Equal(t, 7, ev.start+runes.Measureo(ev.delete))
 
 	assert.Equal(t, "X", ev.insert)
 	assert.Equal(t, "abcd", ev.delete)
@@ -131,8 +133,8 @@ func TestMergeActions_MultipleInserts(t *testing.T) {
 
 	ev := events[0]
 
-	assert.Equal(t, uint(0), ev.start)
-	assert.Equal(t, uint(6), ev.start+uint(len(ev.insert)))
+	assert.Equal(t, 0, ev.start)
+	assert.Equal(t, 6, ev.start+runes.Measureo(ev.insert))
 	assert.Equal(t, "golang", ev.insert)
 }
 
@@ -182,8 +184,8 @@ func TestMerge_DeleteBackwardContiguous(t *testing.T) {
 	assert.Len(t, 1, events)
 
 	ev := events[0]
-	assert.Equal(t, uint(3), ev.start)
-	assert.Equal(t, uint(6), ev.start+uint(len(ev.delete)))
+	assert.Equal(t, 3, ev.start)
+	assert.Equal(t, 6, ev.start+runes.Measureo(ev.delete))
 	assert.Equal(t, "Zig", ev.delete)
 }
 
@@ -350,23 +352,23 @@ func TestPushEvent_Typing(t *testing.T) {
 	clock := &mock.TestClock{Time: 1000}
 	s.clock = clock.Now
 
-	i := 0
+	i := offset.Offset(0)
 	for _, v := range "Golang" {
-		s.PushEvent(Insert, uint(i), uint(i), "", string(v))
+		s.PushEvent(Insert, i, i, "", string(v))
 		clock.Advance(100)
 		i++
 	}
 
-	s.PushEvent(Insert, uint(i), uint(i), "", " ")
+	s.PushEvent(Insert, i, i, "", " ")
 	i++
 
 	for _, v := range "Zig" {
-		s.PushEvent(Insert, uint(i), uint(i), "", string(v))
+		s.PushEvent(Insert, i, i, "", string(v))
 		clock.Advance(expires_ms + 1)
 		i++
 	}
 
-	s.PushEvent(Insert, uint(i), uint(i), "", " ")
+	s.PushEvent(Insert, i, i, "", " ")
 
 	assert.Len(t, 1, s.actions)
 	assert.Len(t, 4, s.events)
@@ -383,20 +385,20 @@ func TestPushEvent_UndoAndRedo(t *testing.T) {
 	clock := &mock.TestClock{Time: 1000}
 	s.clock = clock.Now
 
-	i := 0
+	i := offset.Offset(0)
 	for _, v := range "Golang" {
-		s.PushEvent(Insert, uint(i), uint(i), "", string(v))
+		s.PushEvent(Insert, i, i, "", string(v))
 		clock.Advance(100)
 		i++
 	}
 
-	s.PushEvent(Insert, uint(i), uint(i), "", " ")
+	s.PushEvent(Insert, i, i, "", " ")
 	i++
 
 	clock.Advance(expires_ms + 1)
 
 	for _, v := range "Zig" {
-		s.PushEvent(Insert, uint(i), uint(i), "", string(v))
+		s.PushEvent(Insert, i, i, "", string(v))
 		clock.Advance(100)
 		i++
 	}
@@ -424,16 +426,16 @@ func TestPushEvent_UndoRedoTruncateHistory(t *testing.T) {
 	clock := &mock.TestClock{Time: 1000}
 	s.clock = clock.Now
 
-	i := 0
+	i := offset.Offset(0)
 	for _, v := range "Golang " {
-		s.PushEvent(Insert, uint(i), uint(i), "", string(v))
+		s.PushEvent(Insert, i, i, "", string(v))
 		clock.Advance(100)
 		i++
 	}
 
 	clock.Advance(expires_ms + 1)
 	for _, v := range "Zig" {
-		s.PushEvent(Insert, uint(i), uint(i), "", string(v))
+		s.PushEvent(Insert, i, i, "", string(v))
 		clock.Advance(100)
 		i++
 	}
@@ -445,10 +447,10 @@ func TestPushEvent_UndoRedoTruncateHistory(t *testing.T) {
 
 	buff = applyDeltaStr(buff, evnt)
 	assert.Equal(t, "Golang ", string(buff))
-	i = len(buff)
+	i = runes.Measureo(buff)
 
-	s.PushEvent(Insert, uint(i), uint(i), "", "New")
-	assert.Equal(t, s.cursor, len(s.events))
+	s.PushEvent(Insert, i, i, "", "New")
+	assert.Len(t, s.cursor, s.events)
 
 	_ = s.Undo()
 
@@ -462,7 +464,7 @@ func TestPushEvent_UndoRedoTruncateHistory(t *testing.T) {
 func TestPushEvent_UndoRedoHistoryConsistence(t *testing.T) {
 	s := NewTextEventService()
 
-	s.PushEvent(DeleteForward, uint(7), uint(11), "Rust ", "")
+	s.PushEvent(DeleteForward, 7, 11, "Rust ", "")
 
 	evnt := s.Undo()
 	assert.NotNil(t, evnt)
@@ -517,7 +519,7 @@ func TestTextEventService_LimitLogic(t *testing.T) {
 	for i := range totalPush {
 		content := fmt.Sprintf("%d", i)
 		s.events = append(s.events, textEvent{
-			start:  uint(i),
+			start:  offset.Offset(i),
 			delete: content,
 			insert: "",
 		})
@@ -526,7 +528,7 @@ func TestTextEventService_LimitLogic(t *testing.T) {
 
 	s.limitEvents()
 
-	assert.Equal(t, event_limit, len(s.events))
+	assert.Len(t, event_limit, s.events)
 	assert.Equal(t, event_limit, s.cursor)
 	assert.Equal(t, "50", s.events[0].delete)
 
@@ -540,10 +542,10 @@ func TestTextEventService_LimitLogicWithPush(t *testing.T) {
 
 	for i := range event_limit + 50 {
 		content := fmt.Sprintf("%d", i)
-		s.PushEvent(Insert, uint(i), uint(i), content, " ")
+		s.PushEvent(Insert, offset.Offset(i), offset.Offset(i), content, " ")
 	}
 
-	assert.Equal(t, event_limit, len(s.events))
+	assert.Len(t, event_limit, s.events)
 	assert.Equal(t, event_limit, s.cursor)
 	assert.Equal(t, "49", s.events[0].delete)
 
