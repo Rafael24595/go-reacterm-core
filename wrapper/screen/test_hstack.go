@@ -12,6 +12,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/stack"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/block"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/chunk"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
@@ -61,7 +62,7 @@ func makeKernel() drawable.Drawable {
 
 	hstack.PushChunk(
 		pst2.ToDrawable(),
-		chunk.Fixed[uint16](28),
+		chunk.Fixed[winsize.Cols](28),
 	)
 
 	article := line.DrawableFromLines(

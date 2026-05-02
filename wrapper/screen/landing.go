@@ -23,7 +23,7 @@ func NewLanding() screen.Screen {
 		),
 		*text.NewLine(
 			"-",
-			style.SpecFill(uint(sizeTitle)),
+			style.SpecFill(sizeTitle),
 		),
 		*text.EmptyLine(),
 	}
