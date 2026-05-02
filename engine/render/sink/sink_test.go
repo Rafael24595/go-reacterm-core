@@ -4,7 +4,9 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
-	
+
+	"github.com/Rafael24595/go-reacterm-core/engine/commons"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
@@ -24,5 +26,5 @@ func TestApplySinks_PaddingLeft(t *testing.T) {
 
 	firstFrag := line.Text[0]
 	assert.True(t, firstFrag.Spec.Kind().HasAny(style.SpcKindPaddingLeft))
-	assert.Equal(t, 5, firstFrag.Spec.Args()[style.KeyPaddingLeftSize].Intd(0))
+	assert.Equal(t, 5, commons.Mapd[winsize.Cols](firstFrag.Spec.Args()[style.KeyPaddingLeftSize], 0))
 }
