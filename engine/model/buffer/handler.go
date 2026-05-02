@@ -1,5 +1,9 @@
 package buffer
 
+import (
+	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
+)
+
 type InputType uint8
 
 const (
@@ -18,7 +22,7 @@ func NewRuneHandler(input InputType) RuneHandler {
 	return NewLimitedRuneHandler(0, input)
 }
 
-func NewLimitedRuneHandler(limit uint64, input InputType) RuneHandler {
+func NewLimitedRuneHandler(limit winsize.Cols, input InputType) RuneHandler {
 	if limit == 0 && input == String {
 		return voidRuneHandler
 	}
@@ -90,7 +94,7 @@ func fixHiddenBuffer(buff []rune) ([]rune, []rune) {
 	return buff, fixedBuffer
 }
 
-func trimBuffer(limit uint64, facade []rune, buffer []rune) ([]rune, []rune) {
+func trimBuffer(limit winsize.Cols, facade, buffer []rune) ([]rune, []rune) {
 	if limit == 0 {
 		return buffer, facade
 	}

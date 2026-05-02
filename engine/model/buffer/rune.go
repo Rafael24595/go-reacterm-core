@@ -4,6 +4,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/delta"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 )
 
 type RuneBuffer struct {
@@ -32,8 +33,8 @@ func (b *RuneBuffer) Handler(handler RuneHandler) *RuneBuffer {
 	return b
 }
 
-func (b *RuneBuffer) Size() uint {
-	return uint(len(b.buffer))
+func (b *RuneBuffer) Size() offset.Offset {
+	return offset.Offset(len(b.buffer))
 }
 
 func (b *RuneBuffer) Empty() bool {
@@ -48,7 +49,7 @@ func (b *RuneBuffer) Facade() []rune {
 	return b.facade
 }
 
-func (b *RuneBuffer) Range(start uint, end uint) []rune {
+func (b *RuneBuffer) Range(start offset.Offset, end offset.Offset) []rune {
 	if end < start {
 		return make([]rune, 0)
 	}
@@ -61,17 +62,17 @@ func (b *RuneBuffer) Append(rns []rune) *RuneBuffer {
 	return b
 }
 
-func (b *RuneBuffer) TransformAndReplace(rns []rune, start uint, end uint) ([]rune, []rune) {
+func (b *RuneBuffer) TransformAndReplace(buffer []rune, start offset.Offset, end offset.Offset) ([]rune, []rune) {
 	if end < start {
 		zero := make([]rune, 0)
 		return zero, zero
 	}
 
-	insert := b.transformer.Apply(rns, start, end, b.buffer)
+	insert := b.transformer.Apply(buffer, start, end, b.buffer)
 	return b.applyChange(insert, start, end)
 }
 
-func (b *RuneBuffer) Replace(rns []rune, start uint, end uint) ([]rune, []rune) {
+func (b *RuneBuffer) Replace(rns []rune, start offset.Offset, end offset.Offset) ([]rune, []rune) {
 	if end < start {
 		zero := make([]rune, 0)
 		return zero, zero
@@ -80,7 +81,7 @@ func (b *RuneBuffer) Replace(rns []rune, start uint, end uint) ([]rune, []rune) 
 	return b.applyChange(rns, start, end)
 }
 
-func (b *RuneBuffer) Delete(start uint, end uint) []rune {
+func (b *RuneBuffer) Delete(start offset.Offset, end offset.Offset) []rune {
 	if end < start {
 		return make([]rune, 0)
 	}
@@ -90,21 +91,23 @@ func (b *RuneBuffer) Delete(start uint, end uint) []rune {
 	return deleted
 }
 
-func (b *RuneBuffer) applyChange(insert []rune, start, end uint) ([]rune, []rune) {
-	if end > uint(len(b.buffer)) {
-		end = uint(len(b.buffer))
-	}
+func (b *RuneBuffer) applyChange(insert []rune, start, end offset.Offset) ([]rune, []rune) {
+	end = min(end, offset.Offset(len(b.buffer)))
 
 	deleted := b.Range(start, end)
 
 	rawBuffer := runes.AppendRange(b.buffer, insert, start, end)
 	newBuffer, newFacade := b.handler(rawBuffer)
 
-	insertSize := len(newBuffer) - (len(b.buffer) - len(deleted))
+	newBufferLen := offset.Offset(len(newBuffer))
+
+	insertSize := offset.Offset(
+		len(newBuffer) - (len(b.buffer) - len(deleted)),
+	)
 
 	fixedInsert := make([]rune, 0)
 	if insertSize > 0 {
-		endInsert := min(start+uint(insertSize), uint(len(newBuffer)))
+		endInsert := min(start+insertSize, newBufferLen)
 		fixedInsert = newBuffer[start:endInsert]
 	}
 

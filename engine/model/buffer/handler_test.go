@@ -51,8 +51,7 @@ func TestHandler_Hidden(t *testing.T) {
 }
 
 func TestHandler_Limit(t *testing.T) {
-	limit := uint64(6)
-	handler := NewLimitedRuneHandler(limit, String)
+	handler := NewLimitedRuneHandler(6, String)
 
 	input := []rune("GolangZiglang")
 	buff, facade := handler(input)

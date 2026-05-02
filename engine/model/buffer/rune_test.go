@@ -17,7 +17,7 @@ func TestRuneBuffer_NumberFilter(t *testing.T) {
 	assert.Equal(t, "12", string(rb.Buffer()))
 	assert.Equal(t, "12", string(inserted))
 	assert.Equal(t, 0, len(deleted))
-	assert.Equal(t, uint(2), rb.Size())
+	assert.Equal(t, 2, rb.Size())
 }
 
 func TestRuneBuffer_Limit(t *testing.T) {
