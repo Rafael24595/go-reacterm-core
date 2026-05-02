@@ -347,7 +347,7 @@ func Parse[T any](a Argument, parse func(string) (T, error)) (T, bool) {
 }
 
 func Parsed[T any](a Argument, parse func(string) (T, error), def T) T {
-	if v, ok := Parse[T](a, parse); ok {
+	if v, ok := Parse(a, parse); ok {
 		return v
 	}
 	return def
