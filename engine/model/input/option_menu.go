@@ -5,12 +5,12 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-type MenuOptionAction = func() screen.Screen
+type MenuOptionAction = func() screen.Node
 
 type MenuOption struct {
 	Id     string
 	Label  text.Fragment
-	Action func() screen.Screen
+	Action MenuOptionAction
 }
 
 func NewMenuOption(id string, option text.Fragment, action MenuOptionAction) MenuOption {
