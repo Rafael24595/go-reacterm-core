@@ -94,7 +94,7 @@ func TestArticle_Update(t *testing.T) {
 	article := New()
 	initialState := &state.UIState{}
 
-	article.update(initialState, screen.ScreenEvent{})
+	article.update(initialState, screen.Event{})
 
 	assert.Equal(t, initialState, initialState)
 }

@@ -31,7 +31,7 @@ func (c *Help) ToNode() screen.Node {
 		ToNode()
 }
 
-func (c *Help) update(state *state.UIState, event screen.ScreenEvent) screen.Result {
+func (c *Help) update(state *state.UIState, event screen.Event) screen.Result {
 	requiredKey := node.IsKeyRequired(c.node.Screen.Definition(), event.Key)
 
 	if requiredKey {

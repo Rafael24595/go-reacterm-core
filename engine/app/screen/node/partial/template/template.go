@@ -53,7 +53,7 @@ func (c *Template) definition() screen.Definition {
 	return screen.DefinitionFromKeys()
 }
 
-func (c *Template) update(stt *state.UIState, _ screen.ScreenEvent) screen.Result {
+func (c *Template) update(stt *state.UIState, _ screen.Event) screen.Result {
 	return screen.ResultFromUIState(stt)
 }
 

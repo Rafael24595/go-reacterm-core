@@ -82,7 +82,7 @@ func (c *ModalMenu) definition() screen.Definition {
 	return definition.Definition
 }
 
-func (c *ModalMenu) update(state *state.UIState, evnt screen.ScreenEvent) screen.Result {
+func (c *ModalMenu) update(state *state.UIState, evnt screen.Event) screen.Result {
 	ky := evnt.Key
 
 	switch ky.Code {
@@ -93,10 +93,8 @@ func (c *ModalMenu) update(state *state.UIState, evnt screen.ScreenEvent) screen
 	case key.ActionArrowLeft:
 		c.cursor = math.SubClampZero(c.cursor, 1)
 	case key.ActionArrowRight:
-		size := uint16(len(c.options))
-		if size > 0 {
-			c.cursor = min(size-1, c.cursor+1)
-		}
+		last := math.SubClampZeroAs[int, uint16](len(c.options), 1)
+		c.cursor = min(last, c.cursor+1)
 	case key.ActionEnter:
 		return c.actionEnter(state)
 	}

@@ -13,7 +13,7 @@ func TestBuilder_BasicScreen(t *testing.T) {
 
 	node := NewBuilder().
 		Name(name).
-		Update(func(*state.UIState, ScreenEvent) Result {
+		Update(func(*state.UIState, Event) Result {
 			return Result{}
 		}).
 		View(func(state.UIState) viewmodel.ViewModel {

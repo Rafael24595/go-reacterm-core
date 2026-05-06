@@ -16,7 +16,7 @@ func TestValidateStructure_ValidNode(t *testing.T) {
 	node := screen_test.MockScreen{
 		Name:       "home",
 		Definition: &screen.Definition{},
-		Update: func(*state.UIState, screen.ScreenEvent) screen.Result {
+		Update: func(*state.UIState, screen.Event) screen.Result {
 			return screen.Result{}
 		},
 		View: func(state.UIState) viewmodel.ViewModel {
@@ -37,7 +37,7 @@ func TestValidateStructure_EmptyName(t *testing.T) {
 			Definition: func() screen.Definition {
 				return screen.Definition{}
 			},
-			Update: func(*state.UIState, screen.ScreenEvent) screen.Result {
+			Update: func(*state.UIState, screen.Event) screen.Result {
 				return screen.Result{}
 			},
 			View: func(state.UIState) viewmodel.ViewModel {
@@ -59,7 +59,7 @@ func TestValidateStructure_NilDefinition(t *testing.T) {
 	node := screen.Node{
 		Screen: screen.Screen{
 			Name: name,
-			Update: func(*state.UIState, screen.ScreenEvent) screen.Result {
+			Update: func(*state.UIState, screen.Event) screen.Result {
 				return screen.Result{}
 			},
 			View: func(state.UIState) viewmodel.ViewModel {
@@ -106,7 +106,7 @@ func TestValidateStructure_NilView(t *testing.T) {
 			Definition: func() screen.Definition {
 				return screen.Definition{}
 			},
-			Update: func(*state.UIState, screen.ScreenEvent) screen.Result {
+			Update: func(*state.UIState, screen.Event) screen.Result {
 				return screen.Result{}
 			},
 		},

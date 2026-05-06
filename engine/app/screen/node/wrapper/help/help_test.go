@@ -42,7 +42,7 @@ func TestHelp_ToggleHelpKey(t *testing.T) {
 	node := New(mock.ToNode()).ToNode()
 
 	state := &state.UIState{}
-	event := screen.ScreenEvent{
+	event := screen.Event{
 		Key: *key.NewKeyCode(key.CustomActionHelp),
 	}
 
@@ -60,7 +60,7 @@ func TestHelp_DelegatesUpdateWhenKeyRequired(t *testing.T) {
 
 	mock := screen_test.MockScreen{
 		Definition: &definition,
-		Update: func(s *state.UIState, e screen.ScreenEvent) screen.Result {
+		Update: func(s *state.UIState, e screen.Event) screen.Result {
 			called = true
 			return screen.EmptyResult()
 		},
@@ -69,7 +69,7 @@ func TestHelp_DelegatesUpdateWhenKeyRequired(t *testing.T) {
 	node := New(mock.ToNode()).ToNode()
 
 	state := &state.UIState{}
-	event := screen.ScreenEvent{
+	event := screen.Event{
 		Key: ky,
 	}
 
@@ -91,7 +91,7 @@ func TestHelp_WrapsReturnedScreen(t *testing.T) {
 
 	mockBase := screen_test.MockScreen{
 		Definition: &definition,
-		Update: func(s *state.UIState, _ screen.ScreenEvent) screen.Result {
+		Update: func(s *state.UIState, _ screen.Event) screen.Result {
 			called = true
 			next := mockNext.ToNode()
 			return screen.Result{
@@ -104,11 +104,11 @@ func TestHelp_WrapsReturnedScreen(t *testing.T) {
 	wrapped := help.ToNode()
 
 	stt := &state.UIState{}
-	evt := screen.ScreenEvent{
+	evt := screen.Event{
 		Key: ky,
 	}
 
-	wrapped.Screen.Update(stt, screen.ScreenEvent{
+	wrapped.Screen.Update(stt, screen.Event{
 		Key: *key.NewKeyCode(key.CustomActionHelp),
 	})
 

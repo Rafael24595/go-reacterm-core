@@ -148,7 +148,7 @@ func (c *Table[T]) definition() screen.Definition {
 	return c.definitionSource().Definition
 }
 
-func (c *Table[T]) update(stt *state.UIState, evnt screen.ScreenEvent) screen.Result {
+func (c *Table[T]) update(stt *state.UIState, evnt screen.Event) screen.Result {
 	stt.Pager.ForceShow = true
 
 	if !c.action.EnableMode {
@@ -161,7 +161,7 @@ func (c *Table[T]) update(stt *state.UIState, evnt screen.ScreenEvent) screen.Re
 	return c.updateNavigation(stt, evnt)
 }
 
-func (c *Table[T]) updateNavigation(state *state.UIState, evnt screen.ScreenEvent) screen.Result {
+func (c *Table[T]) updateNavigation(state *state.UIState, evnt screen.Event) screen.Result {
 	ky := evnt.Key
 
 	switch ky.Code {
@@ -185,7 +185,7 @@ func (c *Table[T]) updateNavigation(state *state.UIState, evnt screen.ScreenEven
 	return screen.ResultFromUIState(state)
 }
 
-func (c *Table[T]) updateRead(state *state.UIState, evnt screen.ScreenEvent) screen.Result {
+func (c *Table[T]) updateRead(state *state.UIState, evnt screen.Event) screen.Result {
 	ky := evnt.Key
 
 	switch ky.Code {

@@ -48,10 +48,10 @@ func TestPagination_LocalUpdate(t *testing.T) {
 	node := page.ToNode()
 
 	stt.Pager.TargetPage = 0
-	result := node.Screen.Update(stt, screen.ScreenEvent{Key: *key.NewKeyCode(key.ActionArrowLeft)})
+	result := node.Screen.Update(stt, screen.Event{Key: *key.NewKeyCode(key.ActionArrowLeft)})
 	assert.Equal(t, result.Pager.TargetPage, 0)
 
-	result = node.Screen.Update(stt, screen.ScreenEvent{Key: *key.NewKeyCode(key.ActionArrowRight)})
+	result = node.Screen.Update(stt, screen.Event{Key: *key.NewKeyCode(key.ActionArrowRight)})
 	assert.Equal(t, result.Pager.TargetPage, 1)
 }
 
@@ -88,7 +88,7 @@ func TestPagination_UpdateDelegates(t *testing.T) {
 
 	base := screen_test.MockScreen{
 		Name: "base",
-		Update: func(s *state.UIState, e screen.ScreenEvent) screen.Result {
+		Update: func(s *state.UIState, e screen.Event) screen.Result {
 			called = true
 			return screen.EmptyResult()
 		},
@@ -97,7 +97,7 @@ func TestPagination_UpdateDelegates(t *testing.T) {
 	page := New(base.ToNode())
 	node := page.ToNode()
 
-	node.Screen.Update(state.NewUIState(), screen.ScreenEvent{Key: *key.NewKeyRune('x')})
+	node.Screen.Update(state.NewUIState(), screen.Event{Key: *key.NewKeyRune('x')})
 
 	assert.True(t, called, "screen.Update should be called")
 }
@@ -113,6 +113,6 @@ func TestPagination_PageNeverNegative(t *testing.T) {
 	page := New(base.ToNode())
 	node := page.ToNode()
 
-	node.Screen.Update(stt, screen.ScreenEvent{Key: *key.NewKeyCode(key.ActionArrowLeft)})
+	node.Screen.Update(stt, screen.Event{Key: *key.NewKeyCode(key.ActionArrowLeft)})
 	assert.Equal(t, stt.Pager.TargetPage, 0)
 }

@@ -167,7 +167,7 @@ func (c *TextArea) definition() screen.Definition {
 	return c.definitionSource().Definition
 }
 
-func (c *TextArea) update(stt *state.UIState, evnt screen.ScreenEvent) screen.Result {
+func (c *TextArea) update(stt *state.UIState, evnt screen.Event) screen.Result {
 	stt.Pager.ForceShow = true
 
 	if !c.writeMode {
@@ -176,7 +176,7 @@ func (c *TextArea) update(stt *state.UIState, evnt screen.ScreenEvent) screen.Re
 	return c.updateWrite(stt, evnt)
 }
 
-func (c *TextArea) updateRead(stt *state.UIState, evt screen.ScreenEvent) screen.Result {
+func (c *TextArea) updateRead(stt *state.UIState, evt screen.Event) screen.Result {
 	ky := evt.Key
 
 	switch ky.Code {
@@ -187,7 +187,7 @@ func (c *TextArea) updateRead(stt *state.UIState, evt screen.ScreenEvent) screen
 	return screen.ResultFromUIState(stt)
 }
 
-func (c *TextArea) updateWrite(stt *state.UIState, evt screen.ScreenEvent) screen.Result {
+func (c *TextArea) updateWrite(stt *state.UIState, evt screen.Event) screen.Result {
 	ky := evt.Key
 
 	switch ky.Code {
@@ -323,7 +323,7 @@ func (c *TextArea) paste(state *state.UIState) screen.Result {
 	return screen.ResultFromUIState(state)
 }
 
-func (c *TextArea) moveHome(state *state.UIState, event screen.ScreenEvent) screen.Result {
+func (c *TextArea) moveHome(state *state.UIState, event screen.Event) screen.Result {
 	result := screen.ResultFromUIState(state)
 
 	buffer := c.buffer.Buffer()
@@ -346,7 +346,7 @@ func (c *TextArea) moveHome(state *state.UIState, event screen.ScreenEvent) scre
 	return result
 }
 
-func (c *TextArea) moveEnd(state *state.UIState, event screen.ScreenEvent) screen.Result {
+func (c *TextArea) moveEnd(state *state.UIState, event screen.Event) screen.Result {
 	result := screen.ResultFromUIState(state)
 
 	buffer := c.buffer.Buffer()
@@ -369,7 +369,7 @@ func (c *TextArea) moveEnd(state *state.UIState, event screen.ScreenEvent) scree
 	return result
 }
 
-func (c *TextArea) moveUp(state *state.UIState, event screen.ScreenEvent) screen.Result {
+func (c *TextArea) moveUp(state *state.UIState, event screen.Event) screen.Result {
 	result := screen.ResultFromUIState(state)
 
 	buffer := c.buffer.Buffer()
@@ -399,7 +399,7 @@ func (c *TextArea) moveUp(state *state.UIState, event screen.ScreenEvent) screen
 	return result
 }
 
-func (c *TextArea) moveDown(state *state.UIState, event screen.ScreenEvent) screen.Result {
+func (c *TextArea) moveDown(state *state.UIState, event screen.Event) screen.Result {
 	result := screen.ResultFromUIState(state)
 
 	buffer := c.buffer.Buffer()
@@ -430,7 +430,7 @@ func (c *TextArea) moveDown(state *state.UIState, event screen.ScreenEvent) scre
 	return result
 }
 
-func (c *TextArea) moveBackward(state *state.UIState, event screen.ScreenEvent) screen.Result {
+func (c *TextArea) moveBackward(state *state.UIState, event screen.Event) screen.Result {
 	result := screen.ResultFromUIState(state)
 
 	buffer := c.buffer.Buffer()
@@ -458,7 +458,7 @@ func (c *TextArea) moveBackward(state *state.UIState, event screen.ScreenEvent) 
 	return result
 }
 
-func (c *TextArea) moveForward(state *state.UIState, event screen.ScreenEvent) screen.Result {
+func (c *TextArea) moveForward(state *state.UIState, event screen.Event) screen.Result {
 	result := screen.ResultFromUIState(state)
 
 	buffer := c.buffer.Buffer()

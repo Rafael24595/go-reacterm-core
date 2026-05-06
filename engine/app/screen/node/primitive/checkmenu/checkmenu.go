@@ -138,7 +138,7 @@ func (c *CheckMenu) definition() screen.Definition {
 	return c.definitionSource().Definition
 }
 
-func (c *CheckMenu) update(stt *state.UIState, evt screen.ScreenEvent) screen.Result {
+func (c *CheckMenu) update(stt *state.UIState, evt screen.Event) screen.Result {
 	if !c.action.ActionMode {
 		return c.updateRead(stt, evt)
 	}
@@ -146,7 +146,7 @@ func (c *CheckMenu) update(stt *state.UIState, evt screen.ScreenEvent) screen.Re
 	return c.updateNavigation(stt, evt)
 }
 
-func (c *CheckMenu) updateNavigation(stt *state.UIState, evt screen.ScreenEvent) screen.Result {
+func (c *CheckMenu) updateNavigation(stt *state.UIState, evt screen.Event) screen.Result {
 	ky := evt.Key
 
 	optsLen := uint16(len(c.options))
@@ -177,7 +177,7 @@ func (c *CheckMenu) updateNavigation(stt *state.UIState, evt screen.ScreenEvent)
 	return screen.ResultFromUIState(stt)
 }
 
-func (c *CheckMenu) updateRead(state *state.UIState, evnt screen.ScreenEvent) screen.Result {
+func (c *CheckMenu) updateRead(state *state.UIState, evnt screen.Event) screen.Result {
 	ky := evnt.Key
 
 	switch ky.Code {

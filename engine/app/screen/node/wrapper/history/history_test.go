@@ -43,7 +43,7 @@ func TestHistory_BackNavigation(t *testing.T) {
 
 	mockNext := screen_test.MockScreen{
 		Name: "next",
-		Update: func(s *state.UIState, e screen.ScreenEvent) screen.Result {
+		Update: func(s *state.UIState, e screen.Event) screen.Result {
 			base := mockBase.ToNode()
 			return screen.ResultFromNode(&base)
 		},
@@ -54,11 +54,11 @@ func TestHistory_BackNavigation(t *testing.T) {
 
 	assert.Equal(t, node.Screen.Name, "next")
 
-	result := node.Screen.Update(stt, screen.ScreenEvent{})
+	result := node.Screen.Update(stt, screen.Event{})
 	assert.NotNil(t, result.Node)
 	assert.Equal(t, result.Node.Screen.Name, "base")
 
-	backResult := result.Node.Screen.Update(stt, screen.ScreenEvent{
+	backResult := result.Node.Screen.Update(stt, screen.Event{
 		Key: *key.NewKeyCode(key.CustomActionBack),
 	})
 

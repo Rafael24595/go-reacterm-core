@@ -23,7 +23,7 @@ var definition = screen.NewDefinitionSources(
 
 type History struct {
 	history *screen.Node
-	node  screen.Node
+	node    screen.Node
 }
 
 func New(node screen.Node) *History {
@@ -48,7 +48,7 @@ func (c *History) definition() screen.Definition {
 	return definition.Definition.Merge(base)
 }
 
-func (c *History) update(state *state.UIState, event screen.ScreenEvent) screen.Result {
+func (c *History) update(state *state.UIState, event screen.Event) screen.Result {
 	requiredKey := node.IsKeyRequired(c.node.Screen.Definition(), event.Key)
 
 	if !requiredKey {
@@ -69,7 +69,7 @@ func (c *History) update(state *state.UIState, event screen.ScreenEvent) screen.
 	return result
 }
 
-func (c *History) localUpdate(_ *state.UIState, event screen.ScreenEvent) *screen.Result {
+func (c *History) localUpdate(_ *state.UIState, event screen.Event) *screen.Result {
 	if c.history == nil || event.Key.Code != key.CustomActionBack {
 		return nil
 	}

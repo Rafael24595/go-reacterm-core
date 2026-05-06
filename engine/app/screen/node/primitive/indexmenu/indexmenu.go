@@ -87,7 +87,7 @@ func (c *IndexMenu) definition() screen.Definition {
 	return index_menu_definition
 }
 
-func (c *IndexMenu) update(stt *state.UIState, evt screen.ScreenEvent) screen.Result {
+func (c *IndexMenu) update(stt *state.UIState, evt screen.Event) screen.Result {
 	size := uint16(len(c.options))
 	if size == 0 {
 		return screen.EmptyResult()

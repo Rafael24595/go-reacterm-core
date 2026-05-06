@@ -26,7 +26,7 @@ type Builder struct {
 	stack      set.Set[string]
 	children   []Node
 	definition func() Definition
-	update     func(*state.UIState, ScreenEvent) Result
+	update     func(*state.UIState, Event) Result
 	view       func(state.UIState) viewmodel.ViewModel
 }
 

@@ -125,13 +125,13 @@ func TestIndexMenu_CursorNavigation(t *testing.T) {
 
 	node.Screen.Update(
 		state.NewUIState(),
-		screen.ScreenEvent{Key: *key.NewKeyCode(key.ActionArrowDown)},
+		screen.Event{Key: *key.NewKeyCode(key.ActionArrowDown)},
 	)
 	assert.Equal(t, menu.cursor, 1)
 
 	node.Screen.Update(
 		state.NewUIState(),
-		screen.ScreenEvent{Key: *key.NewKeyCode(key.ActionArrowUp)},
+		screen.Event{Key: *key.NewKeyCode(key.ActionArrowUp)},
 	)
 	assert.Equal(t, menu.cursor, 0)
 }
@@ -155,7 +155,7 @@ func TestIndexMenu_Action(t *testing.T) {
 	node := menu.ToNode()
 	result := node.Screen.Update(
 		state.NewUIState(),
-		screen.ScreenEvent{Key: *key.NewKeyCode(key.ActionEnter)},
+		screen.Event{Key: *key.NewKeyCode(key.ActionEnter)},
 	)
 
 	assert.NotNil(t, result.Node)

@@ -2,12 +2,12 @@ package screen
 
 import "github.com/Rafael24595/go-reacterm-core/engine/model/key"
 
-type ScreenEvent struct {
+type Event struct {
 	Key key.Key
 }
 
-func NewEvent(key key.Key) ScreenEvent {
-	return ScreenEvent{
+func NewEvent(key key.Key) Event {
+	return Event{
 		Key: key,
 	}
 }

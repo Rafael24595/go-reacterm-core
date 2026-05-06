@@ -36,7 +36,7 @@ func (c *Pipeline) ToNode() screen.Node {
 		ToNode()
 }
 
-func (c *Pipeline) update(state *state.UIState, event screen.ScreenEvent) screen.Result {
+func (c *Pipeline) update(state *state.UIState, event screen.Event) screen.Result {
 	result := c.node.Screen.Update(state, event)
 	if result.Node != nil {
 		newNode := New(*result.Node).

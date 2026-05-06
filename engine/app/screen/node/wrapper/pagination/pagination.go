@@ -92,7 +92,7 @@ func (c *Pagination) definition() screen.Definition {
 		Definition.Merge(base)
 }
 
-func (c *Pagination) update(state *state.UIState, event screen.ScreenEvent) screen.Result {
+func (c *Pagination) update(state *state.UIState, event screen.Event) screen.Result {
 	requiredKey := node.IsKeyRequired(c.node.Screen.Definition(), event.Key)
 
 	if !requiredKey {
@@ -114,7 +114,7 @@ func (c *Pagination) update(state *state.UIState, event screen.ScreenEvent) scre
 	return result
 }
 
-func (c *Pagination) localUpdate(state *state.UIState, event screen.ScreenEvent) *screen.Result {
+func (c *Pagination) localUpdate(state *state.UIState, event screen.Event) *screen.Result {
 	keyback := key.ActionArrowLeft
 	keyNext := key.ActionArrowRight
 	if c.engine == pager.CodeEngineScroll {

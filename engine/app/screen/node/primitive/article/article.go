@@ -50,7 +50,7 @@ func (c *Article) ToNode() screen.Node {
 		ToNode()
 }
 
-func (c *Article) update(stt *state.UIState, _ screen.ScreenEvent) screen.Result {
+func (c *Article) update(stt *state.UIState, _ screen.Event) screen.Result {
 	return screen.ResultFromUIState(stt)
 }
 

@@ -6,7 +6,7 @@ import (
 )
 
 type DefinitionFunc func() Definition
-type UpdateFunc func(*state.UIState, ScreenEvent) Result
+type UpdateFunc func(*state.UIState, Event) Result
 type ViewFunc func(state.UIState) viewmodel.ViewModel
 
 type Screen struct {
