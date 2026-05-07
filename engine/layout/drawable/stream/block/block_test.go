@@ -18,11 +18,10 @@ func TestBlock_DrawableBasicSuite(t *testing.T) {
 
 func TestBlockDrawable_Init_ShouldPropagateToChild(t *testing.T) {
 	mock := &drawable_test.MockDrawable{}
-	bd := New(mock.ToDrawable())
+	bd := New(mock.ToDrawable()).ToDrawable()
 
-	bd.init()
+	bd.Init()
 
-	assert.True(t, bd.loaded)
 	assert.True(t, mock.InitCalled)
 }
 
@@ -30,11 +29,11 @@ func TestBlockDrawable_Draw_ShouldReturnEmptyIfRowsIsZero(t *testing.T) {
 	mock := &drawable_test.MockDrawable{
 		Lines: make([]text.Line, 3),
 	}
-	bd := New(mock.ToDrawable())
+	bd := New(mock.ToDrawable()).ToDrawable()
 
-	bd.init()
+	bd.Init()
 
-	lines, hasNext := bd.draw(winsize.Winsize{Rows: 0, Cols: 10})
+	lines, hasNext := bd.Draw(winsize.Winsize{Rows: 0, Cols: 10})
 
 	assert.Len(t, 0, lines)
 	assert.True(t, hasNext)
@@ -45,10 +44,10 @@ func TestBlockDrawable_Draw_ShouldStopWhenChildHasNoNext(t *testing.T) {
 		Lines: []text.Line{*text.NewLine("golang")},
 	}
 
-	bd := New(mock.ToDrawable())
-	bd.init()
+	bd := New(mock.ToDrawable()).ToDrawable()
+	bd.Init()
 
-	lines, hasNext := bd.draw(winsize.Winsize{Rows: 5, Cols: 10})
+	lines, hasNext := bd.Draw(winsize.Winsize{Rows: 5, Cols: 10})
 
 	assert.Len(t, 1, lines)
 	assert.False(t, hasNext)
@@ -66,10 +65,10 @@ func TestBlockDrawable_Draw_ShouldAccumulateLines(t *testing.T) {
 	}
 
 	rows := 3
-	bd := New(dw)
-	bd.init()
+	bd := New(dw).ToDrawable()
+	bd.Init()
 
-	lines, hasNext := bd.draw(winsize.Winsize{
+	lines, hasNext := bd.Draw(winsize.Winsize{
 		Rows: winsize.Rows(rows),
 		Cols: 10,
 	})

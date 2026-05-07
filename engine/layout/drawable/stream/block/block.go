@@ -1,24 +1,24 @@
 package block
 
 import (
-	assert "github.com/Rafael24595/go-assert/assert/runtime"
-
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/line"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
 const Name = "block_drawable"
 
+//TODO: Reduce bureaucracy?
 type BlockDrawable struct {
-	loaded   bool
+	lazy     bool
 	drawable drawable.Drawable
 }
 
 func New(drawable drawable.Drawable) *BlockDrawable {
 	return &BlockDrawable{
-		loaded:   false,
+		lazy:     true,
 		drawable: drawable,
 	}
 }
@@ -40,25 +40,16 @@ func DrawableFromString(txt ...string) drawable.Drawable {
 	return DrawableFromLines(*lines)
 }
 
+func (d *BlockDrawable) Lazy(lazy bool) *BlockDrawable {
+	d.lazy = lazy
+	return d
+}
+
 func (d *BlockDrawable) ToDrawable() drawable.Drawable {
-	return drawable.Drawable{
-		Name: Name,
-		Code: d.drawable.Code,
-		Tags: d.drawable.Tags,
-		Init: d.init,
-		Wipe: d.drawable.Wipe,
-		Draw: d.draw,
-	}
-}
+	drw := pipeline.New(d.drawable).
+		SetDrawStep(drain.DrawTransformer(d.lazy)).
+		ToDrawable()
 
-func (d *BlockDrawable) init() {
-	d.loaded = true
-
-	d.drawable.Init()
-}
-
-func (d *BlockDrawable) draw(size winsize.Winsize) ([]text.Line, bool) {
-	assert.True(d.loaded, drawable.MessageInitialized)
-
-	return drawable.DrainDrawable(size, d.drawable, true)
+	drw.Name = Name
+	return drw
 }
