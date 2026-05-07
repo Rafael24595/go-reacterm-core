@@ -86,15 +86,17 @@ func (d *TableDrawable) draw(size winsize.Winsize) ([]text.Line, bool) {
 	headers, footers, remaining := d.drawStatic()
 	bodies, hasNext := d.drawDynamic(remaining)
 
-	result := make([]text.Line, 0)
+	result := make([]text.Line, size.Rows)
+	cursor := 0
+	
 	for i, body := range bodies {
 		if len(body) == 0 {
 			continue
 		}
 
-		result = append(result, headers[i]...)
-		result = append(result, body...)
-		result = append(result, footers[i]...)
+		cursor += copy(result[cursor:], headers[i])
+		cursor += copy(result[cursor:], body)
+		cursor += copy(result[cursor:], footers[i])
 	}
 
 	return result, hasNext
