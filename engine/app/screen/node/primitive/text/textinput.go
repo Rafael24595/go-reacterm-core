@@ -9,7 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/box"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/position"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/block"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/builder"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/buffer"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
@@ -112,40 +112,40 @@ func (c *TextInput) view(stt state.UIState) viewmodel.ViewModel {
 }
 
 func (c *TextInput) makeDrawables(vm viewmodel.ViewModel) []drawable.Drawable {
-	dws := make([]drawable.Drawable, 0, 2)
+	drawables := make([]drawable.Drawable, 0, 2)
 
 	code := c.textarea.mainDrawableCode()
-	dw, ok := vm.Kernel.Take(code)
+	drawable, ok := vm.Kernel.Take(code)
 	if !ok {
-		return dws
+		return drawables
 	}
 
-	inp := box.New(dw).
+	input := box.New(drawable).
 		PaddingY(0).
 		PaddingX(1).
 		TextAlign(style.Left).
 		MinSize(c.limit).
 		ToDrawable()
 
-	pst := position.New(inp).
+	position := position.New(input).
 		PositionY(style.Top).
 		PositionX(style.Left)
 
 	if len(c.label) == 0 {
-		dws = append(dws, pst.ToDrawable())
-		return dws
+		drawables = append(drawables, position.ToDrawable())
+		return drawables
 	}
 
-	//TODO: Parametrize.
-	pstd := pst.MarginX(0).ToDrawable()
-
 	frags := append(c.label, *text.NewFragment(": "))
-	lbl := block.DrawableFromLines(
-		*text.LineFromFragments(frags...),
+	
+	drawables = append(drawables, 
+		builder.DrainFromFragments(frags...),
+	)
+	
+	//TODO: Parametrize.
+	drawables = append(drawables, 
+		position.MarginX(0).ToDrawable(),
 	)
 
-	dws = append(dws, lbl)
-	dws = append(dws, pstd)
-
-	return dws
+	return drawables
 }

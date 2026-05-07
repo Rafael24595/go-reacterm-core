@@ -12,7 +12,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/inputline"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/stack"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/block"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/builder"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
@@ -26,7 +26,7 @@ func TestTerminalApply_FixedAndPaged(t *testing.T) {
 	vm := viewmodel.NewViewModel()
 
 	vm.Header.Push(
-		block.DrawableFromLines(
+		builder.DrainFromLines(
 			*text.NewLine("HEADER", style.SpecFromKind(style.SpcKindPaddingLeft)),
 		),
 	)
@@ -89,7 +89,7 @@ func TestTerminalApply_MultiplePages(t *testing.T) {
 	vm := viewmodel.NewViewModel()
 
 	vm.Header.Push(
-		block.DrawableFromLines(
+		builder.DrainFromLines(
 			*text.NewLine("H", style.SpecFromKind(style.SpcKindPaddingLeft)),
 		),
 	)
@@ -141,7 +141,7 @@ func TestDrawDynamicLines_WordWrap(t *testing.T) {
 		*text.NewLine("HELLO WORLD", style.SpecFromKind(style.SpcKindPaddingLeft)),
 	}
 
-	dw := block.DrawableFromLines(lines...)
+	dw := builder.DrainFromLines(lines...)
 
 	layer := stack.NewVStack().
 		Push(dw).
@@ -175,7 +175,7 @@ func TestDrawStaticLines_DoesNotExceedRows(t *testing.T) {
 		*text.NewLine("ziglang"),
 	}
 
-	dw := block.DrawableFromLines(lines...)
+	dw := builder.DrainFromLines(lines...)
 
 	layer := stack.NewVStack().
 		Push(dw).
@@ -196,7 +196,7 @@ func TestDrawStaticLines_WrapThenTruncate(t *testing.T) {
 		*text.NewLine("golang ziglang"),
 	}
 
-	dw := block.DrawableFromLines(lines...)
+	dw := builder.DrainFromLines(lines...)
 
 	layer := stack.NewVStack().
 		Push(dw).
@@ -225,7 +225,7 @@ func TestTerminalApply_InitializeLayers(t *testing.T) {
 	vm := viewmodel.NewViewModel()
 
 	vm.Header.Push(
-		block.DrawableFromLines(
+		builder.DrainFromLines(
 			*text.NewLine("golang", style.SpecFromKind(style.SpcKindPaddingLeft)),
 		),
 	)
@@ -235,7 +235,7 @@ func TestTerminalApply_InitializeLayers(t *testing.T) {
 		),
 	)
 	vm.Footer.Push(
-		block.DrawableFromLines(
+		builder.DrainFromLines(
 			*text.NewLine("Ziglang", style.SpecFromKind(style.SpcKindPaddingLeft)),
 		),
 	)

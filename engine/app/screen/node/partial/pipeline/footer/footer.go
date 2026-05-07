@@ -3,14 +3,14 @@ package footer
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/block"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/builder"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
 const Name = "footer_transformer"
 
 func FooterTransformer(placement pipeline.Placement, lines ...text.Line) pipeline.Transformer {
-	drawable := block.DrawableFromLines(lines...)
+	drawable := builder.DrainFromLines(lines...)
 	drawable.Name = Name
 
 	return func(vm viewmodel.ViewModel) viewmodel.ViewModel {

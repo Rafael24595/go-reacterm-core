@@ -10,7 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/block"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/builder"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/help"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
@@ -160,7 +160,7 @@ func (c *Pagination) view(stt state.UIState) viewmodel.ViewModel {
 		}
 
 		vm.Footer.Unshift(
-			block.DrawableFromLines(footer...).
+			builder.DrainFromLines(footer...).
 				AddTag(screen.SystemMetaTag),
 		)
 	}

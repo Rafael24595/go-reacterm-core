@@ -4,8 +4,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/heap"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/block"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/loop"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/builder"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/table"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
@@ -72,12 +71,12 @@ func makeSections(t table.Table, cursor input.MatrixCursor, size winsize.Winsize
 		headerRow := makeHeaders(table, headers, separator)
 
 		sections = append(sections, section{
-			header: loop.DrawableFromDrawable(
-				block.DrawableFromLines(*top, *headerRow, *top),
+			header: builder.WipeFromDrawable(
+				builder.DrainFromLines(*top, *headerRow, *top),
 			),
 			rows: drawable_line.DrawableFromLines(rows...),
-			footer: loop.DrawableFromDrawable(
-				block.DrawableFromLines(*bottom),
+			footer: builder.WipeFromDrawable(
+				builder.DrainFromLines(*bottom),
 			),
 		})
 	}

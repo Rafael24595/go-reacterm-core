@@ -8,7 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/inputline"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/position"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/block"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/builder"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/help"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
@@ -204,7 +204,7 @@ func (c *Table[T]) view(_ state.UIState) viewmodel.ViewModel {
 	source := c.definitionSource()
 
 	vm.Header.Push(
-		block.DrawableFromLines(c.title...),
+		builder.DrainFromLines(c.title...),
 	)
 
 	table := drawable_table.DrawableFromTable(*c.table, *c.cursor)
@@ -224,11 +224,11 @@ func (c *Table[T]) view(_ state.UIState) viewmodel.ViewModel {
 
 		vm.Footer.Push(
 			inputline.DrawableFromDrawable(
-				block.DrawableFromString(cell),
+				builder.DrainFromString(cell),
 			),
 		)
 	}
-
+	
 	vm.Pager.SetPredicate(preficate)
 
 	vm.Helper.Push(

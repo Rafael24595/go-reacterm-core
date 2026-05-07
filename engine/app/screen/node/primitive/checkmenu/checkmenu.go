@@ -10,7 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/inputline"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/block"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/builder"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/checkmenu"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/help"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
@@ -246,7 +246,7 @@ func (c *CheckMenu) view(_ state.UIState) viewmodel.ViewModel {
 	vm := viewmodel.NewViewModel()
 
 	vm.Header.Push(
-		block.DrawableFromLines(c.title...),
+		builder.DrainFromLines(c.title...),
 	)
 	vm.Kernel.Push(
 		indexmenu.ToDrawable(),
@@ -262,7 +262,7 @@ func (c *CheckMenu) view(_ state.UIState) viewmodel.ViewModel {
 
 	vm.Footer.Push(
 		inputline.DrawableFromDrawable(
-			block.DrawableFromString(text),
+			builder.DrainFromString(text),
 		),
 	)
 

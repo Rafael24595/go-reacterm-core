@@ -7,7 +7,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/block"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/builder"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/help"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
@@ -87,7 +87,7 @@ func makeDrawable(meta *help.HelpMeta) drawable.Drawable {
 		)
 	}
 
-	return block.DrawableFromLines(
+	return builder.DrainFromLines(
 		*text.EmptyLine(),
 		*text.LineFromFragments(
 			*text.NewFragment("--Help--"),
