@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/builder"
@@ -47,7 +46,8 @@ func (c *History) definition() screen.Definition {
 }
 
 func (c *History) update(state *state.UIState, event screen.Event) screen.Result {
-	requiredKey := node.IsKeyRequired(c.node.Screen.Definition(), event.Key)
+	definition := c.node.Screen.Definition()
+	requiredKey := definition.IsRequired(event.Key)
 
 	if !requiredKey {
 		result := c.localUpdate(state, event)

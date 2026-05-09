@@ -54,3 +54,11 @@ func EmptyDefinition() Definition {
 func DefinitionFromActions(actions ...key.Action) Definition {
 	return NewDefinition(make(map[key.Action]key.Descriptor), actions)
 }
+
+func (d Definition) IsRequired(ky key.Key) bool {
+	exists := d.RequireKeys.Exists(key.ActionAll)
+	if exists {
+		return true
+	}
+	return d.RequireKeys.Exists(ky.Code)
+}

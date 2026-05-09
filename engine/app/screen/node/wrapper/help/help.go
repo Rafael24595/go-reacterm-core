@@ -2,7 +2,6 @@ package help
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/help"
@@ -33,7 +32,8 @@ func (c *Help) ToNode() screen.Node {
 }
 
 func (c *Help) update(state *state.UIState, event screen.Event) screen.Result {
-	requiredKey := node.IsKeyRequired(c.node.Screen.Definition(), event.Key)
+	definition := c.node.Screen.Definition()
+	requiredKey := definition.IsRequired(event.Key)
 
 	if requiredKey {
 		result := c.node.Screen.Update(state, event)
