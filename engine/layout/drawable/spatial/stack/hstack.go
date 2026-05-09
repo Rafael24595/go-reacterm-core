@@ -7,11 +7,11 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/chunk"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/sink"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
 const NameHStack = "hstack_drawable"
@@ -223,7 +223,9 @@ func (d *HStackDrawable) makeBlocks(size winsize.Winsize) ([]block, bool) {
 
 			wrapped := make([]text.Line, 0)
 			for _, v := range lines {
-				wrapped = append(wrapped, line.WrapLineWords(fixedSize.Cols, &v)...)
+				wrapped = append(wrapped,
+					wrap.WrapLine(fixedSize.Cols, &v)...,
+				)
 			}
 
 			buffer[i].size = fixedSize

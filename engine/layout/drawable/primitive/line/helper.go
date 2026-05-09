@@ -9,130 +9,37 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
 const separator = " | "
 
-func TokenizeLines(lines ...text.Line) []text.Line {
-	buffer := make([]text.Line, len(lines))
-
-	for i, l := range lines {
-		newLine := text.EmptyLine().CopyMeta(&l)
-		for _, w := range text.TokenizeLineWords(&l) {
-			newLine.PushFragments(w.Text...)
-		}
-		buffer[i] = *newLine
-	}
-
-	return buffer
-}
-
-func WrapLineWords(cols winsize.Cols, line *text.Line) []text.Line {
-	if cols >= text.FragmentMeasure(cols, line.Text...) {
-		return []text.Line{*line}
-	}
-
-	result := make([]text.Line, 0)
-	current := text.EmptyLine().AddSpec(line.Spec)
-	width := winsize.Cols(0)
-
-	words := text.TokenizeLineWords(line)
-
-	for _, word := range words {
-		wordlen := text.FragmentMeasure(cols, word.Text...)
-
-		if width+wordlen <= cols {
-			current.Text = append(current.Text, word.Text...)
-			width += wordlen
-
-			continue
-		}
-
-		if wordlen <= cols {
-			result = append(result, *current)
-			current = text.EmptyLine().
-				AddSpec(line.Spec)
-
-			current.Text = append(current.Text, word.Text...)
-			width = wordlen
-
-			continue
-		}
-
-		newCurrent, lines, newWidth := text.SplitLongToken(word, cols, *current, width)
-
-		result = append(result, lines...)
-		current = &newCurrent
-		width = newWidth
-	}
-
-	if len(current.Text) > 0 {
-		result = append(result, *current)
-	}
-
-	return result
-}
-
-func WrapNextLine(cols winsize.Cols, lines []text.Line, meta *indexMeta) (*text.Line, []text.Line) {
+func NextIndexedWrappedLine(cols winsize.Cols, lines []text.Line, meta indexMeta) (*text.Line, []text.Line) {
 	if cols == 0 || len(lines) == 0 {
 		return nil, make([]text.Line, 0)
 	}
 
-	target := lines[0]
-	remain := lines[1:]
-
-	cursor := text.EmptyLine().CopyMeta(&target)
-
-	width := cols
-
-	emptyLen := 0
-	if meta != nil {
-		var prefix string
-		if target.Order != 0 {
-			prefix = meta.header(int(target.Order))
-			target.Order = 0
-		} else {
-			prefix = meta.body()
-		}
-
-		cursor.PushFragments(*text.NewFragment(prefix))
-		width = width.Clamp(meta.totalWidth)
-
-		emptyLen = len(cursor.Text)
+	var prefix string
+	if lines[0].Order != 0 {
+		order := int(lines[0].Order)
+		prefix = meta.header(order)
+		lines[0].Order = 0
+	} else {
+		prefix = meta.body()
 	}
 
-	for len(target.Text) > 0 {
-		frag := target.Text[0]
-		fragMeasure := text.FragmentMeasure(cols, frag)
+	fixedCols := cols.Clamp(meta.totalWidth)
 
-		if fragMeasure <= width {
-			cursor.PushFragments(frag)
-			width = width.Clamp(fragMeasure)
-			target.Text = target.Text[1:]
-			continue
-		}
+	assert.True(fixedCols > 0, "index prefix should be lesser than line size")
 
-		if len(cursor.Text) == emptyLen && width > 0 {
-			taken, restFrag := text.TakeFromFragment(&frag, width)
-			cursor.PushFragments(*taken)
-			target.Text[0] = *restFrag
-
-			newRest := append([]text.Line{target}, remain...)
-			return cursor, newRest
-		}
-
-		if len(cursor.Text) == 1 && meta != nil {
-			assert.Unreachable("index prefix should be lesser than line size")
-
-			cursor.PushFragments(frag)
-			target.Text = target.Text[1:]
-		}
-
-		newRest := append([]text.Line{target}, remain...)
-		return cursor, newRest
+	cursor, rest := wrap.NextWrappedLine(fixedCols, lines)
+	if cursor != nil {
+		cursor.UnshiftFragments(
+			*text.NewFragment(prefix),
+		)
 	}
 
-	return cursor, remain
+	return cursor, rest
 }
 
 func computeIndexMeta(lines []text.Line) *indexMeta {

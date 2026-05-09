@@ -7,6 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
 const Name = "line_drawable"
@@ -44,7 +45,7 @@ func (d *LineDrawable) ToDrawable() drawable.Drawable {
 func (d *LineDrawable) init() {
 	d.loaded = true
 
-	d.lines = TokenizeLines(d.lines...)
+	d.lines = wrap.NormalizeLines(d.lines...)
 	d.source = text.CloneLines(d.lines...)
 
 	d.index = computeIndexMeta(d.lines)
@@ -61,7 +62,7 @@ func (d *LineDrawable) draw(size winsize.Winsize) ([]text.Line, bool) {
 		return make([]text.Line, 0), false
 	}
 
-	cursor, remain := WrapNextLine(size.Cols, d.source, d.index)
+	cursor, remain := d.nextIndexedWrappedLine(size)
 	d.source = remain
 
 	result := make([]text.Line, 0)
@@ -70,4 +71,11 @@ func (d *LineDrawable) draw(size winsize.Winsize) ([]text.Line, bool) {
 	}
 
 	return result, len(d.source) > 0
+}
+
+func (d *LineDrawable) nextIndexedWrappedLine(size winsize.Winsize) (*text.Line, []text.Line) {
+	if d.index == nil {
+		return wrap.NextWrappedLine(size.Cols, d.source)
+	}
+	return NextIndexedWrappedLine(size.Cols, d.source, *d.index)
 }
