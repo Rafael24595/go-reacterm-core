@@ -5,6 +5,7 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/utils/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
@@ -56,7 +57,7 @@ func (d *InputLineDrawable) draw(size winsize.Winsize) ([]text.Line, bool) {
 		return make([]text.Line, 0), false
 	}
 
-	lines, _ := drawable.DrainDrawable(size, d.drawable, true)
+	lines, _ := drain.DrawableLazy(size, d.drawable)
 	if len(lines) == 0 {
 		line := text.NewLine(d.prompt)
 		return []text.Line{*line}, false

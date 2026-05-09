@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/utils/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
@@ -62,7 +62,7 @@ func TestDrainDrawable_WithMock(t *testing.T) {
 			lines:         10,
 			lazy:          true,
 			wantLines:     0,
-			wantDrawCalls: 1,
+			wantDrawCalls: 0,
 		},
 		{
 			name:          "EdgeCase_EmptyDrawable",
@@ -83,10 +83,11 @@ func TestDrainDrawable_WithMock(t *testing.T) {
 			}
 
 			size := winsize.Winsize{
+				Cols: 10,
 				Rows: tt.rows,
 			}
 
-			got, _ := drawable.DrainDrawable(size, m.ToDrawable(), tt.lazy)
+			got, _ := drain.Drawable(size, m.ToDrawable(), tt.lazy)
 
 			assert.Len(t, tt.wantLines, got)
 			assert.Equal(t, tt.wantDrawCalls, m.DrawCalls)
