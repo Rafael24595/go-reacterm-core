@@ -2,29 +2,31 @@ package draw
 
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/work"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
 type DrawState struct {
-	Buffer  []text.Line
-	HasNext bool
-	Work    *work.Tracker
-	Cursor  uint16
-	Page    uint
-	Focus   bool
+	Buffer []text.Line
+	Work   *work.Tracker
+	Cursor uint16
+	Page   uint
+	Focus  bool
 }
 
 func NewDrawStatus(ctx *DrawContext) *DrawState {
 	return &DrawState{
-		Buffer:  make([]text.Line, ctx.Size.Rows),
-		HasNext: false,
-		Work:    work.NewTracker(),
-		Cursor:  0,
-		Page:    0,
-		Focus:   false,
+		Buffer: make([]text.Line, ctx.Size.Rows),
+		Work:   work.NewTracker(),
+		Cursor: 0,
+		Page:   0,
+		Focus:  false,
 	}
+}
+
+func (s *DrawState) ShowPagination() bool {
+	return s.Page != 0 || s.Work.Unfinished()
 }
 
 func (s *DrawState) MarkFocus(focus bool) *DrawState {
