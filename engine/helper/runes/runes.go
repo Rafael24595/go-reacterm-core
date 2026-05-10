@@ -12,6 +12,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 )
 
+var lineNormalizer = strings.NewReplacer("\r\n", "\n", "\r", "\n")
+
 var NextWordRunes = []RuneDefinition{
 	{
 		Rune: ' ',
@@ -43,9 +45,8 @@ type RuneDefinition struct {
 	Skip bool
 }
 
-func NormalizeLineEnd(text string) string {
-	normalized := strings.ReplaceAll(text, "\r\n", "\n")
-	return strings.ReplaceAll(normalized, "\r", "\n")
+func NormalizeLineFeed(text string) string {
+	return lineNormalizer.Replace(text)
 }
 
 func AppendAt(

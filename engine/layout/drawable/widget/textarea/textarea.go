@@ -246,7 +246,7 @@ func (d *TextAreaDrawable) normalizeLinesEnd(txt text.Line) []text.Line {
 	}
 
 	for _, f := range txt.Text {
-		normalized := runes.NormalizeLineEnd(f.Text)
+		normalized := runes.NormalizeLineFeed(f.Text)
 
 		parts := strings.Split(normalized, "\n")
 		if len(parts) == 1 {
