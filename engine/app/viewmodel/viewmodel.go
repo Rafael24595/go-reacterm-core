@@ -4,7 +4,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/stack"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 )
 
 // TODO: Use Screen and Drawable sources to manage Header and Footer.
@@ -36,7 +35,7 @@ func (v *ViewModel) InitStaticLayers() (drawable.Drawable, drawable.Drawable) {
 	return header, footer
 }
 
-func (v *ViewModel) InitDynamicLayers(size winsize.Winsize) drawable.Drawable {
+func (v *ViewModel) InitDynamicLayers() drawable.Drawable {
 	kernel := v.Kernel.ToDrawable()
 	kernel.Init()
 
