@@ -18,61 +18,68 @@ func splitLineWords(line *text.Line) []word {
 	frags := make([]text.Fragment, 0, 4)
 
 	var sb strings.Builder
+	var lastSpace bool
+	var hasState bool
 
-	flush := func(frag text.Fragment) {
-		if sb.Len() > 0 {
-			f := text.NewFragment(sb.String()).
-				CopyMeta(&frag)
-			frags = append(frags, *f)
-			sb.Reset()
+	flushFrag := func(frag text.Fragment) {
+		if sb.Len() == 0 {
+			return
 		}
 
-		if len(frags) > 0 {
-			tokenFrags := make([]text.Fragment, len(frags))
-			copy(tokenFrags, frags)
+		f := text.NewFragment(sb.String()).
+			CopyMeta(&frag)
 
-			token := word{
-				Text: tokenFrags,
-			}
+		frags = append(frags, *f)
 
-			tokens = append(tokens, token)
-			frags = frags[:0]
-		}
+		sb.Reset()
 	}
 
-	inSpace := false
+	flushWord := func() {
+		if len(frags) == 0 {
+			return
+		}
+
+		tokenFrags := make([]text.Fragment, len(frags))
+		copy(tokenFrags, frags)
+
+		tokens = append(tokens, word{
+			Text: tokenFrags,
+		})
+
+		frags = frags[:0]
+	}
 
 	for _, frag := range line.Text {
 		if frag.Atom.HasAny(style.AtmWrap) || text.IsStructuralFragment(frag) {
+			flushFrag(frag)
+			flushWord()
+
 			tokens = append(tokens, word{
 				Text: []text.Fragment{frag},
 			})
 
+			hasState = false
 			continue
 		}
 
 		for _, r := range frag.Text {
 			isSpace := unicode.IsSpace(r)
 
-			if isSpace != inSpace {
-				flush(frag)
+			if hasState && isSpace != lastSpace {
+				flushFrag(frag)
+				flushWord()
 			}
 
-			inSpace = isSpace
+			lastSpace = isSpace
+			hasState = true
+
 			sb.WriteRune(r)
 		}
 
-		if sb.Len() > 0 {
-			f := text.NewFragment(sb.String()).
-				CopyMeta(&frag)
-			frags = append(frags, *f)
-			sb.Reset()
-		}
+		flushFrag(frag)
 	}
 
-	if len(frags) > 0 {
-		flush(text.Fragment{})
-	}
+	flushWord()
 
 	return tokens
 }

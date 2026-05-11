@@ -81,6 +81,27 @@ func TestSplitLineWords(t *testing.T) {
 			),
 			expected: []string{"  ", "Golang", "  "},
 		},
+		{
+			name: "single word across fragments",
+			line: text.LineFromFragments(
+				*text.NewFragment("Go"),
+				*text.NewFragment("lang "),
+				*text.NewFragment("Zig"),
+				*text.NewFragment("la"),
+				*text.NewFragment("ng"),
+			),
+			expected: []string{"Golang", " ", "Ziglang"},
+		},
+		{
+			name: "single long word across fragments",
+			line: text.LineFromFragments(
+				*text.NewFragment("supercalifragilis"),
+				*text.NewFragment("ticexpialidocious"),
+			),
+			expected: []string{
+				"supercalifragilisticexpialidocious",
+			},
+		},
 	}
 
 	for _, tt := range tests {
