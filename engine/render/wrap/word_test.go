@@ -6,6 +6,7 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
+	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
@@ -212,72 +213,88 @@ func TestSplitLineWords_FinalFlushPreservesStyles(t *testing.T) {
 	assert.True(t, tokens[0].Text[0].Atom.HasAny(style.AtmBold))
 }
 
-func TestSplitLongWord_PreservesStyles(t *testing.T) {
-	token := word{
-		Text: []text.Fragment{
-			*text.NewFragment("abcdef").AddAtom(style.AtmBold),
+func TestSplitLongWord(t *testing.T) {
+	tests := []struct {
+		name            string
+		word            word
+		cols            winsize.Cols
+		remaining       winsize.Cols
+		expectedCurrent string
+		expectedRest    string
+	}{
+		{
+			name: "word fits completely",
+			word: *newWord(
+				*text.NewFragment("golang"),
+			),
+			cols:            20,
+			remaining:       20,
+			expectedCurrent: "golang",
+			expectedRest:    "",
+		},
+		{
+			name: "split single fragment word",
+			word: *newWord(
+				*text.NewFragment("ziglang"),
+			),
+			cols:            4,
+			remaining:       4,
+			expectedCurrent: "zigl",
+			expectedRest:    "ang",
+		},
+		{
+			name: "split fragmented word",
+			word: *newWord(
+				*text.NewFragment("go"),
+				*text.NewFragment("la"),
+				*text.NewFragment("ng"),
+			),
+			cols:            2,
+			remaining:       4,
+			expectedCurrent: "gola",
+			expectedRest:    "ng",
+		},
+		{
+			name: "zero remaining",
+			word: *newWord(
+				*text.NewFragment("rust"),
+			),
+			cols:            5,
+			remaining:       0,
+			expectedCurrent: "",
+			expectedRest:    "rust",
+		},
+		{
+			name: "split inside second fragment",
+			word: *newWord(
+				*text.NewFragment("cl"),
+				*text.NewFragment("oju"),
+				*text.NewFragment("re"),
+			),
+			cols:            3,
+			remaining:       3,
+			expectedCurrent: "clo",
+			expectedRest:    "jure",
 		},
 	}
 
-	line, emitted, width := splitLongWord(
-		token, 3,
-		*text.EmptyLine().AddSpec(style.SpecFromKind(style.SpcKindFill)), 0,
-	)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			current, rest := splitLongWord(
+				tt.word,
+				tt.cols,
+				tt.remaining,
+			)
 
-	assert.Equal(t, 3, width)
+			if tt.expectedCurrent != "" {
+				assert.NotNil(t, current)
+				assert.Equal(t, tt.expectedCurrent, tokenString(*current))
+			}
 
-	assert.Equal(t, 3, text.FragmentMeasure(3, line.Text...))
-	assert.Equal(t, "def", text.LineToString(&line))
-
-	assert.Equal(t, 1, len(emitted))
-	assert.Equal(t, "abc", text.LineToString(&emitted[0]))
-
-	assert.True(t, emitted[0].Text[0].Atom.HasAny(style.AtmBold))
-}
-
-func TestSplitLongWord_WithInitialWidth(t *testing.T) {
-	token := word{
-		Text: []text.Fragment{
-			*text.NewFragment("abcdef"),
-		},
+			if tt.expectedRest != "" {
+				assert.NotNil(t, rest)
+				assert.Equal(t, tt.expectedRest, tokenString(*rest))
+			}
+		})
 	}
-
-	current := text.EmptyLine().AddSpec(style.SpecFromKind(style.SpcKindFill))
-	current.Text = append(current.Text, *text.NewFragment("XY"))
-
-	line, emitted, width := splitLongWord(
-		token, 4,
-		*current, 2,
-	)
-
-	assert.Equal(t, "cdef", text.LineToString(&line))
-
-	assert.Equal(t, 1, len(emitted))
-	assert.Equal(t, 2, len(emitted[0].Text))
-
-	assert.Equal(t, "XY", emitted[0].Text[0].Text)
-	assert.Equal(t, "ab", emitted[0].Text[1].Text)
-
-	assert.Equal(t, 4, width)
-}
-
-func TestSplitLongWord_CurrentAlreadyFull(t *testing.T) {
-	token := word{
-		Text: []text.Fragment{
-			*text.NewFragment("abc"),
-		},
-	}
-
-	current := text.EmptyLine().AddSpec(style.SpecFromKind(style.SpcKindFill))
-	current.Text = append(current.Text, *text.NewFragment("WXYZ"))
-
-	line, emitted, width := splitLongWord(
-		token, 4,
-		*current, 4,
-	)
-
-	assert.Equal(t, "abc", text.LineToString(&line))
-	assert.Equal(t, 1, len(emitted))
-	assert.Equal(t, "WXYZ", text.LineToString(&emitted[0]))
-	assert.Equal(t, 3, width)
 }

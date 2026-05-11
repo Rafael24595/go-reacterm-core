@@ -33,6 +33,106 @@ func assembleLines(t *testing.T, lines ...text.Line) string {
 	return sb.String()
 }
 
+func TestWrapOnce(t *testing.T) {
+	tests := []struct {
+		name         string
+		cols         winsize.Cols
+		line         *text.Line
+		expectedHead string
+		expectedRest string
+	}{
+		{
+			name: "line fits",
+			cols: 20,
+			line: text.LineFromFragments(
+				*text.NewFragment("hello world"),
+			),
+			expectedHead: "hello world",
+			expectedRest: "",
+		},
+		{
+			name: "wrap by words",
+			cols: 10,
+			line: text.LineFromFragments(
+				*text.NewFragment("hello world"),
+			),
+			expectedHead: "hello ",
+			expectedRest: "world",
+		},
+		{
+			name: "split long word",
+			cols: 5,
+			line: text.LineFromFragments(
+				*text.NewFragment("abcdefghij"),
+			),
+			expectedHead: "abcde",
+			expectedRest: "fghij",
+		},
+		{
+			name: "split fragmented long word",
+			cols: 5,
+			line: text.LineFromFragments(
+				*text.NewFragment("abc"),
+				*text.NewFragment("def"),
+				*text.NewFragment("ghi"),
+			),
+			expectedHead: "abcde",
+			expectedRest: "fghi",
+		},
+		{
+			name: "do not split normal word if line already has content",
+			cols: 8,
+			line: text.LineFromFragments(
+				*text.NewFragment("hello world"),
+			),
+			expectedHead: "hello ",
+			expectedRest: "world",
+		},
+		{
+			name: "multiple words",
+			cols: 11,
+			line: text.LineFromFragments(
+				*text.NewFragment("hello world foo"),
+			),
+			expectedHead: "hello world",
+			expectedRest: " foo",
+		},
+		{
+			name: "caret split should not affect wrapping",
+			cols: 20,
+			line: text.LineFromFragments(
+				*text.NewFragment("supercalifra"),
+				*text.NewFragment("gilisticexp"),
+				*text.NewFragment("ialidocious"),
+			),
+			expectedHead: "supercalifragilistic",
+			expectedRest: "expialidocious",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			head, rest := wrapOnce(tt.cols, *tt.line)
+
+			assert.NotNil(t, head)
+
+			headText := text.LineToString(head)
+			assert.Equal(t, tt.expectedHead, headText)
+
+			if tt.expectedRest == "" {
+				assert.Nil(t, rest)
+				return
+			}
+
+			assert.NotNil(t, rest)
+
+			restText := text.LineToString(rest)
+
+			assert.Equal(t, tt.expectedRest, restText)
+		})
+	}
+}
+
 func TestNormalizeLines_Integrity(t *testing.T) {
 	line := text.NewLine("golang ziglang 10.50 rust")
 
@@ -137,7 +237,7 @@ func TestWrapLine_MultipleFragments(t *testing.T) {
 	}
 }
 
-func TestNextWrappedLine_Fit(t *testing.T) {
+func TestNextLine_Fit(t *testing.T) {
 	line := text.NewLine("golang")
 
 	got, remain := NextLine(10, []text.Line{*line})
@@ -147,7 +247,7 @@ func TestNextWrappedLine_Fit(t *testing.T) {
 	assert.Len(t, 0, remain)
 }
 
-func TesNextWrappedLine_Split(t *testing.T) {
+func TesNextLine_Split(t *testing.T) {
 	line := text.NewLine("golang")
 
 	got, remain := NextLine(2, []text.Line{*line})
@@ -158,7 +258,7 @@ func TesNextWrappedLine_Split(t *testing.T) {
 	assert.Equal(t, "lang", text.LineToString(&remain[0]))
 }
 
-func TesNextWrappedLine_MultiFragment(t *testing.T) {
+func TesNextLine_MultiFragment(t *testing.T) {
 	line := text.LineFromFragments(
 		*text.NewFragment("go"),
 		*text.NewFragment(" "),
@@ -175,7 +275,7 @@ func TesNextWrappedLine_MultiFragment(t *testing.T) {
 	assert.Equal(t, " c++", text.LineToString(&remain[0]))
 }
 
-func TesNextWrappedLine_BreakLongWordSingleFragment(t *testing.T) {
+func TesNextLine_BreakLongWordSingleFragment(t *testing.T) {
 	line := text.NewLine("golangziglangrustlang")
 
 	got, remain := NextLine(6, []text.Line{*line})
@@ -184,7 +284,7 @@ func TesNextWrappedLine_BreakLongWordSingleFragment(t *testing.T) {
 	assert.Equal(t, "ziglangrustlang", text.LineToString(&remain[0]))
 }
 
-func TesNextWrappedLine_BreakLongWordMultipleFragments(t *testing.T) {
+func TesNextLine_BreakLongWordMultipleFragments(t *testing.T) {
 	line := text.LineFromFragments(
 		*text.NewFragment("golang"),
 		*text.NewFragment(" "),

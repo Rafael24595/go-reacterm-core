@@ -13,6 +13,17 @@ type word struct {
 	Text []text.Fragment
 }
 
+func newWord(text ...text.Fragment) *word {
+	return &word{
+		Text: text,
+	}
+}
+
+func (w *word) addText(text ...text.Fragment) *word {
+	w.Text = append(w.Text, text...)
+	return w
+}
+
 func splitLineWords(line *text.Line) []word {
 	tokens := make([]word, 0, len(line.Text))
 	frags := make([]text.Fragment, 0, 4)
@@ -87,51 +98,47 @@ func splitLineWords(line *text.Line) []word {
 func splitLongWord(
 	word word,
 	cols winsize.Cols,
-	current text.Line,
-	width winsize.Cols,
-) (text.Line, []text.Line, winsize.Cols) {
-	emmited := make([]text.Line, 0)
-	if cols <= 0 {
-		emmited = append(emmited, *text.LineFromFragments(word.Text...))
-		return current, emmited, 0
+	remaining winsize.Cols,
+) (*word, *word) {
+	if cols == 0 || remaining == 0 {
+		return nil, &word
 	}
 
+	current := newWord()
 	frags := word.Text
 
-	flush := func() {
-		emmited = append(emmited, current)
-		current = *text.EmptyLine().AddSpec(current.Spec)
-		width = 0
-	}
-
 	for len(frags) > 0 {
-		remaining := cols.Clamp(width)
-		if remaining == 0 {
-			flush()
-			continue
-		}
-
 		frag := frags[0]
 		size := text.FragmentMeasure(cols, frag)
 
 		if size <= remaining {
 			current.Text = append(current.Text, frag)
-			width += size
-
+			remaining = remaining.Clamp(size)
 			frags = frags[1:]
 
 			continue
 		}
 
-		taken, rest := splitFragmentAt(&frag, remaining)
+		takenFrag, restFrag := splitFragmentAt(&frag, remaining)
 
-		current.Text = append(current.Text, *taken)
-		width += text.FragmentMeasure(cols, *taken)
+		current.Text = append(current.Text, *takenFrag)
 
-		frags = append([]text.Fragment{*rest}, frags[1:]...)
+		rest := newWord(*restFrag).
+			addText(frags[1:]...)
 
-		flush()
+		return current, rest
 	}
 
-	return current, emmited, width
+	return current, nil
+}
+
+func wordsToLine(base text.Line, words ...word) *text.Line {
+	line := text.EmptyLine().
+		CopyMeta(&base)
+
+	for _, w := range words {
+		line.PushFragments(w.Text...)
+	}
+
+	return line
 }

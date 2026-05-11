@@ -31,46 +31,13 @@ func NormalizeLines(lines ...text.Line) []text.Line {
 }
 
 func Line(cols winsize.Cols, line *text.Line) []text.Line {
-	if cols >= text.FragmentMeasure(cols, line.Text...) {
-		return []text.Line{*line}
-	}
-
 	result := make([]text.Line, 0)
-	current := text.EmptyLine().AddSpec(line.Spec)
-	width := winsize.Cols(0)
+	current := line
 
-	words := splitLineWords(line)
-
-	for _, word := range words {
-		wordlen := text.FragmentMeasure(cols, word.Text...)
-
-		if width+wordlen <= cols {
-			current.Text = append(current.Text, word.Text...)
-			width += wordlen
-
-			continue
-		}
-
-		if wordlen <= cols {
-			result = append(result, *current)
-			current = text.EmptyLine().
-				AddSpec(line.Spec)
-
-			current.Text = append(current.Text, word.Text...)
-			width = wordlen
-
-			continue
-		}
-
-		newCurrent, lines, newWidth := splitLongWord(word, cols, *current, width)
-
-		result = append(result, lines...)
-		current = &newCurrent
-		width = newWidth
-	}
-
-	if len(current.Text) > 0 {
-		result = append(result, *current)
+	for current != nil {
+		head, rest := wrapOnce(cols, *current)
+		result = append(result, *head)
+		current = rest
 	}
 
 	return result
@@ -81,36 +48,61 @@ func NextLine(cols winsize.Cols, lines []text.Line) (*text.Line, []text.Line) {
 		return nil, make([]text.Line, 0)
 	}
 
-	target := lines[0]
+	current := lines[0]
 	remain := lines[1:]
 
+	result, rest := wrapOnce(cols, current)
+	if rest != nil {
+		remain = append([]text.Line{*rest}, remain...)
+	}
+
+	return result, remain
+}
+
+func wrapOnce(cols winsize.Cols, line text.Line) (*text.Line, *text.Line) {
 	cursor := text.EmptyLine().
-		CopyMeta(&target)
+		CopyMeta(&line)
 
 	remaining := cols
 
-	for len(target.Text) > 0 {
-		frag := target.Text[0]
-		fragMeasure := text.FragmentMeasure(cols, frag)
+	words := splitLineWords(&line)
 
-		if fragMeasure <= remaining {
-			cursor.PushFragments(frag)
-			remaining = remaining.Clamp(fragMeasure)
-			target.Text = target.Text[1:]
+	for len(words) > 0 {
+		word := words[0]
+		wordMeasure := text.FragmentMeasure(cols, word.Text...)
+
+		if wordMeasure <= remaining {
+			cursor.PushFragments(word.Text...)
+			remaining = remaining.Clamp(wordMeasure)
+			words = words[1:]
+
 			continue
 		}
 
-		if len(cursor.Text) == 0 && remaining > 0 {
-			taken, restFrag := splitFragmentAt(&frag, remaining)
-			cursor.PushFragments(*taken)
-			target.Text[0] = *restFrag
+		if len(cursor.Text) > 0 {
+			break
 		}
 
-		newRest := append([]text.Line{target}, remain...)
-		return cursor, newRest
+		newWord, restWord := splitLongWord(word, cols, remaining)
+		if newWord != nil {
+			cursor.PushFragments(newWord.Text...)
+		}
+
+		var rest *text.Line
+		if restWord != nil {
+			rest = wordsToLine(line, *restWord)
+		}
+
+		return cursor, rest
 	}
 
-	return cursor, remain
+	if len(words) == 0 {
+		return cursor, nil
+	}
+
+	rest := wordsToLine(line, words...)
+
+	return cursor, rest
 }
 
 func splitLineFeeds(line *text.Line) []text.Line {
