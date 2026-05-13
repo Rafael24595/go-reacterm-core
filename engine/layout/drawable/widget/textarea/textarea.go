@@ -1,20 +1,18 @@
 package textarea
 
 import (
-	"strings"
-
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/line"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/ascii"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/textarea/selection"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
 const Name = "text_area_drawable"
@@ -86,16 +84,14 @@ func (d *TextAreaDrawable) lazyInit(size winsize.Winsize) {
 		end = 1
 	}
 
-	txt := text.EmptyLine().
-		SetSpec(style.SpecFromKind(style.SpcKindPaddingRight))
+	base := text.LineFromFragments(
+		d.resolveFragments(d.buffer, start, end)...,
+	)
 
-	fragments := d.resolveFragments(d.buffer, start, end)
-	txt.Text = append(txt.Text, fragments...)
+	lines := wrap.NormalizeLinesWithOrder(*base)
+	lines = wrap.MaterializeEmpty(size, marker.DefaultPaddingText, lines...)
 
-	lines := d.normalizeLinesEnd(*txt)
-	lines = d.fixEmptyLines(size, lines)
-
-	drawable := line.DrawableFromLines(lines...)
+	drawable := line.DrawableFromLayout(lines...)
 	drawable.Init()
 
 	d.drawable = drawable
@@ -118,113 +114,27 @@ func (d *TextAreaDrawable) resolveFragments(
 	frags := make([]text.Fragment, 0, 6)
 
 	if start > 0 {
-		frags = append(frags, *text.NewFragment(string(renderBuffer[:start])))
+		frags = append(frags,
+			*text.NewFragment(string(renderBuffer[:start])),
+		)
 	}
 
-	var selection []text.Fragment
-	if d.caret.Caret() != d.caret.Anchor() && end == d.caret.Anchor() {
-		selection, _, end = d.resolveBackwardSelection(renderBuffer, start, end)
-	} else {
-		selection, _, end = d.resolveForwardSelection(renderBuffer, start, end)
-	}
+	renderer := selection.NewRenderer(
+		renderBuffer, start, end, d.blinkStyle(),
+	)
+	
+	result := renderer.Resolve(d.caret)
 
-	frags = append(frags, selection...)
+	end = result.End
+	frags = append(frags, result.Frags...)
 
 	if int(end) < len(renderBuffer) {
-		frags = append(frags, *text.NewFragment(string(renderBuffer[end:])))
+		frags = append(frags, 
+			*text.NewFragment(string(renderBuffer[end:])),
+		)
 	}
 
 	return frags
-}
-
-func (d *TextAreaDrawable) resolveBackwardSelection(
-	renderBuffer []rune,
-	start, end offset.Offset,
-) ([]text.Fragment, offset.Offset, offset.Offset) {
-	selection := renderBuffer[start:end]
-	caretAtom := d.blinkStyle()
-
-	frags := make([]text.Fragment, 0, 2)
-
-	focusAtom := style.AtmFocus
-
-	if len(selection) == 0 {
-		assert.Unreachable("selection should have at least one character")
-
-		selectFrag := text.EmptyFragment().
-			AddAtom(style.AtmFocus)
-
-		frags = append(frags, *selectFrag)
-		return frags, start, end
-	}
-
-	if start > 0 && selection[0] == ascii.ENTER_LF {
-		focusAtom = style.AtmNone
-
-		headerFrag := text.FragmentFromRunes(marker.PrintableCaretRunes).
-			AddAtom(caretAtom, style.AtmFocus)
-
-		frags = append(frags, *headerFrag)
-	}
-
-	selectFrag := text.FragmentFromRunes(selection).
-		AddAtom(caretAtom, focusAtom)
-
-	frags = append(frags, *selectFrag)
-	return frags, start, end
-}
-
-func (d *TextAreaDrawable) resolveForwardSelection(
-	renderBuffer []rune,
-	start offset.Offset,
-	end offset.Offset,
-) ([]text.Fragment, offset.Offset, offset.Offset) {
-	selection := renderBuffer[start:end]
-	caretAtom := d.blinkStyle()
-
-	frags := make([]text.Fragment, 0, 3)
-
-	selectionSize := len(selection)
-	if selectionSize == 0 {
-		assert.Unreachable("selection should have at least one character")
-
-		selectFrag := text.EmptyFragment().
-			AddAtom(style.AtmFocus)
-
-		frags = append(frags, *selectFrag)
-		return frags, start, end
-	}
-
-	if selection[selectionSize-1] != ascii.ENTER_LF {
-		headerFrag := text.FragmentFromRunes(selection[:selectionSize-1]).
-			AddAtom(caretAtom)
-		footerFrag := text.FragmentFromRunes(selection[selectionSize-1:]).
-			AddAtom(caretAtom, style.AtmFocus)
-
-		frags = append(frags, *headerFrag, *footerFrag)
-		return frags, start, end
-	}
-
-	if selectionSize == 1 {
-		headerFrag := text.FragmentFromRunes(marker.PrintableCaretRunes).
-			AddAtom(caretAtom)
-		frags = append(frags, *headerFrag)
-	}
-
-	footer := marker.PrintableCaretRunes
-	if int(end) < len(renderBuffer)-1 && renderBuffer[end+1] != ascii.ENTER_LF {
-		footer = renderBuffer[end : end+1]
-		end += 1
-	}
-
-	selectFrag := text.FragmentFromRunes(selection).
-		AddAtom(caretAtom)
-	footerFrag := text.FragmentFromRunes(footer).
-		AddAtom(caretAtom, style.AtmFocus)
-
-	frags = append(frags, *selectFrag, *footerFrag)
-
-	return frags, start, end
 }
 
 func (c *TextAreaDrawable) blinkStyle() style.Atom {
@@ -235,74 +145,6 @@ func (c *TextAreaDrawable) blinkStyle() style.Atom {
 	return c.caret.BlinkStyle()
 }
 
-func (d *TextAreaDrawable) normalizeLinesEnd(txt text.Line) []text.Line {
-	lines := make([]text.Line, 0)
-
-	index := uint16(1)
-
-	currentLine := text.EmptyLine().SetSpec(txt.Spec)
-	if d.indexMode {
-		currentLine.SetOrder(index)
-	}
-
-	for _, f := range txt.Text {
-		normalized := runes.NormalizeLineFeed(f.Text)
-
-		parts := strings.Split(normalized, "\n")
-		if len(parts) == 1 {
-			currentLine.Text = append(
-				currentLine.Text,
-				*text.NewFragment(parts[0]).CopyMeta(&f),
-			)
-
-			continue
-		}
-
-		for partIndex, part := range parts {
-			currentLine.Text = append(
-				currentLine.Text,
-				*text.NewFragment(part).CopyMeta(&f),
-			)
-
-			if partIndex >= len(parts)-1 {
-				continue
-			}
-
-			lines = append(lines, *currentLine)
-			index++
-
-			currentLine = text.EmptyLine().SetSpec(txt.Spec)
-			if d.indexMode {
-				currentLine.SetOrder(index)
-			}
-		}
-	}
-
-	if len(currentLine.Text) > 0 {
-		lines = append(lines, *currentLine)
-	}
-
-	return lines
-}
-
-func (d *TextAreaDrawable) fixEmptyLines(size winsize.Winsize, lines []text.Line) []text.Line {
-	for i, line := range lines {
-		if text.FragmentMeasure(size.Cols, line.Text...) != 0 {
-			continue
-		}
-
-		styles := style.AtmNone
-		if len(line.Text) > 0 {
-			styles = line.Text[len(line.Text)-1].Atom
-		}
-
-		lines[i].Text = append(line.Text,
-			*text.NewFragment(marker.DefaultPaddingText).
-				AddAtom(styles),
-		)
-	}
-	return lines
-}
 func (d *TextAreaDrawable) draw(size winsize.Winsize) ([]text.Line, bool) {
 	assert.True(d.loaded, drawable.MessageInitialized)
 
