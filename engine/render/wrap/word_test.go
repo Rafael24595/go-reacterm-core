@@ -96,8 +96,10 @@ func TestSplitLineWords(t *testing.T) {
 		{
 			name: "single long word across fragments",
 			line: text.LineFromFragments(
-				*text.NewFragment("supercalifragilis"),
-				*text.NewFragment("ticexpialidocious"),
+				*text.NewFragment("supercali"),
+				*text.NewFragment("fragilis"),
+				*text.NewFragment("ticexpia"),
+				*text.NewFragment("lidocious"),
 			),
 			expected: []string{
 				"supercalifragilisticexpialidocious",
@@ -174,7 +176,9 @@ func TestSplitLineWords_PreservesStylesAcrossFragments(t *testing.T) {
 
 	assert.Equal(t, 1, len(tokens))
 
+	assert.True(t, tokens[0].Text[0].Atom.HasNone(style.AtmSelect))
 	assert.True(t, tokens[0].Text[1].Atom.HasAny(style.AtmSelect))
+	assert.True(t, tokens[0].Text[2].Atom.HasNone(style.AtmSelect))
 }
 
 func TestSplitLineWords_MultipleSpaceFragmentsKeepStyles(t *testing.T) {
