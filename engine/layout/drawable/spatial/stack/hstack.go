@@ -347,7 +347,7 @@ func (d *HStackDrawable) calcSpace(size winsize.Winsize) (winsize.Cols, winsize.
 	}
 
 	cols = min(size.Cols, cols)
-	remaining := size.Cols.Clamp(cols)
+	remaining := size.Cols.Sub(cols)
 
 	cZeroes := winsize.Cols(zeroes)
 

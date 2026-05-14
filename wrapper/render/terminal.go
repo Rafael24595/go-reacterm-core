@@ -41,7 +41,7 @@ func renderLineFragments(line text.Line, size winsize.Winsize) string {
 		spec := applySpecStyles(f.Spec, lineSize, f.Text, f.Size())
 
 		fragSize := text.FragmentMeasure(size.Cols, f)
-		lineSize.Cols = lineSize.Cols.Clamp(fragSize)
+		lineSize.Cols = lineSize.Cols.Sub(fragSize)
 
 		if atomStyles != f.Atom && len(fragments) != 0 {
 			atom := applyAtomStyles(fragments, atomStyles)

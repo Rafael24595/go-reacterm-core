@@ -157,7 +157,7 @@ func addGaps(
 	out := make([]text.Fragment, len(frags))
 	copy(out, frags)
 
-	free := cols.Clamp(size)
+	free := cols.Sub(size)
 	gaps := len(out) - 1
 
 	if free <= 0 || gaps <= 0 {

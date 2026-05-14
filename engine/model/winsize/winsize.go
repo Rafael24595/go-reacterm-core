@@ -6,13 +6,13 @@ type Transformer func(Winsize) Winsize
 
 type Rows uint16
 
-func (r Rows) Clamp(o Rows) Rows {
+func (r Rows) Sub(o Rows) Rows {
 	return math.SubClampZero(r, o)
 }
 
 type Cols uint16
 
-func (c Cols) Clamp(o Cols) Cols {
+func (c Cols) Sub(o Cols) Cols {
 	return math.SubClampZero(c, o)
 }
 

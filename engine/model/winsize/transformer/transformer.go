@@ -7,8 +7,8 @@ import (
 func WithMargin(rows winsize.Rows, cols winsize.Cols) winsize.Transformer {
 	return func(w winsize.Winsize) winsize.Winsize {
 		return winsize.New(
-			w.Rows.Clamp(rows),
-			w.Cols.Clamp(cols),
+			w.Rows.Sub(rows),
+			w.Cols.Sub(cols),
 		)
 	}
 }

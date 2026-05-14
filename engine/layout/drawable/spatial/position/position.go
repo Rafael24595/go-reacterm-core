@@ -88,8 +88,8 @@ func (d *PositionDrawable) draw(size winsize.Winsize) ([]text.Line, bool) {
 	assert.True(d.loaded, drawable.MessageInitialized)
 
 	fixedSize := winsize.New(
-		size.Rows.Clamp(d.marginY*2),
-		size.Cols.Clamp(d.marginX*2),
+		size.Rows.Sub(d.marginY*2),
+		size.Cols.Sub(d.marginX*2),
 	)
 
 	spec := makeSpec(fixedSize, d.positionX)

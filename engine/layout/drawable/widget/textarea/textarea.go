@@ -75,7 +75,7 @@ func (d *TextAreaDrawable) lazyInit(size winsize.Winsize) {
 
 	d.lazyLoaded = true
 
-	start := d.caret.SelectStart().Clamp(1)
+	start := d.caret.SelectStart().Sub(1)
 	end := d.caret.SelectEnd()
 
 	if len(d.buffer) == 0 {
@@ -122,14 +122,14 @@ func (d *TextAreaDrawable) resolveFragments(
 	renderer := selection.NewRenderer(
 		renderBuffer, start, end, d.blinkStyle(),
 	)
-	
+
 	result := renderer.Resolve(d.caret)
 
 	end = result.End
 	frags = append(frags, result.Frags...)
 
 	if int(end) < len(renderBuffer) {
-		frags = append(frags, 
+		frags = append(frags,
 			*text.NewFragment(string(renderBuffer[end:])),
 		)
 	}

@@ -113,7 +113,7 @@ func wrapOnce(cols winsize.Cols, line LayoutLine) (*text.Line, *LayoutLine) {
 
 		if wordMeasure <= remaining {
 			cursor.PushFragments(word.Text...)
-			remaining = remaining.Clamp(wordMeasure)
+			remaining = remaining.Sub(wordMeasure)
 			words = words[1:]
 
 			continue

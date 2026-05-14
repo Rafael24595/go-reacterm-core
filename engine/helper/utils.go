@@ -69,7 +69,7 @@ func CenterWithOpts(item any, width winsize.Cols, opts TextLayoutOpts) string {
 		return text
 	}
 
-	padding := width.Clamp(opts.LogicalSize)
+	padding := width.Sub(opts.LogicalSize)
 
 	left := int(padding / 2)
 	right := int(padding) - left
@@ -89,7 +89,7 @@ func LeftWithOpts(item any, width winsize.Cols, opts TextLayoutOpts) string {
 		return text
 	}
 
-	padding := width.Clamp(opts.LogicalSize)
+	padding := width.Sub(opts.LogicalSize)
 
 	return strings.Repeat(opts.Text, int(padding)) + text
 }
@@ -106,7 +106,7 @@ func RightWithOpts(item any, width winsize.Cols, opts TextLayoutOpts) string {
 		return text
 	}
 
-	padding := width.Clamp(opts.LogicalSize)
+	padding := width.Sub(opts.LogicalSize)
 
 	return text + strings.Repeat(opts.Text, int(padding))
 }
@@ -199,7 +199,7 @@ func TrimLeft(data string, width winsize.Cols, opts TextTrimOpts) string {
 		return data
 	}
 
-	width = realSize.Clamp(width)
+	width = realSize.Sub(width)
 
 	if elipSize+width >= realSize {
 		index, _ := runes.RuneIndexToByteIndex(data, offset.Offset(width))
@@ -233,7 +233,7 @@ func TrimRight(data string, width winsize.Cols, opts TextTrimOpts) string {
 
 	elipTotal := strings.Repeat(opts.EllipsisText, int(opts.EllipsisSize))
 
-	size := width.Clamp(elipSize)
+	size := width.Sub(elipSize)
 	index, _ := runes.RuneIndexToByteIndex(data, offset.Offset(size))
 
 	return data[:index] + elipTotal

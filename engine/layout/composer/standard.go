@@ -33,7 +33,7 @@ func Standard(
 	kernel := vm.InitDynamicLayers()
 
 	dynamicSize := winsize.New(
-		size.Rows.Clamp(staticRows),
+		size.Rows.Sub(staticRows),
 		size.Cols,
 	)
 

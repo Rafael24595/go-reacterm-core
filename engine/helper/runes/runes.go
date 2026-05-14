@@ -78,8 +78,8 @@ func AppendRange(
 		"range[%d - %d] is greater than slice length %d", start, end, sliceLen,
 	)
 
-	size := sliceLen.Clamp(
-		end.Clamp(start),
+	size := sliceLen.Sub(
+		end.Sub(start),
 	)
 
 	newSlice := make([]rune, size+insertLen)

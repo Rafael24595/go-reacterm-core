@@ -28,7 +28,7 @@ func NextIndexedLine(cols winsize.Cols, lines []wrap.LayoutLine, meta indexMeta)
 		prefix = meta.body()
 	}
 
-	fixedCols := cols.Clamp(meta.totalWidth)
+	fixedCols := cols.Sub(meta.totalWidth)
 
 	assert.True(fixedCols > 0, "index prefix should be lesser than line size")
 

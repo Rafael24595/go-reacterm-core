@@ -32,8 +32,8 @@ func WithPadding(
 		content := inner(lines, newSize)
 		content = normalize(content, rows)
 
-		diffRows := size.Rows.Clamp(rows)
-		diffCols := size.Cols.Clamp(cols)
+		diffRows := size.Rows.Sub(rows)
+		diffCols := size.Cols.Sub(cols)
 
 		topPadding := diffRows / 2
 		leftPadding := diffCols / 2

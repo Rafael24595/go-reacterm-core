@@ -183,7 +183,7 @@ func (d *VStackDrawable) makeLines(size winsize.Winsize) ([]text.Line, bool) {
 		}
 
 		bufferLen := winsize.Rows(len(buffer))
-		remaining := size.Rows.Clamp(bufferLen)
+		remaining := size.Rows.Sub(bufferLen)
 		if remaining == 0 {
 			break
 		}

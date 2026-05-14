@@ -55,7 +55,7 @@ func sinkLinePaddingCenter(spec style.SpecKind, line *text.Line, cols winsize.Co
 
 	fragSize := text.FragmentMeasure(cols, line.Text...)
 
-	available := size.Clamp(fragSize)
+	available := size.Sub(fragSize)
 	available = max(0, available)
 
 	left := available / 2
@@ -66,7 +66,7 @@ func sinkLinePaddingCenter(spec style.SpecKind, line *text.Line, cols winsize.Co
 		)
 	}
 
-	right := available.Clamp(left)
+	right := available.Sub(left)
 	if right > 0 {
 		paddRight := style.SpecPaddingRight(right, txt)
 		line.PushFragments(

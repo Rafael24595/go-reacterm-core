@@ -292,7 +292,7 @@ func (c *TextArea) copyCut(state *state.UIState, cut bool) screen.Result {
 		return result
 	}
 
-	start := c.caret.SelectStart().Clamp(1)
+	start := c.caret.SelectStart().Sub(1)
 	end := c.caret.SelectEnd()
 
 	c.clipboard.Put(c.buffer.Range(start, end))
@@ -431,14 +431,14 @@ func (c *TextArea) moveBackward(state *state.UIState, event screen.Event) screen
 	buffer := c.buffer.Buffer()
 
 	if event.Key.Mod.HasNone(key.ModShift, key.ModCtrl) {
-		caret := c.caret.Caret().Clamp(1)
+		caret := c.caret.Caret().Sub(1)
 		c.caret.MoveCaretTo(buffer, caret)
 		return result
 	}
 
 	anchor := c.caret.Anchor()
 	if event.Key.Mod.HasNone(key.ModCtrl) {
-		caret := c.caret.Caret().Clamp(1)
+		caret := c.caret.Caret().Sub(1)
 		c.caret.MoveSelectTo(buffer, caret, anchor)
 		return result
 	}
@@ -494,7 +494,7 @@ func (c *TextArea) deleteBackward(state *state.UIState, word bool) screen.Result
 	if word {
 		start = runes.BackwardIndex(c.buffer.Buffer(), runes.NextWordRunes, start)
 	} else {
-		start = start.Clamp(1)
+		start = start.Sub(1)
 	}
 
 	end := c.caret.SelectEnd()
@@ -521,7 +521,7 @@ func (c *TextArea) deleteForward(state *state.UIState, word bool) screen.Result 
 		end = min(c.buffer.Size(), end+1)
 	}
 
-	start := c.caret.SelectStart().Clamp(1)
+	start := c.caret.SelectStart().Sub(1)
 
 	delete := c.buffer.Delete(start, end)
 	c.history.PushEvent(event.DeleteForward, start, end, string(delete), "")
@@ -559,7 +559,7 @@ func (c *TextArea) view(_ state.UIState) viewmodel.ViewModel {
 }
 
 func (c *TextArea) needsPulse() bool {
-	return c.caret.IsBlinking() && c.writeMode
+	return c.writeMode && c.caret.IsBlinking()
 }
 
 func (c *TextArea) mainDrawableCode() string {
@@ -571,7 +571,7 @@ func (c *TextArea) insertSelection() (offset.Offset, offset.Offset, offset.Offse
 	end := c.caret.SelectEnd()
 
 	if start != end {
-		return start.Clamp(1), end, end + 1
+		return start.Sub(1), end, end + 1
 	}
 
 	return start, end, end

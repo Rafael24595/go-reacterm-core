@@ -126,7 +126,7 @@ func (s *TextEventService) isConsistentAction(action textAction, event mergeActi
 	case Insert:
 		return event.origin+event.len() == action.start
 	case DeleteBackward:
-		return action.start == event.probe.Clamp(1)
+		return action.start == event.probe.Sub(1)
 	case DeleteForward:
 		return action.start == event.probe+1
 	}

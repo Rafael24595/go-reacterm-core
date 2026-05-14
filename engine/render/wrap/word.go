@@ -113,7 +113,7 @@ func splitLongWord(
 
 		if size <= remaining {
 			current.Text = append(current.Text, frag)
-			remaining = remaining.Clamp(size)
+			remaining = remaining.Sub(size)
 			frags = frags[1:]
 
 			continue

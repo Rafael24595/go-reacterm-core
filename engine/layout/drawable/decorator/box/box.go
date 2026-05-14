@@ -132,17 +132,17 @@ func (d *BoxDrawable) drawChild(size winsize.Winsize) ([]text.Line, bool) {
 			break
 		}
 
-		remaining = remaining.Clamp(lineLen)
+		remaining = remaining.Sub(lineLen)
 	}
 
 	return lines, remaining <= 0
 }
 
-//TODO: investigate spec overflow.
+// TODO: investigate spec overflow.
 func (d *BoxDrawable) styleLines(size winsize.Winsize, lines ...text.Line) []text.Line {
 	vertical := horizontalStaticSize(d.separator)
 
-	maxSize := size.Cols.Clamp(vertical)
+	maxSize := size.Cols.Sub(vertical)
 	minSize := min(d.minSize+vertical, maxSize)
 	maxLine := text.MaxLineMeasure(size.Cols, lines...)
 
@@ -157,7 +157,7 @@ func (d *BoxDrawable) styleLines(size winsize.Winsize, lines ...text.Line) []tex
 
 	result = append(result, *cover)
 
-	available := size.Cols.Clamp(vertical)
+	available := size.Cols.Sub(vertical)
 
 	for _, lin := range lines {
 		for _, v := range wrap.Line(available, &lin) {
@@ -212,7 +212,7 @@ func (d *BoxDrawable) styleLine(cols winsize.Cols, line text.Line) text.Line {
 func (d *BoxDrawable) calcPadding(cols winsize.Cols, line text.Line) (winsize.Cols, winsize.Cols) {
 	totalWidth := text.FragmentMeasure(cols, line.Text...)
 
-	remaining := cols.Clamp(totalWidth)
+	remaining := cols.Sub(totalWidth)
 
 	switch d.textAlign {
 	case style.Left:
@@ -220,7 +220,7 @@ func (d *BoxDrawable) calcPadding(cols winsize.Cols, line text.Line) (winsize.Co
 
 	case style.Center:
 		paddingL := remaining / 2
-		paddingR := remaining.Clamp(paddingL)
+		paddingR := remaining.Sub(paddingL)
 		return paddingL, paddingR
 
 	case style.Right:
@@ -235,10 +235,10 @@ func (d *BoxDrawable) calcPadding(cols winsize.Cols, line text.Line) (winsize.Co
 
 func (d *BoxDrawable) clampSize(size winsize.Winsize) winsize.Winsize {
 	vertical := winsize.Rows(2)
-	rows := size.Rows.Clamp(vertical)
+	rows := size.Rows.Sub(vertical)
 
 	horizontal := horizontalStaticSize(d.separator)
-	cols := size.Cols.Clamp(horizontal)
+	cols := size.Cols.Sub(horizontal)
 
 	return winsize.New(rows, cols)
 }

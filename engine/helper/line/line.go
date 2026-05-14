@@ -6,7 +6,7 @@ import (
 )
 
 func DistanceFromLF(buffer []rune, from offset.Offset) offset.Offset {
-	return from.Clamp(
+	return from.Sub(
 		FindLineStart(buffer, from),
 	)
 }
