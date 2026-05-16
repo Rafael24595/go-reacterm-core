@@ -101,7 +101,7 @@ func makeTerminal(ctx context.Context) terminal.Terminal {
 }
 
 func makeNode() screen.Node {
-	landing := wrapper_screen.NewLanding()
+	landing := wrapper_screen.NewTestSelect()
 
 	history := history.New(landing).ToNode()
 	pagination := pagination.New(history).

@@ -15,10 +15,10 @@ func NewTestModal() screen.Node {
 			*text.EmptyLine(),
 		).
 		AddOptions([]input.MenuOption{
-			input.NewMenuOption("1", *text.NewFragment("Option_1"), NewLanding),
-			input.NewMenuOption("2", *text.NewFragment("Option_2"), NewLanding),
-			input.NewMenuOption("3", *text.NewFragment("Option_3"), NewLanding),
-			input.NewMenuOption("4", *text.NewFragment("Option_4"), NewLanding),
+			input.NewMenuOption("1", *text.NewFragment("Option_1"), NewTestSelect),
+			input.NewMenuOption("2", *text.NewFragment("Option_2"), NewTestSelect),
+			input.NewMenuOption("3", *text.NewFragment("Option_3"), NewTestSelect),
+			input.NewMenuOption("4", *text.NewFragment("Option_4"), NewTestSelect),
 		}...).
 		ToNode()
 }
