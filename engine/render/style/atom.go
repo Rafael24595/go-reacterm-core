@@ -10,6 +10,7 @@ const (
 	AtmSelect
 	AtmFocus
 	AtmWrap
+	AtmBreak
 )
 
 func MergeAtom(styles ...Atom) Atom {
