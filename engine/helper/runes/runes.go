@@ -120,12 +120,19 @@ func BackwardIndex[T math.Number](
 ) T {
 	newIndex := fixdBackwardIndex(buffer, definition, index)
 
-	for j := newIndex - 1; j >= 0; j-- {
+	j := math.SubClampZero(newIndex, 1)
+	for {
 		for _, v := range definition {
 			if v.Rune == buffer[j] {
 				return j + 1
 			}
 		}
+
+		if j == 0 {
+			break
+		}
+
+		j = math.SubClampZero(j, 1)
 	}
 
 	return 0

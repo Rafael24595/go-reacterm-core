@@ -181,7 +181,10 @@ func TestBackwardIndexWithOutSkip(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := runes.BackwardIndex(text, nextLineRunes, tt.start)
-			assert.Equal(t, tt.want, int(got))
+			assert.Equal(t, tt.want, got)
+
+			ugot := runes.BackwardIndex(text, nextLineRunes, uint(tt.start))
+			assert.Equal(t, uint(tt.want), ugot)
 		})
 	}
 }
