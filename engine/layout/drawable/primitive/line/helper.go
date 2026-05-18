@@ -14,7 +14,11 @@ import (
 
 const separator = " | "
 
-func NextIndexedLine(cols winsize.Cols, lines []wrap.LayoutLine, meta indexMeta) (*text.Line, []wrap.LayoutLine) {
+func NextIndexedLine(
+	cols winsize.Cols,
+	lines []wrap.LayoutLine,
+	meta indexMeta,
+) (*text.Line, []wrap.LayoutLine) {
 	if cols == 0 || len(lines) == 0 {
 		return nil, make([]wrap.LayoutLine, 0)
 	}
