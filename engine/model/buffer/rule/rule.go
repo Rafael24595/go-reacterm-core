@@ -1,4 +1,4 @@
-package text
+package rule
 
 import "github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 
@@ -15,37 +15,21 @@ var runesRequiringTrailingSpace = []rune{
 	';',
 }
 
-var FullTextTransformer = NewTextTransformer(AppendSpaceAfterRune, WrappRunes)
-var VoidTextTransformer = NewTextTransformer()
-
-type textTransform func(
+type Rule func(
 	text []rune,
-	start,
-	end offset.Offset,
+	start, end offset.Offset,
 	buff []rune,
 ) ([]rune, bool)
 
-type TextTransformer struct {
-	helpers []textTransform
+var Full = []Rule{
+	AppendSpaceAfter, WrapSelection,
 }
 
-func NewTextTransformer(helpers ...textTransform) TextTransformer {
-	return TextTransformer{
-		helpers: helpers,
-	}
-}
-
-func (h TextTransformer) Apply(text []rune, start, end offset.Offset, buff []rune) []rune {
-	for _, h := range h.helpers {
-		if text, ok := h(text, start, end, buff); ok {
-			return text
-		}
-	}
-
-	return text
-}
-
-func WrappRunes(text []rune, start, end offset.Offset, buff []rune) ([]rune, bool) {
+func WrapSelection(
+	text []rune,
+	start, end offset.Offset,
+	buff []rune,
+) ([]rune, bool) {
 	size := len(text)
 	if size < 1 || size > 1 {
 		return text, false
@@ -66,7 +50,11 @@ func WrappRunes(text []rune, start, end offset.Offset, buff []rune) ([]rune, boo
 	return text, true
 }
 
-func AppendSpaceAfterRune(text []rune, start, end offset.Offset, _ []rune) ([]rune, bool) {
+func AppendSpaceAfter(
+	text []rune,
+	start, end offset.Offset,
+	_ []rune,
+) ([]rune, bool) {
 	size := len(text)
 	if size < 1 || size > 1 {
 		return text, false
@@ -79,7 +67,6 @@ func AppendSpaceAfterRune(text []rune, start, end offset.Offset, _ []rune) ([]ru
 		}
 
 		text = append(text, ' ')
-
 		return text, true
 	}
 
