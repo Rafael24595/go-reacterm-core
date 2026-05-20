@@ -27,27 +27,27 @@ func ValidateStructure() screen.Pass {
 			focus := pending[cursor]
 			visited.Add(focus.Id())
 
-			if focus.Screen.Name == "" {
+			if focus.Name == "" {
 				return node, errors.New(err_name)
 			}
 
 			if focus.Screen.Definition == nil {
-				return node, fmt.Errorf(errf_definition, focus.Screen.Name)
+				return node, fmt.Errorf(errf_definition, focus.Name)
 			}
 
 			if focus.Screen.Update == nil {
-				return node, fmt.Errorf(errf_update, focus.Screen.Name)
+				return node, fmt.Errorf(errf_update, focus.Name)
 			}
 
 			if focus.Screen.View == nil {
-				return node, fmt.Errorf(errf_view, focus.Screen.Name)
+				return node, fmt.Errorf(errf_view, focus.Name)
 			}
 
 			children := focus.Children()
 			for i := range children {
 				child := children[i]
 				if visited.Has(child.Id()) {
-					return node, fmt.Errorf(errf_cycle, child.Screen.Name)
+					return node, fmt.Errorf(errf_cycle, child.Name)
 				}
 
 				pending = append(pending, child)

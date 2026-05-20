@@ -33,7 +33,7 @@ func (c *Pipeline) ExpireOnNode() *Pipeline {
 }
 
 func (c *Pipeline) ExpireOnName() *Pipeline {
-	c.expiration = onName(c.node.Screen.Name)
+	c.expiration = onName(c.node.Name)
 	return c
 }
 
@@ -44,7 +44,7 @@ func (c *Pipeline) Persistent() *Pipeline {
 
 func (c *Pipeline) ToNode() screen.Node {
 	return screen.NewBuilder().
-		Name(c.node.Screen.Name).
+		Name(c.node.Name).
 		AddStack(c.node.Stack).
 		Definition(c.node.Screen.Definition).
 		Update(c.update).

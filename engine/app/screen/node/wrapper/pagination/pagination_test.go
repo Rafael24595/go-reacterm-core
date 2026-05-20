@@ -25,7 +25,7 @@ func TestPagination_ToNode(t *testing.T) {
 	node := New(mock.ToNode()).ToNode()
 	screen_test.Helper_ToNode(t, node)
 
-	assert.Equal(t, node.Screen.Name, name)
+	assert.Equal(t, node.Name, name)
 }
 
 func TestPagination_Propagate(t *testing.T) {

@@ -32,7 +32,7 @@ func TestIndexMenu_ToNode(t *testing.T) {
 
 	screen_test.Helper_ToNode(t, node)
 
-	assert.Equal(t, node.Screen.Name, "base")
+	assert.Equal(t, node.Name, "base")
 }
 
 func TestIndexMenu_Stack(t *testing.T) {
@@ -130,9 +130,8 @@ func TestIndexMenu_CursorNavigation(t *testing.T) {
 
 func TestIndexMenu_Action(t *testing.T) {
 	expected := screen.Node{
-		Screen: screen.Screen{
-			Name: "next",
-		},
+		Name:   "next",
+		Screen: screen.Screen{},
 	}
 
 	menu := New().
@@ -151,7 +150,7 @@ func TestIndexMenu_Action(t *testing.T) {
 	)
 
 	assert.NotNil(t, result.Node)
-	assert.Equal(t, result.Node.Screen.Name, "next")
+	assert.Equal(t, result.Node.Name, "next")
 }
 
 func TestIndexMenu_ViewCursor(t *testing.T) {

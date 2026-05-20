@@ -31,7 +31,7 @@ func (e expiration) on(node *screen.Node) bool {
 	}
 
 	if e.name != "" {
-		return e.name == node.Screen.Name
+		return e.name == node.Name
 	}
 
 	return false

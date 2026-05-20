@@ -167,7 +167,7 @@ func (c *Form) view(stt state.UIState) viewmodel.ViewModel {
 	}
 
 	if focus, ok := c.focusItem(); ok {
-		label := focus.node.Screen.Name
+		label := focus.node.Name
 		vm.Footer.Push(
 			inputline.DrawableFromDrawable(
 				drain.DrawableFromString(label),

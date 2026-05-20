@@ -31,7 +31,7 @@ func New(node screen.Node) *History {
 
 func (c *History) ToNode() screen.Node {
 	return screen.NewBuilder().
-		Name(c.node.Screen.Name).
+		Name(c.node.Name).
 		AddStack(c.node.Stack).
 		Definition(c.definition).
 		Update(c.update).
@@ -87,7 +87,7 @@ func (c *History) view(state state.UIState) viewmodel.ViewModel {
 		return vm
 	}
 
-	page := fmt.Sprintf("back: %s", c.history.Screen.Name)
+	page := fmt.Sprintf("back: %s", c.history.Name)
 
 	footer := []text.Line{
 		*text.NewLine(page,

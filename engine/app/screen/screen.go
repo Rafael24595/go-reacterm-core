@@ -10,7 +10,6 @@ type UpdateFunc func(*state.UIState, Event) Result
 type ViewFunc func(state.UIState) viewmodel.ViewModel
 
 type Screen struct {
-	Name       string
 	Definition DefinitionFunc
 	Update     UpdateFunc
 	View       ViewFunc

@@ -12,7 +12,7 @@ func TestTextArea_ToNode(t *testing.T) {
 	node := NewArea().SetName("base").ToNode()
 
 	screen_test.Helper_ToNode(t, node)
-	assert.Equal(t, node.Screen.Name, "base")
+	assert.Equal(t, node.Name, "base")
 }
 
 func TestTextArea_Stack(t *testing.T) {

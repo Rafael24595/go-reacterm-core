@@ -12,7 +12,7 @@ func TestTable_ToNode(t *testing.T) {
 	node := New[int]().SetName("base").ToNode()
 
 	screen_test.Helper_ToNode(t, node)
-	assert.Equal(t, node.Screen.Name, "base")
+	assert.Equal(t, node.Name, "base")
 }
 
 func TestTable_Stack(t *testing.T) {

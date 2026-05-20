@@ -4,18 +4,15 @@ import "github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 
 type Node struct {
 	id       string
+	Name     string
+	Tags     set.Set[string]
 	Screen   Screen
-	meta     Meta
 	Stack    set.Set[string]
 	children []Node
 }
 
 func (n Node) Id() string {
 	return n.id
-}
-
-func (n Node) Meta() Meta {
-	return n.meta
 }
 
 func (n Node) Children() []Node {

@@ -90,7 +90,7 @@ func (c *Pagination) ForceEngine(forceEngine pager.Engine) *Pagination {
 
 func (c *Pagination) ToNode() screen.Node {
 	return screen.NewBuilder().
-		Name(c.node.Screen.Name).
+		Name(c.node.Name).
 		AddStack(c.node.Stack).
 		Definition(c.definition).
 		Update(c.update).

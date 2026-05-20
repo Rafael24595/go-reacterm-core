@@ -14,7 +14,7 @@ func TestForm_ToNode(t *testing.T) {
 	node := New().ToNode()
 	screen_test.Helper_ToNode(t, node)
 
-	assert.Equal(t, Name, node.Screen.Name)
+	assert.Equal(t, Name, node.Name)
 }
 
 func TestForm_Propagate(t *testing.T) {
@@ -23,11 +23,13 @@ func TestForm_Propagate(t *testing.T) {
 		Name: name,
 	}
 
-	node := New().AddNode(
+	node := New().
+		AddNode(
 			true,
 			mock.ToNode(),
 			chunk.Chunk[winsize.Rows]{},
-		).ToNode()
-		
+		).
+		ToNode()
+
 	screen_test.Helper_Propagate(t, name, 0, node)
 }

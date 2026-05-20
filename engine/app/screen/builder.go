@@ -92,26 +92,27 @@ func (s *Builder) View(view ViewFunc) *Builder {
 	return s
 }
 
-func (s *Builder) makeMeta() Meta {
-	meta := NewMeta()
+//TODO: Deprecate?
+func (s *Builder) makeTags() set.Set[string] {
+	tags := set.NewSet[string]()
 
 	if s.name == "" {
-		meta.Code.Add(ErrorMissingName)
+		tags.Add(ErrorMissingName)
 	}
 
 	if s.definition == nil {
-		meta.Code.Add(ErrorMissingDefinition)
+		tags.Add(ErrorMissingDefinition)
 	}
 
 	if s.update == nil {
-		meta.Code.Add(ErrorMissingUpdate)
+		tags.Add(ErrorMissingUpdate)
 	}
 
 	if s.view == nil {
-		meta.Code.Add(ErrorMissingView)
+		tags.Add(ErrorMissingView)
 	}
 
-	return meta
+	return tags
 }
 
 func (s *Builder) makeID() string {
@@ -120,7 +121,6 @@ func (s *Builder) makeID() string {
 
 func (s *Builder) toScreen() Screen {
 	return Screen{
-		Name:       s.name,
 		Definition: s.definition,
 		Update:     s.update,
 		View:       s.view,
@@ -130,8 +130,9 @@ func (s *Builder) toScreen() Screen {
 func (s *Builder) ToNode() Node {
 	return Node{
 		id:       s.makeID(),
+		Name:     s.name,
+		Tags:     s.makeTags(),
 		Screen:   s.toScreen(),
-		meta:     s.makeMeta(),
 		Stack:    s.stack,
 		children: s.children,
 	}

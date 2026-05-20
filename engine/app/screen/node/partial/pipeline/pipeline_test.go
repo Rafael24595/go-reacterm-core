@@ -38,7 +38,7 @@ func TestPipeline_ToNode(t *testing.T) {
 	node := New(mock.ToNode()).ToNode()
 	screen_test.Helper_ToNode(t, node)
 
-	assert.Equal(t, node.Screen.Name, name)
+	assert.Equal(t, node.Name, name)
 }
 
 func TestPipeline_Propagate(t *testing.T) {
@@ -78,7 +78,7 @@ func TestPipeline_WrapsReturnedScreen(t *testing.T) {
 
 	assert.True(t, called)
 	assert.NotNil(t, result.Node.Screen)
-	assert.Equal(t, "next", result.Node.Screen.Name)
+	assert.Equal(t, "next", result.Node.Name)
 }
 
 func TestPipeline_ActionSingleFocus(t *testing.T) {

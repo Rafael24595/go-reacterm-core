@@ -21,7 +21,7 @@ func TestBuilder_BasicScreen(t *testing.T) {
 		}).
 		ToNode()
 
-	assert.Equal(t, name, node.Screen.Name)
+	assert.Equal(t, name, node.Name)
 	assert.Len(t, 0, node.Stack)
 	assert.Nil(t, node.Screen.Definition)
 	assert.NotNil(t, node.Screen.Update)

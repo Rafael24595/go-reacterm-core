@@ -22,7 +22,7 @@ func TestHistory_ToNode(t *testing.T) {
 	node := New(mock.ToNode()).ToNode()
 	screen_test.Helper_ToNode(t, node)
 
-	assert.Equal(t, node.Screen.Name, name)
+	assert.Equal(t, node.Name, name)
 }
 
 func TestHistory_Propagate(t *testing.T) {
@@ -52,18 +52,18 @@ func TestHistory_BackNavigation(t *testing.T) {
 	node := New(mockNext.ToNode()).
 		ToNode()
 
-	assert.Equal(t, node.Screen.Name, "next")
+	assert.Equal(t, node.Name, "next")
 
 	result := node.Screen.Update(stt, screen.Event{})
 	assert.NotNil(t, result.Node)
-	assert.Equal(t, result.Node.Screen.Name, "base")
+	assert.Equal(t, result.Node.Name, "base")
 
 	backResult := result.Node.Screen.Update(stt, screen.Event{
 		Key: *key.NewKeyCode(key.CustomActionBack),
 	})
 
 	assert.NotNil(t, backResult.Node.Screen)
-	assert.Equal(t, backResult.Node.Screen.Name, "next")
+	assert.Equal(t, backResult.Node.Name, "next")
 }
 
 func TestHistory_ViewFooter(t *testing.T) {

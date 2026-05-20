@@ -22,7 +22,7 @@ func New(node screen.Node) *Help {
 
 func (c *Help) ToNode() screen.Node {
 	return screen.NewBuilder().
-		Name(c.node.Screen.Name).
+		Name(c.node.Name).
 		AddStack(c.node.Stack).
 		Definition(c.node.Screen.Definition).
 		Update(c.update).

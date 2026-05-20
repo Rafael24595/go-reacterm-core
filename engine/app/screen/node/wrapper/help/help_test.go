@@ -21,7 +21,7 @@ func TestHelp_ToNode(t *testing.T) {
 	node := New(mock.ToNode()).ToNode()
 	screen_test.Helper_ToNode(t, node)
 
-	assert.Equal(t, node.Screen.Name, name)
+	assert.Equal(t, node.Name, name)
 }
 
 func TestHelp_Propagate(t *testing.T) {
@@ -118,5 +118,5 @@ func TestHelp_WrapsReturnedScreen(t *testing.T) {
 
 	assert.True(t, called)
 	assert.NotNil(t, result.Node)
-	assert.Equal(t, "next", result.Node.Screen.Name)
+	assert.Equal(t, "next", result.Node.Name)
 }

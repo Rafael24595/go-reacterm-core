@@ -12,7 +12,7 @@ func TestTextInput_ToNode(t *testing.T) {
 	node := NewInput().SetName("base").ToNode()
 	screen_test.Helper_ToNode(t, node)
 
-	assert.Equal(t, node.Screen.Name, "base")
+	assert.Equal(t, node.Name, "base")
 }
 
 func TestTextInput_Stack(t *testing.T) {

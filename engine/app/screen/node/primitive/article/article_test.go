@@ -28,7 +28,7 @@ func TestArticle_Stack(t *testing.T) {
 func TestNewArticle_DefaultValues(t *testing.T) {
 	article := New()
 
-	assert.Equal(t, Name, article.ToNode().Screen.Name)
+	assert.Equal(t, Name, article.ToNode().Name)
 	assert.Len(t, 0, article.article)
 }
 
@@ -36,7 +36,7 @@ func TestArticle_SetName(t *testing.T) {
 	article := New()
 	result := article.Name("CustomName")
 
-	assert.Equal(t, "CustomName", article.ToNode().Screen.Name)
+	assert.Equal(t, "CustomName", article.ToNode().Name)
 	assert.Equal(t, result, article)
 }
 

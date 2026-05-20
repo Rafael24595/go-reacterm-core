@@ -17,7 +17,7 @@ func TestCheckMenu_ToNode(t *testing.T) {
 
 	screen_test.Helper_ToNode(t, node)
 
-	assert.Equal(t, node.Screen.Name, "base")
+	assert.Equal(t, node.Name, "base")
 }
 
 func TestCheckMenu_Stack(t *testing.T) {

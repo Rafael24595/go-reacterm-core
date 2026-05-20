@@ -13,7 +13,7 @@ func TestModalMenu_ToNode(t *testing.T) {
 
 	screen_test.Helper_ToNode(t, node)
 
-	assert.Equal(t, node.Screen.Name, "base")
+	assert.Equal(t, node.Name, "base")
 }
 
 func TestModalMenu_Stack(t *testing.T) {
