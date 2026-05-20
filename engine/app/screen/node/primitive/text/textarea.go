@@ -27,7 +27,6 @@ const ArgAreaBuffer param.Typed[[]rune] = "text_area_buffer"
 
 var area_read_definition = screen.NewDefinition(
 	map[key.Action]key.Descriptor{
-		key.ActionEsc:   {Code: []string{"ESC"}, Detail: "Exit/Back"},
 		key.ActionEnter: {Code: []string{"RET"}, Detail: "Edit text"},
 	},
 	[]key.Action{
