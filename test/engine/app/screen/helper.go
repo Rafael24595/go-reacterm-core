@@ -14,8 +14,8 @@ import (
 type MockScreen struct {
 	Name       string
 	Definition *screen.Definition
-	Update     func(*state.UIState, screen.Event) screen.Result
-	View       func(state.UIState) viewmodel.ViewModel
+	Update     screen.UpdateFunc
+	View       screen.ViewFunc
 	Stack      set.Set[string]
 }
 
