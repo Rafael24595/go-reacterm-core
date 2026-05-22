@@ -7,9 +7,9 @@ type Size[T math.Number] struct {
 	fill bool
 }
 
-func Fixed[T math.Number](cols T) Size[T] {
+func Fixed[T math.Number](size T) Size[T] {
 	return Size[T]{
-		size: cols,
+		size: size,
 	}
 }
 
