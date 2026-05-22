@@ -38,7 +38,7 @@ func New(unit drawable.Unit) *BoxUnit {
 	}
 }
 
-func UnitFromUnit(unit drawable.Unit) drawable.Unit {
+func Wrap(unit drawable.Unit) drawable.Unit {
 	return New(unit).ToUnit()
 }
 

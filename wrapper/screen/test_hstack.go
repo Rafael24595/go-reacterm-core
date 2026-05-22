@@ -50,7 +50,7 @@ func makeKernel() drawable.Unit {
 		*text.NewLine(`  /  \__/      \      \`),
 	)
 
-	box := box.UnitFromUnit(ascii)
+	box := box.Wrap(ascii)
 	pst := position.New(box).
 		PositionY(style.Top).
 		MarginY(1).MarginX(1).Absolute(false)

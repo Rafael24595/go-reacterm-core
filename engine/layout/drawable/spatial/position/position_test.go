@@ -8,6 +8,6 @@ import (
 
 func TestPosition_UnitBasicSuite(t *testing.T) {
 	mock := &drawable_test.MockUnit{}
-	unit := UnitFromUnit(mock.ToUnit())
+	unit := Wrap(mock.ToUnit())
 	drawable_test.Test_UnitBasicSuite(t, unit)
 }

@@ -48,7 +48,7 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 	}
 
 	vm.Footer.Unshift(
-		inputline.UnitFromUnit(
+		inputline.Wrap(
 			mock.ToUnit(),
 		),
 	)
@@ -111,7 +111,7 @@ func TestStandard_MultiplePages(t *testing.T) {
 	}
 
 	vm.Footer.Unshift(
-		inputline.UnitFromUnit(
+		inputline.Wrap(
 			mock.ToUnit(),
 		),
 	)
@@ -168,7 +168,7 @@ func TestStandard_InitializeLayers(t *testing.T) {
 	}
 
 	vm.Footer.Unshift(
-		inputline.UnitFromUnit(
+		inputline.Wrap(
 			mock.ToUnit(),
 		),
 	)

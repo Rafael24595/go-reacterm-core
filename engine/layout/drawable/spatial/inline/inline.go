@@ -11,20 +11,20 @@ import (
 const Name = "inline_unit"
 
 type InlineUnit struct {
-	loaded     bool
-	separator  string
-	units      []drawable.Unit
+	loaded    bool
+	separator string
+	units     []drawable.Unit
 }
 
 func New(units ...drawable.Unit) *InlineUnit {
 	return &InlineUnit{
-		loaded:     false,
-		separator:  "",
-		units:      units,
+		loaded:    false,
+		separator: "",
+		units:     units,
 	}
 }
 
-func UnitFromUnits(units ...drawable.Unit) drawable.Unit {
+func Wrap(units ...drawable.Unit) drawable.Unit {
 	return New(units...).ToUnit()
 }
 

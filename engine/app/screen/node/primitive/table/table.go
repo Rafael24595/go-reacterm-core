@@ -201,7 +201,7 @@ func (c *Table[T]) view(_ state.UIState) viewmodel.ViewModel {
 		cell, _ := c.table.FindCellByCoords(c.cursor.Row, c.cursor.Col)
 
 		vm.Footer.Push(
-			inputline.UnitFromUnit(
+			inputline.Wrap(
 				drain.UnitFromString(cell),
 			),
 		)

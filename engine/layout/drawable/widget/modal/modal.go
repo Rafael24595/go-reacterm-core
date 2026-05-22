@@ -115,7 +115,7 @@ func (d *ModalUnit) lazyInit(size winsize.Winsize) {
 		PaddingY(1).
 		ToUnit()
 
-	position := position.UnitFromUnit(box)
+	position := position.Wrap(box)
 	position.Drawable.Init()
 
 	d.unit = position

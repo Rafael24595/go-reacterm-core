@@ -13,7 +13,7 @@ import (
 
 func TestInline_UnitBasicSuite(t *testing.T) {
 	mock := &drawable_test.MockUnit{}
-	unit := UnitFromUnits(mock.ToUnit())
+	unit := Wrap(mock.ToUnit())
 	drawable_test.Test_UnitBasicSuite(t, unit)
 }
 

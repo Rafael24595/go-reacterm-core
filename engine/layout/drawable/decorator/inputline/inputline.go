@@ -28,7 +28,7 @@ func New(unit drawable.Unit) *InputLineUnit {
 	}
 }
 
-func UnitFromUnit(unit drawable.Unit) drawable.Unit {
+func Wrap(unit drawable.Unit) drawable.Unit {
 	return New(unit).ToUnit()
 }
 

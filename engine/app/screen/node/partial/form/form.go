@@ -169,7 +169,7 @@ func (c *Form) view(stt state.UIState) viewmodel.ViewModel {
 	if focus, ok := c.focusItem(); ok {
 		label := focus.node.Name
 		vm.Footer.Push(
-			inputline.UnitFromUnit(
+			inputline.Wrap(
 				drain.UnitFromString(label),
 			),
 		)

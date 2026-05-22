@@ -130,7 +130,7 @@ func (c *IndexMenu) view(_ state.UIState) viewmodel.ViewModel {
 	text := c.options[option].Label.Text
 
 	vm.Footer.Push(
-		inputline.UnitFromUnit(
+		inputline.Wrap(
 			drain.UnitFromString(text),
 		),
 	)
