@@ -49,14 +49,14 @@ func TestVStack_Init(t *testing.T) {
 		Cols: 10,
 	})
 
-	assert.True(t, mock1.InitCalled)
-	assert.True(t, mock2.InitCalled)
+	assert.Greater(t, 0, mock1.InitCalled)
+	assert.Greater(t, 0, mock2.InitCalled)
 }
 
 func TestVStack_Shift_Order(t *testing.T) {
 	stack := &VStackUnit{}
 
-	count := 0
+	count := uint(0)
 
 	mock1 := &drawable_test.MockUnit{Status: false}
 	mock2 := &drawable_test.MockUnit{Status: false}
@@ -65,15 +65,15 @@ func TestVStack_Shift_Order(t *testing.T) {
 	unit2 := mock2.ToUnit()
 
 	unit1.Drawable.Draw = func(_ winsize.Winsize) ([]text.Line, bool) {
-		mock1.Order = count
+		mock1.DrawCalls = count
 		count++
-		return mock1.Draw(winsize.Winsize{})
+		return make([]text.Line, 0), false
 	}
 
 	unit2.Drawable.Draw = func(_ winsize.Winsize) ([]text.Line, bool) {
-		mock2.Order = count
+		mock2.DrawCalls = count
 		count++
-		return mock2.Draw(winsize.Winsize{})
+		return make([]text.Line, 0), false
 	}
 
 	stack.Push(unit1)
@@ -86,14 +86,14 @@ func TestVStack_Shift_Order(t *testing.T) {
 		Cols: 10,
 	})
 
-	assert.Equal(t, 0, mock1.Order)
-	assert.Equal(t, 1, mock2.Order)
+	assert.Equal(t, 0, mock1.DrawCalls)
+	assert.Equal(t, 1, mock2.DrawCalls)
 }
 
 func TestVStack_Unshift_Order(t *testing.T) {
 	stack := &VStackUnit{}
 
-	count := 0
+	count := uint(0)
 
 	mock1 := &drawable_test.MockUnit{Status: false}
 	mock2 := &drawable_test.MockUnit{Status: false}
@@ -102,15 +102,15 @@ func TestVStack_Unshift_Order(t *testing.T) {
 	unit2 := mock2.ToUnit()
 
 	unit1.Drawable.Draw = func(_ winsize.Winsize) ([]text.Line, bool) {
-		mock1.Order = count
+		mock1.DrawCalls = count
 		count++
-		return mock1.Draw(winsize.Winsize{})
+		return make([]text.Line, 0), false
 	}
 
 	unit2.Drawable.Draw = func(_ winsize.Winsize) ([]text.Line, bool) {
-		mock2.Order = count
+		mock2.DrawCalls = count
 		count++
-		return mock2.Draw(winsize.Winsize{})
+		return make([]text.Line, 0), false
 	}
 
 	stack.Push(unit1)
@@ -123,8 +123,8 @@ func TestVStack_Unshift_Order(t *testing.T) {
 		Cols: 10,
 	})
 
-	assert.Equal(t, 1, mock1.Order)
-	assert.Equal(t, 0, mock2.Order)
+	assert.Equal(t, 1, mock1.DrawCalls)
+	assert.Equal(t, 0, mock2.DrawCalls)
 }
 
 func TestVStack_Draw_BreaksOnTrue(t *testing.T) {

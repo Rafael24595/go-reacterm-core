@@ -21,5 +21,5 @@ func TestBox_Init_ShouldPropagateToChild(t *testing.T) {
 	unit.init()
 
 	assert.True(t, unit.loaded)
-	assert.True(t, mock.InitCalled)
+	assert.Greater(t, 0, mock.InitCalled)
 }

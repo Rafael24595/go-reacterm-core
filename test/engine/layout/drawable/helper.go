@@ -13,47 +13,21 @@ import (
 
 const NameMockUnit = "mock_unit"
 
-//TODO: Refactor
 type MockUnit struct {
-	Order      int
-	Tags       set.Set[string]
-	Name       string
-	InitCalled bool
-	WipeCalled bool
-	DrawCalls  int
-	Lines      []text.Line
-	queue      []text.Line
-	Batch      uint
-	Status     bool
-	Size       winsize.Winsize
-}
+	Name string
+	Tags set.Set[string]
 
-func (m *MockUnit) Init() {
-	m.InitCalled = true
-}
+	InitCalled uint
+	Init       drawable.InitFunc
+	Wipe       drawable.WipeFunc
+	WipeCalled uint
+	Draw       drawable.DrawFunc
+	DrawCalls  uint
 
-func (m *MockUnit) Wipe() {
-	m.WipeCalled = true
-}
-
-func (m *MockUnit) Draw(size winsize.Winsize) ([]text.Line, bool) {
-	m.DrawCalls++
-	m.Size = size
-
-	if m.Batch == 0 {
-		return m.Lines, m.Status
-	}
-
-	if len(m.queue) == 0 {
-		m.queue = m.Lines
-	}
-
-	limit := min(int(m.Batch), len(m.queue))
-
-	data := m.queue[:limit]
-	m.queue = m.queue[limit:]
-
-	return data, len(m.queue) > 0
+	Lines  []text.Line
+	queue  []text.Line
+	Batch  uint
+	Status bool
 }
 
 func (m *MockUnit) ToUnit() drawable.Unit {
@@ -65,9 +39,48 @@ func (m *MockUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(name).
 		MergeTags(m.Tags).
-		Init(m.Init).
-		Wipe(m.Wipe).
-		Draw(m.Draw).
+		Init(
+			func() {
+				m.InitCalled += 1
+				
+				if m.Init != nil {
+					m.Init()
+				}
+			},
+		).
+		Wipe(
+			func() {
+				m.WipeCalled += 1
+
+				if m.Wipe != nil {
+					m.Wipe()
+				}
+			},
+		).
+		Draw(
+			func(size winsize.Winsize) ([]text.Line, bool) {
+				m.DrawCalls += 1
+
+				if m.Draw != nil {
+					return m.Draw(size)
+				}
+
+				if m.Batch == 0 {
+					return m.Lines, m.Status
+				}
+
+				if len(m.queue) == 0 {
+					m.queue = m.Lines
+				}
+
+				limit := min(int(m.Batch), len(m.queue))
+
+				data := m.queue[:limit]
+				m.queue = m.queue[limit:]
+
+				return data, len(m.queue) > 0
+			},
+		).
 		ToUnit()
 }
 
