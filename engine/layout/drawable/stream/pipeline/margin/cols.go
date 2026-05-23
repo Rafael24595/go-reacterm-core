@@ -18,10 +18,12 @@ func ColsRight(margin winsize.Cols) pipeline.DataTransformer {
 }
 
 func ColsCenter(margin winsize.Cols) pipeline.DataTransformer {
-	return colsDrawTransformer(margin*2, style.Center)
+	return colsDrawTransformer(margin, style.Center)
 }
 
 func colsDrawTransformer(margin winsize.Cols, position style.HorizontalPosition) pipeline.DataTransformer {
+	margin = margin * horizontalFactor(position)
+
 	return func(size winsize.Winsize, _ drawable.Unit, lines []text.Line, hasNext bool) ([]text.Line, bool) {
 		newLines := make([]text.Line, len(lines))
 

@@ -19,10 +19,12 @@ func RowsBottom(margin winsize.Rows) pipeline.DataTransformer {
 }
 
 func RowsMiddle(margin winsize.Rows) pipeline.DataTransformer {
-	return rowsDataTransformer(margin*2, style.Middle)
+	return rowsDataTransformer(margin, style.Middle)
 }
 
 func rowsDataTransformer(margin winsize.Rows, position style.VerticalPosition) pipeline.DataTransformer {
+	margin = margin * verticalFactor(position)
+
 	return func(size winsize.Winsize, _ drawable.Unit, lines []text.Line, hasNext bool) ([]text.Line, bool) {
 		linesLen := winsize.Rows(len(lines))
 
