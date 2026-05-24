@@ -28,6 +28,10 @@ func FragmentFromRunes(runes []rune) *Fragment {
 	return NewFragment(string(runes))
 }
 
+func FragmentFromMeta(other *Fragment) *Fragment {
+	return EmptyFragment().CopyMeta(other)
+}
+
 func (f *Fragment) CopyMeta(other *Fragment) *Fragment {
 	f.Atom = other.Atom
 	f.Spec = other.Spec
@@ -58,6 +62,12 @@ func (f *Fragment) CutSpec(styles style.SpecKind) *Fragment {
 
 func (f *Fragment) Size() winsize.Cols {
 	return runes.Measure(f.Text)
+}
+
+func (f *Fragment) Clone() *Fragment {
+	clone := FragmentFromMeta(f)
+	clone.Text = f.Text
+	return clone
 }
 
 func FragmentMeasure(cols winsize.Cols, frags ...Fragment) winsize.Cols {
