@@ -4,12 +4,14 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
+
 	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/cols"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/styler"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	
 	render_test "github.com/Rafael24595/go-reacterm-core/test/engine/render"
 )
 

@@ -4,7 +4,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/cols"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/utils/padding"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform/padding"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
@@ -45,7 +45,7 @@ func colsDrawTransformer(margin winsize.Cols, opts ...cols.Option) pipeline.Data
 			}
 
 			newLines[i] = padding.AddColsPadding(
-				remaining, lines[i], opts...
+				remaining, lines[i], opts...,
 			)
 		}
 

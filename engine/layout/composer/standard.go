@@ -4,8 +4,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/draw"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/utils/drain"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/utils/page"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform/drain"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform/page"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )

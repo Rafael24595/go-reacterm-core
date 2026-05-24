@@ -5,7 +5,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/utils/page"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform/page"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )

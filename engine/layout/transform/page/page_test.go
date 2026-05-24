@@ -4,11 +4,13 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
+
 	"github.com/Rafael24595/go-reacterm-core/engine/app/draw"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	
 	pager_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/pager"
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 )
