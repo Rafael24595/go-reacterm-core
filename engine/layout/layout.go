@@ -18,9 +18,9 @@ type LayoutBuilder struct {
 	compose       Composer
 }
 
-func NewBuilder(apply Composer) *LayoutBuilder {
+func NewBuilder(composer Composer) *LayoutBuilder {
 	return &LayoutBuilder{
-		compose: apply,
+		compose: composer,
 	}
 }
 
