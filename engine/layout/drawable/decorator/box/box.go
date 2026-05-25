@@ -122,6 +122,7 @@ func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...text.Line) []text.Li
 	transformer := padding.Cols(
 		hint.Fixed(maxLine),
 		cols.WithPosition(style.Center),
+		cols.WithText(u.separator.Space),
 	)
 
 	for _, lin := range transformer(size, lines) {

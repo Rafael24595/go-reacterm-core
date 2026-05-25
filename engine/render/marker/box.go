@@ -5,7 +5,6 @@ type BoxSeparatorMeta struct {
 	Bottom string
 	Left   string
 	Right  string
-	//TODO: Deprecate?
 	Space  string
 }
 
