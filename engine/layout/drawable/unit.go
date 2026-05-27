@@ -19,7 +19,7 @@ func (c Unit) AddTag(tags ...string) Unit {
 	return c
 }
 
-func IsUnitZero(unit Unit) bool {
+func IsZeroUnit(unit Unit) bool {
 	if unit.Name == "" {
 		return true
 	}
@@ -28,7 +28,7 @@ func IsUnitZero(unit Unit) bool {
 		return true
 	}
 
-	if IsDrawableZero(unit.Drawable) {
+	if IsZeroDrawable(unit.Drawable) {
 		return true
 	}
 

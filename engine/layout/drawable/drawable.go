@@ -15,7 +15,7 @@ type Drawable struct {
 	Draw DrawFunc
 }
 
-func IsDrawableZero(drawable Drawable) bool {
+func IsZeroDrawable(drawable Drawable) bool {
 	if drawable.Init == nil {
 		return true
 	}
