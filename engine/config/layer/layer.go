@@ -40,10 +40,18 @@ func FromLayer[T math.Number](other Layer[T], opts ...Option[T]) Layer[T] {
 	return cfg
 }
 
+func (l Layer[T]) IsAnemic() bool {
+	return l.Chunk().IsAnemic() && !l.config.static
+}
+
 func (l Layer[T]) Unit() drawable.Unit {
 	return l.config.unit
 }
 
 func (l Layer[T]) Chunk() chunk.Chunk[T] {
 	return l.config.chunk
+}
+
+func (l Layer[T]) Static() bool {
+	return l.config.static
 }
