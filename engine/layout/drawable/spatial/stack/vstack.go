@@ -6,7 +6,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/layer"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
@@ -16,6 +15,7 @@ const NameVStack = "vstack_unit"
 type VStackUnit struct {
 	loaded     bool
 	lazyLoaded bool
+	renderer   LayerRenderer
 	size       winsize.Winsize
 	items      []layer.Layer[winsize.Rows]
 	fixed      []layer.Layer[winsize.Rows]
@@ -25,6 +25,7 @@ func NewVStack(units ...drawable.Unit) *VStackUnit {
 	instance := &VStackUnit{
 		loaded:     false,
 		lazyLoaded: false,
+		renderer:   nil,
 		size:       winsize.Winsize{},
 		items:      make([]layer.Layer[winsize.Rows], 0, len(units)),
 		fixed:      make([]layer.Layer[winsize.Rows], 0),
@@ -35,6 +36,13 @@ func NewVStack(units ...drawable.Unit) *VStackUnit {
 
 func VStackFromUnits(units ...drawable.Unit) drawable.Unit {
 	return NewVStack(units...).ToUnit()
+}
+
+func (u *VStackUnit) SetRenderer(renderer LayerRenderer) *VStackUnit {
+	assert.False(u.loaded, drawable.MessageNewElement)
+
+	u.renderer = renderer
+	return u
 }
 
 func (u *VStackUnit) Unshift(units ...drawable.Unit) *VStackUnit {
@@ -110,7 +118,7 @@ func (u *VStackUnit) isAnemic() bool {
 	if len(u.items) != 1 {
 		return false
 	}
-	return u.items[0].IsAnemic()
+	return u.renderer == nil && u.items[0].IsAnemic()
 }
 
 func (u *VStackUnit) tags() set.Set[string] {
@@ -124,6 +132,10 @@ func (u *VStackUnit) tags() set.Set[string] {
 func (u *VStackUnit) init() {
 	u.loaded = true
 	u.lazyLoaded = false
+
+	if u.renderer == nil {
+		u.renderer = defaultRenderer
+	}
 }
 
 func (u *VStackUnit) lazyInit(size winsize.Winsize) {
@@ -192,8 +204,7 @@ func (u *VStackUnit) makeLines(size winsize.Winsize) ([]text.Line, bool) {
 		}
 
 		fixedSize := winsize.New(rows, size.Cols)
-
-		lines, status := drain.Unit(fixedSize, u.fixed[i].Unit(), true)
+		lines, status := u.renderer(fixedSize, u.fixed[i].Unit())
 		if !status {
 			u.fixed[i].Status = false
 			recalcule = true
