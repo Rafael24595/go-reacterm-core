@@ -33,3 +33,23 @@ func (n Node) Compile(pass ...Pass) (Node, error) {
 
 	return screen, nil
 }
+
+func IsZeroNode(node Node) bool {
+	if node.Name == "" {
+		return true
+	}
+
+	if node.Tags == nil {
+		return true
+	}
+
+	if IsZeroScreen(node.Screen) {
+		return true
+	}
+
+	if node.Stack == nil {
+		return true
+	}
+
+	return false
+}

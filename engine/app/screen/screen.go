@@ -14,3 +14,19 @@ type Screen struct {
 	Update     UpdateFunc
 	View       ViewFunc
 }
+
+func IsZeroScreen(screen Screen) bool {
+	if screen.Definition == nil {
+		return true
+	}
+
+	if screen.Update == nil {
+		return true
+	}
+
+	if screen.View == nil {
+		return true
+	}
+
+	return false
+}
