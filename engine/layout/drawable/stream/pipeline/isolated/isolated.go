@@ -9,7 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-const NameIsolated = "isolated_pipeline"
+const Name = "isolated_pipeline"
 
 func Unit(unit drawable.Unit) drawable.Unit {
 	unt := pipeline.New(unit).
@@ -17,7 +17,7 @@ func Unit(unit drawable.Unit) drawable.Unit {
 		SetDrawStep(drain.DrawTransformer(true)).
 		ToUnit()
 
-	unt.Name = NameIsolated
+	unt.Name = Name
 	return unt
 }
 

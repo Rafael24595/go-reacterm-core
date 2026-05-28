@@ -9,7 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-const NameDrain = "drain_pipeline"
+const Name = "drain_pipeline"
 
 func DrawTransformer(lazy bool) pipeline.DrawTransformer {
 	return func(size winsize.Winsize, unit drawable.Unit) ([]text.Line, bool) {
@@ -22,7 +22,7 @@ func Unit(unit drawable.Unit) drawable.Unit {
 		SetDrawStep(DrawTransformer(true)).
 		ToUnit()
 
-	unt.Name = NameDrain
+	unt.Name = Name
 	return unt
 }
 

@@ -7,7 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-const NameWipe = "wipe_pipeline"
+const Name = "wipe_pipeline"
 
 func InitTransformer() pipeline.InitTransformer {
 	return func(size winsize.Winsize, unit drawable.Unit) drawable.Unit {
@@ -43,7 +43,7 @@ func Drawable(unit drawable.Unit) drawable.Unit {
 		SetDrawStep(DrawTransformer()).
 		ToUnit()
 
-	unt.Name = NameWipe
+	unt.Name = Name
 	return unt
 }
 
