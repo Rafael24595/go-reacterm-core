@@ -80,10 +80,9 @@ func makeUnit(fields []key.Descriptor) drawable.Unit {
 		}
 
 		frag := fmt.Sprintf("[%s] %s%s", code, field.Detail, separator)
-		frags = append(frags,
-			*text.NewFragment(frag).
-				AddAtom(style.AtmWrap),
-		)
+		frags[i] = *text.NewFragment(frag).
+			AddAtom(style.AtmWrap)
+
 	}
 
 	return drain.UnitFromLines(
