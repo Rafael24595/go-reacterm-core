@@ -23,14 +23,14 @@ func NewTestSelect() screen.Node {
 	}
 
 	options := input.NewMenuOptions(
-		input.NewMenuOption("opt_art", *text.NewFragment("Option Article"), NewTestArticle),
-		input.NewMenuOption("opt_txt", *text.NewFragment("Option TextArea"), NewTestTextArea),
-		input.NewMenuOption("opt_tbl", *text.NewFragment("Option Table"), NewTestTable),
-		input.NewMenuOption("opt_mdl", *text.NewFragment("Option Modal"), NewTestModal),
-		input.NewMenuOption("opt_chk", *text.NewFragment("Option Check"), NewTestCheck),
-		input.NewMenuOption("opt_chk", *text.NewFragment("Option TextInput"), NewTestTextInput),
-		input.NewMenuOption("opt_hsk", *text.NewFragment("Option HStack"), NewTestHStack),
-		input.NewMenuOption("opt_frm", *text.NewFragment("Option Form"), NewTestForm),
+		input.NewMenuOption("opt_art", *text.NewFragment("[Prim] Option Article"), NewTestArticle),
+		input.NewMenuOption("opt_txt", *text.NewFragment("[Prim] Option TextArea"), NewTestTextArea),
+		input.NewMenuOption("opt_tbl", *text.NewFragment("[Prim] Option Table"), NewTestTable),
+		input.NewMenuOption("opt_mdl", *text.NewFragment("[Prim] Option Modal"), NewTestModal),
+		input.NewMenuOption("opt_chk", *text.NewFragment("[Prim] Option Check"), NewTestCheck),
+		input.NewMenuOption("opt_chk", *text.NewFragment("[Prim] Option TextInput"), NewTestTextInput),
+		input.NewMenuOption("opt_frm", *text.NewFragment("[Prim] Option Form"), NewTestForm),
+		input.NewMenuOption("opt_hsk", *text.NewFragment("[Demo] Option HStack"), NewTestHStack),
 	)
 
 	optsSize := len(options)
