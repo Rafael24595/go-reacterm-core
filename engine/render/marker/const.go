@@ -11,4 +11,10 @@ const DefaultElipsisSize = winsize.Cols(3)
 
 const DefaultPromptText = ">"
 
+const (
+	DefaultLeftGutterText   = "▌"
+	DefaultMiddleGutterText = "┃"
+	DefaultRightGutterText  = "▐"
+)
+
 var PrintableCaretRunes = []rune(PrintableCaretText)
