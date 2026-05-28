@@ -116,7 +116,7 @@ func (u *HStackUnit) isAnemic() bool {
 	if len(u.items) != 1 {
 		return false
 	}
-	return u.items[0].Chunk().IsAnemic()
+	return u.items[0].IsAnemic()
 }
 
 func (u *HStackUnit) tags() set.Set[string] {

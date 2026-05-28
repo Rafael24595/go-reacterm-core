@@ -17,6 +17,82 @@ func TestVStack_UnitBasicSuite(t *testing.T) {
 	drawable_test.Test_UnitBasicSuite(t, unit)
 }
 
+func TestVStack_ToUnit_Anemic(t *testing.T) {
+	mock := &drawable_test.MockUnit{
+		Name: "mock_unit",
+	}
+
+	stack := NewVStack().
+		PushLayer(mock.ToUnit()).
+		ToUnit()
+
+	assert.True(t, stack.Tags.Has(AnemicStack))
+	assert.Equal(t, mock.Name, stack.Name)
+}
+
+func TestVStack_ToUnit_NotAnemic_MultipleElements(t *testing.T) {
+	mock1 := &drawable_test.MockUnit{
+		Name: "mock_unit_001",
+	}
+	mock2 := &drawable_test.MockUnit{
+		Name: "mock_unit_002",
+	}
+
+	stack := NewVStack().
+		PushLayer(mock1.ToUnit()).
+		PushLayer(mock2.ToUnit()).
+		ToUnit()
+
+	assert.False(t, stack.Tags.Has(AnemicStack))
+	assert.Equal(t, NameVStack, stack.Name)
+}
+
+func TestVStack_ToUnit_NotAnemic_LayerWithChunk(t *testing.T) {
+	mock := &drawable_test.MockUnit{
+		Name: "mock_unit",
+	}
+
+	stack := NewVStack().
+		PushLayer(
+			mock.ToUnit(),
+			layer.Fixed[winsize.Rows](10),
+		).
+		ToUnit()
+
+	assert.False(t, stack.Tags.Has(AnemicStack))
+	assert.Equal(t, NameVStack, stack.Name)
+}
+
+func TestVStack_ToUnit_NotAnemic_LayerStatic(t *testing.T) {
+	mock := &drawable_test.MockUnit{
+		Name: "mock_unit",
+	}
+
+	stack := NewVStack().
+		PushLayer(
+			mock.ToUnit(),
+			layer.Static[winsize.Rows](),
+		).
+		ToUnit()
+
+	assert.False(t, stack.Tags.Has(AnemicStack))
+	assert.Equal(t, NameVStack, stack.Name)
+}
+
+func TestVStack_ToUnit_NotAnemic_WithRenderer(t *testing.T) {
+	mock := &drawable_test.MockUnit{
+		Name: "mock_unit",
+	}
+
+	stack := NewVStack().
+		SetRenderer(defaultRenderer).
+		PushLayer(mock.ToUnit()).
+		ToUnit()
+
+	assert.False(t, stack.Tags.Has(AnemicStack))
+	assert.Equal(t, NameVStack, stack.Name)
+}
+
 func TestVStack_ShouldPanicIfNewElementsAddedAfterInitialization(t *testing.T) {
 	mock1 := &drawable_test.MockUnit{}
 
@@ -342,47 +418,4 @@ func TestVStack_ExactFit_NoExtraNoMissing(t *testing.T) {
 	lines, _ := stack.Drawable.Draw(winsize.Winsize{Rows: 15, Cols: 10})
 
 	assert.Len(t, 15, lines)
-}
-
-func TestVStack_ToUnit_AnemicStack(t *testing.T) {
-	mock := &drawable_test.MockUnit{
-		Name: "mock_unit",
-	}
-
-	stack := NewVStack().
-		PushLayer(mock.ToUnit()).
-		ToUnit()
-
-	assert.True(t, stack.Tags.Has(AnemicStack))
-	assert.Equal(t, mock.Name, stack.Name)
-}
-
-func TestVStack_ToUnit_SingleElement_NotAnemic(t *testing.T) {
-	mock := &drawable_test.MockUnit{
-		Name: "mock_unit",
-	}
-
-	stack := NewVStack().
-		PushLayer(mock.ToUnit(), layer.Fixed[winsize.Rows](10)).
-		ToUnit()
-
-	assert.False(t, stack.Tags.Has(AnemicStack))
-	assert.Equal(t, NameVStack, stack.Name)
-}
-
-func TestVStack_ToUnit_MultipleElements(t *testing.T) {
-	mock1 := &drawable_test.MockUnit{
-		Name: "mock_unit_001",
-	}
-	mock2 := &drawable_test.MockUnit{
-		Name: "mock_unit_002",
-	}
-
-	stack := NewVStack().
-		PushLayer(mock1.ToUnit()).
-		PushLayer(mock2.ToUnit()).
-		ToUnit()
-
-	assert.False(t, stack.Tags.Has(AnemicStack))
-	assert.Equal(t, NameVStack, stack.Name)
 }

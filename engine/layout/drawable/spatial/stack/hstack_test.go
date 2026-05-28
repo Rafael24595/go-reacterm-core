@@ -8,13 +8,59 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/config/layer"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
-	
+
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 )
 
 func TestHStack_UnitBasicSuite(t *testing.T) {
 	unit := HStackFromUnits()
 	drawable_test.Test_UnitBasicSuite(t, unit)
+}
+
+func TestHStack_ToUnit_Anemic(t *testing.T) {
+	mock := &drawable_test.MockUnit{
+		Name: "mock_unit",
+	}
+
+	stack := NewHStack().
+		PushLayer(mock.ToUnit()).
+		ToUnit()
+
+	assert.True(t, stack.Tags.Has(AnemicStack))
+	assert.Equal(t, mock.Name, stack.Name)
+}
+
+func TestHStack_ToUnit_NotAnemic_MultipleElements(t *testing.T) {
+	mock1 := &drawable_test.MockUnit{
+		Name: "mock_unit_001",
+	}
+	mock2 := &drawable_test.MockUnit{
+		Name: "mock_unit_002",
+	}
+
+	stack := NewHStack().
+		PushLayer(mock1.ToUnit()).
+		PushLayer(mock2.ToUnit()).
+		ToUnit()
+
+	assert.False(t, stack.Tags.Has(AnemicStack))
+	assert.Equal(t, NameHStack, stack.Name)
+}
+
+func TestHStack_ToUnit_NotAnemic_WithChunk(t *testing.T) {
+	mock := &drawable_test.MockUnit{
+		Name: "mock_unit",
+	}
+
+	stack := NewHStack().
+		PushLayer(
+			mock.ToUnit(),
+			layer.Fixed[winsize.Cols](10),
+		).
+		ToUnit()
+
+	assert.False(t, stack.Tags.Has(AnemicStack))
+	assert.Equal(t, NameHStack, stack.Name)
 }
 
 func TestHStack_Distribution(t *testing.T) {
@@ -100,50 +146,4 @@ func TestHStack_RenderOutput(t *testing.T) {
 	assert.Equal(t, "go-zig", text.LineToString(&lines[0]))
 	assert.Equal(t, "lanlan", text.LineToString(&lines[1]))
 	assert.Equal(t, "gg", text.LineToString(&lines[2]))
-}
-
-func TestHStack_ToUnit_AnemicStack(t *testing.T) {
-	mock := &drawable_test.MockUnit{
-		Name: "mock_unit",
-	}
-
-	stack := NewHStack().
-		PushLayer(mock.ToUnit()).
-		ToUnit()
-
-	assert.True(t, stack.Tags.Has(AnemicStack))
-	assert.Equal(t, mock.Name, stack.Name)
-}
-
-func TestHStack_ToUnit_SingleElement_NotAnemic(t *testing.T) {
-	mock := &drawable_test.MockUnit{
-		Name: "mock_unit",
-	}
-
-	stack := NewHStack().
-		PushLayer(
-			mock.ToUnit(),
-			layer.Fixed[winsize.Cols](10),
-		).
-		ToUnit()
-
-	assert.False(t, stack.Tags.Has(AnemicStack))
-	assert.Equal(t, NameHStack, stack.Name)
-}
-
-func TestHStack_ToUnit_MultipleElements(t *testing.T) {
-	mock1 := &drawable_test.MockUnit{
-		Name: "mock_unit_001",
-	}
-	mock2 := &drawable_test.MockUnit{
-		Name: "mock_unit_002",
-	}
-
-	stack := NewHStack().
-		PushLayer(mock1.ToUnit()).
-		PushLayer(mock2.ToUnit()).
-		ToUnit()
-
-	assert.False(t, stack.Tags.Has(AnemicStack))
-	assert.Equal(t, NameHStack, stack.Name)
 }
