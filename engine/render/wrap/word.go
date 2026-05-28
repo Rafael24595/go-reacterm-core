@@ -19,11 +19,6 @@ func newWord(text ...text.Fragment) *word {
 	}
 }
 
-func (w *word) addText(text ...text.Fragment) *word {
-	w.Text = append(w.Text, text...)
-	return w
-}
-
 func splitLineWords(line *text.Line) []word {
 	words := make([]word, 0, len(line.Text))
 	frags := make([]text.Fragment, 0, 4)
@@ -120,13 +115,19 @@ func splitLongWord(
 		}
 
 		takenFrag, restFrag := splitFragmentAt(&frag, remaining)
-
 		current.Text = append(current.Text, *takenFrag)
 
-		rest := newWord(*restFrag).
-			addText(frags[1:]...)
+		rest := make([]text.Fragment, 0)
+		if restFrag != nil {
+			rest = append(rest, *restFrag)
+		}
 
-		return current, rest
+		rest = append(rest, frags[1:]...)
+		if len(rest) == 0 {
+			return current, nil
+		}
+
+		return current, newWord(rest...)
 	}
 
 	return current, nil

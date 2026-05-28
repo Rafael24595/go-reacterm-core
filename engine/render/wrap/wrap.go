@@ -212,8 +212,7 @@ func splitFragmentAt(frag *text.Fragment, cols winsize.Cols) (*text.Fragment, *t
 
 	byteIndex, canBreak := runes.RuneIndexToByteIndex(frag.Text, offset.Offset(cols))
 	if !canBreak {
-		return frag, text.EmptyFragment().
-			CopyMeta(frag)
+		return frag, nil
 	}
 
 	taken := text.NewFragment(frag.Text[:byteIndex]).
