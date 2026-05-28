@@ -22,7 +22,7 @@ import (
 func TestStandard_FixedAndPaged(t *testing.T) {
 	size := winsize.Winsize{Rows: 6, Cols: 10}
 
-	vm := viewmodel.NewViewModel()
+	vm := viewmodel.New()
 
 	vm.Header.Push(
 		drain.UnitFromLines(
@@ -85,7 +85,7 @@ func TestStandard_InitializeLayers(t *testing.T) {
 
 	stt := state.NewUIState()
 
-	vm := viewmodel.NewViewModel()
+	vm := viewmodel.New()
 
 	vm.Header.PushLayer(
 		drain.UnitFromLines(

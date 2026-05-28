@@ -51,7 +51,7 @@ func (t MockScreen) ToNode() screen.Node {
 					return t.View(s)
 				}
 
-				return *viewmodel.NewViewModel()
+				return *viewmodel.New()
 			},
 		).
 		ToNode()
@@ -65,7 +65,7 @@ func Helper_ToNode(t *testing.T, node screen.Node) {
 	assert.NotNil(t, node.Stack, "Node.Stack should be set")
 	assert.NotNil(t, node.Tags, "Node.Stack should be set")
 	assert.NotNil(t, node.Children(), "Node.Stack should be set")
-	
+
 	assert.NotNil(t, node.Screen.Definition, "Screen.Definition should be set")
 	assert.NotNil(t, node.Screen.View, "Screen.View should be set")
 	assert.NotNil(t, node.Screen.Update, "Screen.Update should be set")

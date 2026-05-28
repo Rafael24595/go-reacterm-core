@@ -109,7 +109,7 @@ func (n *TextInput) ToNode() screen.Node {
 }
 
 func (n *TextInput) view(stt state.UIState) viewmodel.ViewModel {
-	vm := viewmodel.NewViewModel()
+	vm := viewmodel.New()
 
 	_, textarea, needsPulse := n.textarea.viewSources()
 

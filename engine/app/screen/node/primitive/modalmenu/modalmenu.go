@@ -116,7 +116,7 @@ func (n *ModalMenu) actionEnter(stt *state.UIState) screen.Result {
 }
 
 func (n *ModalMenu) view(_ state.UIState) viewmodel.ViewModel {
-	vm := viewmodel.NewViewModel()
+	vm := viewmodel.New()
 
 	frags := input.FragmentFromMenuOption(n.options...)
 

@@ -19,7 +19,7 @@ import (
 )
 
 func NewTestHStack() screen.Node {
-	vm := viewmodel.NewViewModel()
+	vm := viewmodel.New()
 
 	vm.Header.Push(makeTitle())
 	vm.Kernel.Push(makeKernel())

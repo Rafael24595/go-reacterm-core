@@ -31,7 +31,7 @@ func TestSpacer_AddsHeaderLinesWhenEmpty(t *testing.T) {
 		transformer := Transformer(meta, v)
 
 		vm := transformer(
-			*viewmodel.NewViewModel(),
+			*viewmodel.New(),
 		)
 
 		acc := findAccesor(t, v)
@@ -47,7 +47,7 @@ func TestSpacer_AddsHeaderLines(t *testing.T) {
 	}
 
 	for _, v := range targets {
-		vm := *viewmodel.NewViewModel()
+		vm := *viewmodel.New()
 
 		acc := findAccesor(t, v)
 		acc.Get(vm).Push(
@@ -78,7 +78,7 @@ func TestSpacer_HeaderBetween(t *testing.T) {
 	}
 
 	for _, v := range targets {
-		vm := *viewmodel.NewViewModel()
+		vm := *viewmodel.New()
 
 		acc := findAccesor(t, v)
 		acc.Get(vm).Push(

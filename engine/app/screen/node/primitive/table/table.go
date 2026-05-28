@@ -187,7 +187,7 @@ func (n *Table[T]) updateRead(state *state.UIState, evnt screen.Event) screen.Re
 }
 
 func (n *Table[T]) view(_ state.UIState) viewmodel.ViewModel {
-	vm := viewmodel.NewViewModel()
+	vm := viewmodel.New()
 
 	table := drawable_table.UnitFromTable(*n.table, *n.cursor)
 

@@ -94,7 +94,7 @@ func TestPipeline_ActionSingleFocus(t *testing.T) {
 
 	mockNode := screen_test.MockScreen{
 		View: func(_ state.UIState) viewmodel.ViewModel {
-			vm := viewmodel.NewViewModel()
+			vm := viewmodel.New()
 			vm.Header.Push(headerBase.ToUnit())
 			vm.Kernel.Push(kernelBase.ToUnit())
 			vm.Footer.Push(footerBase.ToUnit())

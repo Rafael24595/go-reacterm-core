@@ -119,7 +119,7 @@ func (n *IndexMenu) view(_ state.UIState) viewmodel.ViewModel {
 		Meta(n.meta).
 		Cursor(n.cursor)
 
-	vm := viewmodel.NewViewModel()
+	vm := viewmodel.New()
 
 	vm.Kernel.Push(
 		indexmenu.ToUnit(),

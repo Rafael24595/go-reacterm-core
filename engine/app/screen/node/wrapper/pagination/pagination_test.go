@@ -62,7 +62,7 @@ func TestPagination_ViewFooter(t *testing.T) {
 	base := screen_test.MockScreen{
 		Name: "base",
 		View: func(_ state.UIState) viewmodel.ViewModel {
-			vm := viewmodel.NewViewModel()
+			vm := viewmodel.New()
 			vm.Pager.SetPredicate(pager.PredicatePage())
 			return *vm
 		},

@@ -47,7 +47,7 @@ func (n *Article) update(stt *state.UIState, _ screen.Event) screen.Result {
 }
 
 func (n *Article) view(_ state.UIState) viewmodel.ViewModel {
-	vm := viewmodel.NewViewModel()
+	vm := viewmodel.New()
 
 	vm.Kernel.Push(
 		line.UnitFromLines(n.article...),

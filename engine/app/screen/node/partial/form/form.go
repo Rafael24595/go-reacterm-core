@@ -1,7 +1,6 @@
 package form
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -147,7 +146,7 @@ func (n *Form) focusUpdate(stt *state.UIState, evt screen.Event, focus entry.Ent
 }
 
 func (n *Form) view(stt state.UIState) viewmodel.ViewModel {
-	vm := viewmodel.NewViewModel()
+	vm := viewmodel.New()
 
 	//TODO: Compile headers and footers?
 	for _, i := range n.items {
@@ -155,7 +154,7 @@ func (n *Form) view(stt state.UIState) viewmodel.ViewModel {
 
 		vm.Kernel.PushLayer(
 			cvm.Kernel.ToUnit(),
-			i.Opts...
+			i.Opts...,
 		)
 
 		if cvm.Behavior.NeedsPulse {

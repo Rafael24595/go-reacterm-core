@@ -520,7 +520,7 @@ func (n *TextArea) deleteForward(state *state.UIState, word bool) screen.Result 
 }
 
 func (n *TextArea) view(_ state.UIState) viewmodel.ViewModel {
-	vm := viewmodel.NewViewModel()
+	vm := viewmodel.New()
 
 	predicate, textarea, needsPulse := n.viewSources()
 

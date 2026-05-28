@@ -15,7 +15,7 @@ type ViewModel struct {
 	Behavior BehaviorContext
 }
 
-func NewViewModel() *ViewModel {
+func New() *ViewModel {
 	return &ViewModel{
 		Header:   stack.NewVStack(),
 		Kernel:   stack.NewVStack(),
@@ -43,7 +43,7 @@ func (v *ViewModel) InitDynamicLayers() drawable.Unit {
 }
 
 func (v *ViewModel) Clone() *ViewModel {
-	vm := NewViewModel()
+	vm := New()
 
 	vm.Header.Push(v.Header.Units()...)
 	vm.Kernel.Push(v.Kernel.Units()...)

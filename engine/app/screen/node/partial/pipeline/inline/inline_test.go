@@ -39,7 +39,7 @@ func TestInline_GroupUnits_NoMatches(t *testing.T) {
 	}
 
 	for _, v := range targets {
-		vm := *viewmodel.NewViewModel()
+		vm := *viewmodel.New()
 
 		acc := findAccesor(t, v)
 		acc.Get(vm).Push(
@@ -71,7 +71,7 @@ func TestInline_GroupUnits_ByCode(t *testing.T) {
 	}
 
 	for _, v := range targets {
-		vm := *viewmodel.NewViewModel()
+		vm := *viewmodel.New()
 
 		acc := findAccesor(t, v)
 		acc.Get(vm).Push(
@@ -103,7 +103,7 @@ func TestInline_GroupUnits_ByTags(t *testing.T) {
 	}
 
 	for _, v := range targets {
-		vm := *viewmodel.NewViewModel()
+		vm := *viewmodel.New()
 
 		acc := findAccesor(t, v)
 		acc.Get(vm).Push(
@@ -137,7 +137,7 @@ func TestInline_GroupUnits_MultipleMatches(t *testing.T) {
 	}
 
 	for _, v := range targets {
-		vm := *viewmodel.NewViewModel()
+		vm := *viewmodel.New()
 
 		acc := findAccesor(t, v)
 		acc.Get(vm).Push(
