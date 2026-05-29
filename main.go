@@ -9,7 +9,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
 	"github.com/Rafael24595/go-log/log"
-	"github.com/Rafael24595/go-log/log/model/record"
+	"github.com/Rafael24595/go-log/log/record"
 	"github.com/Rafael24595/go-log/log/provider/file"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/core"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"

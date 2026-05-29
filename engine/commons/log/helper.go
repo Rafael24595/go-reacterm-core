@@ -4,7 +4,7 @@ import (
 	"io"
 
 	"github.com/Rafael24595/go-log/log"
-	"github.com/Rafael24595/go-log/log/model/record"
+	"github.com/Rafael24595/go-log/log/record"
 )
 
 func WriterErrorHandler(w io.Writer, f func() error) {
