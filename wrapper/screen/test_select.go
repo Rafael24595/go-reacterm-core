@@ -29,7 +29,7 @@ func NewTestSelect() screen.Node {
 		input.NewMenuOption("opt_mdl", *text.NewFragment("[Prim] Option Modal"), NewTestModal),
 		input.NewMenuOption("opt_chk", *text.NewFragment("[Prim] Option Check"), NewTestCheck),
 		input.NewMenuOption("opt_chk", *text.NewFragment("[Prim] Option TextInput"), NewTestTextInput),
-		input.NewMenuOption("opt_frm", *text.NewFragment("[Prim] Option Form"), NewTestForm),
+		input.NewMenuOption("opt_frm", *text.NewFragment("[Comp] Option Form"), NewTestForm),
 		input.NewMenuOption("opt_hsk", *text.NewFragment("[Demo] Option HStack"), NewTestHStack),
 	)
 
