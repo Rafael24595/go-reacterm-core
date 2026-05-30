@@ -9,10 +9,9 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
 	"github.com/Rafael24595/go-log/log"
-	"github.com/Rafael24595/go-log/log/record"
 	"github.com/Rafael24595/go-log/log/provider/file"
+	"github.com/Rafael24595/go-log/log/record"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/core"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/runtime"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline"
@@ -106,7 +105,6 @@ func makeNode() screen.Node {
 
 	history := history.New(landing).ToNode()
 	pagination := pagination.New(history).
-		ForceEngine(pager.EnginePage()).
 		ToNode()
 	helper := help.New(pagination).ToNode()
 
