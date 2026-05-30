@@ -8,6 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/form"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline/page"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/article"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/entry"
@@ -44,6 +45,9 @@ func NewTestForm() screen.Node {
 			entry.WithLayout(
 				layer.Static[winsize.Rows](),
 			),
+		).
+		PushSteps(
+			page.Use(pager.EngineScroll()),
 		).
 		ToNode()
 
