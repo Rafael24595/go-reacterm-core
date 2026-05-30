@@ -7,7 +7,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/inputline"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/indexmenu"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
@@ -26,11 +25,13 @@ var index_menu_definition = screen.DefinitionFromActions(
 		key.ActionArrowRight,
 		key.ActionArrowUp,
 		key.ActionArrowDown,
+		key.CustomActionPointer,
 	}...,
 )
 
 type IndexMenu struct {
 	reference string
+	pointer   uint8
 	meta      marker.IndexMeta
 	options   []input.MenuOption
 	cursor    uint16
@@ -39,6 +40,7 @@ type IndexMenu struct {
 func New() *IndexMenu {
 	return &IndexMenu{
 		reference: Name,
+		pointer:   0,
 		meta:      marker.HyphenIndex,
 		options:   make([]input.MenuOption, 0),
 		cursor:    0,
@@ -93,6 +95,8 @@ func (n *IndexMenu) update(stt *state.UIState, evt screen.Event) screen.Result {
 		n.cursor = (n.cursor + 1) % size
 	case key.ActionEnter:
 		return n.actionEnter(stt)
+	case key.CustomActionPointer:
+		n.pointer = indexmenu.NextPointer(n.pointer)
 	}
 
 	return screen.EmptyResult()
@@ -115,7 +119,10 @@ func (n *IndexMenu) actionEnter(stt *state.UIState) screen.Result {
 func (n *IndexMenu) view(_ state.UIState) viewmodel.ViewModel {
 	frags := input.FragmentFromMenuOption(n.options...)
 
+	pointer := indexmenu.FindPointer(n.pointer)
+
 	indexmenu := indexmenu.New(frags).
+		Pointer(pointer).
 		Meta(n.meta).
 		Cursor(n.cursor)
 
@@ -130,9 +137,7 @@ func (n *IndexMenu) view(_ state.UIState) viewmodel.ViewModel {
 	text := n.options[option].Label.Text
 
 	vm.Footer.Push(
-		inputline.Wrap(
-			drain.UnitFromString(text),
-		),
+		inputline.FromString(text),
 	)
 
 	vm.Pager.SetPredicate(

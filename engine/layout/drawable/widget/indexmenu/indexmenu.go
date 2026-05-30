@@ -1,8 +1,6 @@
 package indexmenu
 
 import (
-	"strconv"
-
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/helper"
@@ -19,6 +17,7 @@ const Name = "index_menu_unit"
 
 type IndexMenuUnit struct {
 	loaded  bool
+	pointer Pointer
 	meta    marker.IndexMeta
 	options []text.Fragment
 	cursor  uint16
@@ -31,6 +30,7 @@ func New(options []text.Fragment) *IndexMenuUnit {
 
 	return &IndexMenuUnit{
 		loaded:  false,
+		pointer: pointerSelect,
 		meta:    marker.HyphenIndex,
 		options: clone,
 		cursor:  0,
@@ -40,6 +40,11 @@ func New(options []text.Fragment) *IndexMenuUnit {
 
 func UnitFromOptions(options []text.Fragment) drawable.Unit {
 	return New(options).ToUnit()
+}
+
+func (u *IndexMenuUnit) Pointer(pointer Pointer) *IndexMenuUnit {
+	u.pointer = pointer
+	return u
 }
 
 func (u *IndexMenuUnit) Meta(meta marker.IndexMeta) *IndexMenuUnit {
@@ -69,20 +74,34 @@ func (u *IndexMenuUnit) init() {
 	digits := math.Digits(len(u.options))
 
 	for i, o := range u.options {
-		focs := style.AtmNone
+		focusAtom := style.AtmNone
+		selectAtom := style.AtmNone
 		if i == int(u.cursor) {
-			focs = style.AtmFocus
+			focusAtom = style.AtmFocus
+			if u.pointer == pointerSelect {
+				selectAtom = style.AtmSelect
+			}
 		}
 
-		padd := text.EmptyFragment().
+		paddingFrag := text.EmptyFragment().
 			AddSpec(style.SpecPaddingLeft(2))
-		indx := u.makeIndex(i, winsize.Cols(digits))
-		spac := text.NewFragment(marker.DefaultPaddingText)
-		mark := text.NewFragment(o.Text).
-			AddAtom(focs)
+
+		indexFrag := u.makeIndex(i, winsize.Cols(digits)).
+			AddAtom(selectAtom)
+
+		spacerFrag := text.NewFragment(marker.DefaultPaddingText).
+			AddAtom(selectAtom)
+
+		titleFrag := text.NewFragment(o.Text).
+			AddAtom(focusAtom, selectAtom)
 
 		lines = append(lines,
-			*text.LineFromFragments(*padd, *indx, *spac, *mark),
+			*text.LineFromFragments(
+				*paddingFrag,
+				*indexFrag,
+				*spacerFrag,
+				*titleFrag,
+			),
 		)
 	}
 
@@ -94,29 +113,40 @@ func (u *IndexMenuUnit) init() {
 
 func (u *IndexMenuUnit) makeIndex(cursor int, digits winsize.Cols) *text.Fragment {
 	if u.meta.Kind == marker.Numeric {
-		txt := helper.Right(strconv.Itoa(cursor+1), digits)
-		index := text.NewFragment(txt + ".- ")
-		if cursor == int(u.cursor) {
-			index.Atom |= style.AtmBold
-		}
-		return index
+		return u.makeNumericIndex(cursor, digits)
 	}
 
 	if u.meta.Kind == marker.Alphabetic {
-		txt := helper.Right(helper.NumberToAlpha(cursor), digits)
-		index := text.NewFragment(txt + ".- ")
-		if cursor == int(u.cursor) {
-			index.Atom |= style.AtmBold
-		}
-		return index
+		return u.makeAlphabeticIndex(cursor, digits)
 	}
 
-	index := u.meta.Index
+	return u.makeCustomIndex(cursor)
+}
+
+func (u *IndexMenuUnit) makeCustomIndex(cursor int) *text.Fragment {
+	txt := u.meta.Index
 	if cursor == int(u.cursor) {
-		index = u.meta.Cursor
+		txt = u.meta.Cursor
 	}
+	return text.NewFragment(txt)
+}
 
-	return text.NewFragment(index)
+func (u *IndexMenuUnit) makeNumericIndex(cursor int, digits winsize.Cols) *text.Fragment {
+	txt := helper.Right(cursor+1, digits)
+	return u.makeCommonIndex(cursor, txt)
+}
+
+func (u *IndexMenuUnit) makeAlphabeticIndex(cursor int, digits winsize.Cols) *text.Fragment {
+	txt := helper.Right(helper.NumberToAlpha(cursor), digits)
+	return u.makeCommonIndex(cursor, txt)
+}
+
+func (u *IndexMenuUnit) makeCommonIndex(cursor int, txt string) *text.Fragment {
+	index := text.NewFragment(txt + ".- ")
+	if u.pointer == pointerBold && cursor == int(u.cursor) {
+		index.Atom |= style.AtmBold
+	}
+	return index
 }
 
 func (u *IndexMenuUnit) wipe() {
