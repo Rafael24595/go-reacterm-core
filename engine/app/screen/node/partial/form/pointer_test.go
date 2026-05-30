@@ -47,11 +47,11 @@ func TestPointer_Bitmasks(t *testing.T) {
 
 func TestPointer_Navigation(t *testing.T) {
     t.Run("findPointer bounds checking", func(t *testing.T) {
-        assert.Equal(t, pointerPrompt, findPointer(0))
-        assert.Equal(t, pointerGutter, findPointer(1))
+        assert.Equal(t, pointerGutter, findPointer(0))
+        assert.Equal(t, pointerPrompt, findPointer(1))
 
-        assert.Equal(t, pointerPrompt, findPointer(3)) 
-        assert.Equal(t, pointerPrompt, findPointer(255))
+        assert.Equal(t, pointerGutter, findPointer(3)) 
+        assert.Equal(t, pointerGutter, findPointer(255))
     })
 
     t.Run("nextPointer cycling logic", func(t *testing.T) {

@@ -21,8 +21,8 @@ func (m pointer) hasNone(pointers ...pointer) bool {
 }
 
 var pointers = []pointer{
-	pointerPrompt,
 	pointerGutter,
+	pointerPrompt,
 	pointerPrompt | pointerGutter,
 }
 
