@@ -11,6 +11,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/inputline"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/gutter"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/form"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
@@ -148,7 +149,7 @@ func (n *Form) localUpdate(stt *state.UIState, evt screen.Event) screen.Result {
 	case key.ActionEnter:
 		n.focused = true
 	case key.CustomActionPointer:
-		n.pointer = nextPointer(n.pointer)
+		n.pointer = form.NextPointer(n.pointer)
 	}
 
 	return screen.ResultFromUIState(stt)
@@ -185,7 +186,7 @@ func (n *Form) focusUpdate(stt *state.UIState, evt screen.Event, focus entry.Ent
 func (n *Form) view(stt state.UIState) viewmodel.ViewModel {
 	vm := viewmodel.New()
 
-	pointer := findPointer(n.pointer)
+	pointer := form.FindPointer(n.pointer)
 
 	//TODO: Compile headers and footers?
 	for i, e := range n.items {
@@ -193,7 +194,7 @@ func (n *Form) view(stt state.UIState) viewmodel.ViewModel {
 
 		opts := make([]gutter.Option, 0, 1)
 
-		if pointer.hasNone(pointerGutter) || n.cursor != uint16(i) {
+		if pointer.HasNone(form.PointerGutter) || n.cursor != uint16(i) {
 			opts = append(opts,
 				gutter.WithLeftGutter(gutter.DefaultEmpty),
 			)
@@ -212,7 +213,7 @@ func (n *Form) view(stt state.UIState) viewmodel.ViewModel {
 	}
 
 	focus, ok := n.focusItem()
-	if ok && pointer.hasAny(pointerPrompt) {
+	if ok && pointer.HasAny(form.PointerPrompt) {
 		label := text.NewFragment(focus.Node.Name).
 			AddAtom(style.AtmSelect)
 
