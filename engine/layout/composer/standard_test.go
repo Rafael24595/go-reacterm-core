@@ -83,7 +83,7 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 func TestStandard_InitializeLayers(t *testing.T) {
 	size := winsize.Winsize{Rows: 5, Cols: 8}
 
-	stt := state.NewUIState()
+	uiState := state.NewUIState()
 
 	vm := viewmodel.New()
 
@@ -124,7 +124,7 @@ func TestStandard_InitializeLayers(t *testing.T) {
 	assert.True(t, vm.Kernel.HasNext())
 	assert.True(t, vm.Footer.HasNext())
 
-	Standard(stt, *vm, size)
+	Standard(uiState, *vm, size)
 
 	assert.False(t, vm.Header.HasNext())
 	assert.False(t, vm.Kernel.HasNext())

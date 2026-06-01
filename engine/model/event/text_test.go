@@ -406,19 +406,19 @@ func TestPushEvent_UndoAndRedo(t *testing.T) {
 	assert.Len(t, 3, s.actions)
 	assert.Len(t, 2, s.events)
 
-	buff := "Golang Zig"
+	buffer := "Golang Zig"
 
-	evnt := s.Undo()
-	assert.NotNil(t, evnt)
+	event := s.Undo()
+	assert.NotNil(t, event)
 
-	buff = applyDeltaStr(buff, evnt)
-	assert.Equal(t, "Golang ", buff)
+	buffer = applyDeltaStr(buffer, event)
+	assert.Equal(t, "Golang ", buffer)
 
-	evnt = s.Redo()
-	assert.NotNil(t, evnt)
+	event = s.Redo()
+	assert.NotNil(t, event)
 
-	buff = applyDeltaStr(buff, evnt)
-	assert.Equal(t, "Golang Zig", buff)
+	buffer = applyDeltaStr(buffer, event)
+	assert.Equal(t, "Golang Zig", buffer)
 }
 
 func TestPushEvent_UndoRedoTruncateHistory(t *testing.T) {
@@ -442,10 +442,10 @@ func TestPushEvent_UndoRedoTruncateHistory(t *testing.T) {
 
 	buff := "Golang Zig"
 
-	evnt := s.Undo()
-	assert.NotNil(t, evnt)
+	event := s.Undo()
+	assert.NotNil(t, event)
 
-	buff = applyDeltaStr(buff, evnt)
+	buff = applyDeltaStr(buff, event)
 	assert.Equal(t, "Golang ", string(buff))
 	i = runes.Measureo(buff)
 
@@ -454,10 +454,10 @@ func TestPushEvent_UndoRedoTruncateHistory(t *testing.T) {
 
 	_ = s.Undo()
 
-	evnt = s.Redo()
-	assert.NotNil(t, evnt)
+	event = s.Redo()
+	assert.NotNil(t, event)
 
-	buff = applyDeltaStr(buff, evnt)
+	buff = applyDeltaStr(buff, event)
 	assert.Equal(t, "Golang New", string(buff))
 }
 
@@ -466,17 +466,17 @@ func TestPushEvent_UndoRedoHistoryConsistence(t *testing.T) {
 
 	s.PushEvent(DeleteForward, 7, 11, "Rust ", "")
 
-	evnt := s.Undo()
-	assert.NotNil(t, evnt)
+	event := s.Undo()
+	assert.NotNil(t, event)
 
 	buff := "Golang Zig"
-	buff = applyDeltaStr(buff, evnt)
+	buff = applyDeltaStr(buff, event)
 	assert.Equal(t, "Golang Rust Zig", string(buff))
 
-	evnt = s.Redo()
-	assert.NotNil(t, evnt)
+	event = s.Redo()
+	assert.NotNil(t, event)
 
-	buff = applyDeltaStr(buff, evnt)
+	buff = applyDeltaStr(buff, event)
 	assert.Equal(t, "Golang Zig", string(buff))
 }
 

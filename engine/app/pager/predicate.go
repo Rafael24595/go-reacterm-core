@@ -24,8 +24,8 @@ type Predicate struct {
 func PredicatePage() Predicate {
 	return Predicate{
 		Code: CodePredicatePage,
-		Func: func(state state.UIState, ctx PredicateContext) bool {
-			return ctx.Page == state.Pager.TargetPage
+		Func: func(uiState state.UIState, ctx PredicateContext) bool {
+			return ctx.Page == uiState.Pager.TargetPage
 		},
 	}
 }

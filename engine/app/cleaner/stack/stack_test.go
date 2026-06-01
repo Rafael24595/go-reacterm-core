@@ -20,24 +20,24 @@ func TestStack_ToStateCleaner(t *testing.T) {
 
 func TestStack_PreservesActiveState(t *testing.T) {
 	cleaner := NewCleaner()
-	stt := state.NewUIState()
+	uiState := state.NewUIState()
 
 	nodeBase := screen_test.MockScreen{
 		Name: "base",
 	}.ToNode()
 
-	stt.Stack.Push(nodeBase.Name, "lang-1", "golang")
+	uiState.Stack.Push(nodeBase.Name, "lang-1", "golang")
 
 	nodeWrapper := screen_test.MockScreen{
 		Stack: nodeBase.Stack,
 	}.ToNode()
 
-	result := screen.ResultFromUIState(stt)
+	result := screen.ResultFromUIState(uiState)
 	result.Node = &nodeWrapper
 
-	cleaner.Cleanup(result, stt)
+	cleaner.Cleanup(result, uiState)
 
-	value, exists := stt.Stack.Find(nodeBase.Name, "lang-1")
+	value, exists := uiState.Stack.Find(nodeBase.Name, "lang-1")
 
 	assert.True(t, exists)
 	assert.Equal(t, "golang", value.Stringf())
@@ -45,13 +45,13 @@ func TestStack_PreservesActiveState(t *testing.T) {
 
 func TestStack_RemovesInactiveState(t *testing.T) {
 	cleaner := NewCleaner()
-	stt := state.NewUIState()
+	uiState := state.NewUIState()
 
 	nodeBase := screen_test.MockScreen{
 		Name: "base",
 	}.ToNode()
 
-	stt.Stack.Push(nodeBase.Name, "lang-1", "golang")
+	uiState.Stack.Push(nodeBase.Name, "lang-1", "golang")
 
 	nodeNext := screen_test.MockScreen{
 		Name: "next",
@@ -60,24 +60,24 @@ func TestStack_RemovesInactiveState(t *testing.T) {
 	nodeWrapper := screen_test.MockScreen{}.ToNode()
 	nodeWrapper.Stack = nodeNext.Stack
 
-	result := screen.ResultFromUIState(stt)
+	result := screen.ResultFromUIState(uiState)
 	result.Node = &nodeWrapper
 
-	cleaner.Cleanup(result, stt)
+	cleaner.Cleanup(result, uiState)
 
-	_, exists := stt.Stack.Find(nodeBase.Name, "lang-1")
+	_, exists := uiState.Stack.Find(nodeBase.Name, "lang-1")
 	assert.False(t, exists)
 
-	stt.Stack.Push(nodeNext.Name, "lang-2", "ziglang")
+	uiState.Stack.Push(nodeNext.Name, "lang-2", "ziglang")
 
-	value, exists := stt.Stack.Find(nodeNext.Name, "lang-2")
+	value, exists := uiState.Stack.Find(nodeNext.Name, "lang-2")
 	assert.True(t, exists)
 	assert.Equal(t, "ziglang", value.Stringf())
 }
 
 func TestStack_TransitionBetweenScreens(t *testing.T) {
 	cleaner := NewCleaner()
-	stt := state.NewUIState()
+	uiState := state.NewUIState()
 
 	nodeBase := screen_test.MockScreen{
 		Name: "base",
@@ -87,24 +87,24 @@ func TestStack_TransitionBetweenScreens(t *testing.T) {
 		Name: "next",
 	}.ToNode()
 
-	stt.Stack.Push(nodeBase.Name, "lang-1", "golang")
+	uiState.Stack.Push(nodeBase.Name, "lang-1", "golang")
 
 	nodeWrapper := screen_test.MockScreen{}.ToNode()
 	nodeWrapper.Stack = nodeBase.Stack
 
-	result := screen.ResultFromUIState(stt)
+	result := screen.ResultFromUIState(uiState)
 	result.Node = &nodeWrapper
-	cleaner.Cleanup(result, stt)
+	cleaner.Cleanup(result, uiState)
 
-	_, exists := stt.Stack.Find(nodeBase.Name, "lang-1")
+	_, exists := uiState.Stack.Find(nodeBase.Name, "lang-1")
 	assert.True(t, exists)
 
 	nodeWrapper.Stack = nodeNext.Stack
 
-	result = screen.ResultFromUIState(stt)
+	result = screen.ResultFromUIState(uiState)
 	result.Node = &nodeWrapper
-	cleaner.Cleanup(result, stt)
+	cleaner.Cleanup(result, uiState)
 
-	_, exists = stt.Stack.Find(nodeBase.Name, "lang-1")
+	_, exists = uiState.Stack.Find(nodeBase.Name, "lang-1")
 	assert.False(t, exists)
 }

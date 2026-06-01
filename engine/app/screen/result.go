@@ -16,11 +16,11 @@ func ResultFromNode(node *Node) Result {
 	}
 }
 
-func ResultFromUIState(stt *state.UIState) Result {
+func ResultFromUIState(uiState *state.UIState) Result {
 	return Result{
 		Isolate: false,
 		Node:    nil,
-		Pager:   stt.Pager,
+		Pager:   uiState.Pager,
 	}
 }
 

@@ -41,8 +41,8 @@ func (b *LayoutBuilder) ToLayout() Layout {
 }
 
 func wrapTransformer(compose Composer, transformer winsize.Transformer) Composer {
-	return func(state *state.UIState, vm viewmodel.ViewModel, size winsize.Winsize) (*state.UIState, []text.Line) {
+	return func(uiState *state.UIState, vm viewmodel.ViewModel, size winsize.Winsize) (*state.UIState, []text.Line) {
 		newSize := transformer(size)
-		return compose(state, vm, newSize)
+		return compose(uiState, vm, newSize)
 	}
 }

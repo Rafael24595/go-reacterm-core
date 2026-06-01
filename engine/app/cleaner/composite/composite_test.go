@@ -34,16 +34,16 @@ func TestCompositeCleanup(t *testing.T) {
 		},
 	)
 
-	stt := state.NewUIState()
-	stt.Pager.ActualPage = 10
-	stt.Pager.ForceShow = false
-	stt.Helper.ShowHelp = true
+	uiState := state.NewUIState()
+	uiState.Pager.ActualPage = 10
+	uiState.Pager.ForceShow = false
+	uiState.Helper.ShowHelp = true
 
 	res := screen.Result{}
 
-	stt = c.Cleanup(res, stt)
+	uiState = c.Cleanup(res, uiState)
 
-	assert.Equal(t, 0, stt.Pager.ActualPage)
-	assert.True(t, stt.Pager.ForceShow)
-	assert.False(t, stt.Helper.ShowHelp)
+	assert.Equal(t, 0, uiState.Pager.ActualPage)
+	assert.True(t, uiState.Pager.ForceShow)
+	assert.False(t, uiState.Helper.ShowHelp)
 }

@@ -10,9 +10,9 @@ type DrawContext struct {
 	Size  winsize.Winsize
 }
 
-func NewDrawContext(stt *state.UIState, size winsize.Winsize) *DrawContext {
+func NewDrawContext(uiState *state.UIState, size winsize.Winsize) *DrawContext {
 	return &DrawContext{
-		State: stt,
+		State: uiState,
 		Size:  size,
 	}
 }
