@@ -18,12 +18,9 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/param"
 )
 
 const NameArea = "text_area"
-
-const ArgAreaBuffer param.Typed[[]rune] = "text_area_buffer"
 
 var area_read_definition = screen.NewDefinition(
 	map[key.Action]key.Descriptor{
@@ -220,11 +217,17 @@ func (n *TextArea) tickWrite(uiState *state.UIState, event screen.Event) screen.
 }
 
 func (n *TextArea) tickToStack(uiState *state.UIState) {
+	textAreaState := State{
+		Buffer: n.buffer.Buffer(),
+		Caret:  n.caret.Caret(),
+		Anchor: n.caret.Anchor(),
+	}
+
 	state.PushParam(
 		uiState.Stack,
 		n.reference,
-		ArgAreaBuffer,
-		n.buffer.Buffer(),
+		ArgTextInputState,
+		textAreaState,
 	)
 }
 
