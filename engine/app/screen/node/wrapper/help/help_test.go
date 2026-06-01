@@ -46,21 +46,21 @@ func TestHelp_ToggleHelpKey(t *testing.T) {
 		Key: *key.NewKeyCode(key.CustomActionHelp),
 	}
 
-	node.Screen.Update(state, event)
+	node.Screen.Tick(state, event)
 
 	assert.True(t, state.Helper.ShowHelp)
 	assert.False(t, called)
 }
 
-func TestHelp_DelegatesUpdateWhenKeyRequired(t *testing.T) {
+func TestHelp_DelegatesTickWhenKeyRequired(t *testing.T) {
 	called := false
 
 	action := key.CustomActionHelp
 	definition := screen.DefinitionFromActions(action)
 
 	mock := screen_test.MockScreen{
-		Definition: &definition,
-		Update: func(s *state.UIState, e screen.Event) screen.Result {
+		Keys: &definition,
+		Tick: func(s *state.UIState, e screen.Event) screen.Result {
 			called = true
 			return screen.EmptyResult()
 		},
@@ -73,7 +73,7 @@ func TestHelp_DelegatesUpdateWhenKeyRequired(t *testing.T) {
 		Key: *key.NewKeyCode(key.CustomActionHelp),
 	}
 
-	node.Screen.Update(state, event)
+	node.Screen.Tick(state, event)
 
 	assert.False(t, state.Helper.ShowHelp)
 	assert.True(t, called)
@@ -90,8 +90,8 @@ func TestHelp_WrapsReturnedScreen(t *testing.T) {
 	}
 
 	mockBase := screen_test.MockScreen{
-		Definition: &definition,
-		Update: func(s *state.UIState, _ screen.Event) screen.Result {
+		Keys: &definition,
+		Tick: func(s *state.UIState, _ screen.Event) screen.Result {
 			called = true
 			next := mockNext.ToNode()
 			return screen.Result{
@@ -103,18 +103,18 @@ func TestHelp_WrapsReturnedScreen(t *testing.T) {
 	help := New(mockBase.ToNode())
 	wrapped := help.ToNode()
 
-	stt := &state.UIState{}
-	evt := screen.Event{
+	uiState := &state.UIState{}
+	event := screen.Event{
 		Key: *key.NewKeyCode(key.ActionEnter),
 	}
 
-	wrapped.Screen.Update(stt, screen.Event{
+	wrapped.Screen.Tick(uiState, screen.Event{
 		Key: *key.NewKeyCode(key.CustomActionHelp),
 	})
 
-	assert.True(t, stt.Helper.ShowHelp)
+	assert.True(t, uiState.Helper.ShowHelp)
 
-	result := wrapped.Screen.Update(stt, evt)
+	result := wrapped.Screen.Tick(uiState, event)
 
 	assert.True(t, called)
 	assert.NotNil(t, result.Node)
