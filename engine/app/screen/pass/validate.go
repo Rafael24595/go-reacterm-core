@@ -10,6 +10,7 @@ import (
 
 const (
 	err_name   = "screen: name is required"
+	errf_init  = "screen %q: Init is nil"
 	errf_keys  = "screen %q: Keys is nil"
 	errf_tick  = "screen %q: Tick is nil"
 	errf_view  = "screen %q: View is nil"
@@ -29,6 +30,10 @@ func ValidateStructure() screen.Pass {
 
 			if focus.Name == "" {
 				return node, errors.New(err_name)
+			}
+
+			if focus.Screen.Init == nil {
+				return node, fmt.Errorf(errf_init, focus.Name)
 			}
 
 			if focus.Screen.Keys == nil {

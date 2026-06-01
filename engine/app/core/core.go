@@ -165,6 +165,8 @@ func (e *Engine) compileNodeScreen(uiState state.UIState, node screen.Node) *Eng
 	}
 
 	e.node = newNode
+	e.node.Screen.Init(uiState)
+
 	return e
 }
 

@@ -135,10 +135,32 @@ func (n *TextArea) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.reference).
 		NameToStack().
+		Init(n.init).
 		Keys(n.keys).
 		Tick(n.tick).
 		View(n.view).
 		ToNode()
+}
+
+func (n *TextArea) init(uiState state.UIState) {
+	state, ok := state.FindParam(
+		uiState.Stack,
+		n.reference,
+		ArgTextInputState,
+	)
+
+	if !ok {
+		return
+	}
+
+	n.buffer.Clean().
+		Append(state.Buffer)
+
+	n.caret.MoveSelectTo(
+		n.buffer.Buffer(),
+		state.Caret,
+		state.Anchor,
+	)
 }
 
 func (n *TextArea) keys() screen.Definition {

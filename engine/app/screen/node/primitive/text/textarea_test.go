@@ -5,6 +5,7 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
+	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
 )
 
@@ -13,6 +14,30 @@ func TestTextArea_ToNode(t *testing.T) {
 
 	screen_test.Helper_ToNode(t, node)
 	assert.Equal(t, node.Name, "base")
+}
+
+func TestTextArea_Init(t *testing.T) {
+	area := NewArea()
+	node := area.ToNode()
+
+	uiState := state.NewUIState()
+
+	state.PushParam(
+		uiState.Stack,
+		area.reference,
+		ArgTextInputState,
+		State{
+			Buffer: []rune("golang"),
+			Caret:  2,
+			Anchor: 4,
+		},
+	)
+
+	node.Screen.Init(*uiState)
+
+	assert.Equal(t, "golang", string(area.buffer.Buffer()))
+	assert.Equal(t, 2, area.caret.Caret())
+	assert.Equal(t, 4, area.caret.Anchor())
 }
 
 func TestTextArea_Stack(t *testing.T) {

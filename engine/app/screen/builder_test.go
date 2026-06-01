@@ -13,6 +13,7 @@ func TestBuilder_BasicScreen(t *testing.T) {
 
 	node := NewBuilder().
 		Name(name).
+		Init(func(u state.UIState) {}).
 		Tick(func(*state.UIState, Event) Result {
 			return Result{}
 		}).
@@ -24,6 +25,7 @@ func TestBuilder_BasicScreen(t *testing.T) {
 	assert.Equal(t, name, node.Name)
 	assert.Len(t, 0, node.Stack)
 	assert.Nil(t, node.Screen.Keys)
+	assert.NotNil(t, node.Screen.Init)
 	assert.NotNil(t, node.Screen.Tick)
 	assert.NotNil(t, node.Screen.View)
 }
@@ -52,6 +54,7 @@ func TestBuilder_NameToStack(t *testing.T) {
 func TestBuilder_IncompleteScreen(t *testing.T) {
 	node := NewBuilder().Name("home").ToNode()
 
+	assert.Nil(t, node.Screen.Init)
 	assert.Nil(t, node.Screen.Keys)
 	assert.Nil(t, node.Screen.Tick)
 	assert.Nil(t, node.Screen.View)

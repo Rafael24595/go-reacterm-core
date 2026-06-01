@@ -10,6 +10,7 @@ import (
 
 const (
 	ErrorMissingName = "missing_name"
+	ErrorMissingInit = "missing_init"
 	ErrorMissingKeys = "missing_keys"
 	ErrorMissingTick = "missing_tick"
 	ErrorMissingView = "missing_view"
@@ -26,6 +27,7 @@ type Builder struct {
 	name     string
 	stack    set.Set[string]
 	children []Node
+	init     InitFunc
 	keys     KeysFunc
 	tick     TickFunc
 	view     ViewFunc
@@ -37,6 +39,7 @@ func NewBuilder() *Builder {
 		name:     "",
 		stack:    set.NewSet[string](),
 		children: make([]Node, 0),
+		init:     nil,
 		keys:     nil,
 		tick:     nil,
 		view:     nil,
@@ -73,6 +76,16 @@ func (b *Builder) Children(children ...Node) *Builder {
 	return b
 }
 
+func (b *Builder) Init(init InitFunc) *Builder {
+	b.init = init
+	return b
+}
+
+func (b *Builder) WithoutInit() *Builder {
+	b.init = withoutInit
+	return b
+}
+
 func (b *Builder) Keys(keys KeysFunc) *Builder {
 	b.keys = keys
 	return b
@@ -100,6 +113,10 @@ func (b *Builder) makeTags() set.Set[string] {
 		tags.Add(ErrorMissingName)
 	}
 
+	if b.init == nil {
+		tags.Add(ErrorMissingInit)
+	}
+
 	if b.keys == nil {
 		tags.Add(ErrorMissingKeys)
 	}
@@ -121,6 +138,7 @@ func (b *Builder) makeID() string {
 
 func (b *Builder) toScreen() Screen {
 	return Screen{
+		Init: b.init,
 		Keys: b.keys,
 		Tick: b.tick,
 		View: b.view,

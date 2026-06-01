@@ -113,10 +113,31 @@ func (n *CheckMenu) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.reference).
 		NameToStack().
+		Init(n.init).
 		Keys(n.keys).
 		Tick(n.tick).
 		View(n.view).
 		ToNode()
+}
+
+func (n *CheckMenu) init(uiState state.UIState) {
+	options, ok := state.FindParam(
+		uiState.Stack,
+		n.reference,
+		ArgActiveChecks,
+	)
+
+	if !ok {
+		return
+	}
+
+	for i, o := range n.options {
+		if options.Has(o.Id) {
+			n.switchState(uint16(i))
+		}
+	}
+
+	n.applyLimit()
 }
 
 func (n *CheckMenu) keys() screen.Definition {

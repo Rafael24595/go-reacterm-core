@@ -5,6 +5,8 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
+	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/test/support/mock"
@@ -18,6 +20,33 @@ func TestCheckMenu_ToNode(t *testing.T) {
 	screen_test.Helper_ToNode(t, node)
 
 	assert.Equal(t, node.Name, "base")
+}
+
+func TestCheckMenu_Init(t *testing.T) {
+	menu := New().
+		AddOptions(
+			input.CheckOption{Id: "4"},
+			input.CheckOption{Id: "3"},
+			input.CheckOption{Id: "2"},
+			input.CheckOption{Id: "1"},
+		)
+	node := menu.ToNode()
+
+	uiState := state.NewUIState()
+
+	state.PushParam(
+		uiState.Stack,
+		node.Name,
+		ArgActiveChecks,
+		set.SetFrom("2", "4"),
+	)
+
+	node.Screen.Init(*uiState)
+
+	assert.True(t, menu.options[0].Status)
+	assert.False(t, menu.options[1].Status)
+	assert.True(t, menu.options[2].Status)
+	assert.False(t, menu.options[3].Status)
 }
 
 func TestCheckMenu_Stack(t *testing.T) {

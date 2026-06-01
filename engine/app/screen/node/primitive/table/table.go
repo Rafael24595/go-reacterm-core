@@ -119,10 +119,26 @@ func (n *Table[T]) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.reference).
 		NameToStack().
+		Init(n.init).
 		Keys(n.keys).
 		Tick(n.tick).
 		View(n.view).
 		ToNode()
+}
+
+func (n *Table[T]) init(uiState state.UIState) {
+	state, ok := state.FindParam(
+		uiState.Stack,
+		n.reference,
+		ArgTableState,
+	)
+
+	if !ok {
+		return
+	}
+
+	n.cursor.Row = min(n.table.Rows(), state.Row)
+	n.cursor.Col = min(n.table.Cols(), state.Col)
 }
 
 func (n *Table[T]) keys() screen.Definition {

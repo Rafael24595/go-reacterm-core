@@ -92,6 +92,7 @@ func (n *Pagination) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.node.Name).
 		AddStack(n.node.Stack).
+		Init(n.node.Screen.Init).
 		Keys(n.keys).
 		Tick(n.tick).
 		View(n.view).

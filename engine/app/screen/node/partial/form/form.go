@@ -90,6 +90,7 @@ func (n *Form) AddBreak(rows ...winsize.Rows) *Form {
 func (n *Form) ToNode() screen.Node {
 	builder := screen.NewBuilder().
 		Name(n.reference).
+		Init(n.init).
 		Keys(n.keys).
 		Tick(n.tick).
 		View(n.view)
@@ -100,6 +101,12 @@ func (n *Form) ToNode() screen.Node {
 	}
 
 	return builder.ToNode()
+}
+
+func (n *Form) init(uiState state.UIState) {
+	for _, item := range n.items {
+		item.Node.Screen.Init(uiState)
+	}
 }
 
 func (n *Form) keys() screen.Definition {

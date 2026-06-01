@@ -71,10 +71,29 @@ func (n *ModalMenu) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.reference).
 		NameToStack().
+		Init(n.init).
 		Keys(n.keys).
 		Tick(n.tick).
 		View(n.view).
 		ToNode()
+}
+
+func (n *ModalMenu) init(uiState state.UIState) {
+	option, ok := state.FindParam(
+		uiState.Stack,
+		n.reference,
+		ArgActiveOption,
+	)
+	if !ok {
+		return
+	}
+	
+	for i, o := range n.options {
+		if o.Id == option {
+			n.cursor = uint16(i)
+			break
+		}
+	}
 }
 
 func (n *ModalMenu) keys() screen.Definition {
