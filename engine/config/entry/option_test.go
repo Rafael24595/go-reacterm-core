@@ -10,7 +10,7 @@ import (
 )
 
 func TestDefaultEntry(t *testing.T) {
-	mock := screen_test.MockScreen{}
+	mock := screen_test.MockNode{}
 	cfg := defaultEntry(mock.ToNode())
 
 	assert.False(t, cfg.Selectable)
@@ -19,7 +19,7 @@ func TestDefaultEntry(t *testing.T) {
 }
 
 func TestSelectableOption(t *testing.T) {
-	mock := screen_test.MockScreen{}
+	mock := screen_test.MockNode{}
 	cfg := defaultEntry(mock.ToNode())
 
 	opt := Selectable()
@@ -29,7 +29,7 @@ func TestSelectableOption(t *testing.T) {
 }
 
 func TestWithLayoutOption(t *testing.T) {
-	mock := screen_test.MockScreen{}
+	mock := screen_test.MockNode{}
 	cfg := defaultEntry(mock.ToNode())
 
 	var dummyOpt1 layer.Option[winsize.Rows]

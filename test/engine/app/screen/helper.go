@@ -11,7 +11,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 )
 
-type MockScreen struct {
+type MockNode struct {
 	Name  string
 	Keys  *screen.Definition
 	Init  screen.InitFunc
@@ -21,7 +21,7 @@ type MockScreen struct {
 	Stack set.Set[string]
 }
 
-func (t MockScreen) ToNode() screen.Node {
+func (t MockNode) ToNode() screen.Node {
 	stack := t.Stack
 	if t.Stack == nil {
 		stack = set.From(t.Name)

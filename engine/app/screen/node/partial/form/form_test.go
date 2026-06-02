@@ -19,7 +19,7 @@ func TestForm_ToNode(t *testing.T) {
 
 func TestForm_Propagate(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockScreen{
+	mock := screen_test.MockNode{
 		Name: name,
 	}
 

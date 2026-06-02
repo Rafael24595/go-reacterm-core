@@ -14,7 +14,7 @@ import (
 
 func TestHelp_ToNode(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockScreen{
+	mock := screen_test.MockNode{
 		Name: name,
 	}
 
@@ -26,7 +26,7 @@ func TestHelp_ToNode(t *testing.T) {
 
 func TestHelp_Propagate(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockScreen{
+	mock := screen_test.MockNode{
 		Name: name,
 	}
 
@@ -37,7 +37,7 @@ func TestHelp_Propagate(t *testing.T) {
 func TestHelp_ToggleHelpKey(t *testing.T) {
 	called := false
 
-	mock := screen_test.MockScreen{}
+	mock := screen_test.MockNode{}
 
 	node := New(mock.ToNode()).ToNode()
 
@@ -58,7 +58,7 @@ func TestHelp_DelegatesTickWhenKeyRequired(t *testing.T) {
 	action := key.CustomActionHelp
 	definition := screen.DefinitionFromActions(action)
 
-	mock := screen_test.MockScreen{
+	mock := screen_test.MockNode{
 		Keys: &definition,
 		Tick: func(s *state.UIState, e screen.Event) screen.Result {
 			called = true
@@ -85,11 +85,11 @@ func TestHelp_WrapsReturnedScreen(t *testing.T) {
 	action := key.ActionEnter
 	definition := screen.DefinitionFromActions(action)
 
-	mockNext := screen_test.MockScreen{
+	mockNext := screen_test.MockNode{
 		Name: "next",
 	}
 
-	mockBase := screen_test.MockScreen{
+	mockBase := screen_test.MockNode{
 		Keys: &definition,
 		Tick: func(s *state.UIState, _ screen.Event) screen.Result {
 			called = true

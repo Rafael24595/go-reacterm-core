@@ -15,7 +15,7 @@ import (
 
 func TestHistory_ToNode(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockScreen{
+	mock := screen_test.MockNode{
 		Name: name,
 	}
 
@@ -27,7 +27,7 @@ func TestHistory_ToNode(t *testing.T) {
 
 func TestHistory_Propagate(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockScreen{
+	mock := screen_test.MockNode{
 		Name: name,
 	}
 
@@ -37,11 +37,11 @@ func TestHistory_Propagate(t *testing.T) {
 func TestHistory_BackNavigation(t *testing.T) {
 	uiState := &state.UIState{}
 
-	mockBase := screen_test.MockScreen{
+	mockBase := screen_test.MockNode{
 		Name: "base",
 	}
 
-	mockNext := screen_test.MockScreen{
+	mockNext := screen_test.MockNode{
 		Name: "next",
 		Tick: func(s *state.UIState, e screen.Event) screen.Result {
 			base := mockBase.ToNode()
@@ -67,7 +67,7 @@ func TestHistory_BackNavigation(t *testing.T) {
 }
 
 func TestHistory_ViewFooter(t *testing.T) {
-	mock := screen_test.MockScreen{}
+	mock := screen_test.MockNode{}
 	node := mock.ToNode()
 
 	h := New(node)

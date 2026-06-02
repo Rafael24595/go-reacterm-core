@@ -22,13 +22,13 @@ func TestStack_PreservesActiveState(t *testing.T) {
 	cleaner := NewCleaner()
 	uiState := state.NewUIState()
 
-	nodeBase := screen_test.MockScreen{
+	nodeBase := screen_test.MockNode{
 		Name: "base",
 	}.ToNode()
 
 	uiState.Stack.Push(nodeBase.Name, "lang-1", "golang")
 
-	nodeWrapper := screen_test.MockScreen{
+	nodeWrapper := screen_test.MockNode{
 		Stack: nodeBase.Stack,
 	}.ToNode()
 
@@ -47,17 +47,17 @@ func TestStack_RemovesInactiveState(t *testing.T) {
 	cleaner := NewCleaner()
 	uiState := state.NewUIState()
 
-	nodeBase := screen_test.MockScreen{
+	nodeBase := screen_test.MockNode{
 		Name: "base",
 	}.ToNode()
 
 	uiState.Stack.Push(nodeBase.Name, "lang-1", "golang")
 
-	nodeNext := screen_test.MockScreen{
+	nodeNext := screen_test.MockNode{
 		Name: "next",
 	}.ToNode()
 
-	nodeWrapper := screen_test.MockScreen{}.ToNode()
+	nodeWrapper := screen_test.MockNode{}.ToNode()
 	nodeWrapper.Stack = nodeNext.Stack
 
 	result := screen.ResultFromUIState(uiState)
@@ -79,17 +79,17 @@ func TestStack_TransitionBetweenScreens(t *testing.T) {
 	cleaner := NewCleaner()
 	uiState := state.NewUIState()
 
-	nodeBase := screen_test.MockScreen{
+	nodeBase := screen_test.MockNode{
 		Name: "base",
 	}.ToNode()
 
-	nodeNext := screen_test.MockScreen{
+	nodeNext := screen_test.MockNode{
 		Name: "next",
 	}.ToNode()
 
 	uiState.Stack.Push(nodeBase.Name, "lang-1", "golang")
 
-	nodeWrapper := screen_test.MockScreen{}.ToNode()
+	nodeWrapper := screen_test.MockNode{}.ToNode()
 	nodeWrapper.Stack = nodeBase.Stack
 
 	result := screen.ResultFromUIState(uiState)

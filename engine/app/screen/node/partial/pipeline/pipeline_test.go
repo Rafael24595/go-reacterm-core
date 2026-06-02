@@ -31,7 +31,7 @@ func drawSources(vm viewmodel.ViewModel, winsize winsize.Winsize) {
 
 func TestPipeline_ToNode(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockScreen{
+	mock := screen_test.MockNode{
 		Name: name,
 	}
 
@@ -43,7 +43,7 @@ func TestPipeline_ToNode(t *testing.T) {
 
 func TestPipeline_Propagate(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockScreen{
+	mock := screen_test.MockNode{
 		Name: name,
 	}
 
@@ -54,11 +54,11 @@ func TestPipeline_Propagate(t *testing.T) {
 func TestPipeline_WrapsReturnedScreen(t *testing.T) {
 	called := false
 
-	mockNext := screen_test.MockScreen{
+	mockNext := screen_test.MockNode{
 		Name: "next",
 	}
 
-	mockBase := screen_test.MockScreen{
+	mockBase := screen_test.MockNode{
 		Tick: func(s *state.UIState, _ screen.Event) screen.Result {
 			called = true
 			next := mockNext.ToNode()
@@ -92,7 +92,7 @@ func TestPipeline_ActionSingleFocus(t *testing.T) {
 		Name: "mock_01",
 	}
 
-	mockNode := screen_test.MockScreen{
+	mockNode := screen_test.MockNode{
 		View: func(_ state.UIState) viewmodel.ViewModel {
 			vm := viewmodel.New()
 			vm.Header.Push(headerBase.ToUnit())

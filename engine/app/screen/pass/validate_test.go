@@ -13,7 +13,7 @@ import (
 )
 
 func TestValidateStructure_ValidNode(t *testing.T) {
-	node := screen_test.MockScreen{
+	node := screen_test.MockNode{
 		Name: "home",
 		Keys: &screen.Definition{},
 		Init: func(state.UIState) {},

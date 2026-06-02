@@ -18,7 +18,7 @@ import (
 
 func TestPagination_ToNode(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockScreen{
+	mock := screen_test.MockNode{
 		Name: name,
 	}
 
@@ -30,7 +30,7 @@ func TestPagination_ToNode(t *testing.T) {
 
 func TestPagination_Propagate(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockScreen{
+	mock := screen_test.MockNode{
 		Name: name,
 	}
 
@@ -40,7 +40,7 @@ func TestPagination_Propagate(t *testing.T) {
 
 func TestPagination_LocalTick(t *testing.T) {
 	uiState := state.NewUIState()
-	base := screen_test.MockScreen{
+	base := screen_test.MockNode{
 		Name: "base",
 	}
 
@@ -59,7 +59,7 @@ func TestPagination_ViewFooter(t *testing.T) {
 	uiState := state.NewUIState()
 	uiState.Pager.ActualPage = 3
 
-	base := screen_test.MockScreen{
+	base := screen_test.MockNode{
 		Name: "base",
 		View: func(_ state.UIState) viewmodel.ViewModel {
 			vm := viewmodel.New()
@@ -86,7 +86,7 @@ func TestPagination_ViewFooter(t *testing.T) {
 func TestPagination_TickDelegates(t *testing.T) {
 	called := false
 
-	base := screen_test.MockScreen{
+	base := screen_test.MockNode{
 		Name: "base",
 		Tick: func(s *state.UIState, e screen.Event) screen.Result {
 			called = true
@@ -106,7 +106,7 @@ func TestPagination_PageNeverNegative(t *testing.T) {
 	uiState := state.NewUIState()
 	uiState.Pager.TargetPage = 0
 
-	base := screen_test.MockScreen{
+	base := screen_test.MockNode{
 		Name: "base",
 	}
 
