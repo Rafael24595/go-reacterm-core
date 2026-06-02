@@ -542,15 +542,15 @@ func (n *TextArea) deleteForward(uiState *state.UIState, word bool) screen.Resul
 		return result
 	}
 
+	start := n.caret.SelectStart()
 	end := n.caret.SelectEnd()
 
 	if word {
 		end = runes.ForwardIndex(n.buffer.Buffer(), runes.NextWordRunes, end)
+		start = start.Sub(1)
 	} else {
 		end = min(n.buffer.Size(), end+1)
 	}
-
-	start := n.caret.SelectStart().Sub(1)
 
 	delete := n.buffer.Delete(start, end)
 	n.history.PushEvent(event.DeleteForward, start, end, string(delete), "")
