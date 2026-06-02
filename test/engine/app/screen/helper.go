@@ -17,6 +17,7 @@ type MockScreen struct {
 	Init  screen.InitFunc
 	Tick  screen.TickFunc
 	View  screen.ViewFunc
+	Tags  set.Set[string]
 	Stack set.Set[string]
 }
 
@@ -26,7 +27,7 @@ func (t MockScreen) ToNode() screen.Node {
 		stack = set.From(t.Name)
 	}
 
-	return screen.NewBuilder().
+	node := screen.NewBuilder().
 		Name(t.Name).
 		AddStack(stack).
 		Init(
@@ -63,6 +64,12 @@ func (t MockScreen) ToNode() screen.Node {
 			},
 		).
 		ToNode()
+
+	if len(t.Tags) > 0 {
+		node.Tags.Merge(t.Tags)
+	}
+
+	return node
 }
 
 func Helper_ToNode(t *testing.T, node screen.Node) {
