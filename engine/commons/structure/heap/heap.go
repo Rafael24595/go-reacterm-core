@@ -7,44 +7,44 @@ type Heap[T any] struct {
 	less  func(a, b T) bool
 }
 
-func NewHeap[T any](less func(a, b T) bool) *Heap[T] {
+func New[T any](less func(a, b T) bool) *Heap[T] {
 	return &Heap[T]{
 		items: []T{},
 		less:  less,
 	}
 }
 
-func NewMinHeap[T cmp.Ordered]() *Heap[T] {
+func NewMin[T cmp.Ordered]() *Heap[T] {
 	return &Heap[T]{
 		items: []T{},
-		less:  func(a, b T) bool {
+		less: func(a, b T) bool {
 			return a < b
 		},
 	}
 }
 
-func NewMaxHeap[T cmp.Ordered]() *Heap[T] {
+func NewMax[T cmp.Ordered]() *Heap[T] {
 	return &Heap[T]{
 		items: []T{},
-		less:  func(a, b T) bool {
+		less: func(a, b T) bool {
 			return a > b
 		},
 	}
 }
 
-func NewMinHeapBy[T any, K cmp.Ordered](get func(i T) K) *Heap[T] {
+func NewMinBy[T any, K cmp.Ordered](get func(i T) K) *Heap[T] {
 	return &Heap[T]{
 		items: []T{},
-		less:  func(a, b T) bool {
+		less: func(a, b T) bool {
 			return get(a) < get(b)
 		},
 	}
 }
 
-func NewMaxHeapBy[T any, K cmp.Ordered](get func(i T) K) *Heap[T] {
+func NewMaxBy[T any, K cmp.Ordered](get func(i T) K) *Heap[T] {
 	return &Heap[T]{
 		items: []T{},
-		less:  func(a, b T) bool {
+		less: func(a, b T) bool {
 			return get(a) > get(b)
 		},
 	}

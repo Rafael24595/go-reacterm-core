@@ -253,7 +253,7 @@ func adjustSize(
 
 	excess := rowSize.Sub(cols)
 
-	h := heap.NewMaxHeapBy(func(c col) winsize.Cols {
+	h := heap.NewMaxBy(func(c col) winsize.Cols {
 		return c.size
 	})
 
