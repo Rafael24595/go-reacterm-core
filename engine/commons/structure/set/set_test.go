@@ -108,6 +108,19 @@ func TestSet_Merge(t *testing.T) {
 	assert.True(t, s1.Has(5))
 }
 
+func TestSet_Clone(t *testing.T) {
+	s1 := From(1, 2, 3)
+	s2 := s1.Clone()
+
+	s2.Add(4, 5, 6)
+
+	assert.Len(t, 3, s1)
+	assert.Len(t, 6, s2)
+
+	assert.False(t, s1.Has(6))
+	assert.True(t, s2.Has(6))
+}
+
 func BenchmarkSet_Any(b *testing.B) {
 	large := New[int](1000)
 	for i := range 1000 {

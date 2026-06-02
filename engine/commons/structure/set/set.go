@@ -1,5 +1,7 @@
 package set
 
+import "maps"
+
 type Set[T comparable] map[T]struct{}
 
 func New[T comparable](size ...int) Set[T] {
@@ -52,4 +54,8 @@ func (s Set[T]) Any(other Set[T]) bool {
 	}
 
 	return false
+}
+
+func (s Set[T]) Clone() Set[T] {
+	return maps.Clone(s)
 }
