@@ -120,7 +120,7 @@ func (u *HStackUnit) isAnemic() bool {
 }
 
 func (u *HStackUnit) tags() set.Set[string] {
-	tags := set.NewSet[string]()
+	tags := set.New[string]()
 	for i := range u.items {
 		tags.Merge(u.items[i].Unit().Tags)
 	}

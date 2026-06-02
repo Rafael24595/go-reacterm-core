@@ -23,7 +23,7 @@ type MockScreen struct {
 func (t MockScreen) ToNode() screen.Node {
 	stack := t.Stack
 	if t.Stack == nil {
-		stack = set.SetFrom(t.Name)
+		stack = set.From(t.Name)
 	}
 
 	return screen.NewBuilder().

@@ -246,7 +246,7 @@ func (n *CheckMenu) applyLimit() *CheckMenu {
 }
 
 func (n *CheckMenu) activeIds() set.Set[string] {
-	result := set.NewSet[string]()
+	result := set.New[string]()
 	for _, v := range n.options {
 		if v.Status {
 			result.Add(v.Id)

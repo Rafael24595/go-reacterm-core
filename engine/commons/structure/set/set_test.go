@@ -1,15 +1,13 @@
-package set_test
+package set
 
 import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
-
-	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 )
 
 func TestSet_Has(t *testing.T) {
-	s := set.SetFrom("apple", "banana")
+	s := From("apple", "banana")
 
 	tests := []struct {
 		name     string
@@ -81,8 +79,8 @@ func TestSet_Any(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			a := set.SetFrom(tt.setA...)
-			b := set.SetFrom(tt.setB...)
+			a := From(tt.setA...)
+			b := From(tt.setB...)
 
 			assert.Equal(t, tt.expected, a.Any(b))
 			assert.Equal(t, tt.expected, b.Any(a))
@@ -91,7 +89,7 @@ func TestSet_Any(t *testing.T) {
 }
 
 func TestSet_Add(t *testing.T) {
-	s := set.NewSet[int](1)
+	s := New[int](1)
 	s.Add(42)
 
 	assert.Len(t, 1, s)
@@ -99,8 +97,8 @@ func TestSet_Add(t *testing.T) {
 }
 
 func TestSet_Merge(t *testing.T) {
-	s1 := set.SetFrom(1, 2, 3)
-	s2 := set.SetFrom(3, 4, 5)
+	s1 := From(1, 2, 3)
+	s2 := From(3, 4, 5)
 
 	s1.Merge(s2)
 
@@ -111,12 +109,12 @@ func TestSet_Merge(t *testing.T) {
 }
 
 func BenchmarkSet_Any(b *testing.B) {
-	large := set.NewSet[int](1000)
+	large := New[int](1000)
 	for i := range 1000 {
 		large.Add(i)
 	}
 
-	small := set.NewSet[int](2)
+	small := New[int](2)
 	small.Add(999)
 	small.Add(2000)
 

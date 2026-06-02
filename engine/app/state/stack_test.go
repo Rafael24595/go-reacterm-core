@@ -42,7 +42,7 @@ func TestStackContext_RetainOnly(t *testing.T) {
 	ctx.Push("Settings", "b", 2)
 	ctx.Push("Profile", "c", 3)
 
-	keep := set.SetFrom("Home", "Profile")
+	keep := set.From("Home", "Profile")
 	ctx.RetainOnly(keep)
 
 	_, found := ctx.Find("Home", "a")

@@ -38,7 +38,7 @@ func TestCheckMenu_Init(t *testing.T) {
 		uiState.Stack,
 		node.Name,
 		ArgActiveChecks,
-		set.SetFrom("2", "4"),
+		set.From("2", "4"),
 	)
 
 	node.Screen.Init(*uiState)

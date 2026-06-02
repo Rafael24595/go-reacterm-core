@@ -41,7 +41,7 @@ func TestBuilder_AddTags(t *testing.T) {
 }
 
 func TestBuilder_MergeTags(t *testing.T) {
-	baseTags := set.NewSet[string]()
+	baseTags := set.New[string]()
 	baseTags.Add("zig", "c++")
 
 	unit := NewBuilder().

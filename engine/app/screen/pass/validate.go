@@ -19,7 +19,7 @@ const (
 
 func ValidateStructure() screen.Pass {
 	return func(node screen.Node) (screen.Node, error) {
-		visited := set.NewSet[string]()
+		visited := set.New[string]()
 
 		pending := []screen.Node{node}
 		cursor := 0

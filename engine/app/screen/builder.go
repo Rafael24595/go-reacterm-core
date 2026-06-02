@@ -37,7 +37,7 @@ func NewBuilder() *Builder {
 	return &Builder{
 		clock:    clock.GlobalCounterClock,
 		name:     "",
-		stack:    set.NewSet[string](),
+		stack:    set.New[string](),
 		children: make([]Node, 0),
 		init:     nil,
 		keys:     nil,
@@ -62,7 +62,7 @@ func (b *Builder) Name(name string) *Builder {
 
 func (b *Builder) NameToStack() *Builder {
 	return b.AddStack(
-		set.SetFrom(b.name),
+		set.From(b.name),
 	)
 }
 
@@ -107,7 +107,7 @@ func (b *Builder) View(view ViewFunc) *Builder {
 }
 
 func (b *Builder) makeTags() set.Set[string] {
-	tags := set.NewSet[string]()
+	tags := set.New[string]()
 
 	if b.name == "" {
 		tags.Add(ErrorMissingName)

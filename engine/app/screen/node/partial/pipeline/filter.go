@@ -17,6 +17,6 @@ type Filter struct {
 func NewFilter(target Criterion, values ...string) Filter {
 	return Filter{
 		Criterion: target,
-		Values:    set.SetFrom(values...),
+		Values:    set.From(values...),
 	}
 }

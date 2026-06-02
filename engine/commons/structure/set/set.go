@@ -2,7 +2,7 @@ package set
 
 type Set[T comparable] map[T]struct{}
 
-func NewSet[T comparable](size ...int) Set[T] {
+func New[T comparable](size ...int) Set[T] {
 	s := 0
 
 	if len(size) > 0 {
@@ -12,8 +12,8 @@ func NewSet[T comparable](size ...int) Set[T] {
 	return make(Set[T], s)
 }
 
-func SetFrom[T comparable](slice ...T) Set[T] {
-	s := NewSet[T](len(slice))
+func From[T comparable](slice ...T) Set[T] {
+	s := New[T](len(slice))
 
 	for _, v := range slice {
 		s.Add(v)

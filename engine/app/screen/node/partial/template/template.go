@@ -18,7 +18,7 @@ type Template struct {
 func New() *Template {
 	return &Template{
 		reference: Name,
-		stack:     set.NewSet[string](),
+		stack:     set.New[string](),
 		model:     viewmodel.ViewModel{},
 	}
 }

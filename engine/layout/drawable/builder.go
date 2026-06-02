@@ -22,7 +22,7 @@ type Builder struct {
 func NewBuilder() *Builder {
 	return &Builder{
 		name: "",
-		tags: set.NewSet[string](),
+		tags: set.New[string](),
 		init: nil,
 		wipe: nil,
 		draw: nil,
@@ -60,7 +60,7 @@ func (b *Builder) Draw(draw DrawFunc) *Builder {
 }
 
 func (b *Builder) makeTags() set.Set[string] {
-	tags := set.NewSet[string]()
+	tags := set.New[string]()
 
 	if b.name == "" {
 		tags.Add(ErrorMissingName)

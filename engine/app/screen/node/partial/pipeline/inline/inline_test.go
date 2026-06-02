@@ -96,10 +96,10 @@ func TestInline_GroupUnits_ByTags(t *testing.T) {
 	)
 
 	mock1 := drawable_test.MockUnit{
-		Tags: set.SetFrom("a"),
+		Tags: set.From("a"),
 	}
 	mock2 := drawable_test.MockUnit{
-		Tags: set.SetFrom("b"),
+		Tags: set.From("b"),
 	}
 
 	for _, v := range targets {
