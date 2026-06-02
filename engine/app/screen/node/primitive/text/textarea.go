@@ -574,10 +574,10 @@ func (n *TextArea) deleteForward(uiState *state.UIState, word bool) screen.Resul
 	return result
 }
 
-func (n *TextArea) view(_ state.UIState) viewmodel.ViewModel {
+func (n *TextArea) view(uiState state.UIState) viewmodel.ViewModel {
 	vm := viewmodel.New()
 
-	predicate, textarea, needsPulse := n.viewSources()
+	predicate, textarea, needsPulse := n.viewSources(uiState)
 
 	vm.Kernel.Push(
 		textarea.ToUnit(),
@@ -589,7 +589,7 @@ func (n *TextArea) view(_ state.UIState) viewmodel.ViewModel {
 	return *vm
 }
 
-func (n *TextArea) viewSources() (
+func (n *TextArea) viewSources(uiState state.UIState) (
 	pager.Predicate,
 	*textarea.TextAreaUnit,
 	bool,
@@ -603,12 +603,22 @@ func (n *TextArea) viewSources() (
 		WriteMode(n.writeMode).
 		IndexMode(n.indexMode)
 
-	needsPulse := n.needsPulse()
+	needsPulse := n.needsPulse(uiState)
 
 	return predicate, textarea, needsPulse
 }
 
-func (n *TextArea) needsPulse() bool {
+func (n *TextArea) needsPulse(uiState state.UIState) bool {
+	state, ok := state.FindParam(
+		uiState.Stack,
+		n.reference,
+		ArgTextInputPulse,
+	)
+
+	if ok && state {
+		return true
+	}
+
 	return n.writeMode && n.caret.IsBlinking()
 }
 

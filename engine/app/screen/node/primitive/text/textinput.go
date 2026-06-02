@@ -112,7 +112,7 @@ func (n *TextInput) ToNode() screen.Node {
 func (n *TextInput) view(uiState state.UIState) viewmodel.ViewModel {
 	vm := viewmodel.New()
 
-	_, textarea, needsPulse := n.textarea.viewSources()
+	_, textarea, needsPulse := n.textarea.viewSources(uiState)
 
 	textarea.PushStep(
 		transformer.BreakWord,
