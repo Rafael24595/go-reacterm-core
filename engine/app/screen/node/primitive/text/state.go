@@ -8,7 +8,8 @@ import (
 const ArgTextInputState param.Typed[State] = "text_input_state"
 
 type State struct {
+	Write  bool
 	Buffer []rune
-	Caret  offset.Offset
-	Anchor offset.Offset
+	Caret  *offset.Offset
+	Anchor *offset.Offset
 }

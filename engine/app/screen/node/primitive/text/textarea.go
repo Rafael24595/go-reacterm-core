@@ -153,14 +153,25 @@ func (n *TextArea) init(uiState state.UIState) {
 		return
 	}
 
-	n.buffer.Clean().
-		Append(state.Buffer)
+	n.buffer.Clean().Append(state.Buffer)
 
-	n.caret.MoveSelectTo(
-		n.buffer.Buffer(),
-		state.Caret,
-		state.Anchor,
-	)
+	buffer := n.buffer.Buffer()
+	if state.Caret == nil && state.Anchor == nil {
+		n.caret.MoveCaretTo(buffer, n.buffer.Size())
+		return
+	}
+
+	caret := offset.Offset(0)
+	if state.Caret != nil {
+		caret = *state.Caret
+	}
+
+	if state.Anchor == nil {
+		n.caret.MoveCaretTo(buffer, caret)
+		return
+	}
+
+	n.caret.MoveSelectTo(buffer, caret, *state.Anchor)
 }
 
 func (n *TextArea) keys() screen.Definition {
@@ -239,10 +250,14 @@ func (n *TextArea) tickWrite(uiState *state.UIState, event screen.Event) screen.
 }
 
 func (n *TextArea) tickToStack(uiState *state.UIState) {
+	caret := n.caret.Caret()
+	anchor := n.caret.Anchor()
+
 	textAreaState := State{
+		Write:  n.writeMode,
 		Buffer: n.buffer.Buffer(),
-		Caret:  n.caret.Caret(),
-		Anchor: n.caret.Anchor(),
+		Caret:  &caret,
+		Anchor: &anchor,
 	}
 
 	state.PushParam(
