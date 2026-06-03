@@ -7,9 +7,12 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior/tick"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/form"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline/page"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/article"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/entry"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/layer"
@@ -24,6 +27,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/buffer/processor"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/buffer/rule"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
@@ -73,12 +77,49 @@ func makeTextArea() screen.Node {
 		AddText("asfasf asfas fas asfasf asd asdas ").
 		ToNode()
 
+	textscreen = tick.Apply(
+		textscreen,
+		injectHello,
+	)
+
 	pipeline := node_pipeline.New(textscreen).
 		PushSteps(wrapStep).
 		ExpireOnNode().
 		ToNode()
 
 	return pipeline
+}
+
+func injectHello(target behavior.Target, next screen.TickFunc) screen.TickFunc {
+	return func(u *state.UIState, e screen.Event) screen.Result {
+		result := next(u, e)
+
+		currentState, ok := state.FindParam(
+			u.Stack,
+			target.Name,
+			text_screen.ArgTextInputState,
+		)
+
+		if e.Key.Code == key.ActionEnter && ok && currentState.Write {
+			state.PushParam(
+				u.Stack,
+				target.Name,
+				text_screen.ArgTextInputPulse,
+				true,
+			)
+
+			state.PushParam(
+				u.Stack,
+				target.Name,
+				text_screen.ArgTextInputState,
+				text_screen.State{
+					Buffer: []rune("Hello Golang"),
+				},
+			)
+		}
+
+		return result
+	}
 }
 
 func wrapStep(vm viewmodel.ViewModel) viewmodel.ViewModel {
