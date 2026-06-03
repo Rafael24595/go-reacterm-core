@@ -4,7 +4,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/store"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/cols"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/rows"
@@ -109,10 +108,9 @@ func (n *Table[T]) init(uiState state.UIState) {
 }
 
 func (n *Table[T]) loadFromStack(uiState state.UIState) {
-	state, ok := store.Find(
+	state, ok := KeyState.Get(
 		uiState.Store,
 		n.reference,
-		ArgTableState,
 	)
 
 	if !ok {
@@ -194,10 +192,9 @@ func (n *Table[T]) tickToStack(uiState *state.UIState) {
 		Col: n.cursor.Col,
 	}
 
-	store.Push(
+	KeyState.Set(
 		uiState.Store,
 		n.reference,
-		ArgTableState,
 		tableState,
 	)
 }

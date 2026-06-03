@@ -7,7 +7,6 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/store"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/table"
 
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
@@ -38,10 +37,9 @@ func TestIndexMenu_Init(t *testing.T) {
 
 	uiState := state.NewUIState()
 
-	store.Push(
+	KeyState.Set(
 		uiState.Store,
 		menu.reference,
-		ArgTableState,
 		State{
 			Row: 1,
 			Col: 3,

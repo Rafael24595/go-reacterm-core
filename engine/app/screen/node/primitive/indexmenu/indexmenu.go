@@ -4,7 +4,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/store"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/inputline"
@@ -71,10 +70,9 @@ func (n *IndexMenu) init(uiState state.UIState) {
 }
 
 func (n *IndexMenu) loadFromStack(uiState state.UIState) {
-	option, ok := store.Find(
+	option, ok := KeyActive.Get(
 		uiState.Store,
 		n.reference,
-		ArgActiveIndex,
 	)
 
 	if !ok {
@@ -125,10 +123,9 @@ func (n *IndexMenu) tickToStack(uiState *state.UIState) {
 		return
 	}
 
-	store.Push(
+	KeyActive.Set(
 		uiState.Store,
 		n.reference,
-		ArgActiveIndex,
 		n.options[n.cursor].Id,
 	)
 }

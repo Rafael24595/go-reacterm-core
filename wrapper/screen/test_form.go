@@ -3,7 +3,6 @@ package wrapper_screen
 import (
 	node_pipeline "github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline"
 	text_screen "github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/text"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/store"
 	drawable_pipeline "github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
@@ -95,24 +94,21 @@ func injectHello(target behavior.Target, next screen.TickFunc) screen.TickFunc {
 	return func(u *state.UIState, e screen.Event) screen.Result {
 		result := next(u, e)
 
-		currentState, ok := store.Find(
+		currentState, ok := text_screen.KeyState.Get(
 			u.Store,
 			target.Name,
-			text_screen.ArgTextInputState,
 		)
 
 		if e.Key.Code == key.ActionEnter && ok && currentState.Write {
-			store.Push(
+			text_screen.KeyPulse.Set(
 				u.Store,
 				target.Name,
-				text_screen.ArgTextInputPulse,
 				true,
 			)
 
-			store.Push(
+			text_screen.KeyState.Set(
 				u.Store,
 				target.Name,
-				text_screen.ArgTextInputState,
 				text_screen.State{
 					Buffer: []rune("Hello Golang"),
 				},

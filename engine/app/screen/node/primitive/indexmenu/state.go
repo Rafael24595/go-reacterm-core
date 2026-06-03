@@ -1,5 +1,5 @@
 package indexmenu
 
-import "github.com/Rafael24595/go-reacterm-core/engine/model/param"
+import "github.com/Rafael24595/go-reacterm-core/engine/app/store"
 
-const ArgActiveIndex param.Typed[string] = "id_index_menu"
+const KeyActive store.Key[string] = "id_index_menu"

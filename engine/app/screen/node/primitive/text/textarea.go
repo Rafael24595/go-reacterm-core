@@ -6,7 +6,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/store"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
@@ -112,10 +111,9 @@ func (n *TextArea) init(uiState state.UIState) {
 }
 
 func (n *TextArea) loadFromStack(uiState state.UIState) {
-	state, ok := store.Find(
+	state, ok := KeyState.Get(
 		uiState.Store,
 		n.reference,
-		ArgTextInputState,
 	)
 
 	if !ok {
@@ -229,10 +227,9 @@ func (n *TextArea) tickToStack(uiState *state.UIState) {
 		Anchor: &anchor,
 	}
 
-	store.Push(
+	KeyState.Set(
 		uiState.Store,
 		n.reference,
-		ArgTextInputState,
 		textAreaState,
 	)
 }
@@ -580,10 +577,9 @@ func (n *TextArea) viewSources(uiState state.UIState) (
 }
 
 func (n *TextArea) needsPulse(uiState state.UIState) bool {
-	state, ok := store.Find(
+	state, ok := KeyPulse.Get(
 		uiState.Store,
 		n.reference,
-		ArgTextInputPulse,
 	)
 
 	if ok && state {

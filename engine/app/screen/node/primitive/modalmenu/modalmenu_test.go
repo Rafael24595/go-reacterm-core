@@ -6,7 +6,6 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/store"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
 )
@@ -30,10 +29,9 @@ func TestIndexMenu_Init(t *testing.T) {
 	node := menu.ToNode()
 
 	uiState := state.NewUIState()
-	store.Push(
+	KeyActive.Set(
 		uiState.Store,
 		node.Name,
-		ArgActiveOption,
 		"1",
 	)
 

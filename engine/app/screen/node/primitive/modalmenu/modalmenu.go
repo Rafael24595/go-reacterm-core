@@ -66,10 +66,9 @@ func (n *ModalMenu) init(uiState state.UIState) {
 }
 
 func (n *ModalMenu) loadFromStack(uiState state.UIState) {
-	option, ok := state.FindParam(
-		uiState.Stack,
+	option, ok := KeyActive.Get(
+		uiState.Store,
 		n.reference,
-		ArgActiveOption,
 	)
 
 	if !ok {
@@ -115,17 +114,16 @@ func (n *ModalMenu) tick(uiState *state.UIState, event screen.Event) screen.Resu
 
 func (n *ModalMenu) tickToStack(uiState *state.UIState) {
 	if n.cursor >= uint16(len(n.options)) {
-		uiState.Stack.RemoveArgument(
+		uiState.Store.RemoveArgument(
 			n.reference,
-			string(ArgActiveOption),
+			string(KeyActive),
 		)
 		return
 	}
 
-	state.PushParam(
-		uiState.Stack,
+	KeyActive.Set(
+		uiState.Store,
 		n.reference,
-		ArgActiveOption,
 		n.options[n.cursor].Id,
 	)
 }

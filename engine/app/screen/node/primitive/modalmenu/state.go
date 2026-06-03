@@ -1,5 +1,5 @@
 package modalmenu
 
-import "github.com/Rafael24595/go-reacterm-core/engine/model/param"
+import "github.com/Rafael24595/go-reacterm-core/engine/app/store"
 
-const ArgActiveOption param.Typed[string] = "id_modal_menu"
+const KeyActive store.Key[string] = "id_modal_menu"
