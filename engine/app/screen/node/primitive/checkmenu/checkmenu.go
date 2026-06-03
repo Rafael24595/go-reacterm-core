@@ -14,41 +14,12 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/checkmenu"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/param"
 	"github.com/Rafael24595/go-reacterm-core/engine/platform/clock"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 )
 
 const Name = "check_menu"
-
-const ArgActiveChecks param.Typed[set.Set[string]] = "check_menu_active"
-
-var read_definition = screen.NewDefinition(
-	map[key.Action]key.Descriptor{
-		key.ActionEnter: {Code: []string{"RET"}, Detail: "Edit mode"},
-	},
-	[]key.Action{
-		key.ActionEnter,
-	},
-)
-
-var write_definition = screen.NewDefinition(
-	map[key.Action]key.Descriptor{
-		key.ActionEsc:       {Code: []string{"ESC"}, Detail: "Write Mode"},
-		key.ActionEnter:     {Code: []string{"RET"}, Detail: "Active selected"},
-		key.ActionArrowUp:   {Code: []string{"↑"}, Detail: "Move first"},
-		key.ActionArrowDown: {Code: []string{"↓"}, Detail: "Move last"},
-	},
-	[]key.Action{
-		key.ActionEsc,
-		key.ActionEnter,
-		key.ActionArrowLeft,
-		key.ActionArrowRight,
-		key.ActionArrowUp,
-		key.ActionArrowDown,
-	},
-)
 
 type CheckMenu struct {
 	reference    string
@@ -121,6 +92,10 @@ func (n *CheckMenu) ToNode() screen.Node {
 }
 
 func (n *CheckMenu) init(uiState state.UIState) {
+	n.loadFromStack(uiState)
+}
+
+func (n *CheckMenu) loadFromStack(uiState state.UIState) {
 	options, ok := state.FindParam(
 		uiState.Stack,
 		n.reference,
@@ -255,13 +230,15 @@ func (n *CheckMenu) activeIds() set.Set[string] {
 	return result
 }
 
-func (n *CheckMenu) view(_ state.UIState) viewmodel.ViewModel {
+func (n *CheckMenu) view(uiState state.UIState) viewmodel.ViewModel {
+	vm := viewmodel.New()
+
+	n.loadFromStack(uiState)
+
 	indexmenu := checkmenu.New(n.options).
 		WriteMode(n.action.ActionMode).
 		Meta(n.meta).
 		Cursor(n.cursor)
-
-	vm := viewmodel.New()
 
 	vm.Kernel.Push(
 		indexmenu.ToUnit(),
