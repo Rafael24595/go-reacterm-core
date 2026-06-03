@@ -6,6 +6,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
 )
 
@@ -22,14 +23,17 @@ func TestTextArea_Init(t *testing.T) {
 
 	uiState := state.NewUIState()
 
+	caret := offset.Offset(2)
+	anchor := offset.Offset(4)
+
 	state.PushParam(
 		uiState.Stack,
 		area.reference,
 		ArgTextInputState,
 		State{
 			Buffer: []rune("golang"),
-			Caret:  2,
-			Anchor: 4,
+			Caret:  &caret,
+			Anchor: &anchor,
 		},
 	)
 
