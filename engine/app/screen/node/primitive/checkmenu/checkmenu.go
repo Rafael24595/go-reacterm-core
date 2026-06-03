@@ -6,6 +6,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/store"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
@@ -96,8 +97,8 @@ func (n *CheckMenu) init(uiState state.UIState) {
 }
 
 func (n *CheckMenu) loadFromStack(uiState state.UIState) {
-	options, ok := state.FindParam(
-		uiState.Stack,
+	options, ok := store.Find(
+		uiState.Store,
 		n.reference,
 		ArgActiveChecks,
 	)
@@ -159,8 +160,8 @@ func (n *CheckMenu) tickNavigation(uiState *state.UIState, event screen.Event) s
 }
 
 func (n *CheckMenu) tickToStack(uiState *state.UIState) {
-	state.PushParam(
-		uiState.Stack,
+	store.Push(
+		uiState.Store,
 		n.reference,
 		ArgActiveChecks,
 		n.activeIds(),

@@ -4,6 +4,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/store"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/inputline"
@@ -70,8 +71,8 @@ func (n *IndexMenu) init(uiState state.UIState) {
 }
 
 func (n *IndexMenu) loadFromStack(uiState state.UIState) {
-	option, ok := state.FindParam(
-		uiState.Stack,
+	option, ok := store.Find(
+		uiState.Store,
 		n.reference,
 		ArgActiveIndex,
 	)
@@ -117,15 +118,15 @@ func (n *IndexMenu) tick(uiState *state.UIState, event screen.Event) screen.Resu
 
 func (n *IndexMenu) tickToStack(uiState *state.UIState) {
 	if n.cursor >= uint16(len(n.options)) {
-		uiState.Stack.RemoveArgument(
+		uiState.Store.RemoveArgument(
 			n.reference,
-			string(ArgActiveIndex),
+			string(KeyActive),
 		)
 		return
 	}
 
-	state.PushParam(
-		uiState.Stack,
+	store.Push(
+		uiState.Store,
 		n.reference,
 		ArgActiveIndex,
 		n.options[n.cursor].Id,

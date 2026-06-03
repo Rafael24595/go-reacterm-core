@@ -17,7 +17,7 @@ func Cleanup(result screen.Result, uiState *state.UIState) *state.UIState {
 		return uiState
 	}
 
-	uiState.Stack.RetainOnly(
+	uiState.Store.RetainOnly(
 		result.Node.Stack,
 	)
 

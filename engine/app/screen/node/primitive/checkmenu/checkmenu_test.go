@@ -6,6 +6,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/store"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
@@ -34,8 +35,8 @@ func TestCheckMenu_Init(t *testing.T) {
 
 	uiState := state.NewUIState()
 
-	state.PushParam(
-		uiState.Stack,
+	store.Push(
+		uiState.Store,
 		node.Name,
 		ArgActiveChecks,
 		set.From("2", "4"),

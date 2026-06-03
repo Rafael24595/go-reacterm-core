@@ -26,7 +26,7 @@ func TestStack_PreservesActiveState(t *testing.T) {
 		Name: "base",
 	}.ToNode()
 
-	uiState.Stack.Push(nodeBase.Name, "lang-1", "golang")
+	uiState.Store.Push(nodeBase.Name, "lang-1", "golang")
 
 	nodeWrapper := screen_test.MockNode{
 		Stack: nodeBase.Stack,
@@ -37,7 +37,7 @@ func TestStack_PreservesActiveState(t *testing.T) {
 
 	cleaner.Cleanup(result, uiState)
 
-	value, exists := uiState.Stack.Find(nodeBase.Name, "lang-1")
+	value, exists := uiState.Store.Find(nodeBase.Name, "lang-1")
 
 	assert.True(t, exists)
 	assert.Equal(t, "golang", value.Stringf())
@@ -51,7 +51,7 @@ func TestStack_RemovesInactiveState(t *testing.T) {
 		Name: "base",
 	}.ToNode()
 
-	uiState.Stack.Push(nodeBase.Name, "lang-1", "golang")
+	uiState.Store.Push(nodeBase.Name, "lang-1", "golang")
 
 	nodeNext := screen_test.MockNode{
 		Name: "next",
@@ -65,12 +65,12 @@ func TestStack_RemovesInactiveState(t *testing.T) {
 
 	cleaner.Cleanup(result, uiState)
 
-	_, exists := uiState.Stack.Find(nodeBase.Name, "lang-1")
+	_, exists := uiState.Store.Find(nodeBase.Name, "lang-1")
 	assert.False(t, exists)
 
-	uiState.Stack.Push(nodeNext.Name, "lang-2", "ziglang")
+	uiState.Store.Push(nodeNext.Name, "lang-2", "ziglang")
 
-	value, exists := uiState.Stack.Find(nodeNext.Name, "lang-2")
+	value, exists := uiState.Store.Find(nodeNext.Name, "lang-2")
 	assert.True(t, exists)
 	assert.Equal(t, "ziglang", value.Stringf())
 }
@@ -87,7 +87,7 @@ func TestStack_TransitionBetweenScreens(t *testing.T) {
 		Name: "next",
 	}.ToNode()
 
-	uiState.Stack.Push(nodeBase.Name, "lang-1", "golang")
+	uiState.Store.Push(nodeBase.Name, "lang-1", "golang")
 
 	nodeWrapper := screen_test.MockNode{}.ToNode()
 	nodeWrapper.Stack = nodeBase.Stack
@@ -96,7 +96,7 @@ func TestStack_TransitionBetweenScreens(t *testing.T) {
 	result.Node = &nodeWrapper
 	cleaner.Cleanup(result, uiState)
 
-	_, exists := uiState.Stack.Find(nodeBase.Name, "lang-1")
+	_, exists := uiState.Store.Find(nodeBase.Name, "lang-1")
 	assert.True(t, exists)
 
 	nodeWrapper.Stack = nodeNext.Stack
@@ -105,6 +105,6 @@ func TestStack_TransitionBetweenScreens(t *testing.T) {
 	result.Node = &nodeWrapper
 	cleaner.Cleanup(result, uiState)
 
-	_, exists = uiState.Stack.Find(nodeBase.Name, "lang-1")
+	_, exists = uiState.Store.Find(nodeBase.Name, "lang-1")
 	assert.False(t, exists)
 }

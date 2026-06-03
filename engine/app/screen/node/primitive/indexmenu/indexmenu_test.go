@@ -8,6 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/store"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
@@ -37,17 +38,17 @@ func TestIndexMenu_ToNode(t *testing.T) {
 
 func TestIndexMenu_Init(t *testing.T) {
 	menu := New().
-	AddOptions(
-		input.MenuOption{Id: "4"},
-		input.MenuOption{Id: "3"},
-		input.MenuOption{Id: "2"},
-		input.MenuOption{Id: "1"},
-	)
+		AddOptions(
+			input.MenuOption{Id: "4"},
+			input.MenuOption{Id: "3"},
+			input.MenuOption{Id: "2"},
+			input.MenuOption{Id: "1"},
+		)
 	node := menu.ToNode()
 
 	uiState := state.NewUIState()
-	state.PushParam(
-		uiState.Stack,
+	store.Push(
+		uiState.Store,
 		node.Name,
 		ArgActiveIndex,
 		"1",
