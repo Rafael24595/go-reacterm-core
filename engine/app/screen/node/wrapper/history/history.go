@@ -12,12 +12,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-var definition = screen.DefinitionFromActions(
-	[]key.Action{
-		key.CustomActionBack,
-	}...,
-)
-
 type History struct {
 	history *screen.Node
 	node    screen.Node
