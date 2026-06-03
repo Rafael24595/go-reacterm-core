@@ -10,24 +10,10 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/indexmenu"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/param"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 )
 
 const Name = "index_menu"
-
-const ArgActiveIndex param.Typed[string] = "id_index_menu"
-
-var index_menu_definition = screen.DefinitionFromActions(
-	[]key.Action{
-		key.ActionEnter,
-		key.ActionArrowLeft,
-		key.ActionArrowRight,
-		key.ActionArrowUp,
-		key.ActionArrowDown,
-		key.CustomActionPointer,
-	}...,
-)
 
 type IndexMenu struct {
 	reference string
@@ -80,6 +66,10 @@ func (n *IndexMenu) ToNode() screen.Node {
 }
 
 func (n *IndexMenu) init(uiState state.UIState) {
+	n.loadFromStack(uiState)
+}
+
+func (n *IndexMenu) loadFromStack(uiState state.UIState) {
 	option, ok := state.FindParam(
 		uiState.Stack,
 		n.reference,
@@ -147,7 +137,11 @@ func (n *IndexMenu) actionEnter() screen.Result {
 	return screen.ResultFromNode(&node)
 }
 
-func (n *IndexMenu) view(_ state.UIState) viewmodel.ViewModel {
+func (n *IndexMenu) view(uiState state.UIState) viewmodel.ViewModel {
+	vm := viewmodel.New()
+
+	n.loadFromStack(uiState)
+
 	frags := input.FragmentFromMenuOption(n.options...)
 
 	pointer := indexmenu.FindPointer(n.pointer)
@@ -156,8 +150,6 @@ func (n *IndexMenu) view(_ state.UIState) viewmodel.ViewModel {
 		Pointer(pointer).
 		Meta(n.meta).
 		Cursor(n.cursor)
-
-	vm := viewmodel.New()
 
 	vm.Kernel.Push(
 		indexmenu.ToUnit(),

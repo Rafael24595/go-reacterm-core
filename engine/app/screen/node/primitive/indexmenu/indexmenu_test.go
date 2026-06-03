@@ -191,7 +191,7 @@ func TestIndexMenu_ViewCursor(t *testing.T) {
 			),
 		)
 
-	uiState := &state.UIState{}
+	uiState := state.NewUIState()
 
 	ctx := pager.PredicateContext{
 		HasFocus: true,
