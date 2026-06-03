@@ -22,42 +22,6 @@ import (
 
 const NameArea = "text_area"
 
-var area_read_definition = screen.NewDefinition(
-	map[key.Action]key.Descriptor{
-		key.ActionEnter: {Code: []string{"RET"}, Detail: "Edit text"},
-	},
-	[]key.Action{
-		key.ActionEnter,
-	},
-)
-
-var area_write_definition = screen.NewDefinition(
-	map[key.Action]key.Descriptor{
-		key.ActionEsc:   {Code: []string{"ESC"}, Detail: "Save & Quit"},
-		key.ActionEnter: {Code: []string{"RET"}, Detail: "New line"},
-	},
-	[]key.Action{
-		key.ActionEsc,
-		key.ActionHome,
-		key.ActionEnd,
-		key.ActionArrowLeft,
-		key.ActionArrowRight,
-		key.ActionBackspace,
-		key.ActionDeleteBackward,
-		key.ActionDelete,
-		key.ActionDeleteForward,
-		key.ActionEnter,
-		key.ActionArrowUp,
-		key.ActionArrowDown,
-		key.CustomActionUndo,
-		key.CustomActionRedo,
-		key.CustomActionCut,
-		key.CustomActionCopy,
-		key.CustomActionPaste,
-		key.ActionRune,
-	},
-)
-
 type TextArea struct {
 	reference string
 	history   *event.TextEventService
@@ -180,9 +144,9 @@ func (n *TextArea) loadFromStack(uiState state.UIState) {
 
 func (n *TextArea) keys() screen.Definition {
 	if n.writeMode {
-		return area_write_definition
+		return write_definition
 	}
-	return area_read_definition
+	return read_definition
 }
 
 func (n *TextArea) tick(uiState *state.UIState, event screen.Event) screen.Result {
