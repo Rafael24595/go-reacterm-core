@@ -8,27 +8,10 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/modal"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/param"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
 const Name = "modal_menu"
-
-const ArgActiveOption param.Typed[string] = "id_modal_menu"
-
-var definition = screen.NewDefinition(
-	map[key.Action]key.Descriptor{
-		key.ActionEnter: {Code: []string{"RET"}, Detail: "Active selected"},
-	},
-	[]key.Action{
-		key.ActionEnter,
-		key.ActionArrowLeft,
-		key.ActionArrowRight,
-		key.ActionArrowUp,
-		key.ActionArrowDown,
-		key.CustomActionBack,
-	},
-)
 
 type ModalMenu struct {
 	reference string
@@ -79,15 +62,20 @@ func (n *ModalMenu) ToNode() screen.Node {
 }
 
 func (n *ModalMenu) init(uiState state.UIState) {
+	n.loadFromStack(uiState)
+}
+
+func (n *ModalMenu) loadFromStack(uiState state.UIState) {
 	option, ok := state.FindParam(
 		uiState.Stack,
 		n.reference,
 		ArgActiveOption,
 	)
+
 	if !ok {
 		return
 	}
-	
+
 	for i, o := range n.options {
 		if o.Id == option {
 			n.cursor = uint16(i)
@@ -147,8 +135,10 @@ func (n *ModalMenu) actionEnter() screen.Result {
 	return screen.ResultFromNode(&node)
 }
 
-func (n *ModalMenu) view(_ state.UIState) viewmodel.ViewModel {
+func (n *ModalMenu) view(uiState state.UIState) viewmodel.ViewModel {
 	vm := viewmodel.New()
+
+	n.loadFromStack(uiState)
 
 	frags := input.FragmentFromMenuOption(n.options...)
 
