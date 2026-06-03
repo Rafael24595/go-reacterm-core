@@ -143,6 +143,10 @@ func (n *TextArea) ToNode() screen.Node {
 }
 
 func (n *TextArea) init(uiState state.UIState) {
+	n.loadFromStack(uiState)
+}
+
+func (n *TextArea) loadFromStack(uiState state.UIState) {
 	state, ok := state.FindParam(
 		uiState.Stack,
 		n.reference,
@@ -576,6 +580,8 @@ func (n *TextArea) deleteForward(uiState *state.UIState, word bool) screen.Resul
 
 func (n *TextArea) view(uiState state.UIState) viewmodel.ViewModel {
 	vm := viewmodel.New()
+
+	n.loadFromStack(uiState)
 
 	predicate, textarea, needsPulse := n.viewSources(uiState)
 
