@@ -23,29 +23,6 @@ import (
 
 const Name = "table"
 
-var read_definition = screen.NewDefinition(
-	map[key.Action]key.Descriptor{
-		key.ActionEnter: {Code: []string{"RET"}, Detail: "Edit mode"},
-	},
-	[]key.Action{
-		key.ActionEnter,
-	},
-)
-
-var write_definition = screen.NewDefinition(
-	map[key.Action]key.Descriptor{
-		key.ActionEsc:   {Code: []string{"ESC"}, Detail: "Write Mode"},
-		key.ActionEnter: {Code: []string{"RET"}, Detail: "Active selected"},
-	},
-	[]key.Action{
-		key.ActionEsc,
-		key.ActionArrowLeft,
-		key.ActionArrowRight,
-		key.ActionArrowUp,
-		key.ActionArrowDown,
-	},
-)
-
 type MarshalFunc[T any] func(T) []table.Field
 
 type Table[T any] struct {
@@ -127,6 +104,10 @@ func (n *Table[T]) ToNode() screen.Node {
 }
 
 func (n *Table[T]) init(uiState state.UIState) {
+	n.loadFromStack(uiState)
+}
+
+func (n *Table[T]) loadFromStack(uiState state.UIState) {
 	state, ok := state.FindParam(
 		uiState.Stack,
 		n.reference,
@@ -220,8 +201,10 @@ func (n *Table[T]) tickToStack(uiState *state.UIState) {
 	)
 }
 
-func (n *Table[T]) view(_ state.UIState) viewmodel.ViewModel {
+func (n *Table[T]) view(uiState state.UIState) viewmodel.ViewModel {
 	vm := viewmodel.New()
+
+	n.loadFromStack(uiState)
 
 	table := drawable_table.UnitFromTable(*n.table, *n.cursor)
 
