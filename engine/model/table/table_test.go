@@ -110,3 +110,48 @@ func TestSetSeparator_ShouldOverrideDefault(t *testing.T) {
 	assert.Equal(t, sep, tbl.GetSeparator())
 	assert.Equal(t, ret, tbl)
 }
+
+func TestFindCell_ShouldReturnContentWhenCellExists(t *testing.T) {
+	tbl := NewTable()
+	tbl.SetHeaders("Name")
+	tbl.SetCell("Name", 0, "Golang")
+
+	val, ok := tbl.FindCell("Name", 0)
+
+	assert.Equal(t, true, ok)
+	assert.Equal(t, "Golang", val)
+}
+
+func TestFindCell_WithInvalidHeader_ShouldReturnFalse(t *testing.T) {
+	tbl := NewTable()
+	tbl.SetHeaders("Name")
+	tbl.SetCell("Name", 0, "Golang")
+
+	val, ok := tbl.FindCell("Invalid", 0)
+
+	assert.Equal(t, false, ok)
+	assert.Equal(t, "", val)
+}
+
+func TestFindCell_WithRowOutOfBounds_ShouldReturnFalse(t *testing.T) {
+	tbl := NewTable()
+	tbl.SetHeaders("Name")
+	tbl.SetCell("Name", 0, "Golang")
+
+	val, ok := tbl.FindCell("Name", 1)
+
+	assert.Equal(t, false, ok)
+	assert.Equal(t, "", val)
+}
+
+func TestFindCell_WithDynamicallyExpandedCell_ShouldReturnEmptyStringAndTrue(t *testing.T) {
+	tbl := NewTable()
+	tbl.SetHeaders("Name")
+	
+	tbl.SetCell("Name", 2, "Zig")
+
+	val, ok := tbl.FindCell("Name", 1)
+
+	assert.Equal(t, true, ok)
+	assert.Equal(t, "", val)
+}
