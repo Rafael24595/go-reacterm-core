@@ -37,3 +37,11 @@ func (c *MatrixCursor) DecCol() *MatrixCursor {
 	c.Col = math.SubClampZero(c.Col, 1)
 	return c
 }
+
+func (c *MatrixCursor) IsAt(row, col uint16) bool {
+	if !c.Show {
+		return false
+	}
+	return c.Row == row && c.Col == col
+}
+
