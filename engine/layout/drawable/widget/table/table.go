@@ -7,15 +7,18 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/table"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
 const Name = "table_unit"
 
+const defaultMinColSize = winsize.Cols(3 + marker.DefaultElipsisSize)
+
 type TableUnit struct {
 	loaded     bool
 	lazyLoaded bool
-	size       winsize.Winsize
+	minColSize winsize.Cols
 	table      table.Table
 	sections   []section
 	cursor     input.MatrixCursor
@@ -25,7 +28,7 @@ func New(table table.Table, cursor input.MatrixCursor) *TableUnit {
 	return &TableUnit{
 		loaded:     false,
 		lazyLoaded: false,
-		size:       winsize.Winsize{},
+		minColSize: defaultMinColSize,
 		table:      table,
 		sections:   make([]section, 0),
 		cursor:     cursor,
@@ -34,6 +37,11 @@ func New(table table.Table, cursor input.MatrixCursor) *TableUnit {
 
 func UnitFromTable(table table.Table, cursor input.MatrixCursor) drawable.Unit {
 	return New(table, cursor).ToUnit()
+}
+
+func (u *TableUnit) MinCol(size winsize.Cols) *TableUnit {
+	u.minColSize = size
+	return u
 }
 
 func (u *TableUnit) ToUnit() drawable.Unit {
@@ -61,8 +69,9 @@ func (u *TableUnit) lazyInit(size winsize.Winsize) {
 
 	u.lazyLoaded = true
 
-	u.size = size
-	u.sections = makeSections(u.table, u.cursor, size)
+	u.sections = newBuilder(u.table, u.cursor).
+		setMinSize(u.minColSize).
+		render(size)
 
 	for i := range u.sections {
 		u.sections[i].header.Drawable.Init()
@@ -80,8 +89,8 @@ func (u *TableUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 
 	u.lazyInit(size)
 
-	headers, footers, remaining := u.drawStatic()
-	bodies, hasNext := u.drawDynamic(remaining)
+	headers, footers, remaining := u.drawStatic(size)
+	bodies, hasNext := u.drawDynamic(size, remaining)
 
 	result := make([]text.Line, size.Rows)
 	cursor := 0
@@ -99,16 +108,16 @@ func (u *TableUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 	return result, hasNext
 }
 
-func (u *TableUnit) drawStatic() ([][]text.Line, [][]text.Line, int) {
+func (u *TableUnit) drawStatic(size winsize.Winsize) ([][]text.Line, [][]text.Line, int) {
 	headers := make([][]text.Line, len(u.sections))
 	footers := make([][]text.Line, len(u.sections))
 
-	remaining := int(u.size.Rows)
+	remaining := int(size.Rows)
 	for i, s := range u.sections {
-		header, _ := s.header.Drawable.Draw(u.size)
+		header, _ := s.header.Drawable.Draw(size)
 		headers[i] = header
 
-		footer, _ := s.footer.Drawable.Draw(u.size)
+		footer, _ := s.footer.Drawable.Draw(size)
 		footers[i] = footer
 
 		remaining -= (len(header) + len(footer))
@@ -117,7 +126,7 @@ func (u *TableUnit) drawStatic() ([][]text.Line, [][]text.Line, int) {
 	return headers, footers, remaining
 }
 
-func (u *TableUnit) drawDynamic(remaining int) ([][]text.Line, bool) {
+func (u *TableUnit) drawDynamic(size winsize.Winsize, remaining int) ([][]text.Line, bool) {
 	empty := make(map[int]int)
 
 	sections := len(u.sections)
@@ -138,7 +147,7 @@ func (u *TableUnit) drawDynamic(remaining int) ([][]text.Line, bool) {
 				continue
 			}
 
-			lines, status := s.rows.Drawable.Draw(u.size)
+			lines, status := s.rows.Drawable.Draw(size)
 			if !status {
 				empty[i] = 1
 			}
