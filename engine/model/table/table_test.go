@@ -11,8 +11,8 @@ import (
 func TestNewTable_ShouldInitializeEmptyTable(t *testing.T) {
 	tbl := NewTable()
 
-	assert.Equal(t, 0, tbl.Cols())
-	assert.Equal(t, 0, tbl.Rows())
+	assert.Equal(t, 0, tbl.ColCount())
+	assert.Equal(t, 0, tbl.RowCount())
 	assert.Equal(t, marker.DefaultTableSeparator, tbl.GetSeparator())
 }
 
@@ -61,9 +61,9 @@ func TestSize_ShouldCalculateMaxWidth(t *testing.T) {
 	tbl.SetCell("Name", 0, "zig")
 	tbl.SetCell("Name", 1, "golang")
 
-	size := tbl.Size()
+	maxCols := tbl.MaxCols()
 
-	assert.Len(t, int(size["Name"]), []rune("golang"))
+	assert.Len(t, int(maxCols["Name"]), []rune("golang"))
 }
 
 func TestSize_ShouldConsiderHeaderLength(t *testing.T) {
@@ -72,16 +72,16 @@ func TestSize_ShouldConsiderHeaderLength(t *testing.T) {
 
 	tbl.SetCell("VeryLongHeader", 0, "go")
 
-	size := tbl.Size()
+	maxCols := tbl.MaxCols()
 
-	assert.Len(t, int(size["VeryLongHeader"]), []rune("VeryLongHeader"))
+	assert.Len(t, int(maxCols["VeryLongHeader"]), []rune("VeryLongHeader"))
 }
 
 func TestCols_ShouldReturnHeaderCount(t *testing.T) {
 	tbl := NewTable()
 	tbl.SetHeaders("A", "B", "C")
 
-	assert.Equal(t, 3, tbl.Cols())
+	assert.Equal(t, 3, tbl.ColCount())
 }
 
 func TestRows_ShouldReturnMaxRowCount(t *testing.T) {
@@ -91,7 +91,7 @@ func TestRows_ShouldReturnMaxRowCount(t *testing.T) {
 	tbl.SetCell("A", 0, "x")
 	tbl.SetCell("B", 2, "y")
 
-	assert.Equal(t, 3, tbl.Rows())
+	assert.Equal(t, 3, tbl.RowCount())
 }
 
 func TestSetSeparator_ShouldOverrideDefault(t *testing.T) {

@@ -9,6 +9,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 )
 
+type MaxCols map[string]winsize.Cols
+
 type Table struct {
 	cols      map[string][]string
 	headers   []string
@@ -96,8 +98,8 @@ func (t *Table) SetCell(header string, row uint16, data any) *Table {
 	return t
 }
 
-func (t *Table) Size() map[string]winsize.Cols {
-	size := make(map[string]winsize.Cols)
+func (t *Table) MaxCols() MaxCols {
+	size := make(MaxCols)
 	for _, h := range t.headers {
 		if _, ok := size[h]; !ok {
 			size[h] = runes.Measure(h)
@@ -111,10 +113,10 @@ func (t *Table) Size() map[string]winsize.Cols {
 	return size
 }
 
-func (t *Table) Cols() uint16 {
+func (t *Table) ColCount() uint16 {
 	return uint16(len(t.headers))
 }
 
-func (t *Table) Rows() uint16 {
-	return Rows(t.headers, t.cols)
+func (t *Table) RowCount() uint16 {
+	return RowCount(t.headers, t.cols)
 }

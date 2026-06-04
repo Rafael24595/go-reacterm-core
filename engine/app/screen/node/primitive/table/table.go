@@ -82,7 +82,7 @@ func (n *Table[T]) SetHeaders(headers ...string) *Table[T] {
 }
 
 func (n *Table[T]) AddItems(marshal MarshalFunc[T], items ...T) *Table[T] {
-	rows := n.table.Rows()
+	rows := n.table.RowCount()
 	for i, item := range items {
 		index := rows + uint16(i)
 		for _, field := range marshal(item) {
@@ -117,8 +117,8 @@ func (n *Table[T]) loadFromStack(uiState state.UIState) {
 		return
 	}
 
-	n.cursor.Row = min(n.table.Rows(), state.Row)
-	n.cursor.Col = min(n.table.Cols(), state.Col)
+	n.cursor.Row = min(n.table.RowCount(), state.Row)
+	n.cursor.Col = min(n.table.ColCount(), state.Col)
 }
 
 func (n *Table[T]) keys() screen.Definition {
@@ -158,7 +158,7 @@ func (n *Table[T]) tickeNavigation(uiState *state.UIState, event screen.Event) s
 		n.tickToStack(uiState)
 	case key.ActionArrowRight:
 		n.cursor.IncCol(
-			math.SubClampZero(n.table.Cols(), 1),
+			math.SubClampZero(n.table.ColCount(), 1),
 		)
 		n.tickToStack(uiState)
 	case key.ActionArrowUp:
@@ -166,7 +166,7 @@ func (n *Table[T]) tickeNavigation(uiState *state.UIState, event screen.Event) s
 		n.tickToStack(uiState)
 	case key.ActionArrowDown:
 		n.cursor.IncRow(
-			math.SubClampZero(n.table.Rows(), 1),
+			math.SubClampZero(n.table.RowCount(), 1),
 		)
 		n.tickToStack(uiState)
 	}
