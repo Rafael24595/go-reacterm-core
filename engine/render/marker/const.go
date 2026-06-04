@@ -6,8 +6,10 @@ const DefaultPaddingText = " "
 
 const PrintableCaretText = " "
 
-const DefaultElipsisText = "."
-const DefaultElipsisSize = winsize.Cols(3)
+const (
+	DefaultElipsisText = "."
+	DefaultElipsisSize = winsize.Cols(3)
+)
 
 const DefaultPromptText = ">"
 
