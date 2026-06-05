@@ -24,7 +24,7 @@ func TestSetHeaders_ShouldAddHeadersWithoutDuplicates(t *testing.T) {
 
 	headers := tbl.GetHeaders()
 
-	assert.Len(t, 3, headers)
+	assert.Size(t, 3, headers)
 
 	assert.Equal(t, "ID", headers[0])
 	assert.Equal(t, "Lang", headers[1])
@@ -39,7 +39,7 @@ func TestField_ShouldExpandRowsDynamically(t *testing.T) {
 
 	col := tbl.GetColumns()["Name"]
 
-	assert.Len(t, 3, col)
+	assert.Size(t, 3, col)
 	assert.Equal(t, "", col[0])
 	assert.Equal(t, "", col[1])
 	assert.Equal(t, "Golang", col[2])
@@ -51,7 +51,7 @@ func TestField_WithInvalidHeader_ShouldDoNothing(t *testing.T) {
 
 	tbl.SetCell("Invalid", 0, "X")
 
-	assert.Len(t, 0, tbl.GetColumns()["ID"])
+	assert.Size(t, 0, tbl.GetColumns()["ID"])
 }
 
 func TestSize_ShouldCalculateMaxWidth(t *testing.T) {
@@ -63,7 +63,7 @@ func TestSize_ShouldCalculateMaxWidth(t *testing.T) {
 
 	maxCols := tbl.MaxCols()
 
-	assert.Len(t, int(maxCols["Name"]), []rune("golang"))
+	assert.Size(t, int(maxCols["Name"]), []rune("golang"))
 }
 
 func TestSize_ShouldConsiderHeaderLength(t *testing.T) {
@@ -74,7 +74,7 @@ func TestSize_ShouldConsiderHeaderLength(t *testing.T) {
 
 	maxCols := tbl.MaxCols()
 
-	assert.Len(t, int(maxCols["VeryLongHeader"]), []rune("VeryLongHeader"))
+	assert.Size(t, int(maxCols["VeryLongHeader"]), []rune("VeryLongHeader"))
 }
 
 func TestCols_ShouldReturnHeaderCount(t *testing.T) {
@@ -147,7 +147,7 @@ func TestFindCell_WithRowOutOfBounds_ShouldReturnFalse(t *testing.T) {
 func TestFindCell_WithDynamicallyExpandedCell_ShouldReturnEmptyStringAndTrue(t *testing.T) {
 	tbl := NewTable()
 	tbl.SetHeaders("Name")
-	
+
 	tbl.SetCell("Name", 2, "Zig")
 
 	val, ok := tbl.FindCell("Name", 1)

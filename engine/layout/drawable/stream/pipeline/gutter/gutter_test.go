@@ -106,7 +106,7 @@ func TestDrawTransformer(t *testing.T) {
 
 			assert.Equal(t, tt.wantHasNext, hasNext)
 			for i := range lines {
-				assert.Len(t, tt.wantFrags[i], lines[i].Text)
+				assert.Size(t, tt.wantFrags[i], lines[i].Text)
 				assert.Equal(t, tt.wantLines[i], text.LineToString(&lines[i]))
 			}
 		})

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/app/draw"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
@@ -26,7 +26,7 @@ func TestEnginePage(t *testing.T) {
 
 	result := engine.Func(ctx, state)
 
-	assert.Len(t, 3, result.Buffer)
+	assert.Size(t, 3, result.Buffer)
 	assert.Equal(t, 2, result.Page)
 	assert.Equal(t, 0, result.Cursor)
 	assert.False(t, result.Focus)

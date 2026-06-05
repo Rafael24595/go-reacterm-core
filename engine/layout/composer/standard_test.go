@@ -57,7 +57,7 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 
 	_, lines := Standard(state, *vm, size)
 
-	assert.Len(t, int(size.Rows), lines)
+	assert.Size(t, int(size.Rows), lines)
 	assert.Equal(t, "HEADER", lines[0].Text[0].Text)
 
 	inputLine := lines[len(lines)-1]

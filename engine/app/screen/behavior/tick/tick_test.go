@@ -28,7 +28,7 @@ func TestWrap_AddsTag_AndExecutesDecorator(t *testing.T) {
 	}
 
 	wrapped := Wrap(decorator)(mock.ToNode())
-	assert.Contains(t, wrapped.Tags, Tag)
+	assert.Inside(t, Tag, wrapped.Tags)
 
 	wrapped.Screen.Tick(&state.UIState{}, screen.Event{})
 	assert.Equal(t, 1, called)
@@ -69,7 +69,7 @@ func TestWrap_DoesNotMutateOriginalNode(t *testing.T) {
 		return next
 	})(mock.ToNode())
 
-	assert.Len(t, 0, tags)
+	assert.Size(t, 0, tags)
 }
 
 func TestWrap_TargetIsCorrect(t *testing.T) {

@@ -18,12 +18,12 @@ func TestEraseSpec_DeleteExists(t *testing.T) {
 	size := commons.Mapd[winsize.Cols](removed.args[KeyPaddingLeftSize], 0)
 
 	assert.Equal(t, SpcKindFill, modified.kind)
-	assert.NotContains(t, modified.args, KeyPaddingLeftSize)
-	assert.Contains(t, modified.args, KeyFillSize)
+	assert.NotInside(t, KeyPaddingLeftSize, modified.args)
+	assert.Inside(t, KeyFillSize, modified.args)
 
 	assert.Equal(t, SpcKindPaddingLeft, removed.kind)
 	assert.Equal(t, 10, size)
-	assert.NotContains(t, removed.args, KeyFillSize)
+	assert.NotInside(t, KeyFillSize, removed.args)
 }
 
 func TestEraseSpec_DeleteNonExists(t *testing.T) {

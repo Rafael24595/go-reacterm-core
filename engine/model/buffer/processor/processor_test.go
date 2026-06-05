@@ -43,7 +43,7 @@ func TestProcessor_Hidden(t *testing.T) {
 
 	assert.Equal(t, "password123", string(buff))
 	assert.Equal(t, "***********", string(facade))
-	assert.Len(t, len(buff), facade)
+	assert.Size(t, len(buff), facade)
 }
 
 func TestProcessor_Limit(t *testing.T) {

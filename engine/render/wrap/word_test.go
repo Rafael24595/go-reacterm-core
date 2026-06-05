@@ -112,7 +112,7 @@ func TestSplitLineWords(t *testing.T) {
 			tokens := splitLineWords(tt.line)
 			got := tokenStrings(tokens)
 
-			assert.Len(t, len(tt.expected), got)
+			assert.Size(t, len(tt.expected), got)
 			for i := range got {
 				assert.Equal(t, tt.expected[i], got[i])
 			}

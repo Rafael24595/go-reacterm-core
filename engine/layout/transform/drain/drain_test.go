@@ -7,7 +7,7 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
-	
+
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 )
 
@@ -91,7 +91,7 @@ func TestDrainUnit_WithMock(t *testing.T) {
 
 			got, _ := Unit(size, m.ToUnit(), tt.lazy)
 
-			assert.Len(t, tt.wantLines, got)
+			assert.Size(t, tt.wantLines, got)
 			assert.Equal(t, tt.wantDrawCalls, m.DrawCalls)
 		})
 	}

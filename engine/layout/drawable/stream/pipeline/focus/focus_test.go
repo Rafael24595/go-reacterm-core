@@ -34,7 +34,7 @@ func TestFocusInitTransformer_FocusAtStart(t *testing.T) {
 		Cols: 10,
 	}, mock.ToUnit())
 
-	assert.Len(t, 2, lines)
+	assert.Size(t, 2, lines)
 
 	assert.False(t, status)
 	assert.Equal(t, "base_01", text.LineToString(&lines[0]))
@@ -64,7 +64,7 @@ func TestFocusInitTransformer_FocusAtEnd(t *testing.T) {
 		Cols: 10,
 	}, mock.ToUnit())
 
-	assert.Len(t, 2, lines)
+	assert.Size(t, 2, lines)
 
 	assert.False(t, status)
 	assert.Equal(t, "base_02", text.LineToString(&lines[0]))

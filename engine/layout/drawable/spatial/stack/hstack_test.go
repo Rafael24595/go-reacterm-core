@@ -79,7 +79,7 @@ func TestHStack_Distribution(t *testing.T) {
 		Cols: 100,
 	})
 
-	assert.Len(t, 3, stack.fixed)
+	assert.Size(t, 3, stack.fixed)
 
 	assert.Equal(t, 34, stack.fixed[0].Value)
 	assert.Equal(t, 33, stack.fixed[1].Value)
@@ -136,7 +136,7 @@ func TestHStack_RenderOutput(t *testing.T) {
 
 	lines, _ := stack.draw(size)
 
-	assert.Len(t, 3, lines)
+	assert.Size(t, 3, lines)
 
 	resultText := ""
 	for _, frag := range lines[0].Text {

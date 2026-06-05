@@ -23,7 +23,7 @@ func TestBuilder_BasicScreen(t *testing.T) {
 		ToNode()
 
 	assert.Equal(t, name, node.Name)
-	assert.Len(t, 0, node.Stack)
+	assert.Size(t, 0, node.Stack)
 	assert.Nil(t, node.Screen.Keys)
 	assert.NotNil(t, node.Screen.Init)
 	assert.NotNil(t, node.Screen.Tick)
@@ -48,7 +48,7 @@ func TestBuilder_NameToStack(t *testing.T) {
 		NameToStack().
 		ToNode()
 
-	assert.Contains(t, node.Stack, name)
+	assert.Inside(t, name, node.Stack)
 }
 
 func TestBuilder_IncompleteScreen(t *testing.T) {

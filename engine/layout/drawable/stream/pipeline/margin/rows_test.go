@@ -82,7 +82,7 @@ func TestRowsTopTransformer(t *testing.T) {
 				tt.size, mock.ToUnit(), lines, true,
 			)
 
-			assert.Len(t, tt.wantLen, result)
+			assert.Size(t, tt.wantLen, result)
 
 			for i, l := range tt.wantLines {
 				assert.Equal(t, l, text.LineToString(&result[i]))
@@ -141,7 +141,7 @@ func TestRowsBottomTransformer(t *testing.T) {
 				tt.size, mock.ToUnit(), lines, true,
 			)
 
-			assert.Len(t, tt.wantLen, result)
+			assert.Size(t, tt.wantLen, result)
 
 			for i, l := range tt.wantLines {
 				assert.Equal(t, l, text.LineToString(&result[i]))
@@ -200,7 +200,7 @@ func TestRowsMiddleTransformer(t *testing.T) {
 				tt.size, mock.ToUnit(), lines, true,
 			)
 
-			assert.Len(t, tt.wantLen, result)
+			assert.Size(t, tt.wantLen, result)
 
 			for i, l := range tt.wantLines {
 				assert.Equal(t, l, text.LineToString(&result[i]))

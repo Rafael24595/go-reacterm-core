@@ -26,7 +26,7 @@ func TestHelpUnit_EmptyFields(t *testing.T) {
 	)
 
 	assert.False(t, hasNext)
-	assert.Len(t, 0, lines)
+	assert.Size(t, 0, lines)
 }
 
 func TestHelpUnit_WithFields(t *testing.T) {
@@ -44,16 +44,16 @@ func TestHelpUnit_WithFields(t *testing.T) {
 	)
 
 	assert.False(t, hasNext)
-	assert.Len(t, 3, lines)
+	assert.Size(t, 3, lines)
 
-	assert.Len(t, 2, lines[0].Text)
+	assert.Size(t, 2, lines[0].Text)
 	assert.Equal(t, "--Help---", text.LineToString(&lines[0]))
 
-	assert.Len(t, 3, lines[1].Text)
+	assert.Size(t, 3, lines[1].Text)
 	assert.Equal(t, "[RET] New line/Accept | ", lines[1].Text[0].Text)
 	assert.Equal(t, "[←] Move left | ", lines[1].Text[1].Text)
 	assert.Equal(t, "[M-b, Alt-b] Back", lines[1].Text[2].Text)
 
-	assert.Len(t, 1, lines[2].Text)
+	assert.Size(t, 1, lines[2].Text)
 	assert.Equal(t, "-", text.LineToString(&lines[2]))
 }

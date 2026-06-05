@@ -28,7 +28,7 @@ func TestTable_LazyInit(t *testing.T) {
 		*input.NewMatrixCursor(0, 0, false),
 	)
 
-	assert.Len(t, 0, unit.sections)
+	assert.Size(t, 0, unit.sections)
 
 	unit.init()
 	unit.draw(winsize.Winsize{
@@ -36,5 +36,5 @@ func TestTable_LazyInit(t *testing.T) {
 		Cols: 11,
 	})
 
-	assert.Len(t, 1, unit.sections)
+	assert.Size(t, 1, unit.sections)
 }

@@ -129,7 +129,7 @@ func TestMergeActions_MultipleInserts(t *testing.T) {
 
 	events := s.mergeActions(s.actions)
 
-	assert.Len(t, 1, events)
+	assert.Size(t, 1, events)
 
 	ev := events[0]
 
@@ -148,7 +148,7 @@ func TestMerge_InsertNonContiguous(t *testing.T) {
 
 	events := s.mergeActions(s.actions)
 
-	assert.Len(t, 2, events)
+	assert.Size(t, 2, events)
 
 	assert.Equal(t, "g", events[0].insert)
 	assert.Equal(t, "o", events[1].insert)
@@ -165,7 +165,7 @@ func TestMerge_DifferentActions(t *testing.T) {
 
 	events := s.mergeActions(s.actions)
 
-	assert.Len(t, 2, events)
+	assert.Size(t, 2, events)
 	assert.Equal(t, "go", events[0].insert)
 	assert.Equal(t, "o", events[1].delete)
 }
@@ -181,7 +181,7 @@ func TestMerge_DeleteBackwardContiguous(t *testing.T) {
 
 	events := s.mergeActions(s.actions)
 
-	assert.Len(t, 1, events)
+	assert.Size(t, 1, events)
 
 	ev := events[0]
 	assert.Equal(t, 3, ev.start)
@@ -199,7 +199,7 @@ func TestMerge_DeleteBackwardNonContiguous(t *testing.T) {
 
 	events := s.mergeActions(s.actions)
 
-	assert.Len(t, 2, events)
+	assert.Size(t, 2, events)
 }
 
 func TestMerge_SingleAction(t *testing.T) {
@@ -211,7 +211,7 @@ func TestMerge_SingleAction(t *testing.T) {
 
 	events := s.mergeActions(s.actions)
 
-	assert.Len(t, 1, events)
+	assert.Size(t, 1, events)
 	assert.Equal(t, "Z", events[0].insert)
 }
 
@@ -304,7 +304,7 @@ func TestPushEvent_AddsAction(t *testing.T) {
 
 	s.PushEvent(Insert, 0, 0, "", "a")
 
-	assert.Len(t, 1, s.actions)
+	assert.Size(t, 1, s.actions)
 	assert.Equal(t, Insert, s.actions[0].kind)
 	assert.Equal(t, "a", s.actions[0].insert)
 }
@@ -315,8 +315,8 @@ func TestPushEvent_FlushOnWhitespace(t *testing.T) {
 	s.PushEvent(Insert, 0, 0, "", "a")
 	s.PushEvent(Insert, 1, 1, "", " ")
 
-	assert.Len(t, 1, s.actions)
-	assert.Len(t, 1, s.events)
+	assert.Size(t, 1, s.actions)
+	assert.Size(t, 1, s.events)
 }
 
 func TestPushEvent_FlushOnActionChange(t *testing.T) {
@@ -325,8 +325,8 @@ func TestPushEvent_FlushOnActionChange(t *testing.T) {
 	s.PushEvent(Insert, 0, 0, "", "a")
 	s.PushEvent(DeleteBackward, 1, 1, "a", "")
 
-	assert.Len(t, 1, s.actions)
-	assert.Len(t, 1, s.events)
+	assert.Size(t, 1, s.actions)
+	assert.Size(t, 1, s.events)
 }
 
 func TestPushEvent_FlushOnExpire(t *testing.T) {
@@ -342,8 +342,8 @@ func TestPushEvent_FlushOnExpire(t *testing.T) {
 
 	s.PushEvent(Insert, 1, 1, "", "b")
 
-	assert.Len(t, 1, s.actions)
-	assert.Len(t, 1, s.events)
+	assert.Size(t, 1, s.actions)
+	assert.Size(t, 1, s.events)
 }
 
 func TestPushEvent_Typing(t *testing.T) {
@@ -370,8 +370,8 @@ func TestPushEvent_Typing(t *testing.T) {
 
 	s.PushEvent(Insert, i, i, "", " ")
 
-	assert.Len(t, 1, s.actions)
-	assert.Len(t, 4, s.events)
+	assert.Size(t, 1, s.actions)
+	assert.Size(t, 4, s.events)
 
 	assert.Equal(t, s.events[0].insert, "Golang")
 	assert.Equal(t, s.events[1].insert, " "+"Z")
@@ -403,8 +403,8 @@ func TestPushEvent_UndoAndRedo(t *testing.T) {
 		i++
 	}
 
-	assert.Len(t, 3, s.actions)
-	assert.Len(t, 2, s.events)
+	assert.Size(t, 3, s.actions)
+	assert.Size(t, 2, s.events)
 
 	buffer := "Golang Zig"
 
@@ -450,7 +450,7 @@ func TestPushEvent_UndoRedoTruncateHistory(t *testing.T) {
 	i = runes.Measureo(buff)
 
 	s.PushEvent(Insert, i, i, "", "New")
-	assert.Len(t, s.cursor, s.events)
+	assert.Size(t, s.cursor, s.events)
 
 	_ = s.Undo()
 
@@ -528,7 +528,7 @@ func TestTextEventService_LimitLogic(t *testing.T) {
 
 	s.limitEvents()
 
-	assert.Len(t, event_limit, s.events)
+	assert.Size(t, event_limit, s.events)
 	assert.Equal(t, event_limit, s.cursor)
 	assert.Equal(t, "50", s.events[0].delete)
 
@@ -545,7 +545,7 @@ func TestTextEventService_LimitLogicWithPush(t *testing.T) {
 		s.PushEvent(Insert, offset.Offset(i), offset.Offset(i), content, " ")
 	}
 
-	assert.Len(t, event_limit, s.events)
+	assert.Size(t, event_limit, s.events)
 	assert.Equal(t, event_limit, s.cursor)
 	assert.Equal(t, "49", s.events[0].delete)
 

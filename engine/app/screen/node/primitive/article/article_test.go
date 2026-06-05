@@ -29,7 +29,7 @@ func TestNewArticle_DefaultValues(t *testing.T) {
 	article := New()
 
 	assert.Equal(t, Name, article.ToNode().Name)
-	assert.Len(t, 0, article.article)
+	assert.Size(t, 0, article.article)
 }
 
 func TestArticle_SetName(t *testing.T) {
@@ -46,7 +46,7 @@ func TestArticle_AddTitleAndArticle(t *testing.T) {
 	article := New().
 		AddArticle(*body)
 
-	assert.Len(t, 1, article.article)
+	assert.Size(t, 1, article.article)
 	assert.Equal(t, text.LineToString(body), text.LineToString(&article.article[0]))
 }
 
@@ -74,7 +74,7 @@ func TestArticle_View(t *testing.T) {
 	kernel.Drawable.Init()
 	lines, _ := kernel.Drawable.Draw(size)
 
-	assert.Len(t, 1, lines)
+	assert.Size(t, 1, lines)
 	assert.Equal(t, text.LineToString(body), text.LineToString(&lines[0]))
 }
 

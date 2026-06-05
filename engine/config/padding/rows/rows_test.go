@@ -17,7 +17,7 @@ func TestResolveConfigDefaults(t *testing.T) {
 		winsize.New(10, 20),
 	)
 
-	assert.Len(t, 0, frag.Text)
+	assert.Size(t, 0, frag.Text)
 }
 
 func TestWithPosition(t *testing.T) {

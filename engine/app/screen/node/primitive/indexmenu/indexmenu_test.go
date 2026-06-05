@@ -67,7 +67,7 @@ func TestIndexMenu_DefaultValues(t *testing.T) {
 	menu := New()
 
 	assert.Equal(t, menu.reference, Name)
-	assert.Len(t, 0, menu.options)
+	assert.Size(t, 0, menu.options)
 	assert.Equal(t, menu.cursor, 0)
 }
 
@@ -86,7 +86,7 @@ func TestIndexMenu_AddTitleAndOptions(t *testing.T) {
 			),
 		)
 
-	assert.Len(t, 2, menu.options)
+	assert.Size(t, 2, menu.options)
 }
 
 func TestIndexMenu_SetCursor_Clamp(t *testing.T) {

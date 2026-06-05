@@ -41,7 +41,7 @@ func TestInline_JoinsChildren(t *testing.T) {
 		Cols: 10,
 	})
 
-	assert.Len(t, 1, lines)
+	assert.Size(t, 1, lines)
 	assert.Equal(t, "golang", text.LineToString(&lines[0]))
 }
 
@@ -69,7 +69,7 @@ func TestInline_JoinsChildrenWithSeparator(t *testing.T) {
 		Cols: 16,
 	})
 
-	assert.Len(t, 1, lines)
+	assert.Size(t, 1, lines)
 	assert.Equal(t, "golang | ziglang", text.LineToString(&lines[0]))
 }
 
@@ -92,7 +92,7 @@ func TestInline_MultipleLines(t *testing.T) {
 		Cols: 9,
 	})
 
-	assert.Len(t, 1, lines)
+	assert.Size(t, 1, lines)
 	assert.Equal(t, "go | lang", text.LineToString(&lines[0]))
 }
 
@@ -103,5 +103,5 @@ func TestInline_Empty(t *testing.T) {
 
 	lines, _ := unit.Drawable.Draw(winsize.Winsize{})
 
-	assert.Len(t, 0, lines)
+	assert.Size(t, 0, lines)
 }

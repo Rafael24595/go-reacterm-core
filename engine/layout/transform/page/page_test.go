@@ -10,7 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
-	
+
 	pager_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/pager"
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 )
@@ -55,7 +55,7 @@ func TestNewPageRenderer_EngineCall(t *testing.T) {
 			return ds
 		},
 	}
-	
+
 	strategy := mockStrategy.ToStrategy()
 
 	mock := &drawable_test.MockUnit{
@@ -136,7 +136,7 @@ func TestNewPageRenderer_WithLineOverflow(t *testing.T) {
 	assert.True(t, status.Work.Unfinished())
 	assert.True(t, status.IsFull())
 
-	assert.Len(t, 2, status.Buffer)
+	assert.Size(t, 2, status.Buffer)
 
 	expected := text.LineToString(&status.Buffer[0]) + text.LineToString(&status.Buffer[1])
 	assert.Equal(t, "grus", expected)

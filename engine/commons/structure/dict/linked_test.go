@@ -141,7 +141,7 @@ func TestLinkedMap_MergeOverride(t *testing.T) {
 	m2.Set("C", 30)
 
 	added, ok := m1.Merge(m2)
-	
+
 	assert.True(t, ok)
 	assert.Equal(t, 1, added)
 
@@ -261,21 +261,21 @@ func TestLinkedMap_ToSlices(t *testing.T) {
 
 	t.Run("KeysSlice", func(t *testing.T) {
 		keys := m.ToKeysSlice()
-		assert.Len(t, 2, keys)
+		assert.Size(t, 2, keys)
 		assert.Equal(t, "A", keys[0])
 		assert.Equal(t, "B", keys[1])
 	})
 
 	t.Run("ValuesSlice", func(t *testing.T) {
 		values := m.ToValuesSlice()
-		assert.Len(t, 2, values)
+		assert.Size(t, 2, values)
 		assert.Equal(t, 10, values[0])
 		assert.Equal(t, 20, values[1])
 	})
 
 	t.Run("PairsSlice", func(t *testing.T) {
 		values := m.ToPairsSlice()
-		assert.Len(t, 2, values)
+		assert.Size(t, 2, values)
 
 		assert.Equal(t, "A", values[0].Key)
 		assert.Equal(t, 10, values[0].Value)

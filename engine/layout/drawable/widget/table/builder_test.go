@@ -30,7 +30,7 @@ func TestBuilder_FilterHeaders_FiltersCorrectly(t *testing.T) {
 
 	result, _ := builder{}.filterHeaders(headers, maxCols)
 
-	assert.Len(t, 2, result)
+	assert.Size(t, 2, result)
 	assert.Equal(t, "id", result[0])
 	assert.Equal(t, "name", result[1])
 }
@@ -66,7 +66,7 @@ func TestBuilder_RenderHeaders_Structure(t *testing.T) {
 
 	expectedFragments := 2*len(headers) + 1
 
-	assert.Len(t, expectedFragments, line.Text)
+	assert.Size(t, expectedFragments, line.Text)
 
 	assert.Equal(t, "|", line.Text[0].Text)
 	assert.Equal(t, "id", line.Text[1].Text)
@@ -97,7 +97,7 @@ func TestBuilder_RenderBody_Basic(t *testing.T) {
 		maxCols, headers, separator, &input.MatrixCursor{},
 	)
 
-	assert.Len(t, 2, lines)
+	assert.Size(t, 2, lines)
 
 	assert.Equal(t, "|1|golang|", text.LineToString(&lines[0]))
 	assert.Equal(t, "|2|ziglang|", text.LineToString(&lines[1]))
@@ -142,7 +142,7 @@ func TestBuilder_EvalMaxCols_ReducesLargestColumn(t *testing.T) {
 	assert.True(t, status)
 
 	assert.GreaterOrEqual(t, 14, builder.calcRowCapacity(result))
-	assert.Less(t, 10, result["A"])
+	assert.LessThan(t, 10, result["A"])
 }
 
 func TestBuilder_EvalMaxCols_RespectsMinWidth(t *testing.T) {

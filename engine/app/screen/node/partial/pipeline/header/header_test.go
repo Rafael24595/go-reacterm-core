@@ -23,14 +23,14 @@ func TestHeader_InsertsBefore(t *testing.T) {
 	}
 
 	units := vm.Header.Units()
-	assert.Len(t, 1, units)
+	assert.Size(t, 1, units)
 
 	line := text.NewLine("line_02")
 	transformer := Transformer(pipeline.Before, *line)
 	vm = transformer(vm)
 
 	units = vm.Header.Units()
-	assert.Len(t, 2, units)
+	assert.Size(t, 2, units)
 
 	unit := units[0]
 
@@ -53,14 +53,14 @@ func TestHeader_InsertsAfter(t *testing.T) {
 	}
 
 	units := vm.Header.Units()
-	assert.Len(t, 1, units)
+	assert.Size(t, 1, units)
 
 	line := text.NewLine("line_02")
 	transformer := Transformer(pipeline.After, *line)
 	vm = transformer(vm)
 
 	units = vm.Header.Units()
-	assert.Len(t, 2, units)
+	assert.Size(t, 2, units)
 
 	unit := units[1]
 

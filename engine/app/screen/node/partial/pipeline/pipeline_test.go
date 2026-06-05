@@ -144,13 +144,13 @@ func TestPipeline_ActionSingleFocus(t *testing.T) {
 	)
 
 	header := vm.Header.Units()
-	assert.Len(t, 2, header)
+	assert.Size(t, 2, header)
 	assert.Equal(t, "mock_02", header[0].Name)
 
 	kernel := vm.Kernel.Units()
-	assert.Len(t, 3, kernel)
+	assert.Size(t, 3, kernel)
 	assert.Equal(t, "mock_03", kernel[1].Name)
 	assert.Equal(t, "mock_02", kernel[2].Name)
 
-	assert.Len(t, 0, vm.Footer.Units())
+	assert.Size(t, 0, vm.Footer.Units())
 }

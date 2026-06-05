@@ -15,7 +15,7 @@ func TestDefaultEntry(t *testing.T) {
 
 	assert.False(t, cfg.Selectable)
 	assert.NotNil(t, cfg.Opts)
-	assert.Len(t, 0, cfg.Opts)
+	assert.Size(t, 0, cfg.Opts)
 }
 
 func TestSelectableOption(t *testing.T) {
@@ -38,5 +38,5 @@ func TestWithLayoutOption(t *testing.T) {
 	opt := WithLayout(dummyOpt1, dummyOpt2)
 	opt(&cfg)
 
-	assert.Len(t, 2, cfg.Opts)
+	assert.Size(t, 2, cfg.Opts)
 }

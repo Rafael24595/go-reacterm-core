@@ -84,7 +84,7 @@ func TestColsLeftTransformer(t *testing.T) {
 				tt.size, mock.ToUnit(), lines, true,
 			)
 
-			assert.Len(t, tt.wantLen, result)
+			assert.Size(t, tt.wantLen, result)
 
 			for i, l := range tt.wantLines {
 				assert.Equal(t, l, render_test.Fragments(styler, tt.size, result[i].Text))
@@ -144,7 +144,7 @@ func TestColsRightTransformer(t *testing.T) {
 				tt.size, mock.ToUnit(), lines, true,
 			)
 
-			assert.Len(t, tt.wantLen, result)
+			assert.Size(t, tt.wantLen, result)
 
 			for i, l := range tt.wantLines {
 				assert.Equal(t, l, render_test.Fragments(styler, tt.size, result[i].Text))
@@ -204,7 +204,7 @@ func TestColsCenterTransformer(t *testing.T) {
 				tt.size, mock.ToUnit(), lines, true,
 			)
 
-			assert.Len(t, tt.wantLen, result)
+			assert.Size(t, tt.wantLen, result)
 
 			for i, l := range tt.wantLines {
 				assert.Equal(t, l, render_test.Fragments(styler, tt.size, result[i].Text))

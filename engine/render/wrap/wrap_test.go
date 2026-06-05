@@ -22,11 +22,11 @@ func assembleLines(t *testing.T, lines ...text.Line) string {
 			text.LineToString(&l),
 		)
 
-		assert.NotError(t, err)
+		assert.Nil(t, err)
 
 		if i < len(lines)-1 {
 			_, err := sb.WriteString("\n")
-			assert.NotError(t, err)
+			assert.Nil(t, err)
 		}
 	}
 
@@ -191,12 +191,12 @@ func TestWrapOnce(t *testing.T) {
 func TestNormalizeLines_Integrity(t *testing.T) {
 	line := text.NewLine("golang ziglang 10.50 rust")
 
-	assert.Len(t, 1, line.Text)
+	assert.Size(t, 1, line.Text)
 
 	tokenized := NormalizeLines(*line)
 
-	assert.Len(t, 1, tokenized)
-	assert.Len(t, 7, tokenized[0].Words)
+	assert.Size(t, 1, tokenized)
+	assert.Size(t, 7, tokenized[0].Words)
 }
 
 func TestMaterializeEmpty(t *testing.T) {
@@ -262,8 +262,8 @@ func TestMaterializeEmpty(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := MaterializeEmpty(size, placeholder, tt.input...)
 
-			assert.Len(t, tt.expectedCount, got[0].Source.Text)
-			assert.Greater(t, 0, len(got[0].Words))
+			assert.Size(t, tt.expectedCount, got[0].Source.Text)
+			assert.GreaterThan(t, 0, len(got[0].Words))
 			assert.Equal(t, tt.expectedText, text.LineToString(got[0].Source))
 
 			layout := got[len(got)-1]
@@ -285,7 +285,7 @@ func TestWrapLine_Simple(t *testing.T) {
 
 	expected := []string{"HELLO", " ", "WORLD"}
 
-	assert.Len(t, len(expected), lines)
+	assert.Size(t, len(expected), lines)
 
 	for i, l := range lines {
 		var text strings.Builder
@@ -374,7 +374,7 @@ func TestNextLine_Fit(t *testing.T) {
 	got, remain := NextLine(10, NormalizeLines(*line))
 
 	assert.Equal(t, "golang", text.LineToString(got))
-	assert.Len(t, 0, remain)
+	assert.Size(t, 0, remain)
 }
 
 func TesNextLine_Split(t *testing.T) {
@@ -384,7 +384,7 @@ func TesNextLine_Split(t *testing.T) {
 
 	assert.Equal(t, "go", text.LineToString(got))
 
-	assert.Len(t, 1, remain)
+	assert.Size(t, 1, remain)
 	assert.Equal(t, "lang", wordsToString(remain[0].Words...))
 }
 
@@ -400,7 +400,7 @@ func TesNextLine_MultiFragment(t *testing.T) {
 	got, remain := NextLine(6, NormalizeLines(*line))
 
 	assert.Equal(t, "go zig", text.LineToString(got))
-	assert.Len(t, 1, remain)
+	assert.Size(t, 1, remain)
 
 	assert.Equal(t, " c++", wordsToString(remain[0].Words...))
 }
@@ -505,11 +505,11 @@ func TestSplitLineFeeds(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := splitLineFeeds(tt.input, false)
 
-			assert.Len(t, tt.expectedSize, got)
+			assert.Size(t, tt.expectedSize, got)
 			assert.Equal(t, tt.expectedText, assembleLines(t, got...))
 
 			for i, v := range got {
-				assert.Len(t, int(tt.expecteFrags[i]), v.Text)
+				assert.Size(t, int(tt.expecteFrags[i]), v.Text)
 			}
 		})
 	}

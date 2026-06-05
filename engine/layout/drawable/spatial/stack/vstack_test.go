@@ -125,8 +125,8 @@ func TestVStack_Init(t *testing.T) {
 		Cols: 10,
 	})
 
-	assert.Greater(t, 0, mock1.InitCalled)
-	assert.Greater(t, 0, mock2.InitCalled)
+	assert.GreaterThan(t, 0, mock1.InitCalled)
+	assert.GreaterThan(t, 0, mock2.InitCalled)
 }
 
 func TestVStack_Shift_Order(t *testing.T) {
@@ -270,7 +270,7 @@ func TestVStack_BufferConcat(t *testing.T) {
 		Cols: 10,
 	})
 
-	assert.Len(t, 2, buffer)
+	assert.Size(t, 2, buffer)
 	assert.Equal(t, "golang", text.LineToString(&buffer[0])+text.LineToString(&buffer[1]))
 }
 
@@ -321,7 +321,7 @@ func TestVStack_FixedChunk_PadsWhenChildIsSmaller(t *testing.T) {
 
 	lines, _ := stack.Drawable.Draw(winsize.Winsize{Rows: 20, Cols: 10})
 
-	assert.Len(t, 15, lines)
+	assert.Size(t, 15, lines)
 }
 
 func TestVStack_FixedChunk_TruncatesWhenChildIsBigger(t *testing.T) {
@@ -340,7 +340,7 @@ func TestVStack_FixedChunk_TruncatesWhenChildIsBigger(t *testing.T) {
 
 	lines, _ := stack.Drawable.Draw(winsize.Winsize{Rows: 10, Cols: 10})
 
-	assert.Len(t, 10, lines)
+	assert.Size(t, 10, lines)
 }
 
 func TestVStack_DynamicChunk_FillsRemainingSpace(t *testing.T) {
@@ -367,7 +367,7 @@ func TestVStack_DynamicChunk_FillsRemainingSpace(t *testing.T) {
 
 	lines, _ := stack.Drawable.Draw(winsize.Winsize{Rows: 30, Cols: 10})
 
-	assert.Len(t, 25, lines)
+	assert.Size(t, 25, lines)
 }
 
 func TestVStack_FixedOverflow_ShouldNotExceedContainer(t *testing.T) {
@@ -393,7 +393,7 @@ func TestVStack_FixedOverflow_ShouldNotExceedContainer(t *testing.T) {
 
 	lines, _ := stack.Drawable.Draw(winsize.Winsize{Rows: 15, Cols: 10})
 
-	assert.Len(t, 15, lines)
+	assert.Size(t, 15, lines)
 }
 
 func TestVStack_ExactFit_NoExtraNoMissing(t *testing.T) {
@@ -417,5 +417,5 @@ func TestVStack_ExactFit_NoExtraNoMissing(t *testing.T) {
 
 	lines, _ := stack.Drawable.Draw(winsize.Winsize{Rows: 15, Cols: 10})
 
-	assert.Len(t, 15, lines)
+	assert.Size(t, 15, lines)
 }

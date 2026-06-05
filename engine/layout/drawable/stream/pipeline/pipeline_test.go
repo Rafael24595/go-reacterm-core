@@ -87,7 +87,7 @@ func TestPipeline_InitStepTransformation(t *testing.T) {
 
 	lines, status := unit.Drawable.Draw(winsize.Winsize{})
 
-	assert.Len(t, 2, lines)
+	assert.Size(t, 2, lines)
 	assert.True(t, status)
 	assert.Equal(t, text.LineToString(&mock2.Lines[0]), text.LineToString(&lines[0]))
 }
@@ -113,7 +113,7 @@ func TestPipeline_DrawStepTransformation(t *testing.T) {
 
 	lines, status := unit.Drawable.Draw(winsize.Winsize{})
 
-	assert.Len(t, 1, lines)
+	assert.Size(t, 1, lines)
 	assert.False(t, status)
 	assert.Equal(t, text.LineToString(mockLine), text.LineToString(&lines[0]))
 }
@@ -129,7 +129,7 @@ func TestPipeline_DataStepsChain(t *testing.T) {
 
 	mockLine1 := text.NewLine("mock_line_01")
 	mockLine2 := text.NewLine("mock_line_02")
-	
+
 	unit := New(mock.ToUnit()).
 		PushDataSteps(
 			func(_ winsize.Winsize, _ drawable.Unit, l []text.Line, s bool) ([]text.Line, bool) {
@@ -144,7 +144,7 @@ func TestPipeline_DataStepsChain(t *testing.T) {
 
 	lines, status := unit.Drawable.Draw(winsize.Winsize{})
 
-	assert.Len(t, 3, lines)
+	assert.Size(t, 3, lines)
 	assert.False(t, status)
 
 	assert.Equal(t, text.LineToString(baseLine), text.LineToString(&lines[0]))

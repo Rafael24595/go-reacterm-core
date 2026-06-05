@@ -37,7 +37,7 @@ func TestSpacer_AddsHeaderLinesWhenEmpty(t *testing.T) {
 		acc := findAccesor(t, v)
 		units := acc.Get(vm).Units()
 
-		assert.Len(t, 0, units)
+		assert.Size(t, 0, units)
 	}
 }
 
@@ -61,7 +61,7 @@ func TestSpacer_AddsHeaderLines(t *testing.T) {
 
 		units := acc.Get(vm).Units()
 
-		assert.Len(t, 2, units)
+		assert.Size(t, 2, units)
 
 		assert.Equal(t, "mock_header", units[0].Name)
 		assert.Equal(t, Name, units[1].Name)
@@ -93,7 +93,7 @@ func TestSpacer_HeaderBetween(t *testing.T) {
 
 		units := acc.Get(vm).Units()
 
-		assert.Len(t, 4, units)
+		assert.Size(t, 4, units)
 
 		assert.Equal(t, "mock_header_1", units[0].Name)
 		assert.Equal(t, Name, units[1].Name)

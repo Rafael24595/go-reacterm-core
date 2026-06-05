@@ -92,7 +92,7 @@ func TestSet_Add(t *testing.T) {
 	s := New[int](1)
 	s.Add(42)
 
-	assert.Len(t, 1, s)
+	assert.Size(t, 1, s)
 	assert.True(t, s.Has(42))
 }
 
@@ -102,7 +102,7 @@ func TestSet_Merge(t *testing.T) {
 
 	s1.Merge(s2)
 
-	assert.Len(t, 5, s1)
+	assert.Size(t, 5, s1)
 
 	assert.True(t, s1.Has(4))
 	assert.True(t, s1.Has(5))
@@ -114,8 +114,8 @@ func TestSet_Clone(t *testing.T) {
 
 	s2.Add(4, 5, 6)
 
-	assert.Len(t, 3, s1)
-	assert.Len(t, 6, s2)
+	assert.Size(t, 3, s1)
+	assert.Size(t, 6, s2)
 
 	assert.False(t, s1.Has(6))
 	assert.True(t, s2.Has(6))

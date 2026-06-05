@@ -22,7 +22,7 @@ func TestBuilder_BasicUnit(t *testing.T) {
 		ToUnit()
 
 	assert.Equal(t, name, unit.Name)
-	assert.Len(t, 0, unit.Tags)
+	assert.Size(t, 0, unit.Tags)
 
 	assert.NotNil(t, unit.Drawable.Init)
 	assert.NotNil(t, unit.Drawable.Wipe)
@@ -36,8 +36,8 @@ func TestBuilder_AddTags(t *testing.T) {
 		ToUnit()
 
 	assert.GreaterOrEqual(t, 2, unit.Tags)
-	assert.Contains(t, unit.Tags, "lang")
-	assert.Contains(t, unit.Tags, "google")
+	assert.Inside(t, "lang", unit.Tags)
+	assert.Inside(t, "google", unit.Tags)
 }
 
 func TestBuilder_MergeTags(t *testing.T) {
@@ -50,9 +50,9 @@ func TestBuilder_MergeTags(t *testing.T) {
 		ToUnit()
 
 	assert.GreaterOrEqual(t, 3, unit.Tags)
-	assert.Contains(t, unit.Tags, "zig")
-	assert.Contains(t, unit.Tags, "c++")
-	assert.Contains(t, unit.Tags, "golang")
+	assert.Inside(t, "zig", unit.Tags)
+	assert.Inside(t, "c++", unit.Tags)
+	assert.Inside(t, "golang", unit.Tags)
 }
 
 func TestBuilder_IncompleteUnit(t *testing.T) {
