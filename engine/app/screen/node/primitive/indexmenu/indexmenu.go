@@ -44,7 +44,9 @@ func (n *IndexMenu) SetMeta(meta marker.IndexMeta) *IndexMenu {
 }
 
 func (n *IndexMenu) AddOptions(options ...input.MenuOption) *IndexMenu {
-	n.options = append(n.options, options...)
+	n.options = append(n.options,
+		input.NormalizeMenuOptions(options...)...,
+	)
 	return n
 }
 
