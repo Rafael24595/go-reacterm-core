@@ -120,6 +120,7 @@ func (n *Form) tick(uiState *state.UIState, event screen.Event) screen.Result {
 	return n.localTick(uiState, event)
 }
 
+//TODO: Fix navigation.
 func (n *Form) localTick(uiState *state.UIState, event screen.Event) screen.Result {
 	ky := event.Key
 
