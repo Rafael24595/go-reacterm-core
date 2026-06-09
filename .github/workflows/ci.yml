@@ -8,4 +8,4 @@ on:
 
 jobs:
   ci:
-    uses: github.com/github-workflows/.github/workflows/go-ci.yml@main
+    uses: Rafael24595/github-workflows/.github/workflows/go-ci.yml@main
