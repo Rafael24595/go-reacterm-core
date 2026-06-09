@@ -8,7 +8,9 @@ import (
 	local "github.com/Rafael24595/go-reacterm-core/engine/commons/log"
 
 	"github.com/Rafael24595/go-log/log"
+	"github.com/Rafael24595/go-log/log/record"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/cleaner"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/runtime"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -18,7 +20,13 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render"
 	"github.com/Rafael24595/go-reacterm-core/engine/terminal"
+	"github.com/Rafael24595/go-supervisor/supervisor"
+	"github.com/Rafael24595/go-supervisor/supervisor/policy"
+	"github.com/Rafael24595/go-supervisor/supervisor/stack/compact"
 )
+
+const code = "engine"
+const category = record.Category("SUPERVISOR")
 
 type Engine struct {
 	running  bool
@@ -107,20 +115,62 @@ func (e *Engine) run() {
 
 	defer local.LogErrorHandler(e.terminal.OnClose)
 
-	size, err := e.terminal.Size()
-	if err != nil {
-		e.logErr(err)
-		return
-	}
-
-	uiState := state.NewUIState()
-
-	e.compileNodeScreen(*uiState, e.node)
-	e.renderFrame(uiState, size)
-
 	keys := e.terminal.KeyEvents()
 	resizes := e.terminal.ResizeEvents()
 
+	policy := policy.New(
+		500*time.Millisecond,
+		5,
+		runtime.DefaultRestartIf,
+	)
+
+	stack := compact.Stack(
+		compact.GroupedFormatter,
+		compact.WithProcessor(
+			compact.StandardProcessor(),
+		),
+	)
+
+	supervisor := supervisor.New(
+		code,
+		supervisor.WithContext(e.context),
+		supervisor.WithPolicy(policy),
+		supervisor.WithWriter(
+			log.WriterFromCategory(category),
+		),
+		supervisor.WithStackProvider(stack),
+	)
+
+	err = supervisor.Run(
+		func() error {
+			size, err := e.terminal.Size()
+			if err != nil {
+				e.logErr(err)
+				return err
+			}
+
+			uiState := state.NewUIState()
+
+			e.compileNodeScreen(*uiState, e.node)
+			e.renderFrame(uiState, size)
+
+			e.loop(uiState, size, keys, resizes)
+
+			return nil
+		},
+	)
+
+	if err != nil {
+		e.logErr(err)
+	}
+}
+
+func (e *Engine) loop(
+	uiState *state.UIState,
+	size winsize.Winsize,
+	keys <-chan key.Key,
+	resizes <-chan winsize.Winsize,
+) {
 	for {
 		select {
 		case <-e.context.Done():

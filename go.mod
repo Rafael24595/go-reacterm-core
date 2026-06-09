@@ -5,4 +5,5 @@ go 1.25.5
 require (
 	github.com/Rafael24595/go-assert v0.5.0
 	github.com/Rafael24595/go-log v0.4.0
+	github.com/Rafael24595/go-supervisor v0.1.0
 )
