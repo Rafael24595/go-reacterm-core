@@ -8,7 +8,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/entry"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/layer"
-	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/inputline"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/gutter"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/form"
@@ -120,7 +119,6 @@ func (n *Form) tick(uiState *state.UIState, event screen.Event) screen.Result {
 	return n.localTick(uiState, event)
 }
 
-//TODO: Fix navigation.
 func (n *Form) localTick(uiState *state.UIState, event screen.Event) screen.Result {
 	ky := event.Key
 
@@ -128,14 +126,16 @@ func (n *Form) localTick(uiState *state.UIState, event screen.Event) screen.Resu
 	case key.ActionEsc:
 		n.focused = false
 	case key.ActionArrowUp:
-		n.cursor = 0
+		n.cursor = n.decCursor()
 	case key.ActionArrowDown:
-		n.cursor = math.SubClampZeroAs[int, uint16](len(n.items), 1)
+		n.cursor = n.incCursor()
 	case key.ActionArrowLeft:
-		n.cursor = math.SubClampZero(n.cursor, 1)
+		n.setCursor(0)
+		n.cursor = n.incCursor(0)
 	case key.ActionArrowRight:
-		last := math.SubClampZeroAs[int, uint16](len(n.items), 1)
-		n.cursor = min(last, n.cursor+1)
+		items := len(n.items)
+		n.setCursor(uint16(items))
+		n.cursor = n.decCursor(0)
 	case key.ActionEnter:
 		n.focused = true
 	case key.CustomActionPointer:
@@ -143,6 +143,61 @@ func (n *Form) localTick(uiState *state.UIState, event screen.Event) screen.Resu
 	}
 
 	return screen.ResultFromUIState(uiState)
+}
+
+func (n *Form) setCursor(cursor uint16) uint16 {
+	items := len(n.items)
+	if items == 0 {
+		return 0
+	}
+
+	n.cursor = min(cursor, uint16(items-1))
+	return n.cursor
+}
+
+func (n *Form) incCursor(data ...uint16) uint16 {
+	inc := 1
+	if len(data) > 0 {
+		inc = int(data[0])
+	}
+
+	return n.moveCursor(true, inc)
+}
+
+func (n *Form) decCursor(data ...uint16) uint16 {
+	dec := 1
+	if len(data) > 0 {
+		dec = int(data[0])
+	}
+
+	return n.moveCursor(false, -dec)
+}
+
+func (n *Form) moveCursor(sign bool, step int) uint16 {
+	size := len(n.items)
+	if size == 0 {
+		return 0
+	}
+
+	base := int(n.cursor)
+
+	dir := 1
+	if !sign {
+		dir = -1
+	}
+
+	for i := range size {
+		cursor := (base + step + dir*i) % size
+		if cursor < 0 {
+			cursor += size
+		}
+
+		if n.items[cursor].Selectable {
+			return uint16(cursor)
+		}
+	}
+
+	return n.cursor
 }
 
 func (n *Form) focusTick(uiState *state.UIState, event screen.Event, focus entry.Entry) screen.Result {
@@ -178,7 +233,7 @@ func (n *Form) view(uiState state.UIState) viewmodel.ViewModel {
 
 	pointer := form.FindPointer(n.pointer)
 
-	//TODO: Compile headers and footers?
+	// TODO: Compile headers and footers?
 	for i, e := range n.items {
 		cvm := e.Node.Screen.View(uiState)
 
