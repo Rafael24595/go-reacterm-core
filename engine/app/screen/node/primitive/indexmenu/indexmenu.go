@@ -90,7 +90,7 @@ func (n *IndexMenu) loadFromStack(uiState state.UIState) {
 }
 
 func (n *IndexMenu) keys() screen.Definition {
-	return index_menu_definition
+	return definition
 }
 
 func (n *IndexMenu) tick(uiState *state.UIState, event screen.Event) screen.Result {

@@ -5,7 +5,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 )
 
-var index_menu_definition = screen.DefinitionFromActions(
+var definition = screen.DefinitionFromActions(
 	[]key.Action{
 		key.ActionEnter,
 		key.ActionArrowLeft,
