@@ -46,7 +46,11 @@ func Standard(
 		size.Cols,
 	)
 
-	kernelLines, _ := kernel.Drawable.Draw(dynamicSize)
+	kernelLines := make([]text.Line, dynamicSize.Rows)
+
+	renderedLines, _ := kernel.Drawable.Draw(dynamicSize)
+	copy(kernelLines, renderedLines)
+
 	uiState = syncUIState(uiState, ctx)
 
 	lines := headerLines

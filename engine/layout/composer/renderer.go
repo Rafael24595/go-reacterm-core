@@ -30,6 +30,6 @@ func pagerRenderer(uiState *state.UIState, strategy pager.PagerStrategy, ctx *re
 			ctx.HasMore = true
 		}
 
-		return status.Buffer, !status.Work.Finished()
+		return status.Written(), !status.Work.Finished()
 	}
 }
