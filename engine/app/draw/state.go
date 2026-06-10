@@ -49,6 +49,10 @@ func (s *DrawState) IsFull() bool {
 	return s.Cursor == uint16(len(s.Buffer))
 }
 
+func (s *DrawState) Written() []text.Line {
+	return s.Buffer[:s.Cursor]
+}
+
 func (s *DrawState) Reset() {
 	for i := range s.Buffer {
 		s.Buffer[i] = text.Line{}
