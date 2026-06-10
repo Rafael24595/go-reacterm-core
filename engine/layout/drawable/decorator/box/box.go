@@ -20,14 +20,10 @@ import (
 
 const Name = "box_unit"
 
-const (
-	default_padding = winsize.Cols(0)
-)
-
 type BoxUnit struct {
 	loaded    bool
-	paddingY  winsize.Rows
-	paddingX  winsize.Cols
+	paddingY  *hint.Size[winsize.Rows]
+	paddingX  *hint.Size[winsize.Cols]
 	separator marker.BoxSeparatorMeta
 	unit      drawable.Unit
 }
@@ -35,8 +31,8 @@ type BoxUnit struct {
 func New(unit drawable.Unit) *BoxUnit {
 	return &BoxUnit{
 		loaded:    false,
-		paddingY:  winsize.Rows(default_padding),
-		paddingX:  default_padding,
+		paddingY:  nil,
+		paddingX:  nil,
 		separator: marker.DefaultBoxSeparator,
 		unit:      unit,
 	}
@@ -51,13 +47,13 @@ func (u *BoxUnit) Separator(separator marker.BoxSeparatorMeta) *BoxUnit {
 	return u
 }
 
-func (u *BoxUnit) PaddingY(padding winsize.Rows) *BoxUnit {
-	u.paddingY = padding
+func (u *BoxUnit) PaddingY(hint hint.Size[winsize.Rows]) *BoxUnit {
+	u.paddingY = &hint
 	return u
 }
 
-func (u *BoxUnit) PaddingX(padding winsize.Cols) *BoxUnit {
-	u.paddingX = padding
+func (u *BoxUnit) PaddingX(hint hint.Size[winsize.Cols]) *BoxUnit {
+	u.paddingX = &hint
 	return u
 }
 
@@ -80,7 +76,7 @@ func (u *BoxUnit) init() {
 }
 
 func (u *BoxUnit) makeUnit() drawable.Unit {
-	if u.paddingY == 0 && u.paddingX == 0 {
+	if u.paddingY == nil && u.paddingX == nil {
 		return u.unit
 	}
 

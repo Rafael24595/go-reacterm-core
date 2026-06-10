@@ -4,37 +4,18 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
+
+	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/cols"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/styler"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
-	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
+
 	render_test "github.com/Rafael24595/go-reacterm-core/test/engine/render"
 )
 
-func TestColsTransformer_KeepHasNext(t *testing.T) {
-	transformer := ColsCenter(2)
-
-	mock := drawable_test.MockUnit{}
-
-	lines := []text.Line{
-		*text.NewLine("golang"),
-	}
-
-	size := winsize.Winsize{
-		Rows: 5,
-		Cols: 10,
-	}
-
-	result, hasNext := transformer(
-		size, mock.ToUnit(), lines, true,
-	)
-
-	assert.True(t, hasNext)
-	assert.NotNil(t, result)
-}
-
 func TestColsLeftTransformer(t *testing.T) {
-	mock := drawable_test.MockUnit{}
 	styler := styler.NewDefaultSpec()
 
 	tests := []struct {
@@ -73,16 +54,17 @@ func TestColsLeftTransformer(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			transformer := ColsLeft(tt.margin)
+			transformer := Cols(
+				hint.Fixed(tt.margin),
+				cols.WithPosition(style.Right),
+			)
 
 			lines := make([]text.Line, len(tt.lines))
 			for i, l := range tt.lines {
 				lines[i] = *text.NewLine(l)
 			}
 
-			result, _ := transformer(
-				tt.size, mock.ToUnit(), lines, true,
-			)
+			result := transformer(tt.size, lines)
 
 			assert.Size(t, tt.wantLen, result)
 
@@ -94,7 +76,6 @@ func TestColsLeftTransformer(t *testing.T) {
 }
 
 func TestColsRightTransformer(t *testing.T) {
-	mock := drawable_test.MockUnit{}
 	styler := styler.NewDefaultSpec()
 
 	tests := []struct {
@@ -133,16 +114,17 @@ func TestColsRightTransformer(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			transformer := ColsRight(tt.margin)
+			transformer := Cols(
+				hint.Fixed(tt.margin),
+				cols.WithPosition(style.Left),
+			)
 
 			lines := make([]text.Line, len(tt.lines))
 			for i, l := range tt.lines {
 				lines[i] = *text.NewLine(l)
 			}
 
-			result, _ := transformer(
-				tt.size, mock.ToUnit(), lines, true,
-			)
+			result := transformer(tt.size, lines)
 
 			assert.Size(t, tt.wantLen, result)
 
@@ -154,7 +136,6 @@ func TestColsRightTransformer(t *testing.T) {
 }
 
 func TestColsCenterTransformer(t *testing.T) {
-	mock := drawable_test.MockUnit{}
 	styler := styler.NewDefaultSpec()
 
 	tests := []struct {
@@ -193,16 +174,17 @@ func TestColsCenterTransformer(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			transformer := ColsCenter(tt.margin)
+			transformer := Cols(
+				hint.Fixed(tt.margin),
+				cols.WithPosition(style.Center),
+			)
 
 			lines := make([]text.Line, len(tt.lines))
 			for i, l := range tt.lines {
 				lines[i] = *text.NewLine(l)
 			}
 
-			result, _ := transformer(
-				tt.size, mock.ToUnit(), lines, true,
-			)
+			result := transformer(tt.size, lines)
 
 			assert.Size(t, tt.wantLen, result)
 

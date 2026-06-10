@@ -123,8 +123,9 @@ func (n *TextInput) view(uiState state.UIState) viewmodel.ViewModel {
 	)
 
 	box := box.New(pipeline).
-		PaddingY(0).
-		PaddingX(1).
+		PaddingX(
+			hint.Fixed[winsize.Cols](1),
+		).
 		ToUnit()
 
 	if len(n.label) != 0 {

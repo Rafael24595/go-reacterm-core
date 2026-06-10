@@ -23,13 +23,13 @@ func New() *Builder {
 	}
 }
 
-func (b *Builder) MarginY(margin winsize.Rows, opts ...rows.Option) *Builder {
-	b.margin.Y(margin, opts...)
+func (b *Builder) MarginY(hint hint.Size[winsize.Rows], opts ...rows.Option) *Builder {
+	b.margin.Y(&hint, opts...)
 	return b
 }
 
-func (b *Builder) MarginX(margin winsize.Cols, opts ...cols.Option) *Builder {
-	b.margin.X(margin, opts...)
+func (b *Builder) MarginX(hint hint.Size[winsize.Cols], opts ...cols.Option) *Builder {
+	b.margin.X(&hint, opts...)
 	return b
 }
 

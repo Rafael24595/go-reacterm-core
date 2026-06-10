@@ -114,8 +114,12 @@ func (u *ModalUnit) lazyInit(size winsize.Winsize) {
 	)
 
 	box := box.New(stack).
-		PaddingX(1).
-		PaddingY(1).
+		PaddingX(
+			hint.Fixed[winsize.Cols](1),
+		).
+		PaddingY(
+			hint.Fixed[winsize.Rows](1),
+		).
 		ToUnit()
 
 	position := padding.NewBuilder().

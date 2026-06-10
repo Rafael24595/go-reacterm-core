@@ -5,34 +5,36 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/rows"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform/margin"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
 type Builder struct {
-	marginY  winsize.Rows
+	hintY    *hint.Size[winsize.Rows]
 	optionsY []rows.Option
-	marginX  winsize.Cols
+	hintX    *hint.Size[winsize.Cols]
 	optionsX []cols.Option
 }
 
 func NewBuilder() *Builder {
 	return &Builder{
-		marginY:  0,
+		hintY:    nil,
 		optionsY: make([]rows.Option, 0),
-		marginX:  0,
+		hintX:    nil,
 		optionsX: make([]cols.Option, 0),
 	}
 }
 
-func (b *Builder) Y(margin winsize.Rows, opts ...rows.Option) *Builder {
-	b.marginY = margin
+func (b *Builder) Y(hintY *hint.Size[winsize.Rows], opts ...rows.Option) *Builder {
+	b.hintY = hintY
 	b.optionsY = append(b.optionsY, opts...)
 	return b
 }
 
-func (b *Builder) X(margin winsize.Cols, opts ...cols.Option) *Builder {
-	b.marginX = margin
+func (b *Builder) X(hintX *hint.Size[winsize.Cols], opts ...cols.Option) *Builder {
+	b.hintX = hintX
 	b.optionsX = append(b.optionsX, opts...)
 	return b
 }
@@ -42,8 +44,15 @@ func (b *Builder) Steps() (pipeline.DrawTransformer, []pipeline.DataTransformer)
 		cfgY := rows.ResolveConfig(b.optionsY...)
 		cfgX := cols.ResolveConfig(b.optionsX...)
 
-		marginY := b.marginY * verticalFactor(cfgY.Position)
-		marginX := b.marginX * horizontalFactor(cfgX.Position)
+		marginY := winsize.Rows(0)
+		if b.hintY != nil {
+			marginY = b.hintY.Min(size.Rows) * margin.VerticalFactor(cfgY.Position)
+		}
+
+		marginX := winsize.Cols(0)
+		if b.hintX != nil {
+			marginX = b.hintX.Min(size.Cols) * margin.HorizontalFactor(cfgX.Position)
+		}
 
 		fixedSize := winsize.New(
 			size.Rows.Sub(marginY),
@@ -55,15 +64,15 @@ func (b *Builder) Steps() (pipeline.DrawTransformer, []pipeline.DataTransformer)
 
 	data := make([]pipeline.DataTransformer, 0, 2)
 
-	if b.marginY > 0 {
+	if b.hintY != nil {
 		data = append(data,
-			rowsDataTransformer(b.marginY, b.optionsY...),
+			rowsDataTransformer(*b.hintY, b.optionsY...),
 		)
 	}
 
-	if b.marginX > 0 {
+	if b.hintX != nil{
 		data = append(data,
-			colsDrawTransformer(b.marginX, b.optionsX...),
+			colsDrawTransformer(*b.hintX, b.optionsX...),
 		)
 	}
 

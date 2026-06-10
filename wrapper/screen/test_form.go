@@ -143,8 +143,9 @@ func wrapStep(vm viewmodel.ViewModel) viewmodel.ViewModel {
 		ToUnit()
 
 	box := box.New(paddingPip).
-		PaddingY(0).
-		PaddingX(1).
+		PaddingX(
+			hint.Fixed[winsize.Cols](1),
+		).
 		ToUnit()
 
 	vm.Kernel = stack.NewVStack().

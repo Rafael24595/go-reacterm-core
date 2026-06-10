@@ -13,6 +13,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/stack"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/position"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
@@ -54,15 +55,19 @@ func makeKernel() drawable.Unit {
 	box := box.Wrap(ascii)
 
 	padding := position.New().
-		MarginX(1).
-		MarginY(1,
+		MarginX(
+			hint.Fixed[winsize.Cols](1),
+		).
+		MarginY(
+			hint.Fixed[winsize.Rows](1),
 			rows.WithFillFragment(),
 			rows.WithPosition(style.Middle),
 		).
 		ToUnit(box)
 
 	position := position.New().
-		MarginY(3,
+		MarginY(
+			hint.Fixed[winsize.Rows](1),
 			rows.WithPosition(style.Middle),
 		).
 		ToUnit(padding)
