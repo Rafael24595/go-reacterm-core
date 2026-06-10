@@ -143,7 +143,7 @@ func (n *ModalMenu) view(uiState state.UIState) viewmodel.ViewModel {
 	modal := modal.New().
 		AddText(n.text...).
 		AddOptions(frags...).
-		DefineCursor(n.cursor).
+		SetCursor(n.cursor).
 		ToUnit()
 
 	vm.Kernel.Push(modal)

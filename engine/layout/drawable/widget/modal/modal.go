@@ -51,12 +51,12 @@ func (u *ModalUnit) AddOptions(options ...text.Fragment) *ModalUnit {
 	return u
 }
 
-func (u *ModalUnit) DefineLimit(limit uint) *ModalUnit {
+func (u *ModalUnit) SetLimit(limit uint) *ModalUnit {
 	u.limit = limit
 	return u
 }
 
-func (u *ModalUnit) DefineCursor(cursor uint16) *ModalUnit {
+func (u *ModalUnit) SetCursor(cursor uint16) *ModalUnit {
 	u.cursor = cursor
 	return u
 }
