@@ -2,8 +2,9 @@ package padding
 
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/rows"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
@@ -18,7 +19,7 @@ var rowPositionerMap = map[style.VerticalPosition]rowPositioner{
 	style.Middle: rowsToMiddle,
 }
 
-func Rows(hint hint.Size[winsize.Rows], opts ...rows.Option) transformer {
+func Rows(hint hint.Size[winsize.Rows], opts ...rows.Option) transform.Transformer {
 	cfg := rows.ResolveConfig(opts...)
 
 	return func(size winsize.Winsize, lines []text.Line) []text.Line {

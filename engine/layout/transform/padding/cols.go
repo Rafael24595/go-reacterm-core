@@ -2,8 +2,9 @@ package padding
 
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/cols"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
@@ -18,10 +19,10 @@ var colPositionerMap = map[style.HorizontalPosition]colPositioner{
 	style.Center: colToCenter,
 }
 
-func Cols(cols hint.Size[winsize.Cols], opts ...cols.Option) transformer {
+func Cols(hint hint.Size[winsize.Cols], opts ...cols.Option) transform.Transformer {
 	return func(size winsize.Winsize, lines []text.Line) []text.Line {
 		newLines := make([]text.Line, len(lines))
-		fixedMin := cols.Min(size.Cols)
+		fixedMin := hint.Min(size.Cols)
 
 		for i := range lines {
 			remaining := fixedMin.Sub(
