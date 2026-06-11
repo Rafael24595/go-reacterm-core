@@ -92,7 +92,7 @@ func (n *Pagination) tick(uiState *state.UIState, event screen.Event) screen.Res
 }
 
 func (n *Pagination) localTick(uiState *state.UIState, event screen.Event) *screen.Result {
-	keys, ok := keys[action.KindPaged]
+	keys, ok := keys[n.actionKind]
 
 	assert.True(ok, errf_unhandled, action.KindPaged)
 
@@ -117,13 +117,15 @@ func (n *Pagination) view(uiState state.UIState) viewmodel.ViewModel {
 		vm.Pager.SetAction(*n.forceAction)
 	}
 
+	n.actionKind = vm.Pager.Action.Kind
+
 	if !n.shouldShowPage(uiState, vm) {
 		return vm
 	}
 
-	label, ok := labels[vm.Pager.Action.Kind]
+	label, ok := labels[n.actionKind]
 
-	assert.True(ok, errf_unhandled, vm.Pager.Action.Kind)
+	assert.True(ok, errf_unhandled, n.actionKind)
 
 	footer := []text.Line{
 		*text.NewLine(
