@@ -4,10 +4,12 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
+
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 )
 
@@ -26,7 +28,7 @@ func TestFocusInitTransformer_FocusAtStart(t *testing.T) {
 	}
 
 	transformer := DrawTransformer(
-		pager.EnginePage(),
+		action.Paged(),
 	)
 
 	lines, status := transformer(winsize.Winsize{
@@ -56,7 +58,7 @@ func TestFocusInitTransformer_FocusAtEnd(t *testing.T) {
 	}
 
 	transformer := DrawTransformer(
-		pager.EngineScroll(),
+		action.Scroll(),
 	)
 
 	lines, status := transformer(winsize.Winsize{

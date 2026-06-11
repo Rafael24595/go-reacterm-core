@@ -1,7 +1,7 @@
 package table
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -213,9 +213,9 @@ func (n *Table[T]) view(uiState state.UIState) viewmodel.ViewModel {
 
 	vm.Kernel.Push(position)
 
-	preficate := pager.PredicatePage()
+	preficate := predicate.Page()
 	if n.action.EnableMode && n.action.ActionMode {
-		preficate = pager.PredicateFocus()
+		preficate = predicate.Focus()
 
 		cell, _ := n.table.FindCellByCoords(n.cursor.Row, n.cursor.Col)
 

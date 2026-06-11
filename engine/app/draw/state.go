@@ -4,10 +4,11 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/work"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-type DrawState struct {
+type State struct {
 	Buffer []text.Line
 	Work   *work.Tracker
 	Cursor uint16
@@ -15,9 +16,14 @@ type DrawState struct {
 	Focus  bool
 }
 
-func NewDrawStatus(ctx *DrawContext) *DrawState {
-	return &DrawState{
-		Buffer: make([]text.Line, ctx.Size.Rows),
+func NewState(size ...winsize.Rows) *State {
+	buffSize := winsize.Rows(0)
+	if len(size) > 0 {
+		buffSize = size[0]
+	}
+
+	return &State{
+		Buffer: make([]text.Line, buffSize),
 		Work:   work.NewTracker(),
 		Cursor: 0,
 		Page:   0,
@@ -25,16 +31,16 @@ func NewDrawStatus(ctx *DrawContext) *DrawState {
 	}
 }
 
-func (s *DrawState) ShowPagination() bool {
+func (s *State) ShowPagination() bool {
 	return s.Page != 0 || s.Work.Unfinished()
 }
 
-func (s *DrawState) MarkFocus(focus bool) *DrawState {
+func (s *State) MarkFocus(focus bool) *State {
 	s.Focus = s.Focus || focus
 	return s
 }
 
-func (s *DrawState) SetAndNext(line text.Line) *DrawState {
+func (s *State) SetAndNext(line text.Line) *State {
 	if s.IsFull() {
 		assert.Unreachable("buffer overflow")
 		return s
@@ -45,15 +51,15 @@ func (s *DrawState) SetAndNext(line text.Line) *DrawState {
 	return s
 }
 
-func (s *DrawState) IsFull() bool {
+func (s *State) IsFull() bool {
 	return s.Cursor == uint16(len(s.Buffer))
 }
 
-func (s *DrawState) Written() []text.Line {
+func (s *State) Written() []text.Line {
 	return s.Buffer[:s.Cursor]
 }
 
-func (s *DrawState) Reset() {
+func (s *State) Reset() {
 	for i := range s.Buffer {
 		s.Buffer[i] = text.Line{}
 	}

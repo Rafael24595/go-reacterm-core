@@ -1,9 +1,20 @@
 package text
 
 import (
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 )
+
+var predicates = map[bool]predicate.Predicate{
+	false: predicate.Page(),
+	true:  predicate.Focus(),
+}
+
+var definitions = map[bool]screen.Definition{
+	false: read_definition,
+	true:  write_definition,
+}
 
 var read_definition = screen.NewDefinition(
 	map[key.Action]key.Descriptor{

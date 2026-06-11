@@ -1,4 +1,4 @@
-package pager
+package action
 
 import (
 	"testing"
@@ -6,25 +6,20 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/draw"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-func TestEnginePage(t *testing.T) {
-	engine := EnginePage()
+func TestActionPaged(t *testing.T) {
+	action := Paged()
 
-	ctx := &draw.DrawContext{
-		Size: winsize.Winsize{Rows: 3},
-	}
-
-	state := &draw.DrawState{
+	state := &draw.State{
 		Buffer: []text.Line{{}, {}, {}},
 		Cursor: 2,
 		Page:   1,
 		Focus:  true,
 	}
 
-	result := engine.Func(ctx, state)
+	result := action.Handler(state)
 
 	assert.Size(t, 3, result.Buffer)
 	assert.Equal(t, 2, result.Page)
@@ -32,31 +27,23 @@ func TestEnginePage(t *testing.T) {
 	assert.False(t, result.Focus)
 }
 
-func TestEnginePage_AlwaysResetsBuffer(t *testing.T) {
-	engine := EnginePage()
+func TestActionPaged_AlwaysResetsBuffer(t *testing.T) {
+	action := Paged()
 
-	ctx := &draw.DrawContext{
-		Size: winsize.Winsize{Rows: 2},
-	}
-
-	state := &draw.DrawState{
+	state := &draw.State{
 		Buffer: []text.Line{{}, {}},
 	}
 
-	engine.Func(ctx, state)
-	engine.Func(ctx, state)
+	action.Handler(state)
+	action.Handler(state)
 
 	assert.Equal(t, 2, state.Page)
 }
 
-func TestEngineScroll(t *testing.T) {
-	engine := EngineScroll()
+func TestActionScroll(t *testing.T) {
+	action := Scroll()
 
-	ctx := &draw.DrawContext{
-		Size: winsize.Winsize{Rows: 3},
-	}
-
-	state := &draw.DrawState{
+	state := &draw.State{
 		Buffer: []text.Line{
 			*text.NewLine("A"),
 			*text.NewLine("B"),
@@ -67,7 +54,7 @@ func TestEngineScroll(t *testing.T) {
 		Focus:  true,
 	}
 
-	result := engine.Func(ctx, state)
+	result := action.Handler(state)
 
 	assert.Equal(t, "B", text.LineToString(&result.Buffer[0]))
 	assert.Equal(t, "C", text.LineToString(&result.Buffer[1]))
@@ -76,14 +63,14 @@ func TestEngineScroll(t *testing.T) {
 	assert.False(t, result.Focus)
 }
 
-func TestEngineScroll_CursorNeverNegative(t *testing.T) {
-	engine := EngineScroll()
+func TestActionScroll_CursorNeverNegative(t *testing.T) {
+	action := Scroll()
 
-	state := &draw.DrawState{
+	state := &draw.State{
 		Cursor: 0,
 	}
 
-	result := engine.Func(&draw.DrawContext{}, state)
+	result := action.Handler(state)
 
 	assert.Equal(t, 0, result.Cursor)
 }

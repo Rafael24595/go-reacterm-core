@@ -1,7 +1,7 @@
 package pagination
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 )
@@ -17,22 +17,22 @@ var base_definition = screen.NewDefinition(
 	},
 )
 
-var definitions = map[pager.EngineCode]screen.Definition{
-	pager.CodeEnginePaged:  pager_definition,
-	pager.CodeEngineScroll: scroll_definition,
+var definitions = map[action.Kind]screen.Definition{
+	action.KindPaged:  pager_definition,
+	action.KindScroll: scroll_definition,
 }
 
-var keys = map[pager.EngineCode]struct {
+var keys = map[action.Kind]struct {
 	back key.Action
 	next key.Action
 }{
-	pager.CodeEnginePaged:  {key.ActionArrowLeft, key.ActionArrowRight},
-	pager.CodeEngineScroll: {key.ActionArrowUp, key.ActionArrowDown},
+	action.KindPaged:  {key.ActionArrowLeft, key.ActionArrowRight},
+	action.KindScroll: {key.ActionArrowUp, key.ActionArrowDown},
 }
 
-var labels = map[pager.EngineCode]string{
-	pager.CodeEnginePaged:  "page",
-	pager.CodeEngineScroll: "scroll",
+var labels = map[action.Kind]string{
+	action.KindPaged:  "page",
+	action.KindScroll: "scroll",
 }
 
 var pager_definition = screen.NewDefinition(

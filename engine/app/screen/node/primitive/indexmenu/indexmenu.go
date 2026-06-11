@@ -1,7 +1,7 @@
 package indexmenu
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -172,7 +172,7 @@ func (n *IndexMenu) view(uiState state.UIState) viewmodel.ViewModel {
 	)
 
 	vm.Pager.SetPredicate(
-		pager.PredicateFocus(),
+		predicate.Focus(),
 	)
 
 	return *vm

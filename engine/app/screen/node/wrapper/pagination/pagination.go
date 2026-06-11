@@ -5,7 +5,8 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -18,22 +19,23 @@ import (
 const errf_unhandled = "unhandled pager type '%d'"
 
 type Pagination struct {
-	engine      pager.EngineCode
+	actionKind  action.Kind
+	forceAction *action.Action
 	node        screen.Node
-	forceEngine *pager.Engine
 }
 
 func New(screen screen.Node) *Pagination {
 	return &Pagination{
-		engine:      pager.CodeEnginePaged,
+		actionKind:  action.KindPaged,
+		forceAction: nil,
 		node:        screen,
-		forceEngine: nil,
 	}
 }
 
-func (n *Pagination) ForceEngine(forceEngine pager.Engine) *Pagination {
-	n.forceEngine = &forceEngine
-	n.engine = forceEngine.Code
+func (n *Pagination) ForceEngine(forceAction action.Action) *Pagination {
+	n.forceAction = &forceAction
+	n.actionKind = forceAction.Kind
+
 	return n
 }
 
@@ -57,11 +59,11 @@ func (n *Pagination) keys() screen.Definition {
 }
 
 func (n *Pagination) findDefinition() screen.Definition {
-	if source, ok := definitions[n.engine]; ok {
+	if source, ok := definitions[n.actionKind]; ok {
 		return source
 	}
 
-	assert.Unreachable("unhandled engine definition %d", n.engine)
+	assert.Unreachable("unhandled action definition %d", n.actionKind)
 	return pager_definition
 }
 
@@ -81,8 +83,8 @@ func (n *Pagination) tick(uiState *state.UIState, event screen.Event) screen.Res
 	}
 
 	newWrapper := New(*result.Node)
-	newWrapper.engine = n.engine
-	newWrapper.forceEngine = n.forceEngine
+	newWrapper.actionKind = n.actionKind
+	newWrapper.forceAction = n.forceAction
 	newNode := newWrapper.ToNode()
 	result.Node = &newNode
 
@@ -90,9 +92,9 @@ func (n *Pagination) tick(uiState *state.UIState, event screen.Event) screen.Res
 }
 
 func (n *Pagination) localTick(uiState *state.UIState, event screen.Event) *screen.Result {
-	keys, ok := keys[pager.CodeEnginePaged]
+	keys, ok := keys[action.KindPaged]
 
-	assert.True(ok, errf_unhandled, pager.CodeEnginePaged)
+	assert.True(ok, errf_unhandled, action.KindPaged)
 
 	if event.Key.Code == key.ActionPageUp || event.Key.Code == keys.back {
 		uiState.Pager.DecTarget()
@@ -111,17 +113,17 @@ func (n *Pagination) localTick(uiState *state.UIState, event screen.Event) *scre
 
 func (n *Pagination) view(uiState state.UIState) viewmodel.ViewModel {
 	vm := n.node.Screen.View(uiState)
-	if n.forceEngine != nil {
-		vm.Pager.SetEngine(*n.forceEngine)
+	if n.forceAction != nil {
+		vm.Pager.SetAction(*n.forceAction)
 	}
 
 	if !n.shouldShowPage(uiState, vm) {
 		return vm
 	}
 
-	label, ok := labels[vm.Pager.Engine.Code]
+	label, ok := labels[vm.Pager.Action.Kind]
 
-	assert.True(ok, errf_unhandled, vm.Pager.Engine.Code)
+	assert.True(ok, errf_unhandled, vm.Pager.Action.Kind)
 
 	footer := []text.Line{
 		*text.NewLine(
@@ -139,9 +141,7 @@ func (n *Pagination) view(uiState state.UIState) viewmodel.ViewModel {
 }
 
 func (n *Pagination) shouldShowPage(uiState state.UIState, vm viewmodel.ViewModel) bool {
-	predicate := vm.Pager.Predicate.Code
-
-	if predicate != pager.CodePredicatePage {
+	if vm.Pager.Predicate.Kind != predicate.KindPage {
 		return false
 	}
 

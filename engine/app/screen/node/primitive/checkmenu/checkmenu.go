@@ -3,7 +3,7 @@ package checkmenu
 import (
 	"sort"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -243,7 +243,7 @@ func (n *CheckMenu) view(uiState state.UIState) viewmodel.ViewModel {
 	)
 
 	vm.Pager.SetPredicate(
-		pager.PredicateFocus(),
+		predicate.Focus(),
 	)
 
 	index := math.SubClampZeroAs[int, uint16](len(n.options), 1)

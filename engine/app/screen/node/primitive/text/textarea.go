@@ -3,7 +3,7 @@ package text
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -142,10 +142,7 @@ func (n *TextArea) loadFromStack(uiState state.UIState) {
 }
 
 func (n *TextArea) keys() screen.Definition {
-	if n.writeMode {
-		return write_definition
-	}
-	return read_definition
+	return definitions[n.writeMode]
 }
 
 func (n *TextArea) tick(uiState *state.UIState, event screen.Event) screen.Result {
@@ -558,14 +555,11 @@ func (n *TextArea) view(uiState state.UIState) viewmodel.ViewModel {
 }
 
 func (n *TextArea) viewSources(uiState state.UIState) (
-	pager.Predicate,
+	predicate.Predicate,
 	*textarea.TextAreaUnit,
 	bool,
 ) {
-	predicate := pager.PredicatePage()
-	if n.writeMode {
-		predicate = pager.PredicateFocus()
-	}
+	predicate := predicates[n.writeMode]
 
 	textarea := textarea.New(n.buffer.Facade(), n.caret).
 		WriteMode(n.writeMode).

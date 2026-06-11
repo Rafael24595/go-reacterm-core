@@ -1,4 +1,4 @@
-package pager
+package action
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/draw"
@@ -6,24 +6,24 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-type EngineCode uint8
+type Kind uint8
 
 const (
-	CodeEnginePaged EngineCode = iota
-	CodeEngineScroll
+	KindPaged Kind = iota
+	KindScroll
 )
 
-type EngineFunc func(*draw.DrawContext, *draw.DrawState) *draw.DrawState
+type Handler func(*draw.State) *draw.State
 
-type Engine struct {
-	Code EngineCode
-	Func EngineFunc
+type Action struct {
+	Kind    Kind
+	Handler Handler
 }
 
-func EnginePage() Engine {
-	return Engine{
-		Code: CodeEnginePaged,
-		Func: func(ctx *draw.DrawContext, stt *draw.DrawState) *draw.DrawState {
+func Paged() Action {
+	return Action{
+		Kind: KindPaged,
+		Handler: func(stt *draw.State) *draw.State {
 			stt.Reset()
 			stt.Page += 1
 			return stt
@@ -31,10 +31,10 @@ func EnginePage() Engine {
 	}
 }
 
-func EngineScroll() Engine {
-	return Engine{
-		Code: CodeEngineScroll,
-		Func: func(ctx *draw.DrawContext, stt *draw.DrawState) *draw.DrawState {
+func Scroll() Action {
+	return Action{
+		Kind: KindScroll,
+		Handler: func(stt *draw.State) *draw.State {
 			if len(stt.Buffer) == 0 {
 				return stt
 			}

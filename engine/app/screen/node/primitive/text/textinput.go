@@ -3,7 +3,7 @@ package text
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -164,9 +164,9 @@ func limitRows(size winsize.Winsize) winsize.Winsize {
 }
 
 func pageTransformer() pipeline.DrawTransformer {
-	engine := pager.EngineScroll()
+	action := action.Scroll()
 	return func(winsize winsize.Winsize, unit drawable.Unit) ([]text.Line, bool) {
-		transformer := focus.DrawTransformer(engine)
+		transformer := focus.DrawTransformer(action)
 		return transformer(
 			limitRows(winsize),
 			unit,

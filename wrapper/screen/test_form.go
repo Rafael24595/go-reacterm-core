@@ -5,7 +5,7 @@ import (
 	text_screen "github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/text"
 	drawable_pipeline "github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior/tick"
@@ -51,7 +51,7 @@ func NewTestForm() screen.Node {
 			),
 		).
 		PushSteps(
-			page.Use(pager.EngineScroll()),
+			page.Use(action.Scroll()),
 		).
 		ToNode()
 
@@ -155,9 +155,9 @@ func wrapStep(vm viewmodel.ViewModel) viewmodel.ViewModel {
 }
 
 func pageTransformer() drawable_pipeline.DrawTransformer {
-	engine := pager.EngineScroll()
+	action := action.Scroll()
 	return func(winsize winsize.Winsize, unit drawable.Unit) ([]text.Line, bool) {
-		transformer := focus.DrawTransformer(engine)
+		transformer := focus.DrawTransformer(action)
 		return transformer(winsize, unit)
 	}
 }

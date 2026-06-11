@@ -2,6 +2,8 @@ package focus
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline"
@@ -11,11 +13,11 @@ import (
 )
 
 // TODO: Add flag to manage non focus unit?
-func DrawTransformer(engine pager.Engine) pipeline.DrawTransformer {
-	predicate := pager.PredicateFocus()
+func DrawTransformer(action action.Action) pipeline.DrawTransformer {
+	predicate := predicate.Focus()
 	strategy := *pager.NewStrategy().
-		SetEngine(engine).
-		SetPredicate(predicate)
+		SetPredicate(predicate).
+		SetAction(action)
 
 	return func(size winsize.Winsize, unit drawable.Unit) ([]text.Line, bool) {
 		uiState := state.NewUIState()

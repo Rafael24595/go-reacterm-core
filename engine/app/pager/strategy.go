@@ -1,26 +1,33 @@
 package pager
 
-var default_engine = EnginePage()
-var default_predicate = PredicatePage()
+import (
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
+)
+
+var (
+	default_predicate = predicate.Page()
+	default_action    = action.Paged()
+)
 
 type PagerStrategy struct {
-	Engine    Engine
-	Predicate Predicate
+	Predicate predicate.Predicate
+	Action    action.Action
 }
 
 func NewStrategy() *PagerStrategy {
 	return &PagerStrategy{
-		Engine:    default_engine,
 		Predicate: default_predicate,
+		Action:    default_action,
 	}
 }
 
-func (p *PagerStrategy) SetEngine(engine Engine) *PagerStrategy {
-	p.Engine = engine
+func (p *PagerStrategy) SetPredicate(predicate predicate.Predicate) *PagerStrategy {
+	p.Predicate = predicate
 	return p
 }
 
-func (p *PagerStrategy) SetPredicate(predicate Predicate) *PagerStrategy {
-	p.Predicate = predicate
+func (p *PagerStrategy) SetAction(action action.Action) *PagerStrategy {
+	p.Action = action
 	return p
 }
