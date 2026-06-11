@@ -60,16 +60,29 @@ func MaterializeEmpty(
 }
 
 func Line(cols winsize.Cols, line *text.Line) []text.Line {
+	return wrapLine(cols, *line, make([]text.Line, 0))
+}
+
+func Lines(cols winsize.Cols, lines ...text.Line) []text.Line {
 	result := make([]text.Line, 0)
-	current := line
+
+	for _, line := range lines {
+		result = wrapLine(cols, line, result)
+	}
+	
+	return result
+}
+
+func wrapLine(cols winsize.Cols, line text.Line, dst []text.Line) []text.Line {
+	current := &line
 
 	for current != nil {
 		head, rest := wrapOnceFromLine(cols, *current)
-		result = append(result, *head)
+		dst = append(dst, *head)
 		current = rest
 	}
 
-	return result
+	return dst
 }
 
 func NextLine(cols winsize.Cols, lines []LayoutLine) (*text.Line, []LayoutLine) {
