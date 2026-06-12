@@ -81,8 +81,14 @@ func (u *BoxUnit) makeUnit() drawable.Unit {
 	}
 
 	return margin.NewBuilder().
-		Y(u.paddingY, rows.WithPosition(style.Middle)).
-		X(u.paddingX, cols.WithPosition(style.Center)).
+		Rows(
+			u.paddingY,
+			rows.WithPosition(style.Middle),
+		).
+		Cols(
+			u.paddingX,
+			cols.WithPosition(style.Center),
+		).
 		ToUnit(u.unit)
 }
 
