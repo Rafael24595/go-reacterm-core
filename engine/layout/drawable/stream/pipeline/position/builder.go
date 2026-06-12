@@ -16,29 +16,29 @@ type Builder struct {
 	margin  *margin.Builder
 }
 
-func New() *Builder {
+func NewBuilder() *Builder {
 	return &Builder{
 		padding: padding.NewBuilder(),
 		margin:  margin.NewBuilder(),
 	}
 }
 
-func (b *Builder) MarginY(hint hint.Size[winsize.Rows], opts ...rows.Option) *Builder {
+func (b *Builder) MarginRows(hint hint.Size[winsize.Rows], opts ...rows.Option) *Builder {
 	b.margin.Rows(&hint, opts...)
 	return b
 }
 
-func (b *Builder) MarginX(hint hint.Size[winsize.Cols], opts ...cols.Option) *Builder {
+func (b *Builder) MarginCols(hint hint.Size[winsize.Cols], opts ...cols.Option) *Builder {
 	b.margin.Cols(&hint, opts...)
 	return b
 }
 
-func (b *Builder) PaddingY(hint hint.Size[winsize.Rows], opts ...rows.Option) *Builder {
+func (b *Builder) PaddingRows(hint hint.Size[winsize.Rows], opts ...rows.Option) *Builder {
 	b.padding.Rows(hint, opts...)
 	return b
 }
 
-func (b *Builder) PaddingX(hint hint.Size[winsize.Cols], opts ...cols.Option) *Builder {
+func (b *Builder) PaddingCols(hint hint.Size[winsize.Cols], opts ...cols.Option) *Builder {
 	b.padding.Cols(hint, opts...)
 	return b
 }
