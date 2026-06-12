@@ -123,8 +123,14 @@ func (u *ModalUnit) lazyInit(size winsize.Winsize) {
 		ToUnit()
 
 	position := padding.NewBuilder().
-		Y(hint.Maximize[winsize.Rows](), rows.WithPosition(style.Middle)).
-		X(hint.Maximize[winsize.Cols](), cols.WithPosition(style.Center)).
+		Rows(
+			hint.Maximize[winsize.Rows](),
+			rows.WithPosition(style.Middle),
+		).
+		Cols(
+			hint.Maximize[winsize.Cols](),
+			cols.WithPosition(style.Center),
+		).
 		ToUnit(box)
 
 	position.Drawable.Init()

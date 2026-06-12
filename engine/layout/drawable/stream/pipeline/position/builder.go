@@ -34,12 +34,12 @@ func (b *Builder) MarginX(hint hint.Size[winsize.Cols], opts ...cols.Option) *Bu
 }
 
 func (b *Builder) PaddingY(hint hint.Size[winsize.Rows], opts ...rows.Option) *Builder {
-	b.padding.Y(hint, opts...)
+	b.padding.Rows(hint, opts...)
 	return b
 }
 
 func (b *Builder) PaddingX(hint hint.Size[winsize.Cols], opts ...cols.Option) *Builder {
-	b.padding.X(hint, opts...)
+	b.padding.Cols(hint, opts...)
 	return b
 }
 

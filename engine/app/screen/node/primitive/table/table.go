@@ -207,8 +207,14 @@ func (n *Table[T]) view(uiState state.UIState) viewmodel.ViewModel {
 	table := drawable_table.UnitFromTable(*n.table, *n.cursor)
 
 	position := padding.NewBuilder().
-		Y(hint.Maximize[winsize.Rows](), rows.WithPosition(n.positionY)).
-		X(hint.Maximize[winsize.Cols](), cols.WithPosition(n.positionX)).
+		Rows(
+			hint.Maximize[winsize.Rows](),
+			rows.WithPosition(n.positionY),
+		).
+		Cols(
+			hint.Maximize[winsize.Cols](),
+			cols.WithPosition(n.positionX),
+		).
 		ToUnit(table)
 
 	vm.Kernel.Push(position)

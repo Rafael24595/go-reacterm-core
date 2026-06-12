@@ -10,45 +10,45 @@ import (
 )
 
 type Builder struct {
-	hintY    *hint.Size[winsize.Rows]
-	optionsY []rows.Option
-	hintX    *hint.Size[winsize.Cols]
-	optionsX []cols.Option
+	hintRows    *hint.Size[winsize.Rows]
+	optionsRows []rows.Option
+	hintCols    *hint.Size[winsize.Cols]
+	optionsCols []cols.Option
 }
 
 func NewBuilder() *Builder {
 	return &Builder{
-		hintY:    nil,
-		optionsY: make([]rows.Option, 0),
-		hintX:    nil,
-		optionsX: make([]cols.Option, 0),
+		hintRows:    nil,
+		optionsRows: make([]rows.Option, 0),
+		hintCols:    nil,
+		optionsCols: make([]cols.Option, 0),
 	}
 }
 
-func (b *Builder) Y(hint hint.Size[winsize.Rows], opts ...rows.Option) *Builder {
-	b.hintY = &hint
-	b.optionsY = append(b.optionsY, opts...)
+func (b *Builder) Rows(hint hint.Size[winsize.Rows], opts ...rows.Option) *Builder {
+	b.hintRows = &hint
+	b.optionsRows = append(b.optionsRows, opts...)
 	return b
 }
 
-func (b *Builder) X(hint hint.Size[winsize.Cols], opts ...cols.Option) *Builder {
-	b.hintX = &hint
-	b.optionsX = append(b.optionsX, opts...)
+func (b *Builder) Cols(hint hint.Size[winsize.Cols], opts ...cols.Option) *Builder {
+	b.hintCols = &hint
+	b.optionsCols = append(b.optionsCols, opts...)
 	return b
 }
 
 func (b *Builder) Steps() []pipeline.DataTransformer {
 	data := make([]pipeline.DataTransformer, 0, 2)
 
-	if b.hintY != nil {
+	if b.hintRows != nil {
 		data = append(data,
-			Rows(*b.hintY, b.optionsY...),
+			Rows(*b.hintRows, b.optionsRows...),
 		)
 	}
 
-	if b.hintX != nil {
+	if b.hintCols != nil {
 		data = append(data,
-			Cols(*b.hintX, b.optionsX...),
+			Cols(*b.hintCols, b.optionsCols...),
 		)
 	}
 
