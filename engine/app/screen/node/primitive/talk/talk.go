@@ -151,7 +151,7 @@ func (n *Talk) view(uiState state.UIState) viewmodel.ViewModel {
 
 	n.loadFromStack(uiState)
 
-	pointer := talk.FindPointer(n.pointer)
+	pointer := n.pointerProvider()
 
 	indexmenu := talk.New().
 		Navigation(n.navigation).
@@ -164,13 +164,19 @@ func (n *Talk) view(uiState state.UIState) viewmodel.ViewModel {
 		indexmenu.ToUnit(),
 	)
 
-	index := math.SubClampZeroAs[int, uint16](len(n.messages), 1)
-	option := min(index, n.cursor)
-	text := n.messages[option].Owner
+	if n.navigation {
+		index := math.Clamp(
+			n.cursor, 0, uint16(len(n.messages)),
+		)
 
-	vm.Footer.Push(
-		inputline.FromString(text),
-	)
+		text := fmt.Sprintf(
+			"%d - %s", n.cursor, n.messages[index].Owner,
+		)
+
+		vm.Footer.Push(
+			inputline.FromString(text),
+		)
+	}
 
 	vm.Pager.Action = actions[n.navigation]
 
@@ -179,4 +185,11 @@ func (n *Talk) view(uiState state.UIState) viewmodel.ViewModel {
 	)
 
 	return *vm
+}
+
+func (n *Talk) pointerProvider() talk.PointerProvider {
+	if n.navigation {
+		return talk.FindPointer(n.pointer)
+	}
+	return talk.NoneProvider
 }
