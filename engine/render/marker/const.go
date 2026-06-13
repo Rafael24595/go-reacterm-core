@@ -16,10 +16,13 @@ const (
 
 const DefaultPromptText = ">"
 
-const BlackRightPointingTriangle = "▶"
-
 const (
 	DefaultLeftGutterText   = "▌"
 	DefaultMiddleGutterText = "┃"
 	DefaultRightGutterText  = "▐"
+)
+
+const (
+	U25B6      = '▶'
+	U25B6_Text = string(U25B6)
 )

@@ -10,7 +10,7 @@ type pointerProvider func(cursor uint16, index uint16) ([]text.Fragment, []text.
 
 var providers = []pointerProvider{
 	arrowProvider(),
-	arrowProvider(marker.BlackRightPointingTriangle),
+	arrowProvider(marker.U25B6_Text),
 	gutterProvider(),
 }
 
