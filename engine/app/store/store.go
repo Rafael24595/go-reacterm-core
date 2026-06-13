@@ -116,3 +116,17 @@ func Push[T any](
 ) *Store {
 	return c.Push(scope, key.Code(), arg)
 }
+    
+func Remove[T any](
+	c *Store,
+	scope string,
+	key Key[T],
+) (T, bool) {
+	arg, ok := c.RemoveArgument(scope, key.Code())
+	if ok {
+		return commons.Map[T](*arg)
+	}
+
+	var zero T
+	return zero, false
+}
