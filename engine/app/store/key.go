@@ -19,3 +19,8 @@ func (t Key[T]) Set(c *Store, scope string, arg T) Key[T] {
 	Push(c, scope, t, arg)
 	return t
 }
+
+func (t Key[T]) Delete(c *Store, scope string) Key[T] {
+	Remove(c, scope, t)
+	return t
+}

@@ -126,9 +126,9 @@ func (n *IndexMenu) tick(uiState *state.UIState, event screen.Event) screen.Resu
 
 func (n *IndexMenu) tickToStack(uiState *state.UIState) {
 	if n.cursor >= uint16(len(n.options)) {
-		uiState.Store.RemoveArgument(
+		KeyActive.Delete(
+			uiState.Store,
 			n.reference,
-			string(KeyActive),
 		)
 		return
 	}
