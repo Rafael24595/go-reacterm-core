@@ -14,6 +14,8 @@ var providers = []PointerProvider{
 	gutterProvider(),
 }
 
+var NoneProvider = arrowProvider(' ')
+
 func FindPointer(cursor uint8) PointerProvider {
 	if cursor >= uint8(len(providers)) {
 		return providers[0]
