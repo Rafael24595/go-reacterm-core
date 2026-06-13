@@ -1,6 +1,8 @@
 package talk
 
 import (
+	"fmt"
+
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -68,7 +70,19 @@ func (n *Talk) init(uiState state.UIState) {
 }
 
 func (n *Talk) loadFromStack(uiState state.UIState) {
-	//TODO: Implement.
+	if cursor, ok := KeyCursor.Get(
+		uiState.Store,
+		n.reference,
+	); ok {
+		n.cursor = cursor
+	}
+
+	if messages, ok := KeyMessages.Get(
+		uiState.Store,
+		n.reference,
+	); ok {
+		n.messages = messages
+	}
 }
 
 func (n *Talk) keys() screen.Definition {
@@ -119,7 +133,17 @@ func (n *Talk) tickNavigation(uiState *state.UIState, event screen.Event) screen
 }
 
 func (n *Talk) tickToStack(uiState *state.UIState) {
-	//TODO: Implement.
+	KeyCursor.Set(
+		uiState.Store,
+		n.reference,
+		n.cursor,
+	)
+
+	KeyMessages.Set(
+		uiState.Store,
+		n.reference,
+		n.messages,
+	)
 }
 
 func (n *Talk) view(uiState state.UIState) viewmodel.ViewModel {
