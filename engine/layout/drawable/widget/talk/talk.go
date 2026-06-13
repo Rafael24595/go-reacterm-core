@@ -115,7 +115,7 @@ func (u *TalkUnit) lazyInit(size winsize.Winsize) {
 
 func (u *TalkUnit) makeLines(
 	size winsize.Winsize,
-	provider pointerProvider,
+	provider PointerProvider,
 	message chat.Message,
 	index uint16,
 ) ([]text.Line, []text.Line) {

@@ -6,15 +6,15 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-type pointerProvider func(cursor uint16, index uint16) ([]text.Fragment, []text.Fragment)
+type PointerProvider func(cursor uint16, index uint16) ([]text.Fragment, []text.Fragment)
 
-var providers = []pointerProvider{
+var providers = []PointerProvider{
 	arrowProvider(),
-	arrowProvider(marker.U25B6_Text),
+	arrowProvider(marker.U25B6),
 	gutterProvider(),
 }
 
-func FindPointer(cursor uint8) pointerProvider {
+func FindPointer(cursor uint8) PointerProvider {
 	if cursor >= uint8(len(providers)) {
 		return providers[0]
 	}
@@ -25,10 +25,10 @@ func NextPointer(cursor uint8) uint8 {
 	return (cursor + 1) % uint8(len(providers))
 }
 
-func arrowProvider(arrow ...string) pointerProvider {
+func arrowProvider(arrow ...rune) PointerProvider {
 	pointer := marker.DefaultPromptText
 	if len(arrow) > 0 {
-		pointer = arrow[0]
+		pointer = string(arrow[0])
 	}
 
 	defaultOwner := []text.Fragment{
@@ -56,7 +56,7 @@ func arrowProvider(arrow ...string) pointerProvider {
 	}
 }
 
-func gutterProvider() pointerProvider {
+func gutterProvider() PointerProvider {
 	defaultOwner := []text.Fragment{
 		*text.NewFragment(marker.DefaultPaddingText).
 			AddSpec(style.SpecRepeatRight(3)),
