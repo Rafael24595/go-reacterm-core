@@ -2,9 +2,12 @@ package marker
 
 import "github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 
-const DefaultPaddingText = " "
+const (
+	DefaultPadding     = ' '
+	DefaultPaddingText = string(DefaultPadding)
+)
 
-const PrintableCaretText = " "
+var PrintableCaretRunes = []rune{DefaultPadding}
 
 const (
 	DefaultElipsisText = "."
@@ -20,5 +23,3 @@ const (
 	DefaultMiddleGutterText = "┃"
 	DefaultRightGutterText  = "▐"
 )
-
-var PrintableCaretRunes = []rune(PrintableCaretText)

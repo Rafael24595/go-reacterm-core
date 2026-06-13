@@ -79,9 +79,9 @@ func TestRendererResolve(t *testing.T) {
 
 			expectedEnd: 4,
 			expected: []expectedFragment{
-				ef(marker.PrintableCaretText),
+				ef(marker.DefaultPaddingText),
 				ef("\n"),
-				ef(marker.PrintableCaretText, style.AtmFocus),
+				ef(marker.DefaultPaddingText, style.AtmFocus),
 			},
 		},
 		{
@@ -94,7 +94,7 @@ func TestRendererResolve(t *testing.T) {
 
 			expectedEnd: 5,
 			expected: []expectedFragment{
-				ef(marker.PrintableCaretText),
+				ef(marker.DefaultPaddingText),
 				ef("\n"),
 				ef("d", style.AtmFocus),
 			},
@@ -122,7 +122,7 @@ func TestRendererResolve(t *testing.T) {
 
 			expectedEnd: 3,
 			expected: []expectedFragment{
-				ef(marker.PrintableCaretText, style.AtmFocus),
+				ef(marker.DefaultPaddingText, style.AtmFocus),
 				ef("\nb"),
 			},
 		},
@@ -136,9 +136,9 @@ func TestRendererResolve(t *testing.T) {
 
 			expectedEnd: 4,
 			expected: []expectedFragment{
-				ef(marker.PrintableCaretText),
+				ef(marker.DefaultPaddingText),
 				ef("\n"),
-				ef(marker.PrintableCaretText, style.AtmFocus),
+				ef(marker.DefaultPaddingText, style.AtmFocus),
 			},
 		},
 	}
