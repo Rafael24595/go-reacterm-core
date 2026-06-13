@@ -18,7 +18,7 @@ type TalkUnit struct {
 	loaded     bool
 	lazyLoaded bool
 	navigation bool
-	pointer    uint8
+	pointer    PointerProvider
 	owner      string
 	messages   []chat.Message
 	cursor     uint16
@@ -42,7 +42,7 @@ func (u *TalkUnit) Navigation(navigation bool) *TalkUnit {
 	return u
 }
 
-func (u *TalkUnit) SetPointer(pointer uint8) *TalkUnit {
+func (u *TalkUnit) Pointer(pointer PointerProvider) *TalkUnit {
 	u.pointer = pointer
 	return u
 }
@@ -87,10 +87,8 @@ func (u *TalkUnit) lazyInit(size winsize.Winsize) {
 
 	lines := make([]text.Line, 0, messagesLen*2)
 
-	provider := FindPointer(u.pointer)
-
 	for i, m := range u.messages {
-		ownerLines, messageLines := u.makeLines(size, provider, m, uint16(i))
+		ownerLines, messageLines := u.makeLines(size, m, uint16(i))
 		if len(ownerLines) >= int(size.Rows) {
 			lines = append(lines,
 				*text.NewLine("..."),
@@ -115,7 +113,6 @@ func (u *TalkUnit) lazyInit(size winsize.Winsize) {
 
 func (u *TalkUnit) makeLines(
 	size winsize.Winsize,
-	provider PointerProvider,
 	message chat.Message,
 	index uint16,
 ) ([]text.Line, []text.Line) {
@@ -124,7 +121,7 @@ func (u *TalkUnit) makeLines(
 		atom = style.AtmFocus
 	}
 
-	ownerSelector, messageSelector := provider(u.cursor, index)
+	ownerSelector, messageSelector := u.pointer(u.cursor, index)
 
 	ownerLines := wrap.Lines(
 		size.Cols.Sub(3),

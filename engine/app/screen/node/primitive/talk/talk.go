@@ -127,9 +127,11 @@ func (n *Talk) view(uiState state.UIState) viewmodel.ViewModel {
 
 	n.loadFromStack(uiState)
 
+	pointer := talk.FindPointer(n.pointer)
+
 	indexmenu := talk.New().
 		Navigation(n.navigation).
-		SetPointer(n.pointer).
+		Pointer(pointer).
 		SetOwner(n.owner).
 		AddMessage(n.messages...).
 		SetCursor(n.cursor)
