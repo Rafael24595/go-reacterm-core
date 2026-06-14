@@ -124,21 +124,30 @@ func (u *IndexMenuUnit) makeIndex(cursor int, digits winsize.Cols) *text.Fragmen
 }
 
 func (u *IndexMenuUnit) makeCustomIndex(cursor int) *text.Fragment {
-	txt := u.meta.Index
+	data := u.meta.Index
 	if cursor == int(u.cursor) {
-		txt = u.meta.Cursor
+		data = u.meta.Cursor
 	}
-	return text.NewFragment(txt)
+
+	return text.NewFragment(data)
 }
 
 func (u *IndexMenuUnit) makeNumericIndex(cursor int, digits winsize.Cols) *text.Fragment {
-	txt := helper.Right(cursor+1, digits)
-	return u.makeCommonIndex(cursor, txt)
+	text := helper.TextFromAny(cursor + 1)
+	return u.makeTextIndex(cursor, digits, text)
 }
 
 func (u *IndexMenuUnit) makeAlphabeticIndex(cursor int, digits winsize.Cols) *text.Fragment {
-	txt := helper.Right(helper.NumberToAlpha(cursor), digits)
-	return u.makeCommonIndex(cursor, txt)
+	text := helper.TextFromAny(
+		helper.NumberToAlpha(cursor),
+	)
+	return u.makeTextIndex(cursor, digits, text)
+}
+
+func (u *IndexMenuUnit) makeTextIndex(cursor int, digits winsize.Cols, text helper.Text) *text.Fragment {
+	filler := marker.DefaultPaddingText
+	data := helper.Right(digits, text, filler)
+	return u.makeCommonIndex(cursor, data)
 }
 
 func (u *IndexMenuUnit) makeCommonIndex(cursor int, txt string) *text.Fragment {

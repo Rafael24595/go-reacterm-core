@@ -5,6 +5,7 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
+	"github.com/Rafael24595/go-reacterm-core/engine/helper"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
@@ -13,10 +14,9 @@ import (
 func TestPaddingLeft_Strict(t *testing.T) {
 	spec := style.SpecPaddingLeft(6, "-")
 
-	text := "hi"
-	size := runes.Measure(text)
+	text := helper.TextFromString("hi")
 
-	got := paddingLeft(spec, 20, text, size)
+	got := paddingLeft(spec, 20, text)
 
 	assert.Equal(t, "----hi", got)
 	assert.Equal(t, 6, len(got))
@@ -25,10 +25,9 @@ func TestPaddingLeft_Strict(t *testing.T) {
 func TestPaddingLeft_RespectsCols(t *testing.T) {
 	spec := style.SpecPaddingLeft(10, "-")
 
-	text := "hi"
-	size := runes.Measure(text)
+	text := helper.TextFromString("hi")
 
-	got := paddingLeft(spec, 5, text, size)
+	got := paddingLeft(spec, 5, text)
 
 	assert.Equal(t, "---hi", got)
 	assert.Equal(t, 5, len(got))
@@ -37,10 +36,9 @@ func TestPaddingLeft_RespectsCols(t *testing.T) {
 func TestPaddingRight_Strict(t *testing.T) {
 	spec := style.SpecPaddingRight(6, ".")
 
-	text := "hi"
-	size := runes.Measure(text)
+	text := helper.TextFromString("hi")
 
-	got := paddingRight(spec, 20, text, size)
+	got := paddingRight(spec, 20, text)
 
 	assert.Equal(t, "hi....", got)
 	assert.Equal(t, 6, len(got))
@@ -49,10 +47,9 @@ func TestPaddingRight_Strict(t *testing.T) {
 func TestPaddingRight_RespectsCols(t *testing.T) {
 	spec := style.SpecPaddingRight(10, ".")
 
-	text := "hi"
-	size := runes.Measure(text)
+	text := helper.TextFromString("hi")
 
-	got := paddingRight(spec, 5, text, size)
+	got := paddingRight(spec, 5, text)
 
 	assert.Equal(t, "hi...", got)
 	assert.Equal(t, 5, len(got))
@@ -61,10 +58,9 @@ func TestPaddingRight_RespectsCols(t *testing.T) {
 func TestPaddingCenter_Strict(t *testing.T) {
 	spec := style.SpecPaddingCenter(6, "-")
 
-	text := "hi"
-	size := runes.Measure(text)
+	text := helper.TextFromString("hi")
 
-	got := paddingCenter(spec, 20, text, size)
+	got := paddingCenter(spec, 20, text)
 
 	assert.Equal(t, "--hi--", got)
 	assert.Equal(t, 6, len(got))
@@ -73,10 +69,9 @@ func TestPaddingCenter_Strict(t *testing.T) {
 func TestPaddingCenter_RespectsCols(t *testing.T) {
 	spec := style.SpecPaddingCenter(6, "-")
 
-	text := "hi"
-	size := runes.Measure(text)
+	text := helper.TextFromString("hi")
 
-	got := paddingCenter(spec, 4, text, size)
+	got := paddingCenter(spec, 4, text)
 
 	assert.Equal(t, "-hi-", got)
 	assert.Equal(t, 4, len(got))
@@ -85,10 +80,9 @@ func TestPaddingCenter_RespectsCols(t *testing.T) {
 func TestPaddingCenter_OddSize(t *testing.T) {
 	spec := style.SpecPaddingCenter(7, "-")
 
-	text := "hi"
-	size := runes.Measure(text)
+	text := helper.TextFromString("hi")
 
-	got := paddingCenter(spec, 20, text, size)
+	got := paddingCenter(spec, 20, text)
 
 	assert.Equal(t, "--hi---", got)
 	assert.Equal(t, 7, len(got))
@@ -97,10 +91,9 @@ func TestPaddingCenter_OddSize(t *testing.T) {
 func TestRepeatLeft_WithText_Strict(t *testing.T) {
 	spec := style.SpecRepeatLeft(3, "-")
 
-	text := "hi"
-	size := runes.Measure(text)
+	text := helper.TextFromString("hi")
 
-	got := repeatLeft(spec, 20, text, size)
+	got := repeatLeft(spec, 20, text)
 
 	assert.Equal(t, "---hi", got)
 }
@@ -108,10 +101,9 @@ func TestRepeatLeft_WithText_Strict(t *testing.T) {
 func TestRepeatLeft_WithoutText_Strict(t *testing.T) {
 	spec := style.SpecRepeatLeft(3)
 
-	text := "ab"
-	size := runes.Measure(text)
+	text := helper.TextFromString("ab")
 
-	got := repeatLeft(spec, 20, text, size)
+	got := repeatLeft(spec, 20, text)
 
 	assert.Equal(t, "bab", got)
 }
@@ -119,10 +111,9 @@ func TestRepeatLeft_WithoutText_Strict(t *testing.T) {
 func TestRepeatRight_WithText_Strict(t *testing.T) {
 	spec := style.SpecRepeatRight(3, "-")
 
-	text := "hi"
-	size := runes.Measure(text)
+	text := helper.TextFromString("hi")
 
-	got := repeatRight(spec, 20, text, size)
+	got := repeatRight(spec, 20, text)
 
 	assert.Equal(t, "hi---", got)
 }
@@ -130,10 +121,9 @@ func TestRepeatRight_WithText_Strict(t *testing.T) {
 func TestRepeatRight_WithoutText_Strict(t *testing.T) {
 	spec := style.SpecRepeatRight(3)
 
-	text := "ab"
-	size := runes.Measure(text)
+	text := helper.TextFromString("ab")
 
-	got := repeatRight(spec, 20, text, size)
+	got := repeatRight(spec, 20, text)
 
 	assert.Equal(t, "aba", got)
 }
@@ -175,12 +165,13 @@ func TestTrimLeft_Standard(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			spec := style.SpecTrimLeft(tt.size)
 
-			size := runes.Measure(tt.in)
-			got := trimLeft(spec, tt.in, size)
+			text := helper.TextFromString(tt.in)
+
+			got := trimLeft(spec, text)
 
 			assert.Equal(t, tt.want, got)
 
-			if tt.size > 0 && size > 0 {
+			if tt.size > 0 && text.Size > 0 {
 				assert.Equal(t, tt.size, runes.Measure(got))
 			}
 		})
@@ -221,13 +212,14 @@ func TestTrimLeft_WithEllipsis(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			spec := style.SpecTrimTextLeft(tt.size, tt.ellipsis)
-			size := runes.Measure(tt.in)
 
-			got := trimLeft(spec, tt.in, size)
+			text := helper.TextFromString(tt.in)
+
+			got := trimLeft(spec, text)
 
 			assert.Equal(t, tt.want, got)
 
-			if tt.size > 0 && size > 0 {
+			if tt.size > 0 && text.Size > 0 {
 				assert.Equal(t, tt.size, runes.Measure(got))
 			}
 		})
@@ -270,12 +262,13 @@ func TestTrimRight_Standard(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			spec := style.SpecTrimRight(tt.size)
 
-			size := runes.Measure(tt.in)
-			got := trimRight(spec, tt.in, size)
+			text := helper.TextFromString(tt.in)
+
+			got := trimRight(spec, text)
 
 			assert.Equal(t, tt.want, got)
 
-			if tt.size > 0 && size > 0 {
+			if tt.size > 0 && text.Size > 0 {
 				assert.Equal(t, tt.size, runes.Measure(got))
 			}
 		})
@@ -316,13 +309,14 @@ func TestTrimRight_WithEllipsis(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			spec := style.SpecTrimTextRight(tt.size, tt.ellipsis)
-			size := runes.Measure(tt.in)
+			
+			text := helper.TextFromString(tt.in)
 
-			got := trimRight(spec, tt.in, size)
+			got := trimRight(spec, text)
 
 			assert.Equal(t, tt.want, got)
 
-			if tt.size > 0 && size > 0 {
+			if tt.size > 0 && text.Size > 0 {
 				assert.Equal(t, tt.size, runes.Measure(got))
 			}
 		})
@@ -330,33 +324,29 @@ func TestTrimRight_WithEllipsis(t *testing.T) {
 }
 
 func TestFill_Strict(t *testing.T) {
-	text := "-"
-	size := runes.Measure(text)
-
+	text := helper.TextFromString("-")
 	spec := style.SpecFill(10)
-	got := fill(spec, 6, text, size)
+	got := fill(spec, 6, text)
 
 	assert.Equal(t, 6, len(got))
 	assert.Equal(t, "------", got)
 }
 
 func TestFill_Strict_LongText_Even(t *testing.T) {
-	text := "go"
-	size := runes.Measure(text)
+	text := helper.TextFromString("go")
 
 	spec := style.SpecFill(20)
-	got := fill(spec, 10, text, size)
+	got := fill(spec, 10, text)
 
 	assert.Equal(t, 10, len(got))
 	assert.Equal(t, "gogogogogo", got)
 }
 
 func TestFill_Strict_LongText_Odd(t *testing.T) {
-	text := "zig"
-	size := runes.Measure(text)
+	text := helper.TextFromString("zig")
 
 	spec := style.SpecFill(20)
-	got := fill(spec, 10, text, size)
+	got := fill(spec, 10, text)
 
 	assert.Equal(t, 10, len(got))
 	assert.Equal(t, "zigzigzigz", got)

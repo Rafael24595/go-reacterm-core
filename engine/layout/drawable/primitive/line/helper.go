@@ -62,9 +62,13 @@ func computeIndexMeta(lines []wrap.LayoutLine) *indexMeta {
 		return nil
 	}
 
+	prefix := helper.FillRight(
+		size, helper.TextFromString(marker.DefaultPaddingText),
+	)
+
 	return &indexMeta{
 		sufix:      separator,
-		prefixBody: helper.FillRight(marker.DefaultPaddingText, size),
+		prefixBody: prefix,
 		digits:     uint16(size),
 		totalWidth: size + runes.Measure(separator),
 	}

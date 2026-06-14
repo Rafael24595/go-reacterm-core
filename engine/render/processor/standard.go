@@ -3,6 +3,7 @@ package processor
 import (
 	"strings"
 
+	"github.com/Rafael24595/go-reacterm-core/engine/helper"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/styler"
@@ -25,15 +26,12 @@ func (r Standard) Render(lines []text.Line, size winsize.Winsize) []string {
 	buffer := make([]string, len(lines))
 
 	for i, line := range lines {
-		measure := text.FragmentMeasure(size.Cols, line.Text...)
-		styled := r.renderLineFragments(line, size)
-
-		buffer[i] = r.spec.Apply(
-			line.Spec,
-			size,
-			styled,
-			measure,
+		text := helper.NewText(
+			r.renderLineFragments(line, size),
+			text.FragmentMeasure(size.Cols, line.Text...),
 		)
+
+		buffer[i] = r.spec.Apply(line.Spec, size, text)
 	}
 
 	return buffer
@@ -51,7 +49,12 @@ func (r Standard) renderLineFragments(line text.Line, size winsize.Winsize) stri
 	)
 
 	for _, f := range line.Text {
-		spec := r.spec.Apply(f.Spec, lineSize, f.Text, f.Size())
+		txt := helper.NewText(
+			f.Text,
+			f.Size(),
+		)
+
+		spec := r.spec.Apply(f.Spec, lineSize, txt)
 
 		fragSize := text.FragmentMeasure(size.Cols, f)
 		lineSize.Cols = lineSize.Cols.Sub(fragSize)
@@ -77,4 +80,3 @@ func (r Standard) renderLineFragments(line text.Line, size winsize.Winsize) stri
 
 	return buffer.String()
 }
-

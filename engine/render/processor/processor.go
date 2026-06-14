@@ -14,6 +14,8 @@ func WithPadding(
 	transform func(winsize.Winsize) winsize.Winsize,
 	inner render.RawProcessor,
 ) render.Processor {
+	filler := marker.DefaultPaddingText
+
 	return func(lines []text.Line, size winsize.Winsize) string {
 		r := transform(size)
 
@@ -32,13 +34,22 @@ func WithPadding(
 
 		buffer := make([]string, size.Rows)
 		for i := range size.Rows {
-			buffer[i] = helper.FillRight(marker.DefaultPaddingText, size.Cols)
+			buffer[i] = helper.FillRight(
+				size.Cols, helper.TextFromString(filler),
+			)
 		}
 
 		index := topPadding
 		for _, line := range content {
-			fixed := helper.Right(marker.DefaultPaddingText, leftPadding)
-			buffer[index] = helper.Right(fixed+line, size.Cols)
+			fixed := helper.FillRight(
+				leftPadding, helper.TextFromString(filler),
+			)
+
+			buffer[index] = helper.Right(
+				size.Cols,
+				helper.TextFromString(fixed+line),
+				filler,
+			)
 			index += 1
 		}
 

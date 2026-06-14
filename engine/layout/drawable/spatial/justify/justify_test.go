@@ -9,6 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
@@ -51,18 +52,22 @@ func renderFragments(frags []text.Fragment) string {
 }
 
 func renderLine(cols winsize.Cols, mode style.Justify, line text.Line) string {
-	frags := renderFragments(line.Text)
+	filler := marker.DefaultPaddingText
+	
+	text := helper.TextFromString(
+		renderFragments(line.Text),
+	)
 
 	switch mode {
 	case style.JustifyStart:
-		return helper.Right(frags, cols)
+		return helper.Right(cols, text, filler)
 	case style.JustifyEnd:
-		return helper.Left(frags, cols)
+		return helper.Left(cols, text, filler)
 	case style.JustifyCenter, style.JustifyAround, style.JustifyEvenly:
-		return helper.Center(frags, cols)
+		return helper.Center(cols, text, filler)
 	}
 
-	return frags
+	return text.Data
 }
 
 func TestJustify_UnitBasicSuite(t *testing.T) {
