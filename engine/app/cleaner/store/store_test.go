@@ -1,4 +1,4 @@
-package stack
+package store
 
 import (
 	"testing"
@@ -12,13 +12,13 @@ import (
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
 )
 
-func TestStack_ToStateCleaner(t *testing.T) {
+func TestStore_ToStateCleaner(t *testing.T) {
 	cleaner := NewCleaner()
 
 	cleaner_test.Helper_ToStateCleaner(t, cleaner)
 }
 
-func TestStack_PreservesActiveState(t *testing.T) {
+func TestStore__PreservesActiveState(t *testing.T) {
 	cleaner := NewCleaner()
 	uiState := state.NewUIState()
 
@@ -43,7 +43,7 @@ func TestStack_PreservesActiveState(t *testing.T) {
 	assert.Equal(t, "golang", value.Stringf())
 }
 
-func TestStack_RemovesInactiveState(t *testing.T) {
+func TestStore__RemovesInactiveState(t *testing.T) {
 	cleaner := NewCleaner()
 	uiState := state.NewUIState()
 
@@ -75,7 +75,7 @@ func TestStack_RemovesInactiveState(t *testing.T) {
 	assert.Equal(t, "ziglang", value.Stringf())
 }
 
-func TestStack_TransitionBetweenScreens(t *testing.T) {
+func TestStore__TransitionBetweenScreens(t *testing.T) {
 	cleaner := NewCleaner()
 	uiState := state.NewUIState()
 

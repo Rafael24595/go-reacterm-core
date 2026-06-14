@@ -62,10 +62,10 @@ func (n *ModalMenu) ToNode() screen.Node {
 }
 
 func (n *ModalMenu) init(uiState state.UIState) {
-	n.loadFromStack(uiState)
+	n.loadFromStore(uiState)
 }
 
-func (n *ModalMenu) loadFromStack(uiState state.UIState) {
+func (n *ModalMenu) loadFromStore(uiState state.UIState) {
 	option, ok := KeyActive.Get(
 		uiState.Store,
 		n.reference,
@@ -93,26 +93,26 @@ func (n *ModalMenu) tick(uiState *state.UIState, event screen.Event) screen.Resu
 	switch ky.Code {
 	case key.ActionArrowUp:
 		n.cursor = 0
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionArrowDown:
 		n.cursor = math.SubClampZeroAs[int, uint16](len(n.options), 1)
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionArrowLeft:
 		n.cursor = math.SubClampZero(n.cursor, 1)
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionArrowRight:
 		last := math.SubClampZeroAs[int, uint16](len(n.options), 1)
 		n.cursor = min(last, n.cursor+1)
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionEnter:
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 		return n.actionEnter()
 	}
 
 	return screen.ResultFromUIState(uiState)
 }
 
-func (n *ModalMenu) tickToStack(uiState *state.UIState) {
+func (n *ModalMenu) tickToStore(uiState *state.UIState) {
 	if n.cursor >= uint16(len(n.options)) {
 		KeyActive.Delete(
 			uiState.Store,
@@ -136,7 +136,7 @@ func (n *ModalMenu) actionEnter() screen.Result {
 func (n *ModalMenu) view(uiState state.UIState) viewmodel.ViewModel {
 	vm := viewmodel.New()
 
-	n.loadFromStack(uiState)
+	n.loadFromStore(uiState)
 
 	frags := input.FragmentFromMenuOption(n.options...)
 

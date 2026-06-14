@@ -104,10 +104,10 @@ func (n *Table[T]) ToNode() screen.Node {
 }
 
 func (n *Table[T]) init(uiState state.UIState) {
-	n.loadFromStack(uiState)
+	n.loadFromStore(uiState)
 }
 
-func (n *Table[T]) loadFromStack(uiState state.UIState) {
+func (n *Table[T]) loadFromStore(uiState state.UIState) {
 	state, ok := KeyState.Get(
 		uiState.Store,
 		n.reference,
@@ -155,20 +155,20 @@ func (n *Table[T]) tickeNavigation(uiState *state.UIState, event screen.Event) s
 		n.cursor.Show = n.action.ActionMode
 	case key.ActionArrowLeft:
 		n.cursor.DecCol()
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionArrowRight:
 		n.cursor.IncCol(
 			math.SubClampZero(n.table.ColCount(), 1),
 		)
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionArrowUp:
 		n.cursor.DecRow()
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionArrowDown:
 		n.cursor.IncRow(
 			math.SubClampZero(n.table.RowCount(), 1),
 		)
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	}
 
 	return screen.ResultFromUIState(uiState)
@@ -186,7 +186,7 @@ func (n *Table[T]) tickRead(uiState *state.UIState, event screen.Event) screen.R
 	return screen.ResultFromUIState(uiState)
 }
 
-func (n *Table[T]) tickToStack(uiState *state.UIState) {
+func (n *Table[T]) tickToStore(uiState *state.UIState) {
 	tableState := State{
 		Row: n.cursor.Row,
 		Col: n.cursor.Col,
@@ -202,7 +202,7 @@ func (n *Table[T]) tickToStack(uiState *state.UIState) {
 func (n *Table[T]) view(uiState state.UIState) viewmodel.ViewModel {
 	vm := viewmodel.New()
 
-	n.loadFromStack(uiState)
+	n.loadFromStore(uiState)
 
 	table := drawable_table.UnitFromTable(*n.table, *n.cursor)
 

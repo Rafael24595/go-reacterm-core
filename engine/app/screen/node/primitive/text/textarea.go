@@ -107,10 +107,10 @@ func (n *TextArea) ToNode() screen.Node {
 }
 
 func (n *TextArea) init(uiState state.UIState) {
-	n.loadFromStack(uiState)
+	n.loadFromStore(uiState)
 }
 
-func (n *TextArea) loadFromStack(uiState state.UIState) {
+func (n *TextArea) loadFromStore(uiState state.UIState) {
 	state, ok := KeyState.Get(
 		uiState.Store,
 		n.reference,
@@ -175,32 +175,32 @@ func (n *TextArea) tickWrite(uiState *state.UIState, event screen.Event) screen.
 
 	case key.ActionHome:
 		result := n.moveHome(uiState, event)
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 		return result
 
 	case key.ActionEnd:
 		result := n.moveEnd(uiState, event)
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 		return result
 
 	case key.ActionArrowLeft:
 		result := n.moveBackward(uiState, event)
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 		return result
 
 	case key.ActionArrowRight:
 		result := n.moveForward(uiState, event)
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 		return result
 
 	case key.ActionArrowUp:
 		result := n.moveUp(uiState, event)
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 		return result
 
 	case key.ActionArrowDown:
 		result := n.moveDown(uiState, event)
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 		return result
 
 	case key.ActionEnter:
@@ -208,12 +208,12 @@ func (n *TextArea) tickWrite(uiState *state.UIState, event screen.Event) screen.
 	}
 
 	result := n.tickBuffer(uiState, ky)
-	n.tickToStack(uiState)
+	n.tickToStore(uiState)
 
 	return result
 }
 
-func (n *TextArea) tickToStack(uiState *state.UIState) {
+func (n *TextArea) tickToStore(uiState *state.UIState) {
 	caret := n.caret.Caret()
 	anchor := n.caret.Anchor()
 
@@ -540,7 +540,7 @@ func (n *TextArea) deleteForward(uiState *state.UIState, word bool) screen.Resul
 func (n *TextArea) view(uiState state.UIState) viewmodel.ViewModel {
 	vm := viewmodel.New()
 
-	n.loadFromStack(uiState)
+	n.loadFromStore(uiState)
 
 	predicate, textarea, needsPulse := n.viewSources(uiState)
 

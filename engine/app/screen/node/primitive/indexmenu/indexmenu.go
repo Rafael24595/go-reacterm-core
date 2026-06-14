@@ -68,10 +68,10 @@ func (n *IndexMenu) ToNode() screen.Node {
 }
 
 func (n *IndexMenu) init(uiState state.UIState) {
-	n.loadFromStack(uiState)
+	n.loadFromStore(uiState)
 }
 
-func (n *IndexMenu) loadFromStack(uiState state.UIState) {
+func (n *IndexMenu) loadFromStore(uiState state.UIState) {
 	option, ok := KeyActive.Get(
 		uiState.Store,
 		n.reference,
@@ -102,20 +102,20 @@ func (n *IndexMenu) tick(uiState *state.UIState, event screen.Event) screen.Resu
 	switch event.Key.Code {
 	case key.ActionArrowUp:
 		n.cursor = (n.cursor + size - 1) % size
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionArrowDown:
 		n.cursor = (n.cursor + 1) % size
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionArrowLeft:
 		n.cursor = 0
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionArrowRight:
 		optsLen := uint16(len(n.options))
 		optsLen = math.SubClampZero(optsLen, 1)
 		n.cursor = min(optsLen, n.cursor+1)
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionEnter:
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 		return n.actionEnter()
 	case key.CustomActionPointer:
 		n.pointer = indexmenu.NextPointer(n.pointer)
@@ -124,7 +124,7 @@ func (n *IndexMenu) tick(uiState *state.UIState, event screen.Event) screen.Resu
 	return screen.EmptyResult()
 }
 
-func (n *IndexMenu) tickToStack(uiState *state.UIState) {
+func (n *IndexMenu) tickToStore(uiState *state.UIState) {
 	if n.cursor >= uint16(len(n.options)) {
 		KeyActive.Delete(
 			uiState.Store,
@@ -148,7 +148,7 @@ func (n *IndexMenu) actionEnter() screen.Result {
 func (n *IndexMenu) view(uiState state.UIState) viewmodel.ViewModel {
 	vm := viewmodel.New()
 
-	n.loadFromStack(uiState)
+	n.loadFromStore(uiState)
 
 	frags := input.FragmentFromMenuOption(n.options...)
 

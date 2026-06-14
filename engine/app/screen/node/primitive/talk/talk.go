@@ -66,10 +66,10 @@ func (n *Talk) ToNode() screen.Node {
 }
 
 func (n *Talk) init(uiState state.UIState) {
-	n.loadFromStack(uiState)
+	n.loadFromStore(uiState)
 }
 
-func (n *Talk) loadFromStack(uiState state.UIState) {
+func (n *Talk) loadFromStore(uiState state.UIState) {
 	if cursor, ok := KeyCursor.Get(
 		uiState.Store,
 		n.reference,
@@ -113,18 +113,18 @@ func (n *Talk) tickNavigation(uiState *state.UIState, event screen.Event) screen
 		n.navigation = false
 	case key.ActionArrowUp:
 		n.cursor = (n.cursor + size - 1) % size
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionArrowDown:
 		n.cursor = (n.cursor + 1) % size
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionArrowLeft:
 		n.cursor = 0
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionArrowRight:
 		optsLen := uint16(len(n.messages))
 		optsLen = math.SubClampZero(optsLen, 1)
 		n.cursor = min(optsLen, n.cursor+1)
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.CustomActionPointer:
 		n.pointer = talk.NextPointer(n.pointer)
 	}
@@ -132,7 +132,7 @@ func (n *Talk) tickNavigation(uiState *state.UIState, event screen.Event) screen
 	return screen.ResultFromUIState(uiState)
 }
 
-func (n *Talk) tickToStack(uiState *state.UIState) {
+func (n *Talk) tickToStore(uiState *state.UIState) {
 	KeyCursor.Set(
 		uiState.Store,
 		n.reference,
@@ -149,7 +149,7 @@ func (n *Talk) tickToStack(uiState *state.UIState) {
 func (n *Talk) view(uiState state.UIState) viewmodel.ViewModel {
 	vm := viewmodel.New()
 
-	n.loadFromStack(uiState)
+	n.loadFromStore(uiState)
 
 	pointer := n.pointerProvider()
 

@@ -1,4 +1,4 @@
-package stack
+package store
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/cleaner"

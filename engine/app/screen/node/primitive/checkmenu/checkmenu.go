@@ -92,10 +92,10 @@ func (n *CheckMenu) ToNode() screen.Node {
 }
 
 func (n *CheckMenu) init(uiState state.UIState) {
-	n.loadFromStack(uiState)
+	n.loadFromStore(uiState)
 }
 
-func (n *CheckMenu) loadFromStack(uiState state.UIState) {
+func (n *CheckMenu) loadFromStore(uiState state.UIState) {
 	options, ok := KeyActive.Get(
 		uiState.Store,
 		n.reference,
@@ -140,8 +140,7 @@ func (n *CheckMenu) tickNavigation(uiState *state.UIState, event screen.Event) s
 	case key.ActionEnter:
 		n.switchState(n.cursor)
 		n.applyLimit()
-
-		n.tickToStack(uiState)
+		n.tickToStore(uiState)
 	case key.ActionArrowLeft:
 		n.cursor = math.SubClampZero(n.cursor, 1)
 	case key.ActionArrowRight:
@@ -157,7 +156,7 @@ func (n *CheckMenu) tickNavigation(uiState *state.UIState, event screen.Event) s
 	return screen.ResultFromUIState(uiState)
 }
 
-func (n *CheckMenu) tickToStack(uiState *state.UIState) {
+func (n *CheckMenu) tickToStore(uiState *state.UIState) {
 	KeyActive.Set(
 		uiState.Store,
 		n.reference,
@@ -231,7 +230,7 @@ func (n *CheckMenu) activeIds() set.Set[string] {
 func (n *CheckMenu) view(uiState state.UIState) viewmodel.ViewModel {
 	vm := viewmodel.New()
 
-	n.loadFromStack(uiState)
+	n.loadFromStore(uiState)
 
 	indexmenu := checkmenu.New(n.options).
 		WriteMode(n.action.ActionMode).
