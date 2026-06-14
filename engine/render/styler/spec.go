@@ -169,7 +169,7 @@ func paddingCenter(styl style.Spec, cols winsize.Cols, data string, logicalSize 
 func paddingLeft(styl style.Spec, cols winsize.Cols, data string, logicalSize winsize.Cols) string {
 	args := styl.Args()
 
-	size := commons.Mapd[winsize.Cols](args[style.KeyPaddingLeftSize], 0)
+	size := commons.Mapd(args[style.KeyPaddingLeftSize], cols)
 	size = min(cols, size)
 
 	text := args[style.KeyPaddingLeftText].Stringf()
@@ -185,7 +185,7 @@ func paddingLeft(styl style.Spec, cols winsize.Cols, data string, logicalSize wi
 func paddingRight(styl style.Spec, cols winsize.Cols, data string, logicalSize winsize.Cols) string {
 	args := styl.Args()
 
-	size := commons.Mapd[winsize.Cols](args[style.KeyPaddingRightSize], 0)
+	size := commons.Mapd(args[style.KeyPaddingRightSize], cols)
 	size = min(cols, size)
 
 	text := args[style.KeyPaddingRightText].Stringf()
