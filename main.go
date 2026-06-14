@@ -31,7 +31,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/terminal"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/cleaner/composite"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/cleaner/stack"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/cleaner/store"
 
 	local "github.com/Rafael24595/go-reacterm-core/engine/commons/log"
 
@@ -59,7 +59,7 @@ func main() {
 	render := makeRender(transformer)
 
 	cleaner := composite.NewCleaner(
-		stack.Cleanup,
+		store.Cleanup,
 	)
 
 	passes := []screen.Pass{
