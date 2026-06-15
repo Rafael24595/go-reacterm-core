@@ -3,19 +3,20 @@ package text
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 )
 
 type Fragment struct {
 	Text string
-	Atom style.Atom
+	Atom atom.Atom
 	Spec style.Spec
 }
 
 func NewFragment(text string) *Fragment {
 	return &Fragment{
 		Text: text,
-		Atom: style.AtmNone,
+		Atom: atom.None,
 		Spec: style.SpecEmpty(),
 	}
 }
@@ -38,14 +39,14 @@ func (f *Fragment) CopyMeta(other *Fragment) *Fragment {
 	return f
 }
 
-func (f *Fragment) AddAtom(styles ...style.Atom) *Fragment {
-	newAtom := style.MergeAtom(styles...)
-	f.Atom = style.MergeAtom(f.Atom, newAtom)
+func (f *Fragment) AddAtom(styles ...atom.Atom) *Fragment {
+	newAtom := atom.Merge(styles...)
+	f.Atom = atom.Merge(f.Atom, newAtom)
 	return f
 }
 
-func (f *Fragment) CutAtom(styles style.Atom) *Fragment {
-	f.Atom = style.EraseAtom(f.Atom, styles)
+func (f *Fragment) CutAtom(styles atom.Atom) *Fragment {
+	f.Atom = atom.Erase(f.Atom, styles)
 	return f
 }
 
@@ -84,11 +85,11 @@ func FragmentMeasure(cols winsize.Cols, frags ...Fragment) winsize.Cols {
 
 func IsZeroFragment(frag Fragment) bool {
 	return frag.Text == "" &&
-		frag.Atom == style.AtmNone &&
+		frag.Atom == atom.None &&
 		frag.Spec.Kind() == style.SpcKindNone
 }
 
 func IsStructuralFragment(frag Fragment) bool {
-	hasStyles := frag.Atom != style.AtmNone || frag.Spec.Kind() != style.SpcKindNone
+	hasStyles := frag.Atom != atom.None || frag.Spec.Kind() != style.SpcKindNone
 	return frag.Text == "" && hasStyles
 }

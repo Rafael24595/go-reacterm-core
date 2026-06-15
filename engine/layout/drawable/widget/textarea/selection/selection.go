@@ -7,7 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -20,19 +20,19 @@ type Renderer struct {
 	buffer []rune
 	start  offset.Offset
 	end    offset.Offset
-	blink  style.Atom
+	blink  atom.Atom
 }
 
 func NewRenderer(
 	buffer []rune,
 	start, end offset.Offset,
-	blink ...style.Atom,
+	blink ...atom.Atom,
 ) Renderer {
 	return Renderer{
 		buffer: buffer,
 		start:  start,
 		end:    end,
-		blink:  style.MergeAtom(blink...),
+		blink:  atom.Merge(blink...),
 	}
 }
 
@@ -55,14 +55,14 @@ func (r Renderer) Resolve(caret *input.TextCursor) Result {
 
 func (r Renderer) resolveBackward() Result {
 	frags := make([]text.Fragment, 0, 2)
-	focusAtom := style.AtmFocus
+	focusAtom := atom.Focus
 
 	selection := r.selection()
 	if r.start > 0 && selection[0] == ascii.ENTER_LF {
-		focusAtom = style.AtmNone
+		focusAtom = atom.None
 
 		frags = append(frags,
-			frag(marker.PrintableCaretRunes, r.blink, style.AtmFocus),
+			frag(marker.PrintableCaretRunes, r.blink, atom.Focus),
 		)
 	}
 
@@ -96,7 +96,7 @@ func (r Renderer) resolveForwardNonEnter() Result {
 	}
 
 	frags = append(frags,
-		frag(selection[len(selection)-1:], r.blink, style.AtmFocus),
+		frag(selection[len(selection)-1:], r.blink, atom.Focus),
 	)
 
 	return Result{
@@ -119,7 +119,7 @@ func (r Renderer) resolveForwardEnter() Result {
 
 	frags = append(frags,
 		frag(selection, r.blink),
-		frag(footer, r.blink, style.AtmFocus),
+		frag(footer, r.blink, atom.Focus),
 	)
 
 	return Result{
@@ -144,7 +144,7 @@ func (r Renderer) resolveEmpty() Result {
 	assert.Unreachable("selection should have at least one character")
 
 	frags := []text.Fragment{
-		*text.EmptyFragment().AddAtom(style.AtmFocus),
+		*text.EmptyFragment().AddAtom(atom.Focus),
 	}
 
 	return Result{
@@ -153,7 +153,7 @@ func (r Renderer) resolveEmpty() Result {
 	}
 }
 
-func frag(runes []rune, atoms ...style.Atom) text.Fragment {
+func frag(runes []rune, atoms ...atom.Atom) text.Fragment {
 	return *text.FragmentFromRunes(runes).
 		AddAtom(atoms...)
 }

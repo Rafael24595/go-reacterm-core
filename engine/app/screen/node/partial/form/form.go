@@ -13,7 +13,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/form"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -260,7 +260,7 @@ func (n *Form) view(uiState state.UIState) viewmodel.ViewModel {
 	focus, ok := n.focusItem()
 	if ok && pointer.HasAny(form.PointerPrompt) {
 		label := text.NewFragment(focus.Node.Name).
-			AddAtom(style.AtmSelect)
+			AddAtom(atom.Select)
 
 		vm.Footer.Push(
 			inputline.FromFragment(*label),

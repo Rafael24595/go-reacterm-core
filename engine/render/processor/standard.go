@@ -5,7 +5,7 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/helper"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/styler"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
@@ -41,7 +41,7 @@ func (r Standard) renderLineFragments(line text.Line, size winsize.Winsize) stri
 	var buffer strings.Builder
 
 	fragments := ""
-	atomStyles := style.AtmNone
+	atomStyles := atom.None
 
 	lineSize := winsize.New(
 		size.Rows,

@@ -4,7 +4,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/engine/platform/clock"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 )
 
 const blink_ms = 750
@@ -95,14 +95,14 @@ func (c *TextCursor) MoveSelectTo(buff []rune, caret, anchor offset.Offset) {
 	c.time = c.clock()
 }
 
-func (c *TextCursor) BlinkStyle() style.Atom {
+func (c *TextCursor) BlinkStyle() atom.Atom {
 	if !c.blink || c.caret != c.anchor {
-		return style.AtmSelect
+		return atom.Select
 	}
 
-	styl := style.AtmNone
+	styl := atom.None
 	if c.status {
-		styl = style.AtmSelect
+		styl = atom.Select
 	}
 
 	now := c.clock()

@@ -9,6 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
@@ -74,12 +75,12 @@ func (u *IndexMenuUnit) init() {
 	digits := math.Digits(len(u.options))
 
 	for i, o := range u.options {
-		focusAtom := style.AtmNone
-		selectAtom := style.AtmNone
+		focusAtom := atom.None
+		selectAtom := atom.None
 		if i == int(u.cursor) {
-			focusAtom = style.AtmFocus
+			focusAtom = atom.Focus
 			if u.pointer == pointerSelect {
-				selectAtom = style.AtmSelect
+				selectAtom = atom.Select
 			}
 		}
 
@@ -153,7 +154,7 @@ func (u *IndexMenuUnit) makeTextIndex(cursor int, digits winsize.Cols, text help
 func (u *IndexMenuUnit) makeCommonIndex(cursor int, txt string) *text.Fragment {
 	index := text.NewFragment(txt + ".- ")
 	if u.pointer == pointerBold && cursor == int(u.cursor) {
-		index.Atom |= style.AtmBold
+		index.Atom |= atom.Bold
 	}
 	return index
 }

@@ -10,7 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
@@ -153,9 +153,9 @@ func (u *TextAreaUnit) resolveFragments(
 	return frags
 }
 
-func (u *TextAreaUnit) blinkStyle() style.Atom {
+func (u *TextAreaUnit) blinkStyle() atom.Atom {
 	if !u.writeMode {
-		return style.AtmNone
+		return atom.None
 	}
 
 	return u.caret.BlinkStyle()

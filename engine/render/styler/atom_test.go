@@ -4,43 +4,44 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 )
 
 func TestAtomsStyler(t *testing.T) {
 	tests := []struct {
 		name     string
-		atom     style.Atom
+		atom     atom.Atom
 		input    string
 		expected string
 	}{
 		{
 			name:     "lowercase transformation",
-			atom:     style.AtmLower,
+			atom:     atom.Lower,
 			input:    "HelLo GoLang",
 			expected: "hello golang",
 		},
 		{
 			name:     "uppercase transformation",
-			atom:     style.AtmUpper,
+			atom:     atom.Upper,
 			input:    "HelLo GoLang",
 			expected: "HELLO GOLANG",
 		},
 		{
 			name:     "bold does not modify text",
-			atom:     style.AtmBold,
+			atom:     atom.Bold,
 			input:    "Hello Golang",
 			expected: "Hello Golang",
 		},
 		{
 			name:     "select does not modify text",
-			atom:     style.AtmSelect,
+			atom:     atom.Select,
 			input:    "Hello Golang",
 			expected: "Hello Golang",
 		},
 		{
 			name:     "empty string",
-			atom:     style.AtmLower,
+			atom:     atom.Lower,
 			input:    "",
 			expected: "",
 		},

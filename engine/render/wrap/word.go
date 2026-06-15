@@ -5,7 +5,7 @@ import (
 	"unicode"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -56,7 +56,7 @@ func splitLineWords(line *text.Line) []word {
 	}
 
 	for _, frag := range line.Text {
-		if frag.Atom.HasAny(style.AtmWrap) || text.IsStructuralFragment(frag) {
+		if frag.Atom.HasAny(atom.Wrap) || text.IsStructuralFragment(frag) {
 			flushFrag(frag)
 			flushWord()
 

@@ -10,6 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -131,7 +132,7 @@ func (u *CheckMenuUnit) addStyles() []text.Fragment {
 			CopyMeta(&u.options[i].Label)
 
 		if u.writeMode && i == int(u.cursor) {
-			frags[i].AddAtom(style.AtmSelect, style.AtmFocus)
+			frags[i].AddAtom(atom.Select, atom.Focus)
 		}
 	}
 

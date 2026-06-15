@@ -10,6 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
@@ -81,7 +82,7 @@ func makeUnit(fields []key.Descriptor) drawable.Unit {
 
 		frag := fmt.Sprintf("[%s] %s%s", code, field.Detail, separator)
 		frags[i] = *text.NewFragment(frag).
-			AddAtom(style.AtmWrap)
+			AddAtom(atom.Wrap)
 
 	}
 

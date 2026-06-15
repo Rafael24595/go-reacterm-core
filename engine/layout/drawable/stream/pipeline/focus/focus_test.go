@@ -7,9 +7,9 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
-	
+
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 )
 
@@ -18,7 +18,8 @@ func TestFocusInitTransformer_FocusAtStart(t *testing.T) {
 		Lines: []text.Line{
 			*text.NewLine("base_01"),
 			*text.LineFromFragments(
-				*text.NewFragment("base").AddAtom(style.AtmFocus),
+				*text.NewFragment("base").
+					AddAtom(atom.Focus),
 				*text.NewFragment("_"),
 				*text.NewFragment("02"),
 			),
@@ -50,7 +51,8 @@ func TestFocusInitTransformer_FocusAtEnd(t *testing.T) {
 			*text.NewLine("base_02"),
 			*text.LineFromFragments(
 				*text.NewFragment("base"),
-				*text.NewFragment("_").AddAtom(style.AtmFocus),
+				*text.NewFragment("_").
+					AddAtom(atom.Focus),
 				*text.NewFragment("03"),
 			),
 		},

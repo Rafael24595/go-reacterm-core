@@ -9,6 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/table"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
@@ -295,7 +296,7 @@ func (b builder) renderRow(
 
 	frags = append(frags,
 		*text.NewFragment(separator.Left).
-			AddAtom(style.AtmWrap),
+			AddAtom(atom.Wrap),
 	)
 
 	for col, header := range headers {
@@ -306,14 +307,14 @@ func (b builder) renderRow(
 		if col < headersLen-1 {
 			frags = append(frags,
 				*text.NewFragment(separator.Center).
-					AddAtom(style.AtmWrap),
+					AddAtom(atom.Wrap),
 			)
 		}
 	}
 
 	frags = append(frags,
 		*text.NewFragment(separator.Right).
-			AddAtom(style.AtmWrap),
+			AddAtom(atom.Wrap),
 	)
 
 	return text.LineFromFragments(frags...)
@@ -326,26 +327,26 @@ func (b builder) renderCell(
 	row uint16,
 	col uint16,
 ) *text.Fragment {
-	atom := style.AtmWrap
+	atm := atom.Wrap
 	if cursor != nil && cursor.IsAt(row, col) {
-		atom = style.MergeAtom(atom, style.AtmSelect, style.AtmFocus)
+		atm = atom.Merge(atm, atom.Select, atom.Focus)
 	}
 
 	cell, ok := b.table.FindCell(header, row)
 	if !ok {
-		spec := style.SpecRepeatRight(maxCol)
+		scp := style.SpecRepeatRight(maxCol)
 
 		return text.NewFragment("").
-			AddSpec(spec).
-			AddAtom(atom)
+			AddSpec(scp).
+			AddAtom(atm)
 	}
 
-	spec := style.MergeSpec(
+	scp := style.MergeSpec(
 		style.SpecPaddingRight(maxCol),
 		style.SpecTrimTextRight(maxCol, marker.DefaultElipsisText),
 	)
 
 	return text.NewFragment(cell).
-		AddSpec(spec).
-		AddAtom(atom)
+		AddSpec(scp).
+		AddAtom(atm)
 }

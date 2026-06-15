@@ -7,7 +7,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -152,8 +152,8 @@ func TestSplitLineWords_OnlySpaces(t *testing.T) {
 
 func TestSplitLineWords_StyleChangeRequiresFragmentSplit(t *testing.T) {
 	line := text.LineFromFragments(
-		*text.NewFragment("Zig").AddAtom(style.AtmBold),
-		*text.NewFragment("lang").AddAtom(style.AtmBold),
+		*text.NewFragment("Zig").AddAtom(atom.Bold),
+		*text.NewFragment("lang").AddAtom(atom.Bold),
 	)
 
 	tokens := splitLineWords(line)
@@ -161,14 +161,14 @@ func TestSplitLineWords_StyleChangeRequiresFragmentSplit(t *testing.T) {
 	assert.Equal(t, 1, len(tokens))
 	assert.Equal(t, 2, len(tokens[0].Text))
 
-	assert.True(t, tokens[0].Text[0].Atom.HasAny(style.AtmBold))
-	assert.True(t, tokens[0].Text[1].Atom.HasAny(style.AtmBold))
+	assert.True(t, tokens[0].Text[0].Atom.HasAny(atom.Bold))
+	assert.True(t, tokens[0].Text[1].Atom.HasAny(atom.Bold))
 }
 
 func TestSplitLineWords_PreservesStylesAcrossFragments(t *testing.T) {
 	line := text.LineFromFragments(
 		*text.NewFragment("ru"),
-		*text.NewFragment("st").AddAtom(style.AtmSelect),
+		*text.NewFragment("st").AddAtom(atom.Select),
 		*text.NewFragment("up"),
 	)
 
@@ -176,16 +176,16 @@ func TestSplitLineWords_PreservesStylesAcrossFragments(t *testing.T) {
 
 	assert.Equal(t, 1, len(tokens))
 
-	assert.True(t, tokens[0].Text[0].Atom.HasNone(style.AtmSelect))
-	assert.True(t, tokens[0].Text[1].Atom.HasAny(style.AtmSelect))
-	assert.True(t, tokens[0].Text[2].Atom.HasNone(style.AtmSelect))
+	assert.True(t, tokens[0].Text[0].Atom.HasNone(atom.Select))
+	assert.True(t, tokens[0].Text[1].Atom.HasAny(atom.Select))
+	assert.True(t, tokens[0].Text[2].Atom.HasNone(atom.Select))
 }
 
 func TestSplitLineWords_MultipleSpaceFragmentsKeepStyles(t *testing.T) {
 	line := text.LineFromFragments(
-		*text.NewFragment(" ").AddAtom(style.AtmBold),
-		*text.NewFragment(" ").AddAtom(style.AtmSelect),
-		*text.NewFragment("c").AddAtom(style.AtmBold),
+		*text.NewFragment(" ").AddAtom(atom.Bold),
+		*text.NewFragment(" ").AddAtom(atom.Select),
+		*text.NewFragment("c").AddAtom(atom.Bold),
 	)
 
 	tokens := splitLineWords(line)
@@ -195,26 +195,26 @@ func TestSplitLineWords_MultipleSpaceFragmentsKeepStyles(t *testing.T) {
 	assert.Equal(t, 2, len(tokens[0].Text))
 
 	assert.Equal(t, " ", tokens[0].Text[0].Text)
-	assert.True(t, tokens[0].Text[0].Atom.HasAny(style.AtmBold))
+	assert.True(t, tokens[0].Text[0].Atom.HasAny(atom.Bold))
 
 	assert.Equal(t, " ", tokens[0].Text[1].Text)
-	assert.True(t, tokens[0].Text[1].Atom.HasAny(style.AtmSelect))
+	assert.True(t, tokens[0].Text[1].Atom.HasAny(atom.Select))
 
 	assert.Equal(t, 1, len(tokens[1].Text))
 	assert.Equal(t, "c", tokens[1].Text[0].Text)
-	assert.True(t, tokens[1].Text[0].Atom.HasAny(style.AtmBold))
+	assert.True(t, tokens[1].Text[0].Atom.HasAny(atom.Bold))
 }
 
 func TestSplitLineWords_FinalFlushPreservesStyles(t *testing.T) {
 	line := text.LineFromFragments(
-		*text.NewFragment("c++").AddAtom(style.AtmBold),
+		*text.NewFragment("c++").AddAtom(atom.Bold),
 	)
 
 	tokens := splitLineWords(line)
 
 	assert.Equal(t, 1, len(tokens))
 
-	assert.True(t, tokens[0].Text[0].Atom.HasAny(style.AtmBold))
+	assert.True(t, tokens[0].Text[0].Atom.HasAny(atom.Bold))
 }
 
 func TestSplitLongWord(t *testing.T) {

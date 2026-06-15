@@ -7,7 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/chat"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
@@ -116,9 +116,9 @@ func (u *TalkUnit) makeLines(
 	message chat.Message,
 	index uint16,
 ) ([]text.Line, []text.Line) {
-	atom := style.AtmNone
+	atm := atom.None
 	if u.navigation && index == u.cursor {
-		atom = style.AtmFocus
+		atm = atom.Focus
 	}
 
 	ownerSelector, messageSelector := u.pointer(u.cursor, index)
@@ -126,7 +126,7 @@ func (u *TalkUnit) makeLines(
 	ownerLines := wrap.Lines(
 		size.Cols.Sub(3),
 		*text.LineFromFragments(
-			*text.NewFragment(message.Owner).AddAtom(atom),
+			*text.NewFragment(message.Owner).AddAtom(atm),
 			*text.NewFragment(":"),
 		),
 	)

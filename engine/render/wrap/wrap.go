@@ -6,7 +6,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -69,7 +69,7 @@ func Lines(cols winsize.Cols, lines ...text.Line) []text.Line {
 	for _, line := range lines {
 		result = wrapLine(cols, line, result)
 	}
-	
+
 	return result
 }
 
@@ -162,7 +162,7 @@ func wrapOnce(cols winsize.Cols, line LayoutLine) (*text.Line, *LayoutLine) {
 }
 
 func shouldWrap(cols winsize.Cols, line *text.Line, word word) bool {
-	if text.FragsHasAtom(style.AtmBreak, word.Text...) {
+	if text.FragsHasAtom(atom.Break, word.Text...) {
 		return false
 	}
 

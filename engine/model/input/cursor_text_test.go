@@ -5,7 +5,7 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/test/support/mock"
 )
 
@@ -33,12 +33,12 @@ func TestCursor_BlinkingLogic(t *testing.T) {
 
 	clock.Advance(blink_ms + 1)
 
-	assert.Equal(t, c.BlinkStyle(), style.AtmSelect)
+	assert.Equal(t, c.BlinkStyle(), atom.Select)
 
 	clock.Advance(blink_ms + 1)
 
-	assert.Equal(t, c.BlinkStyle(), style.AtmNone)
+	assert.Equal(t, c.BlinkStyle(), atom.None)
 
 	clock.Advance(blink_ms + 1)
-	assert.Equal(t, c.BlinkStyle(), style.AtmSelect)
+	assert.Equal(t, c.BlinkStyle(), atom.Select)
 }

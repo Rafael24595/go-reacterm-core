@@ -9,18 +9,18 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 )
 
 type expectedFragment struct {
 	content string
-	atoms   style.Atom
+	atoms   atom.Atom
 }
 
-func ef(content string, atoms ...style.Atom) expectedFragment {
+func ef(content string, atoms ...atom.Atom) expectedFragment {
 	return expectedFragment{
 		content: content,
-		atoms:   style.MergeAtom(atoms...),
+		atoms:   atom.Merge(atoms...),
 	}
 }
 
@@ -52,7 +52,7 @@ func TestRendererResolve(t *testing.T) {
 
 			expectedEnd: 2,
 			expected: []expectedFragment{
-				ef("b", style.AtmFocus),
+				ef("b", atom.Focus),
 			},
 		},
 		{
@@ -66,7 +66,7 @@ func TestRendererResolve(t *testing.T) {
 			expectedEnd: 3,
 			expected: []expectedFragment{
 				ef("b"),
-				ef("c", style.AtmFocus),
+				ef("c", atom.Focus),
 			},
 		},
 		{
@@ -81,7 +81,7 @@ func TestRendererResolve(t *testing.T) {
 			expected: []expectedFragment{
 				ef(marker.DefaultPaddingText),
 				ef("\n"),
-				ef(marker.DefaultPaddingText, style.AtmFocus),
+				ef(marker.DefaultPaddingText, atom.Focus),
 			},
 		},
 		{
@@ -96,7 +96,7 @@ func TestRendererResolve(t *testing.T) {
 			expected: []expectedFragment{
 				ef(marker.DefaultPaddingText),
 				ef("\n"),
-				ef("d", style.AtmFocus),
+				ef("d", atom.Focus),
 			},
 		},
 		{
@@ -109,7 +109,7 @@ func TestRendererResolve(t *testing.T) {
 
 			expectedEnd: 3,
 			expected: []expectedFragment{
-				ef("bc", style.AtmFocus),
+				ef("bc", atom.Focus),
 			},
 		},
 		{
@@ -122,7 +122,7 @@ func TestRendererResolve(t *testing.T) {
 
 			expectedEnd: 3,
 			expected: []expectedFragment{
-				ef(marker.DefaultPaddingText, style.AtmFocus),
+				ef(marker.DefaultPaddingText, atom.Focus),
 				ef("\nb"),
 			},
 		},
@@ -138,7 +138,7 @@ func TestRendererResolve(t *testing.T) {
 			expected: []expectedFragment{
 				ef(marker.DefaultPaddingText),
 				ef("\n"),
-				ef(marker.DefaultPaddingText, style.AtmFocus),
+				ef(marker.DefaultPaddingText, atom.Focus),
 			},
 		},
 	}

@@ -1,27 +1,27 @@
-package style
+package atom
 
 type Atom uint8
 
 const (
-	AtmNone Atom = 0
-	AtmBold Atom = 1 << iota
-	AtmUpper
-	AtmLower
-	AtmSelect
-	AtmFocus
-	AtmWrap
-	AtmBreak
+	None Atom = 0
+	Bold Atom = 1 << iota
+	Upper
+	Lower
+	Select
+	Focus
+	Wrap
+	Break
 )
 
-func MergeAtom(styles ...Atom) Atom {
+func Merge(styles ...Atom) Atom {
 	var merged Atom
 	for _, style := range styles {
 		merged |= style
 	}
 	return merged
 }
-     
-func EraseAtom(target, styles Atom) Atom {
+
+func Erase(target, styles Atom) Atom {
 	target &= ^styles
 	return target
 }

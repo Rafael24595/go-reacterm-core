@@ -8,6 +8,7 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
@@ -161,7 +162,7 @@ func TestWrapOnce(t *testing.T) {
 			line: text.LineFromFragments(
 				*text.NewFragment("zig "),
 				*text.NewFragment("golang").
-					AddAtom(style.AtmBreak),
+					AddAtom(atom.Break),
 			),
 			expectedHead: "zig go",
 			expectedRest: "lang",
@@ -211,7 +212,7 @@ func TestMaterializeEmpty(t *testing.T) {
 		input         []LayoutLine
 		expectedCount int
 		expectedText  string
-		expectedAtom  style.Atom
+		expectedAtom  atom.Atom
 	}{
 		{
 			name: "ShouldMaterializeTotallyEmptyLine",
@@ -220,7 +221,7 @@ func TestMaterializeEmpty(t *testing.T) {
 			},
 			expectedCount: 1,
 			expectedText:  " ",
-			expectedAtom:  style.AtmNone,
+			expectedAtom:  atom.None,
 		},
 		{
 			name: "ShouldNotMaterializeLineWithContent",
@@ -232,7 +233,7 @@ func TestMaterializeEmpty(t *testing.T) {
 			},
 			expectedCount: 1,
 			expectedText:  "Content",
-			expectedAtom:  style.AtmNone,
+			expectedAtom:  atom.None,
 		},
 		{
 			name: "ShouldMaterializeLineWithOnlyZeroWidthFragments",
@@ -241,20 +242,20 @@ func TestMaterializeEmpty(t *testing.T) {
 			},
 			expectedCount: 2,
 			expectedText:  " ",
-			expectedAtom:  style.AtmNone,
+			expectedAtom:  atom.None,
 		},
 		{
 			name: "ShouldInheritStyleFromLastZeroWidthFragment",
 			input: []LayoutLine{
 				*NewLayoutLine(
 					text.LineFromFragments(
-						*text.NewFragment("").AddAtom(style.AtmBold),
+						*text.NewFragment("").AddAtom(atom.Bold),
 					),
 				),
 			},
 			expectedCount: 2,
 			expectedText:  " ",
-			expectedAtom:  style.AtmBold,
+			expectedAtom:  atom.Bold,
 		},
 	}
 
@@ -299,7 +300,7 @@ func TestWrapLine_Simple(t *testing.T) {
 
 func TestWrapLine_Styles(t *testing.T) {
 	line := text.LineFromFragments(
-		*text.NewFragment("HELLO").AddAtom(style.AtmBold),
+		*text.NewFragment("HELLO").AddAtom(atom.Bold),
 		*text.NewFragment(" "),
 		*text.NewFragment("WORLD"),
 	).SetSpec(style.SpecFromKind(style.SpcKindPaddingLeft))
@@ -309,7 +310,7 @@ func TestWrapLine_Styles(t *testing.T) {
 	assert.Equal(t, 2, len(lines))
 
 	assert.Equal(t, "HELLO", lines[0].Text[0].Text)
-	assert.True(t, lines[0].Text[0].Atom.HasAny(style.AtmBold))
+	assert.True(t, lines[0].Text[0].Atom.HasAny(atom.Bold))
 
 	assert.Equal(t, " ", lines[0].Text[1].Text)
 
@@ -349,8 +350,8 @@ func TestWrapLine_LongWord(t *testing.T) {
 
 func TestWrapLine_MultipleFragments(t *testing.T) {
 	line := text.LineFromFragments(
-		*text.NewFragment("HELLO").AddAtom(style.AtmBold),
-		*text.NewFragment("WORLD").AddAtom(style.AtmBold),
+		*text.NewFragment("HELLO").AddAtom(atom.Bold),
+		*text.NewFragment("WORLD").AddAtom(atom.Bold),
 		*text.NewFragment("GO"),
 	).SetSpec(style.SpecFromKind(style.SpcKindPaddingLeft))
 

@@ -14,6 +14,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -90,7 +91,7 @@ func (u *ModalUnit) lazyInit(size winsize.Winsize) {
 			AddSpec(old.Spec)
 
 		if i == int(u.cursor) {
-			opts[i].AddAtom(style.AtmSelect)
+			opts[i].AddAtom(atom.Select)
 		}
 	}
 
