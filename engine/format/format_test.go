@@ -7,7 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 )
 
-func TestAlignCenter(t *testing.T) {
+func TestJustifyCenter(t *testing.T) {
 	tests := []struct {
 		name     string
 		width    winsize.Cols
@@ -23,13 +23,13 @@ func TestAlignCenter(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := AlignCenter(tt.width, tt.text, tt.filler)
+			result := JustifyCenter(tt.width, tt.text, tt.filler)
 			assert.Equal(t, result, tt.expected)
 		})
 	}
 }
 
-func TestAlignLeft(t *testing.T) {
+func TestJustifyRight(t *testing.T) {
 	tests := []struct {
 		name     string
 		width    winsize.Cols
@@ -43,13 +43,13 @@ func TestAlignLeft(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := AlignLeft(tt.width, tt.text, tt.filler)
+			result := JustifyRight(tt.width, tt.text, tt.filler)
 			assert.Equal(t, result, tt.expected)
 		})
 	}
 }
 
-func TestAlignRight(t *testing.T) {
+func TestJustifyLeft(t *testing.T) {
 	tests := []struct {
 		name     string
 		width    winsize.Cols
@@ -63,7 +63,7 @@ func TestAlignRight(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := AlignRight(tt.width, tt.text, tt.filler)
+			result := JustifyLeft(tt.width, tt.text, tt.filler)
 			assert.Equal(t, result, tt.expected)
 		})
 	}

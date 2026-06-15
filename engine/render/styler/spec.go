@@ -3,47 +3,47 @@ package styler
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/dict"
-	"github.com/Rafael24595/go-reacterm-core/engine/helper"
+	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 )
 
-type SpecStyler func(style.Spec, winsize.Cols, helper.Text) (string, bool)
+type SpecStyler func(spec.Spec, winsize.Cols, format.Text) (string, bool)
 
-func ps(k style.SpecKind, s SpecStyler) dict.Pair[style.SpecKind, SpecStyler] {
+func ps(k spec.Kind, s SpecStyler) dict.Pair[spec.Kind, SpecStyler] {
 	return dict.NewPair(k, s)
 }
 
 var Specs = dict.NewInmutableLinkedMap(
-	ps(style.SpcKindFill, func(spec style.Spec, cols winsize.Cols, text helper.Text) (string, bool) {
+	ps(spec.KindFill, func(spec spec.Spec, cols winsize.Cols, text format.Text) (string, bool) {
 		return fill(spec, cols, text), true
 	}),
-	ps(style.SpcKindTrimLeft, func(spec style.Spec, _ winsize.Cols, text helper.Text) (string, bool) {
-		return trimLeft(spec, text), false
+	ps(spec.KindTruncateLeft, func(spec spec.Spec, _ winsize.Cols, text format.Text) (string, bool) {
+		return truncateLeft(spec, text), false
 	}),
-	ps(style.SpcKindTrimRight, func(spec style.Spec, _ winsize.Cols, text helper.Text) (string, bool) {
-		return trimRight(spec, text), false
+	ps(spec.KindTruncateRight, func(spec spec.Spec, _ winsize.Cols, text format.Text) (string, bool) {
+		return truncateRight(spec, text), false
 	}),
-	ps(style.SpcKindPaddingCenter, func(spec style.Spec, cols winsize.Cols, text helper.Text) (string, bool) {
-		return paddingCenter(spec, cols, text), false
+	ps(spec.KindJustifyRight, func(spec spec.Spec, cols winsize.Cols, text format.Text) (string, bool) {
+		return justifyRight(spec, cols, text), false
 	}),
-	ps(style.SpcKindPaddingLeft, func(spec style.Spec, cols winsize.Cols, text helper.Text) (string, bool) {
-		return paddingLeft(spec, cols, text), false
+	ps(spec.KindJustifyLeft, func(spec spec.Spec, cols winsize.Cols, text format.Text) (string, bool) {
+		return justifyLeft(spec, cols, text), false
 	}),
-	ps(style.SpcKindPaddingRight, func(spec style.Spec, cols winsize.Cols, text helper.Text) (string, bool) {
-		return paddingRight(spec, cols, text), false
+	ps(spec.KindJustifyCenter, func(spec spec.Spec, cols winsize.Cols, text format.Text) (string, bool) {
+		return justifyCenter(spec, cols, text), false
 	}),
-	ps(style.SpcKindRepeatLeft, func(spec style.Spec, cols winsize.Cols, text helper.Text) (string, bool) {
-		return repeatLeft(spec, cols, text), false
+	ps(spec.KindExtendLeft, func(spec spec.Spec, cols winsize.Cols, text format.Text) (string, bool) {
+		return extendLeft(spec, cols, text), false
 	}),
-	ps(style.SpcKindRepeatRight, func(spec style.Spec, cols winsize.Cols, text helper.Text) (string, bool) {
-		return repeatRight(spec, cols, text), false
+	ps(spec.KindExtendRight, func(spec spec.Spec, cols winsize.Cols, text format.Text) (string, bool) {
+		return extendRight(spec, cols, text), false
 	}),
 )
 
 type Spec struct {
-	table *dict.LinkedMap[style.SpecKind, SpecStyler]
+	table *dict.LinkedMap[spec.Kind, SpecStyler]
 }
 
 func NewSpec() *Spec {
@@ -62,37 +62,37 @@ func (s *Spec) lazyInit() *Spec {
 		return s
 	}
 
-	s.table = dict.NewLinkedMap[style.SpecKind, SpecStyler]()
+	s.table = dict.NewLinkedMap[spec.Kind, SpecStyler]()
 	return s
 }
 
-func (s *Spec) Push(pair ...dict.Pair[style.SpecKind, SpecStyler]) *Spec {
+func (s *Spec) Push(pair ...dict.Pair[spec.Kind, SpecStyler]) *Spec {
 	s.lazyInit()
 
 	s.table.SetPairs(pair...)
 	return s
 }
 
-func (s *Spec) Apply(spec style.Spec, size winsize.Winsize, text helper.Text) string {
+func (s *Spec) Apply(style spec.Spec, size winsize.Winsize, text format.Text) string {
 	s.lazyInit()
 
-	kind := spec.Kind()
+	kind := style.Kind()
 	for k, p := range s.table.All() {
 		if !kind.HasAny(k) {
 			continue
 		}
 
-		textData, exit := p(spec, size.Cols, text)
+		textData, exit := p(style, size.Cols, text)
 		if exit {
 			return textData
 		}
 
-		textSize := style.SpecMeasureOf(k, spec, style.LayoutContext{
-			Cols:     size.Cols,
+		textSize := spec.MeasureOf(k, style, spec.LayoutContext{
+			SizeCols: size.Cols,
 			TextSize: text.Size,
 		})
 
-		text = helper.NewText(
+		text = format.NewText(
 			textData,
 			textSize,
 		)
@@ -101,115 +101,115 @@ func (s *Spec) Apply(spec style.Spec, size winsize.Winsize, text helper.Text) st
 	return text.Data
 }
 
-func fill(spec style.Spec, cols winsize.Cols, text helper.Text) string {
-	args := spec.Args()
+func fill(style spec.Spec, cols winsize.Cols, text format.Text) string {
+	args := style.Args()
 
 	if text.Data == "" {
-		text = helper.TextFromString(marker.DefaultPaddingText)
+		text = format.TextFromString(marker.DefaultPaddingText)
 	}
 
-	size := commons.Mapd(args[style.KeyFillSize], cols)
+	size := commons.Mapd(args[spec.KeyFillSize], cols)
 	size = min(cols, size)
 
-	return helper.FillRight(size, text)
+	return format.PatternRight(size, text)
 }
 
-func trimLeft(spec style.Spec, text helper.Text) string {
-	if text.Data == "" {
-		return text.Data
-	}
-
-	args := spec.Args()
-
-	size := commons.Mapd[winsize.Cols](args[style.KeyTrimLeftSize], 0)
-	size = max(1, size)
-
-	ellipsis := helper.NewEllipsis(
-		args[style.KeyTrimEllipsisText].Stringf(),
-		marker.DefaultElipsisSize,
-	)
-
-	return helper.TrimLeft(size, text, ellipsis)
-}
-
-func trimRight(spec style.Spec, text helper.Text) string {
+func truncateLeft(style spec.Spec, text format.Text) string {
 	if text.Data == "" {
 		return text.Data
 	}
 
-	args := spec.Args()
+	args := style.Args()
 
-	size := commons.Mapd[winsize.Cols](args[style.KeyTrimRightSize], 0)
+	size := commons.Mapd[winsize.Cols](args[spec.KeyTruncateLeftSize], 0)
 	size = max(1, size)
 
-	ellipsis := helper.NewEllipsis(
-		args[style.KeyTrimEllipsisText].Stringf(),
+	ellipsis := format.NewEllipsis(
+		args[spec.KeyTruncateEllipsisText].Stringf(),
 		marker.DefaultElipsisSize,
 	)
 
-	return helper.TrimRight(size, text, ellipsis)
+	return format.TruncateLeft(size, text, ellipsis)
 }
 
-func paddingCenter(spec style.Spec, cols winsize.Cols, text helper.Text) string {
-	args := spec.Args()
+func truncateRight(style spec.Spec, text format.Text) string {
+	if text.Data == "" {
+		return text.Data
+	}
 
-	size := commons.Mapd(args[style.KeyPaddingCenterSize], cols)
+	args := style.Args()
+
+	size := commons.Mapd[winsize.Cols](args[spec.KeyTruncateRightSize], 0)
+	size = max(1, size)
+
+	ellipsis := format.NewEllipsis(
+		args[spec.KeyTruncateEllipsisText].Stringf(),
+		marker.DefaultElipsisSize,
+	)
+
+	return format.TruncateRight(size, text, ellipsis)
+}
+
+func justifyCenter(style spec.Spec, cols winsize.Cols, text format.Text) string {
+	args := style.Args()
+
+	size := commons.Mapd(args[spec.KeyJustifyCenterSize], cols)
 	size = min(cols, size)
 
-	filler := args[style.KeyPaddingCenterText].
+	filler := args[spec.KeyJustifyCenterText].
 		Stringd(marker.DefaultPaddingText)
 
-	return helper.Center(size, text, filler)
+	return format.JustifyCenter(size, text, filler)
 }
 
-func paddingLeft(spec style.Spec, cols winsize.Cols, text helper.Text) string {
-	args := spec.Args()
+func justifyLeft(style spec.Spec, cols winsize.Cols, text format.Text) string {
+	args := style.Args()
 
-	size := commons.Mapd(args[style.KeyPaddingLeftSize], cols)
+	size := commons.Mapd(args[spec.KeyJustifyLeftSize], cols)
 	size = min(cols, size)
 
-	filler := args[style.KeyPaddingLeftText].
+	filler := args[spec.KeyJustifyLeftText].
 		Stringd(marker.DefaultPaddingText)
 
-	return helper.Left(size, text, filler)
+	return format.JustifyLeft(size, text, filler)
 }
 
-func paddingRight(spec style.Spec, cols winsize.Cols, text helper.Text) string {
-	args := spec.Args()
+func justifyRight(style spec.Spec, cols winsize.Cols, text format.Text) string {
+	args := style.Args()
 
-	size := commons.Mapd(args[style.KeyPaddingRightSize], cols)
+	size := commons.Mapd(args[spec.KeyJustifyRightSize], cols)
 	size = min(cols, size)
 
-	filler := args[style.KeyPaddingRightText].
+	filler := args[spec.KeyJustifyRightText].
 		Stringd(marker.DefaultPaddingText)
 
-	return helper.Right(size, text, filler)
+	return format.JustifyRight(size, text, filler)
 }
 
-func repeatLeft(spec style.Spec, cols winsize.Cols, text helper.Text) string {
-	args := spec.Args()
+func extendLeft(style spec.Spec, cols winsize.Cols, text format.Text) string {
+	args := style.Args()
 
-	size := commons.Mapd[winsize.Cols](args[style.KeyRepeatLeftSize], 0)
-	filler := args[style.KeyRepeatLeftText].Stringf()
+	size := commons.Mapd[winsize.Cols](args[spec.KeyExtendLeftSize], 0)
+	filler := args[spec.KeyExtendLeftText].Stringf()
 
 	if filler == "" {
 		filler = text.Data
-		text = helper.EmptyText()
+		text = format.EmptyText()
 	}
 
-	return helper.RepeatLeft(min(cols, size), text, filler)
+	return format.ExtendLeft(min(cols, size), text, filler)
 }
 
-func repeatRight(spec style.Spec, cols winsize.Cols, text helper.Text) string {
-	args := spec.Args()
+func extendRight(style spec.Spec, cols winsize.Cols, text format.Text) string {
+	args := style.Args()
 
-	size := commons.Mapd[winsize.Cols](args[style.KeyRepeatRightSize], 0)
-	filler := args[style.KeyRepeatRightText].Stringf()
+	size := commons.Mapd[winsize.Cols](args[spec.KeyExtendRightSize], 0)
+	filler := args[spec.KeyExtendRightText].Stringf()
 
 	if filler == "" {
 		filler = text.Data
-		text = helper.EmptyText()
+		text = format.EmptyText()
 	}
 
-	return helper.RepeatRight(min(cols, size), text, filler)
+	return format.ExtendRight(min(cols, size), text, filler)
 }

@@ -3,7 +3,7 @@ package processor
 import (
 	"strings"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/helper"
+	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
@@ -34,20 +34,20 @@ func WithPadding(
 
 		buffer := make([]string, size.Rows)
 		for i := range size.Rows {
-			buffer[i] = helper.FillRight(
-				size.Cols, helper.TextFromString(filler),
+			buffer[i] = format.PatternRight(
+				size.Cols, format.TextFromString(filler),
 			)
 		}
 
 		index := topPadding
 		for _, line := range content {
-			fixed := helper.FillRight(
-				leftPadding, helper.TextFromString(filler),
+			fixed := format.PatternRight(
+				leftPadding, format.TextFromString(filler),
 			)
 
-			buffer[index] = helper.Right(
+			buffer[index] = format.JustifyLeft(
 				size.Cols,
-				helper.TextFromString(fixed+line),
+				format.TextFromString(fixed+line),
 				filler,
 			)
 			index += 1

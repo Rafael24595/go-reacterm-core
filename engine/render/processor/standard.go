@@ -3,7 +3,7 @@ package processor
 import (
 	"strings"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/helper"
+	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/styler"
@@ -26,7 +26,7 @@ func (r Standard) Render(lines []text.Line, size winsize.Winsize) []string {
 	buffer := make([]string, len(lines))
 
 	for i, line := range lines {
-		text := helper.NewText(
+		text := format.NewText(
 			r.renderLineFragments(line, size),
 			text.FragmentMeasure(size.Cols, line.Text...),
 		)
@@ -49,7 +49,7 @@ func (r Standard) renderLineFragments(line text.Line, size winsize.Winsize) stri
 	)
 
 	for _, f := range line.Text {
-		txt := helper.NewText(
+		txt := format.NewText(
 			f.Text,
 			f.Size(),
 		)

@@ -1,7 +1,7 @@
 package line
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/helper"
+	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 )
@@ -14,9 +14,9 @@ type indexMeta struct {
 }
 
 func (i indexMeta) header(index int) string {
-	right := helper.Right(
+	right := format.JustifyLeft(
 		winsize.Cols(i.digits),
-		helper.TextFromAny(index),
+		format.TextFromAny(index),
 		marker.DefaultPaddingText,
 	)
 

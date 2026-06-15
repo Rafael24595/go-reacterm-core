@@ -16,6 +16,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -38,7 +39,7 @@ func NewTestHStack() screen.Node {
 func makeTitle() drawable.Unit {
 	return drain.UnitFromLines(
 		*text.NewLine("Etiam dictum gravida"),
-		*text.NewLine("=", style.SpecFromKind(style.SpcKindFill)),
+		*text.NewLine("=", spec.Cover()),
 	)
 }
 

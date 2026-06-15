@@ -12,7 +12,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -130,7 +130,7 @@ func (n *Pagination) view(uiState state.UIState) viewmodel.ViewModel {
 	footer := []text.Line{
 		*text.NewLine(
 			fmt.Sprintf("%s: %d", label, uiState.Pager.ActualPage),
-			style.SpecFromKind(style.SpcKindPaddingRight),
+			spec.AlignLeft(),
 		),
 	}
 

@@ -8,6 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -127,15 +128,18 @@ func justifyLine(cols winsize.Cols, frags []text.Fragment, size winsize.Cols, mo
 	)
 
 	switch mode {
-
 	case style.JustifyStart:
-		return line.AddSpec(style.SpecFromKind(style.SpcKindPaddingRight))
-
+		return line.AddSpec(
+			spec.AlignLeft(),
+		)
 	case style.JustifyEnd:
-		return line.AddSpec(style.SpecFromKind(style.SpcKindPaddingLeft))
-
+		return line.AddSpec(
+			spec.AlignRight(),
+		)
 	case style.JustifyCenter, style.JustifyAround, style.JustifyEvenly:
-		return line.AddSpec(style.SpecFromKind(style.SpcKindPaddingCenter))
+		return line.AddSpec(
+			spec.AlignCenter(),
+		)
 	}
 
 	return line
@@ -201,7 +205,7 @@ func distributeSpace(free winsize.Cols, frags []text.Fragment, extraSlots winsiz
 		}
 
 		space := text.EmptyFragment().AddSpec(
-			style.SpecPaddingRight(gap, marker.DefaultPaddingText),
+			spec.JustifyLeft(gap, marker.DefaultPaddingText),
 		)
 
 		at := i + fix + 1

@@ -13,7 +13,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
@@ -26,16 +26,16 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 
 	vm.Header.Push(
 		drain.UnitFromLines(
-			*text.NewLine("HEADER", style.SpecFromKind(style.SpcKindPaddingLeft)),
+			*text.NewLine("HEADER", spec.AlignRight()),
 		),
 	)
 
 	vm.Kernel.Push(
 		line.UnitFromLines(
-			*text.NewLine("=", style.SpecFromKind(style.SpcKindFill)),
-			*text.NewLine("LINE TWO", style.SpecFromKind(style.SpcKindPaddingLeft)),
-			*text.NewLine("LINE THREE IS LONG", style.SpecFromKind(style.SpcKindPaddingLeft)),
-			*text.NewLine("LINE FOUR", style.SpecFromKind(style.SpcKindPaddingLeft)),
+			*text.NewLine("=", spec.Cover()),
+			*text.NewLine("LINE TWO", spec.AlignRight()),
+			*text.NewLine("LINE THREE IS LONG", spec.AlignRight()),
+			*text.NewLine("LINE FOUR", spec.AlignRight()),
 		),
 	)
 
@@ -89,19 +89,19 @@ func TestStandard_InitializeLayers(t *testing.T) {
 
 	vm.Header.PushLayer(
 		drain.UnitFromLines(
-			*text.NewLine("golang", style.SpecFromKind(style.SpcKindPaddingLeft)),
+			*text.NewLine("golang", spec.AlignRight()),
 		),
 		layer.Fixed[winsize.Rows](1),
 	)
 	vm.Kernel.PushLayer(
 		line.UnitFromLines(
-			*text.NewLine("rust", style.SpecFromKind(style.SpcKindPaddingLeft)),
+			*text.NewLine("rust", spec.AlignRight()),
 		),
 		layer.Fixed[winsize.Rows](1),
 	)
 	vm.Footer.PushLayer(
 		drain.UnitFromLines(
-			*text.NewLine("Ziglang", style.SpecFromKind(style.SpcKindPaddingLeft)),
+			*text.NewLine("Ziglang", spec.AlignRight()),
 		),
 		layer.Fixed[winsize.Rows](1),
 	)

@@ -5,6 +5,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline/header"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/table"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	table_screen "github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/table"
@@ -71,7 +72,7 @@ func marshal(lang Language) []table.Field {
 func NewTestTable() screen.Node {
 	title := []text.Line{
 		*text.NewLine("Donec massa sem"),
-		*text.NewLine("=", style.SpecFromKind(style.SpcKindFill)),
+		*text.NewLine("=", spec.Cover()),
 	}
 
 	node := table_screen.New[Language]().

@@ -9,7 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 )
 
-func AlignCenter(width winsize.Cols, text Text, filler string) string {
+func JustifyCenter(width winsize.Cols, text Text, filler string) string {
 	if text.Size >= width {
 		return text.Data
 	}
@@ -25,17 +25,7 @@ func AlignCenter(width winsize.Cols, text Text, filler string) string {
 	return left + text.Data + right
 }
 
-func AlignLeft(width winsize.Cols, text Text, filler string) string {
-	if text.Size >= width {
-		return text.Data
-	}
-
-	padding := width.Sub(text.Size)
-
-	return strings.Repeat(filler, int(padding)) + text.Data
-}
-
-func AlignRight(width winsize.Cols, text Text, filler string) string {
+func JustifyLeft(width winsize.Cols, text Text, filler string) string {
 	if text.Size >= width {
 		return text.Data
 	}
@@ -43,6 +33,16 @@ func AlignRight(width winsize.Cols, text Text, filler string) string {
 	padding := width.Sub(text.Size)
 
 	return text.Data + strings.Repeat(filler, int(padding))
+}
+
+func JustifyRight(width winsize.Cols, text Text, filler string) string {
+	if text.Size >= width {
+		return text.Data
+	}
+
+	padding := width.Sub(text.Size)
+
+	return strings.Repeat(filler, int(padding)) + text.Data
 }
 
 func PatternLeft(width winsize.Cols, text Text) string {

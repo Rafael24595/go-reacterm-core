@@ -4,21 +4,21 @@ import (
 	"strings"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 )
 
 type Line struct {
 	Order uint16
 	Text  []Fragment
-	Spec  style.Spec
+	Spec  spec.Spec
 }
 
-func NewLine(text string, styles ...style.Spec) *Line {
+func NewLine(text string, styles ...spec.Spec) *Line {
 	return &Line{
 		Text: []Fragment{{
 			Text: text,
 		}},
-		Spec: style.MergeSpec(styles...),
+		Spec: spec.Merge(styles...),
 	}
 }
 
@@ -33,7 +33,7 @@ func LineFromMeta(other *Line) *Line {
 func LineFromFragments(frags ...Fragment) *Line {
 	return &Line{
 		Text: frags,
-		Spec: style.SpecEmpty(),
+		Spec: spec.Empty(),
 	}
 }
 
@@ -58,19 +58,19 @@ func (l *Line) PushFragments(frags ...Fragment) *Line {
 	return l
 }
 
-func (l *Line) AddSpec(styles ...style.Spec) *Line {
-	newSpec := style.MergeSpec(styles...)
-	l.Spec = style.MergeSpec(l.Spec, newSpec)
+func (l *Line) AddSpec(styles ...spec.Spec) *Line {
+	newSpec := spec.Merge(styles...)
+	l.Spec = spec.Merge(l.Spec, newSpec)
 	return l
 }
 
-func (l *Line) SetSpec(styles ...style.Spec) *Line {
-	l.Spec = style.MergeSpec(styles...)
+func (l *Line) SetSpec(styles ...spec.Spec) *Line {
+	l.Spec = spec.Merge(styles...)
 	return l
 }
 
-func (l *Line) CutSpec(styles style.SpecKind) *Line {
-	l.Spec, _ = style.EraseSpec(l.Spec, styles)
+func (l *Line) CutSpec(styles spec.Kind) *Line {
+	l.Spec, _ = spec.Erase(l.Spec, styles)
 	return l
 }
 
@@ -82,8 +82,8 @@ func (l *Line) Clone() *Line {
 }
 
 func LineMeasure(line *Line, cols winsize.Cols) winsize.Cols {
-	return style.SpecMeasure(line.Spec, style.LayoutContext{
-		Cols:     cols,
+	return spec.Measure(line.Spec, spec.LayoutContext{
+		SizeCols: cols,
 		TextSize: FragmentMeasure(cols, line.Text...),
 	})
 }

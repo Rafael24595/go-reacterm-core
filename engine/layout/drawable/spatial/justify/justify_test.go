@@ -7,10 +7,11 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/commons"
-	"github.com/Rafael24595/go-reacterm-core/engine/helper"
+	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
@@ -31,12 +32,12 @@ func renderFragments(frags []text.Fragment) string {
 
 		count := winsize.Cols(0)
 		ok := false
-		if args, ex := f.Spec.Args()[style.KeyRepeatRightSize]; ex {
+		if args, ex := f.Spec.Args()[spec.KeyExtendRightSize]; ex {
 			ok = true
 			count = commons.Mapd[winsize.Cols](args, 0)
 		}
 
-		if args, ex := f.Spec.Args()[style.KeyPaddingRightSize]; ex {
+		if args, ex := f.Spec.Args()[spec.KeyJustifyLeftSize]; ex {
 			ok = true
 			count = commons.Mapd[winsize.Cols](args, 0)
 		}
@@ -53,18 +54,18 @@ func renderFragments(frags []text.Fragment) string {
 
 func renderLine(cols winsize.Cols, mode style.Justify, line text.Line) string {
 	filler := marker.DefaultPaddingText
-	
-	text := helper.TextFromString(
+
+	text := format.TextFromString(
 		renderFragments(line.Text),
 	)
 
 	switch mode {
 	case style.JustifyStart:
-		return helper.Right(cols, text, filler)
+		return format.JustifyLeft(cols, text, filler)
 	case style.JustifyEnd:
-		return helper.Left(cols, text, filler)
+		return format.JustifyRight(cols, text, filler)
 	case style.JustifyCenter, style.JustifyAround, style.JustifyEvenly:
-		return helper.Center(cols, text, filler)
+		return format.JustifyCenter(cols, text, filler)
 	}
 
 	return text.Data
@@ -88,7 +89,7 @@ func TestAddGaps_SingleFragment(t *testing.T) {
 
 		assert.Size(t, 1, result)
 		assert.Equal(t, "abc", result[0].Text)
-		assert.Equal(t, style.SpcKindNone, result[0].Spec.Kind())
+		assert.Equal(t, spec.KindNone, result[0].Spec.Kind())
 	}
 }
 
@@ -103,9 +104,9 @@ func TestAddGaps_IntercalatedSpaces(t *testing.T) {
 		assert.Size(t, 5, result)
 		assert.Equal(t, "aa bb cc", fragmentTexts(result))
 
-		assert.Equal(t, style.SpcKindNone, result[0].Spec.Kind())
-		assert.Equal(t, style.SpcKindNone, result[2].Spec.Kind())
-		assert.Equal(t, style.SpcKindNone, result[4].Spec.Kind())
+		assert.Equal(t, spec.KindNone, result[0].Spec.Kind())
+		assert.Equal(t, spec.KindNone, result[2].Spec.Kind())
+		assert.Equal(t, spec.KindNone, result[4].Spec.Kind())
 	}
 }
 
@@ -118,9 +119,9 @@ func TestAddGaps_Between(t *testing.T) {
 
 	assert.Size(t, 5, result)
 
-	assert.Equal(t, 2, commons.Mapd[winsize.Cols](result[1].Spec.Args()[style.KeyPaddingRightSize], 0))
-	assert.Equal(t, 2, commons.Mapd[winsize.Cols](result[3].Spec.Args()[style.KeyPaddingRightSize], 0))
-	assert.Equal(t, style.SpcKindNone, result[2].Spec.Kind())
+	assert.Equal(t, 2, commons.Mapd[winsize.Cols](result[1].Spec.Args()[spec.KeyJustifyLeftSize], 0))
+	assert.Equal(t, 2, commons.Mapd[winsize.Cols](result[3].Spec.Args()[spec.KeyJustifyLeftSize], 0))
+	assert.Equal(t, spec.KindNone, result[2].Spec.Kind())
 
 	assert.Equal(t, "aa  bb  cc", renderFragments(result))
 }
@@ -134,9 +135,9 @@ func TestAddGaps_Around(t *testing.T) {
 
 	assert.Size(t, 5, result)
 
-	assert.Equal(t, 2, commons.Mapd[winsize.Cols](result[1].Spec.Args()[style.KeyPaddingRightSize], 0))
-	assert.Equal(t, 1, commons.Mapd[winsize.Cols](result[3].Spec.Args()[style.KeyPaddingRightSize], 0))
-	assert.Equal(t, style.SpcKindNone, result[2].Spec.Kind())
+	assert.Equal(t, 2, commons.Mapd[winsize.Cols](result[1].Spec.Args()[spec.KeyJustifyLeftSize], 0))
+	assert.Equal(t, 1, commons.Mapd[winsize.Cols](result[3].Spec.Args()[spec.KeyJustifyLeftSize], 0))
+	assert.Equal(t, spec.KindNone, result[2].Spec.Kind())
 
 	assert.Equal(t, "aa  bb cc", renderFragments(result))
 }
@@ -158,7 +159,7 @@ func TestAddGaps_DoesNotMutateOriginal(t *testing.T) {
 	_ = addGaps(10, frags, 4, style.JustifyBetween)
 
 	for _, f := range frags {
-		assert.Equal(t, style.SpcKindNone, f.Spec.Kind())
+		assert.Equal(t, spec.KindNone, f.Spec.Kind())
 	}
 }
 
@@ -167,7 +168,7 @@ func TestJustifyLine_Start(t *testing.T) {
 	line := justifyLine(10, frags, 6, style.JustifyStart)
 
 	assert.Size(t, 5, line.Text)
-	assert.True(t, line.Spec.Kind().HasAny(style.SpcKindPaddingRight))
+	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyLeft))
 
 	assert.Equal(t, "aa bb cc  ", renderLine(10, style.JustifyStart, *line))
 }
@@ -177,7 +178,7 @@ func TestJustifyLine_End(t *testing.T) {
 	line := justifyLine(10, frags, 6, style.JustifyEnd)
 
 	assert.Size(t, 5, line.Text)
-	assert.True(t, line.Spec.Kind().HasAny(style.SpcKindPaddingLeft))
+	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyRight))
 
 	assert.Equal(t, "  aa bb cc", renderLine(10, style.JustifyEnd, *line))
 }
@@ -187,7 +188,7 @@ func TestJustifyLine_Center(t *testing.T) {
 	line := justifyLine(10, frags, 6, style.JustifyCenter)
 
 	assert.Size(t, 5, line.Text)
-	assert.True(t, line.Spec.Kind().HasAny(style.SpcKindPaddingCenter))
+	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyCenter))
 
 	assert.Equal(t, " aa bb cc ", renderLine(10, style.JustifyCenter, *line))
 }
@@ -197,7 +198,7 @@ func TestJustifyLine_Between(t *testing.T) {
 	line := justifyLine(10, frags, 6, style.JustifyBetween)
 
 	assert.Size(t, 5, line.Text)
-	assert.True(t, line.Spec.Kind().HasNone(style.SpcKindPaddingLeft|style.SpcKindPaddingRight|style.SpcKindPaddingCenter))
+	assert.True(t, line.Spec.Kind().HasNone(spec.KindJustifyRight|spec.KindJustifyLeft|spec.KindJustifyCenter))
 
 	assert.Equal(t, "aa  bb  cc", renderLine(10, style.JustifyBetween, *line))
 }
@@ -207,7 +208,7 @@ func TestJustifyLine_Around(t *testing.T) {
 	line := justifyLine(18, frags, 6, style.JustifyAround)
 
 	assert.Size(t, 5, line.Text)
-	assert.True(t, line.Spec.Kind().HasAny(style.SpcKindPaddingCenter))
+	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyCenter))
 
 	assert.Equal(t, "   aa   bb   cc   ", renderLine(18, style.JustifyAround, *line))
 }
@@ -217,7 +218,7 @@ func TestJustifyLine_Evenly(t *testing.T) {
 	line := justifyLine(18, frags, 6, style.JustifyEvenly)
 
 	assert.Size(t, 5, line.Text)
-	assert.True(t, line.Spec.Kind().HasAny(style.SpcKindPaddingCenter))
+	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyCenter))
 
 	assert.Equal(t, "  aa    bb    cc  ", renderLine(18, style.JustifyEvenly, *line))
 }

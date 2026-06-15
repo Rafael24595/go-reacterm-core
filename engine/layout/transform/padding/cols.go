@@ -8,6 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -76,7 +77,7 @@ func AddColsPadding(
 
 	if paddingL > 0 {
 		frag := frag.Clone().
-			AddSpec(style.SpecRepeatRight(paddingL))
+			AddSpec(spec.ExtendRight(paddingL))
 		frags = append(frags, *frag)
 	}
 
@@ -84,7 +85,7 @@ func AddColsPadding(
 
 	if paddingR > 0 {
 		frag := frag.Clone().
-			AddSpec(style.SpecRepeatRight(paddingR))
+			AddSpec(spec.ExtendRight(paddingR))
 		frags = append(frags, *frag)
 	}
 

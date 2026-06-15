@@ -4,20 +4,20 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 )
 
 type Fragment struct {
 	Text string
 	Atom atom.Atom
-	Spec style.Spec
+	Spec spec.Spec
 }
 
 func NewFragment(text string) *Fragment {
 	return &Fragment{
 		Text: text,
 		Atom: atom.None,
-		Spec: style.SpecEmpty(),
+		Spec: spec.Empty(),
 	}
 }
 
@@ -50,14 +50,14 @@ func (f *Fragment) CutAtom(styles atom.Atom) *Fragment {
 	return f
 }
 
-func (f *Fragment) AddSpec(styles ...style.Spec) *Fragment {
-	newSpec := style.MergeSpec(styles...)
-	f.Spec = style.MergeSpec(f.Spec, newSpec)
+func (f *Fragment) AddSpec(styles ...spec.Spec) *Fragment {
+	newSpec := spec.Merge(styles...)
+	f.Spec = spec.Merge(f.Spec, newSpec)
 	return f
 }
 
-func (f *Fragment) CutSpec(styles style.SpecKind) *Fragment {
-	f.Spec, _ = style.EraseSpec(f.Spec, styles)
+func (f *Fragment) CutSpec(styles spec.Kind) *Fragment {
+	f.Spec, _ = spec.Erase(f.Spec, styles)
 	return f
 }
 
@@ -74,11 +74,11 @@ func (f *Fragment) Clone() *Fragment {
 func FragmentMeasure(cols winsize.Cols, frags ...Fragment) winsize.Cols {
 	measure := winsize.Cols(0)
 	for _, f := range frags {
-		ctx := style.LayoutContext{
-			Cols:     cols,
+		ctx := spec.LayoutContext{
+			SizeCols: cols,
 			TextSize: f.Size(),
 		}
-		measure += style.SpecMeasure(f.Spec, ctx)
+		measure += spec.Measure(f.Spec, ctx)
 	}
 	return measure
 }
@@ -86,10 +86,10 @@ func FragmentMeasure(cols winsize.Cols, frags ...Fragment) winsize.Cols {
 func IsZeroFragment(frag Fragment) bool {
 	return frag.Text == "" &&
 		frag.Atom == atom.None &&
-		frag.Spec.Kind() == style.SpcKindNone
+		frag.Spec.Kind() == spec.KindNone
 }
 
 func IsStructuralFragment(frag Fragment) bool {
-	hasStyles := frag.Atom != atom.None || frag.Spec.Kind() != style.SpcKindNone
+	hasStyles := frag.Atom != atom.None || frag.Spec.Kind() != spec.KindNone
 	return frag.Text == "" && hasStyles
 }

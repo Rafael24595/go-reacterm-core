@@ -7,7 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/buffer"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/buffer/processor"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/buffer/rule"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	text_screen "github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/text"
@@ -19,7 +19,7 @@ func NewTestTextArea() screen.Node {
 
 	title := []text.Line{
 		*text.NewLine("Suspendisse sem arcu"),
-		*text.NewLine("=", style.SpecFill(sizeTitle)),
+		*text.NewLine("=", spec.Fill(sizeTitle)),
 	}
 
 	node := text_screen.NewArea().

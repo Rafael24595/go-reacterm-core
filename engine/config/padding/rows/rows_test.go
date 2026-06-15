@@ -4,8 +4,10 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
+	
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -57,6 +59,6 @@ func TestWithFillFragment(t *testing.T) {
 	)
 
 	assert.Equal(t, ".", frag.Text)
-	assert.True(t, frag.Spec.Kind().HasAny(style.SpcKindRepeatRight))
-	assert.Equal(t, "6", frag.Spec.Args()[style.KeyRepeatRightSize].Stringf())
+	assert.True(t, frag.Spec.Kind().HasAny(spec.KindExtendRight))
+	assert.Equal(t, "6", frag.Spec.Args()[spec.KeyExtendRightSize].Stringf())
 }

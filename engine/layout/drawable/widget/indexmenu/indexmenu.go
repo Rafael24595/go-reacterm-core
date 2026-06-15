@@ -3,14 +3,14 @@ package indexmenu
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/helper"
+	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -84,8 +84,8 @@ func (u *IndexMenuUnit) init() {
 			}
 		}
 
-		paddingFrag := text.EmptyFragment().
-			AddSpec(style.SpecPaddingLeft(2))
+		alignFrag := text.EmptyFragment().
+			AddSpec(spec.JustifyRight(2))
 
 		indexFrag := u.makeIndex(i, winsize.Cols(digits)).
 			AddAtom(selectAtom)
@@ -98,7 +98,7 @@ func (u *IndexMenuUnit) init() {
 
 		lines = append(lines,
 			*text.LineFromFragments(
-				*paddingFrag,
+				*alignFrag,
 				*indexFrag,
 				*spacerFrag,
 				*titleFrag,
@@ -134,20 +134,20 @@ func (u *IndexMenuUnit) makeCustomIndex(cursor int) *text.Fragment {
 }
 
 func (u *IndexMenuUnit) makeNumericIndex(cursor int, digits winsize.Cols) *text.Fragment {
-	text := helper.TextFromAny(cursor + 1)
+	text := format.TextFromAny(cursor + 1)
 	return u.makeTextIndex(cursor, digits, text)
 }
 
 func (u *IndexMenuUnit) makeAlphabeticIndex(cursor int, digits winsize.Cols) *text.Fragment {
-	text := helper.TextFromAny(
-		helper.NumberToAlpha(cursor),
+	text := format.TextFromAny(
+		format.NumberToAlpha(cursor),
 	)
 	return u.makeTextIndex(cursor, digits, text)
 }
 
-func (u *IndexMenuUnit) makeTextIndex(cursor int, digits winsize.Cols, text helper.Text) *text.Fragment {
+func (u *IndexMenuUnit) makeTextIndex(cursor int, digits winsize.Cols, text format.Text) *text.Fragment {
 	filler := marker.DefaultPaddingText
-	data := helper.Right(digits, text, filler)
+	data := format.JustifyLeft(digits, text, filler)
 	return u.makeCommonIndex(cursor, data)
 }
 

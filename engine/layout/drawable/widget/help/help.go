@@ -11,7 +11,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -90,9 +90,9 @@ func makeUnit(fields []key.Descriptor) drawable.Unit {
 		*text.LineFromFragments(
 			*text.NewFragment("--Help--"),
 			*text.NewFragment("-").
-				AddSpec(style.SpecFromKind(style.SpcKindFill)),
+				AddSpec(spec.Cover()),
 		),
 		*text.LineFromFragments(frags...),
-		*text.NewLine("-", style.SpecFromKind(style.SpcKindFill)),
+		*text.NewLine("-", spec.Cover()),
 	)
 }

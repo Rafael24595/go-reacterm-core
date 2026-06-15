@@ -9,7 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -18,8 +18,8 @@ func NewTestSelect() screen.Node {
 	sizeTitle := runes.Measure(textTitle)
 
 	title := []text.Line{
-		*text.NewLine(textTitle, style.SpecFromKind(style.SpcKindPaddingRight)),
-		*text.NewLine("-", style.SpecFill(sizeTitle)),
+		*text.NewLine(textTitle, spec.AlignLeft()),
+		*text.NewLine("-", spec.Fill(sizeTitle)),
 	}
 
 	options := input.NewMenuOptions(

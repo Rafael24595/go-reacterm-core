@@ -4,6 +4,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -57,7 +58,7 @@ func WithFillFragment(frag ...string) Option {
 		cfg.Provider = func(size winsize.Winsize, lines ...text.Line) text.Fragment {
 			measure := text.MaxLineMeasure(size.Cols, lines...)
 			return *text.NewFragment(data).
-				AddSpec(style.SpecRepeatRight(measure))
+				AddSpec(spec.ExtendRight(measure))
 		}
 	}
 }

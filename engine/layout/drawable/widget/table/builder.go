@@ -10,7 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	drawable_line "github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/line"
@@ -58,7 +58,7 @@ func (b builder) render(size winsize.Winsize) []section {
 	for _, chunk := range chunks {
 		headers, fixedCursor := b.filterHeaders(headers, chunk)
 
-		specCover := style.SpecRepeatRight(
+		specCover := spec.ExtendRight(
 			b.calcRowCapacity(chunk),
 		)
 
@@ -247,9 +247,9 @@ func (b builder) renderHeaders(
 	renderer := func(col int, header string) text.Fragment {
 		maxCol := maxCols[header]
 
-		spec := style.MergeSpec(
-			style.SpecPaddingCenter(maxCol),
-			style.SpecTrimTextRight(maxCol, marker.DefaultElipsisText),
+		spec := spec.Merge(
+			spec.JustifyCenter(maxCol),
+			spec.TruncateRight(maxCol, marker.DefaultElipsisText),
 		)
 
 		return *text.NewFragment(header).AddSpec(spec)
@@ -334,16 +334,16 @@ func (b builder) renderCell(
 
 	cell, ok := b.table.FindCell(header, row)
 	if !ok {
-		scp := style.SpecRepeatRight(maxCol)
+		scp := spec.ExtendRight(maxCol)
 
 		return text.NewFragment("").
 			AddSpec(scp).
 			AddAtom(atm)
 	}
 
-	scp := style.MergeSpec(
-		style.SpecPaddingRight(maxCol),
-		style.SpecTrimTextRight(maxCol, marker.DefaultElipsisText),
+	scp := spec.Merge(
+		spec.JustifyLeft(maxCol),
+		spec.TruncateRight(maxCol, marker.DefaultElipsisText),
 	)
 
 	return text.NewFragment(cell).

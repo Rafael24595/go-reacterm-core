@@ -9,7 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -279,7 +279,7 @@ func TestMaterializeEmpty(t *testing.T) {
 func TestWrapLine_Simple(t *testing.T) {
 	line := text.NewLine(
 		"HELLO WORLD",
-		style.SpecFromKind(style.SpcKindPaddingLeft),
+		spec.AlignRight(),
 	)
 
 	lines := Line(5, line)
@@ -303,7 +303,7 @@ func TestWrapLine_Styles(t *testing.T) {
 		*text.NewFragment("HELLO").AddAtom(atom.Bold),
 		*text.NewFragment(" "),
 		*text.NewFragment("WORLD"),
-	).SetSpec(style.SpecFromKind(style.SpcKindPaddingLeft))
+	).SetSpec(spec.AlignRight())
 
 	lines := Line(7, line)
 
@@ -321,7 +321,7 @@ func TestWrapLine_LongWord(t *testing.T) {
 	txt := "HELLO WORLD FROM GOLANG"
 
 	line := text.NewLine(txt,
-		style.SpecFromKind(style.SpcKindPaddingLeft),
+		spec.AlignRight(),
 	)
 
 	maxWidth := winsize.Cols(10)
@@ -353,7 +353,7 @@ func TestWrapLine_MultipleFragments(t *testing.T) {
 		*text.NewFragment("HELLO").AddAtom(atom.Bold),
 		*text.NewFragment("WORLD").AddAtom(atom.Bold),
 		*text.NewFragment("GO"),
-	).SetSpec(style.SpecFromKind(style.SpcKindPaddingLeft))
+	).SetSpec(spec.AlignRight())
 
 	maxWidth := winsize.Cols(8)
 	lines := Line(maxWidth, line)

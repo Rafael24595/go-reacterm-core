@@ -5,130 +5,130 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/helper"
+	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 )
 
-func TestPaddingLeft_Strict(t *testing.T) {
-	spec := style.SpecPaddingLeft(6, "-")
+func TestJustifyRight_Strict(t *testing.T) {
+	spec := spec.JustifyRight(6, "-")
 
-	text := helper.TextFromString("hi")
+	text := format.TextFromString("hi")
 
-	got := paddingLeft(spec, 20, text)
+	got := justifyRight(spec, 20, text)
 
 	assert.Equal(t, "----hi", got)
 	assert.Equal(t, 6, len(got))
 }
 
-func TestPaddingLeft_RespectsCols(t *testing.T) {
-	spec := style.SpecPaddingLeft(10, "-")
+func TestJustifyRight_RespectsCols(t *testing.T) {
+	spec := spec.JustifyRight(10, "-")
 
-	text := helper.TextFromString("hi")
+	text := format.TextFromString("hi")
 
-	got := paddingLeft(spec, 5, text)
+	got := justifyRight(spec, 5, text)
 
 	assert.Equal(t, "---hi", got)
 	assert.Equal(t, 5, len(got))
 }
 
-func TestPaddingRight_Strict(t *testing.T) {
-	spec := style.SpecPaddingRight(6, ".")
+func TestJustifyLeft_Strict(t *testing.T) {
+	spec := spec.JustifyLeft(6, ".")
 
-	text := helper.TextFromString("hi")
+	text := format.TextFromString("hi")
 
-	got := paddingRight(spec, 20, text)
+	got := justifyLeft(spec, 20, text)
 
 	assert.Equal(t, "hi....", got)
 	assert.Equal(t, 6, len(got))
 }
 
-func TestPaddingRight_RespectsCols(t *testing.T) {
-	spec := style.SpecPaddingRight(10, ".")
+func TestJustifyLeft_RespectsCols(t *testing.T) {
+	spec := spec.JustifyLeft(10, ".")
 
-	text := helper.TextFromString("hi")
+	text := format.TextFromString("hi")
 
-	got := paddingRight(spec, 5, text)
+	got := justifyLeft(spec, 5, text)
 
 	assert.Equal(t, "hi...", got)
 	assert.Equal(t, 5, len(got))
 }
 
-func TestPaddingCenter_Strict(t *testing.T) {
-	spec := style.SpecPaddingCenter(6, "-")
+func TestJustifyCenter_Strict(t *testing.T) {
+	spec := spec.JustifyCenter(6, "-")
 
-	text := helper.TextFromString("hi")
+	text := format.TextFromString("hi")
 
-	got := paddingCenter(spec, 20, text)
+	got := justifyCenter(spec, 20, text)
 
 	assert.Equal(t, "--hi--", got)
 	assert.Equal(t, 6, len(got))
 }
 
-func TestPaddingCenter_RespectsCols(t *testing.T) {
-	spec := style.SpecPaddingCenter(6, "-")
+func TestJustifyCenter_RespectsCols(t *testing.T) {
+	spec := spec.JustifyCenter(6, "-")
 
-	text := helper.TextFromString("hi")
+	text := format.TextFromString("hi")
 
-	got := paddingCenter(spec, 4, text)
+	got := justifyCenter(spec, 4, text)
 
 	assert.Equal(t, "-hi-", got)
 	assert.Equal(t, 4, len(got))
 }
 
-func TestPaddingCenter_OddSize(t *testing.T) {
-	spec := style.SpecPaddingCenter(7, "-")
+func TestJustifyCenter_OddSize(t *testing.T) {
+	spec := spec.JustifyCenter(7, "-")
 
-	text := helper.TextFromString("hi")
+	text := format.TextFromString("hi")
 
-	got := paddingCenter(spec, 20, text)
+	got := justifyCenter(spec, 20, text)
 
 	assert.Equal(t, "--hi---", got)
 	assert.Equal(t, 7, len(got))
 }
 
-func TestRepeatLeft_WithText_Strict(t *testing.T) {
-	spec := style.SpecRepeatLeft(3, "-")
+func TestExtendLeft_WithText_Strict(t *testing.T) {
+	spec := spec.ExtendLeft(3, "-")
 
-	text := helper.TextFromString("hi")
+	text := format.TextFromString("hi")
 
-	got := repeatLeft(spec, 20, text)
+	got := extendLeft(spec, 20, text)
 
 	assert.Equal(t, "---hi", got)
 }
 
-func TestRepeatLeft_WithoutText_Strict(t *testing.T) {
-	spec := style.SpecRepeatLeft(3)
+func TestExtendLeft_WithoutText_Strict(t *testing.T) {
+	spec := spec.ExtendLeft(3)
 
-	text := helper.TextFromString("ab")
+	text := format.TextFromString("ab")
 
-	got := repeatLeft(spec, 20, text)
+	got := extendLeft(spec, 20, text)
 
 	assert.Equal(t, "bab", got)
 }
 
-func TestRepeatRight_WithText_Strict(t *testing.T) {
-	spec := style.SpecRepeatRight(3, "-")
+func TestExtendRight_WithText_Strict(t *testing.T) {
+	spec := spec.ExtendRight(3, "-")
 
-	text := helper.TextFromString("hi")
+	text := format.TextFromString("hi")
 
-	got := repeatRight(spec, 20, text)
+	got := extendRight(spec, 20, text)
 
 	assert.Equal(t, "hi---", got)
 }
 
-func TestRepeatRight_WithoutText_Strict(t *testing.T) {
-	spec := style.SpecRepeatRight(3)
+func TestExtendRight_WithoutText_Strict(t *testing.T) {
+	spec := spec.ExtendRight(3)
 
-	text := helper.TextFromString("ab")
+	text := format.TextFromString("ab")
 
-	got := repeatRight(spec, 20, text)
+	got := extendRight(spec, 20, text)
 
 	assert.Equal(t, "aba", got)
 }
 
-func TestTrimLeft_Standard(t *testing.T) {
+func TestTruncateLeft_Standard(t *testing.T) {
 	tests := []struct {
 		name string
 		size winsize.Cols
@@ -163,11 +163,11 @@ func TestTrimLeft_Standard(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			spec := style.SpecTrimLeft(tt.size)
+			spec := spec.TruncateLeft(tt.size)
 
-			text := helper.TextFromString(tt.in)
+			text := format.TextFromString(tt.in)
 
-			got := trimLeft(spec, text)
+			got := truncateLeft(spec, text)
 
 			assert.Equal(t, tt.want, got)
 
@@ -178,7 +178,7 @@ func TestTrimLeft_Standard(t *testing.T) {
 	}
 }
 
-func TestTrimLeft_WithEllipsis(t *testing.T) {
+func TestTruncateLeft_WithEllipsis(t *testing.T) {
 	tests := []struct {
 		name     string
 		size     winsize.Cols
@@ -211,11 +211,11 @@ func TestTrimLeft_WithEllipsis(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			spec := style.SpecTrimTextLeft(tt.size, tt.ellipsis)
+			spec := spec.TruncateLeft(tt.size, tt.ellipsis)
 
-			text := helper.TextFromString(tt.in)
+			text := format.TextFromString(tt.in)
 
-			got := trimLeft(spec, text)
+			got := truncateLeft(spec, text)
 
 			assert.Equal(t, tt.want, got)
 
@@ -226,7 +226,7 @@ func TestTrimLeft_WithEllipsis(t *testing.T) {
 	}
 }
 
-func TestTrimRight_Standard(t *testing.T) {
+func TestTruncateRight_Standard(t *testing.T) {
 	tests := []struct {
 		name string
 		size winsize.Cols
@@ -260,11 +260,11 @@ func TestTrimRight_Standard(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			spec := style.SpecTrimRight(tt.size)
+			spec := spec.TruncateRight(tt.size)
 
-			text := helper.TextFromString(tt.in)
+			text := format.TextFromString(tt.in)
 
-			got := trimRight(spec, text)
+			got := truncateRight(spec, text)
 
 			assert.Equal(t, tt.want, got)
 
@@ -275,7 +275,7 @@ func TestTrimRight_Standard(t *testing.T) {
 	}
 }
 
-func TestTrimRight_WithEllipsis(t *testing.T) {
+func TestTruncateRight_WithEllipsis(t *testing.T) {
 	tests := []struct {
 		name     string
 		size     winsize.Cols
@@ -308,11 +308,11 @@ func TestTrimRight_WithEllipsis(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			spec := style.SpecTrimTextRight(tt.size, tt.ellipsis)
-			
-			text := helper.TextFromString(tt.in)
+			spec := spec.TruncateRight(tt.size, tt.ellipsis)
 
-			got := trimRight(spec, text)
+			text := format.TextFromString(tt.in)
+
+			got := truncateRight(spec, text)
 
 			assert.Equal(t, tt.want, got)
 
@@ -324,8 +324,8 @@ func TestTrimRight_WithEllipsis(t *testing.T) {
 }
 
 func TestFill_Strict(t *testing.T) {
-	text := helper.TextFromString("-")
-	spec := style.SpecFill(10)
+	text := format.TextFromString("-")
+	spec := spec.Fill(10)
 	got := fill(spec, 6, text)
 
 	assert.Equal(t, 6, len(got))
@@ -333,9 +333,9 @@ func TestFill_Strict(t *testing.T) {
 }
 
 func TestFill_Strict_LongText_Even(t *testing.T) {
-	text := helper.TextFromString("go")
+	text := format.TextFromString("go")
 
-	spec := style.SpecFill(20)
+	spec := spec.Fill(20)
 	got := fill(spec, 10, text)
 
 	assert.Equal(t, 10, len(got))
@@ -343,9 +343,9 @@ func TestFill_Strict_LongText_Even(t *testing.T) {
 }
 
 func TestFill_Strict_LongText_Odd(t *testing.T) {
-	text := helper.TextFromString("zig")
+	text := format.TextFromString("zig")
 
-	spec := style.SpecFill(20)
+	spec := spec.Fill(20)
 	got := fill(spec, 10, text)
 
 	assert.Equal(t, 10, len(got))

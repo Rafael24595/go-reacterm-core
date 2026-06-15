@@ -14,6 +14,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
@@ -110,7 +111,7 @@ func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...text.Line) []text.Li
 	maxLine := text.MaxLineMeasure(size.Cols, lines...)
 	measure := min(maxLine+vertical, size.Cols)
 
-	specCover := style.SpecRepeatLeft(measure)
+	specCover := spec.ExtendLeft(measure)
 	cover := text.LineFromFragments(
 		*text.NewFragment(u.separator.Top).AddSpec(specCover),
 	)

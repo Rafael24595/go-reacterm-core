@@ -3,7 +3,7 @@ package text
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 )
 
 func MaxLineMeasure(cols winsize.Cols, lines ...Line) winsize.Cols {
@@ -26,11 +26,11 @@ func FragmentsFromString(text ...string) []Fragment {
 func LineJump() *Line {
 	return &Line{
 		Text: FragmentsFromString(""),
-		Spec: style.SpecFromKind(style.SpcKindFill),
+		Spec: spec.Cover(),
 	}
 }
 
-func ApplyLineSpec(style style.Spec, lines ...Line) []Line {
+func ApplyLineSpec(style spec.Spec, lines ...Line) []Line {
 	for i := range lines {
 		lines[i].SetSpec(style)
 	}

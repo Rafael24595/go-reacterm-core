@@ -4,14 +4,14 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline/header"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/article"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
 func NewTestArticle() screen.Node {
 	title := []text.Line{
 		*text.NewLine("Ac accumsan dolor laoreet"),
-		*text.NewLine("=", style.SpecFromKind(style.SpcKindFill)),
+		*text.NewLine("=", spec.Cover()),
 	}
 
 	node := article.New().

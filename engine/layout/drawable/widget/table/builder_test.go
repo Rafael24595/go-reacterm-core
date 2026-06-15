@@ -10,7 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/table"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -74,8 +74,8 @@ func TestBuilder_RenderHeaders_Structure(t *testing.T) {
 	assert.Equal(t, "name", line.Text[3].Text)
 	assert.Equal(t, "|", line.Text[4].Text)
 
-	assert.NotEqual(t, style.SpcKindNone, line.Text[1].Spec.Kind())
-	assert.NotEqual(t, style.SpcKindNone, line.Text[3].Spec.Kind())
+	assert.NotEqual(t, spec.KindNone, line.Text[1].Spec.Kind())
+	assert.NotEqual(t, spec.KindNone, line.Text[3].Spec.Kind())
 }
 
 func TestBuilder_RenderBody_Basic(t *testing.T) {

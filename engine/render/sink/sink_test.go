@@ -7,24 +7,22 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/commons"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
 func TestApplySinks_PaddingLeft(t *testing.T) {
-	spec := style.SpecPaddingLeft(5, "-")
-
 	line := text.EmptyLine().
-		AddSpec(spec)
+		AddSpec(spec.JustifyRight(5, "-"))
 
 	assert.Size(t, 0, line.Text)
 
 	ApplySinks(line, 80)
 
-	assert.False(t, line.Spec.Kind().HasAny(style.SpcKindPaddingLeft))
+	assert.False(t, line.Spec.Kind().HasAny(spec.KindJustifyRight))
 	assert.Size(t, 1, line.Text)
 
 	firstFrag := line.Text[0]
-	assert.True(t, firstFrag.Spec.Kind().HasAny(style.SpcKindPaddingLeft))
-	assert.Equal(t, 5, commons.Mapd[winsize.Cols](firstFrag.Spec.Args()[style.KeyPaddingLeftSize], 0))
+	assert.True(t, firstFrag.Spec.Kind().HasAny(spec.KindJustifyRight))
+	assert.Equal(t, 5, commons.Mapd[winsize.Cols](firstFrag.Spec.Args()[spec.KeyJustifyRightSize], 0))
 }

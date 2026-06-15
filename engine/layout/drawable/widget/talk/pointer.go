@@ -2,7 +2,7 @@ package talk
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
@@ -35,7 +35,7 @@ func arrowProvider(arrow ...rune) PointerProvider {
 
 	defaultOwner := []text.Fragment{
 		*text.NewFragment(marker.DefaultPaddingText).
-			AddSpec(style.SpecRepeatRight(3)),
+			AddSpec(spec.ExtendRight(3)),
 	}
 
 	selectedOwner := []text.Fragment{
@@ -46,7 +46,7 @@ func arrowProvider(arrow ...rune) PointerProvider {
 
 	defaultMessage := []text.Fragment{
 		*text.NewFragment(marker.DefaultPaddingText).
-			AddSpec(style.SpecRepeatRight(5)),
+			AddSpec(spec.ExtendRight(5)),
 	}
 
 	return func(cursor, index uint16) ([]text.Fragment, []text.Fragment) {
@@ -61,24 +61,24 @@ func arrowProvider(arrow ...rune) PointerProvider {
 func gutterProvider() PointerProvider {
 	defaultOwner := []text.Fragment{
 		*text.NewFragment(marker.DefaultPaddingText).
-			AddSpec(style.SpecRepeatRight(3)),
+			AddSpec(spec.ExtendRight(3)),
 	}
 
 	selectedOwner := []text.Fragment{
 		*text.NewFragment(marker.DefaultMiddleGutterText),
 		*text.NewFragment(marker.DefaultPaddingText).
-			AddSpec(style.SpecRepeatRight(2)),
+			AddSpec(spec.ExtendRight(2)),
 	}
 
 	defaultMessage := []text.Fragment{
 		*text.NewFragment(marker.DefaultPaddingText).
-			AddSpec(style.SpecRepeatRight(5)),
+			AddSpec(spec.ExtendRight(5)),
 	}
 
 	selectedMessage := []text.Fragment{
 		*text.NewFragment(marker.DefaultMiddleGutterText),
 		*text.NewFragment(marker.DefaultPaddingText).
-			AddSpec(style.SpecRepeatRight(4)),
+			AddSpec(spec.ExtendRight(4)),
 	}
 
 	return func(cursor, index uint16) ([]text.Fragment, []text.Fragment) {

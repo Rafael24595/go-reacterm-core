@@ -3,7 +3,7 @@ package line
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/helper"
+	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
@@ -62,8 +62,8 @@ func computeIndexMeta(lines []wrap.LayoutLine) *indexMeta {
 		return nil
 	}
 
-	prefix := helper.FillRight(
-		size, helper.TextFromString(marker.DefaultPaddingText),
+	prefix := format.PatternRight(
+		size, format.TextFromString(marker.DefaultPaddingText),
 	)
 
 	return &indexMeta{

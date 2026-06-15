@@ -4,13 +4,13 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline/header"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
 func NewBaseHeader() pipeline.Transformer {
 	lines := text.ApplyLineSpec(
-		style.SpecFromKind(style.SpcKindPaddingCenter),
+		spec.AlignCenter(),
 		*text.LineFromFragments(
 			*text.NewFragment("Lorem ipsum dolor sit amet").AddAtom(atom.Upper),
 		),
