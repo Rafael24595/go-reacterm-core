@@ -23,7 +23,7 @@ func TestVStack_ToUnit_Anemic(t *testing.T) {
 	}
 
 	stack := NewVStack().
-		PushLayer(mock.ToUnit()).
+		PushWithOpts(mock.ToUnit()).
 		ToUnit()
 
 	assert.True(t, stack.Tags.Has(AnemicStack))
@@ -39,8 +39,8 @@ func TestVStack_ToUnit_NotAnemic_MultipleElements(t *testing.T) {
 	}
 
 	stack := NewVStack().
-		PushLayer(mock1.ToUnit()).
-		PushLayer(mock2.ToUnit()).
+		PushWithOpts(mock1.ToUnit()).
+		PushWithOpts(mock2.ToUnit()).
 		ToUnit()
 
 	assert.False(t, stack.Tags.Has(AnemicStack))
@@ -53,7 +53,7 @@ func TestVStack_ToUnit_NotAnemic_LayerWithChunk(t *testing.T) {
 	}
 
 	stack := NewVStack().
-		PushLayer(
+		PushWithOpts(
 			mock.ToUnit(),
 			layer.Fixed[winsize.Rows](10),
 		).
@@ -69,7 +69,7 @@ func TestVStack_ToUnit_NotAnemic_LayerStatic(t *testing.T) {
 	}
 
 	stack := NewVStack().
-		PushLayer(
+		PushWithOpts(
 			mock.ToUnit(),
 			layer.Static[winsize.Rows](),
 		).
@@ -86,7 +86,7 @@ func TestVStack_ToUnit_NotAnemic_WithRenderer(t *testing.T) {
 
 	stack := NewVStack().
 		SetRenderer(defaultRenderer).
-		PushLayer(mock.ToUnit()).
+		PushWithOpts(mock.ToUnit()).
 		ToUnit()
 
 	assert.False(t, stack.Tags.Has(AnemicStack))
@@ -311,7 +311,7 @@ func TestVStack_FixedChunk_PadsWhenChildIsSmaller(t *testing.T) {
 	}
 
 	stack := NewVStack().
-		PushLayer(
+		PushWithOpts(
 			mock.ToUnit(),
 			layer.Fixed[winsize.Rows](15),
 		).
@@ -330,7 +330,7 @@ func TestVStack_FixedChunk_TruncatesWhenChildIsBigger(t *testing.T) {
 	}
 
 	stack := NewVStack().
-		PushLayer(
+		PushWithOpts(
 			mock.ToUnit(),
 			layer.Fixed[winsize.Rows](20),
 		).
@@ -355,12 +355,12 @@ func TestVStack_DynamicChunk_FillsRemainingSpace(t *testing.T) {
 	}
 
 	stack := NewVStack().
-		PushLayer(
+		PushWithOpts(
 			mock1.ToUnit(),
 			layer.Fixed[winsize.Rows](10),
 		).
-		PushLayer(mock2.ToUnit()).
-		PushLayer(mock3.ToUnit()).
+		PushWithOpts(mock2.ToUnit()).
+		PushWithOpts(mock3.ToUnit()).
 		ToUnit()
 
 	stack.Drawable.Init()
@@ -379,11 +379,11 @@ func TestVStack_FixedOverflow_ShouldNotExceedContainer(t *testing.T) {
 	}
 
 	stack := NewVStack().
-		PushLayer(
+		PushWithOpts(
 			mock1.ToUnit(),
 			layer.Fixed[winsize.Rows](10),
 		).
-		PushLayer(
+		PushWithOpts(
 			mock2.ToUnit(),
 			layer.Fixed[winsize.Rows](10),
 		).
@@ -408,9 +408,9 @@ func TestVStack_ExactFit_NoExtraNoMissing(t *testing.T) {
 	}
 
 	stack := NewVStack().
-		PushLayer(mock1.ToUnit()).
-		PushLayer(mock2.ToUnit()).
-		PushLayer(mock3.ToUnit()).
+		PushWithOpts(mock1.ToUnit()).
+		PushWithOpts(mock2.ToUnit()).
+		PushWithOpts(mock3.ToUnit()).
 		ToUnit()
 
 	stack.Drawable.Init()

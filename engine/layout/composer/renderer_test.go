@@ -44,7 +44,7 @@ func Test_PagerRenderer_StaticLayerDoesNotScroll(t *testing.T) {
 	}
 
 	unit := stack.NewVStack().
-		PushLayer(
+		PushWithOpts(
 			dynamic.ToUnit(),
 			layer.Fixed[winsize.Rows](2),
 		).

@@ -87,19 +87,19 @@ func TestStandard_InitializeLayers(t *testing.T) {
 
 	vm := viewmodel.New()
 
-	vm.Header.PushLayer(
+	vm.Header.PushWithOpts(
 		drain.UnitFromLines(
 			*text.NewLine("golang", spec.AlignRight()),
 		),
 		layer.Fixed[winsize.Rows](1),
 	)
-	vm.Kernel.PushLayer(
+	vm.Kernel.PushWithOpts(
 		line.UnitFromLines(
 			*text.NewLine("rust", spec.AlignRight()),
 		),
 		layer.Fixed[winsize.Rows](1),
 	)
-	vm.Footer.PushLayer(
+	vm.Footer.PushWithOpts(
 		drain.UnitFromLines(
 			*text.NewLine("Ziglang", spec.AlignRight()),
 		),

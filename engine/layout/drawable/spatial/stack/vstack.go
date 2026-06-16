@@ -69,19 +69,27 @@ func (u *VStackUnit) Push(units ...drawable.Unit) *VStackUnit {
 	return u
 }
 
-func (u *VStackUnit) UnshiftLayer(unit drawable.Unit, opts ...layer.Option[winsize.Rows]) *VStackUnit {
-	assert.False(u.loaded, drawable.MessageNewElement)
+func (u *VStackUnit) UnshiftWithOpts(unit drawable.Unit, opts ...layer.Option[winsize.Rows]) *VStackUnit {
+	return u.UnshiftLayer(
+		layer.New(unit, opts...),
+	)
+}
 
-	item := layer.New(unit, opts...)
+func (u *VStackUnit) UnshiftLayer(item layer.Layer[winsize.Rows]) *VStackUnit {
+	assert.False(u.loaded, drawable.MessageNewElement)
 
 	u.items = append([]layer.Layer[winsize.Rows]{item}, u.items...)
 	return u
 }
 
-func (u *VStackUnit) PushLayer(unit drawable.Unit, opts ...layer.Option[winsize.Rows]) *VStackUnit {
-	assert.False(u.loaded, drawable.MessageNewElement)
+func (u *VStackUnit) PushWithOpts(unit drawable.Unit, opts ...layer.Option[winsize.Rows]) *VStackUnit {
+	return u.PushLayer(
+		layer.New(unit, opts...),
+	)
+}
 
-	item := layer.New(unit, opts...)
+func (u *VStackUnit) PushLayer(item layer.Layer[winsize.Rows]) *VStackUnit {
+	assert.False(u.loaded, drawable.MessageNewElement)
 
 	u.items = append(u.items, item)
 	return u
