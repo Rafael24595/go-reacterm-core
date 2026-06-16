@@ -90,3 +90,51 @@ func TestWrap_TargetIsCorrect(t *testing.T) {
 
 	assert.Equal(t, mock.Name, captured.Name)
 }
+
+func TestUse_ExecutesMiddleware_AndPassesContext(t *testing.T) {
+	mwCalled := uint(0)
+	nxCalled := uint(0)
+
+	name := "test-node"
+
+	middleware := func(uiState state.UIState, ctx behavior.Context[screen.InitFunc])  {
+		mwCalled += 1
+		assert.Equal(t, name, ctx.Target.Name)
+		ctx.Next(uiState)
+	}
+
+	mock := screen_test.MockNode{
+		Name: name,
+		Init: func(uiState state.UIState) {
+			nxCalled += 1
+		},
+	}
+
+	node := Use(mock.ToNode(), middleware)
+	node.Screen.Init(state.UIState{})
+
+	assert.Equal(t, 1, mwCalled)
+	assert.Equal(t, 1, nxCalled)
+}
+
+func TestUse_CanShortCircuitChain(t *testing.T) {
+	mwCalled := uint(0)
+	nxCalled := uint(0)
+
+	middleware := func(uiState state.UIState, ctx behavior.Context[screen.InitFunc]) {
+		mwCalled += 1
+	}
+
+	mock := screen_test.MockNode{
+		Name: "test-node",
+		Init: func(uiState state.UIState) {
+			nxCalled += 1
+		},
+	}
+
+	node := Use(mock.ToNode(), middleware)
+	node.Screen.Init(state.UIState{})
+
+	assert.Equal(t, 1, mwCalled)
+	assert.Equal(t, 0, nxCalled)
+}
