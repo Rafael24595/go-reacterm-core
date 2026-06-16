@@ -14,6 +14,10 @@ type KeysFunc func() Definition
 type TickFunc func(*state.UIState, Event) Result
 type ViewFunc func(state.UIState) viewmodel.ViewModel
 
+type Funcs interface {
+	InitFunc | KeysFunc | TickFunc | ViewFunc
+}
+
 type Screen struct {
 	Init InitFunc
 	Keys KeysFunc
