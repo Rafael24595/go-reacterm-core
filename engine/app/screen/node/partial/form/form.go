@@ -6,6 +6,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/entry"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/layer"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/inputline"
@@ -26,6 +27,7 @@ type Form struct {
 	cursor    uint16
 	steps     []pipeline.Transformer
 	items     []entry.Entry
+	dummies   set.Set[int]
 }
 
 func New() *Form {
@@ -36,6 +38,7 @@ func New() *Form {
 		cursor:    0,
 		steps:     make([]pipeline.Transformer, 0),
 		items:     make([]entry.Entry, 0),
+		dummies:   set.New[int](),
 	}
 }
 
@@ -59,6 +62,8 @@ func (n *Form) AddBreak(rows ...winsize.Rows) *Form {
 	if len(rows) > 0 {
 		fixed = rows[0]
 	}
+
+	n.dummies.Add(len(n.items))
 
 	return n.AddNode(
 		dummy.ToNode(),
@@ -257,6 +262,11 @@ func (n *Form) view(uiState state.UIState) viewmodel.ViewModel {
 
 		if cvm.Behavior.NeedsPulse {
 			vm.Behavior.NeedsPulse = true
+		}
+
+		// TODO: Improve pager inheritance policy.
+		if !layer.Static() && !n.dummies.Has(i) {
+			vm.Pager = cvm.Pager
 		}
 	}
 
