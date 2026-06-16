@@ -1,17 +1,21 @@
 package wrapper_screen
 
 import (
+	"time"
+
 	node_pipeline "github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline"
 	text_screen "github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/text"
 	drawable_pipeline "github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior/tick"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior/view"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/form"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline/page"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/article"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/talk"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/entry"
@@ -26,6 +30,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/buffer"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/buffer/processor"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/buffer/rule"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/chat"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
@@ -33,10 +38,18 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
+type mockTalkService struct {
+	owner string
+	text  []rune
+	chat  []chat.Message
+}
+
 func NewTestForm() screen.Node {
+	service := initService()
+
 	node := form.New().
 		AddNode(
-			makeArticle(),
+			makeTalk(service),
 			entry.Selectable(),
 			entry.WithLayout(
 				layer.Percent[winsize.Rows](75),
@@ -44,7 +57,7 @@ func NewTestForm() screen.Node {
 		).
 		AddBreak(1).
 		AddNode(
-			makeTextArea(),
+			makeTextArea(service),
 			entry.Selectable(),
 			entry.WithLayout(
 				layer.Static[winsize.Rows](),
@@ -58,28 +71,128 @@ func NewTestForm() screen.Node {
 	return node
 }
 
-func makeArticle() screen.Node {
-	return article.New().
-		Name("article - dolor").
-		AddArticle(
-			*text.NewLine(" AD Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sem arcu, mattis sed tempor id, rhoncus a nisi. Donec massa sem, consectetur id pharetra vel, commodo ac tellus. Proin neque elit, condimentum a lacus at, sollicitudin mollis ante. Curabitur vestibulum malesuada scelerisque. Sed viverra elit a magna molestie, eu facilisis arcu maximus. Nam vel porttitor dolor. Nam consequat placerat ligula sit amet vehicula. Donec hendrerit tristique dignissim. Vestibulum sit amet lorem varius nisi laoreet tempor. Praesent posuere nisl eget neque rutrum, eu mollis magna rutrum. Etiam quis nibh sit amet elit pulvinar malesuada. Morbi ac consequat nulla. Donec viverra mauris vitae dignissim tincidunt. Curabitur laoreet nisl nec turpis efficitur, ac accumsan dolor laoreet. Vivamus mollis porttitor elit, vel consequat turpis pulvinar sit amet. Vestibulum sodales iaculis augue in pulvinar. Vivamus a viverra nisi. Cras nibh ligula, commodo nec pellentesque tristique, commodo ut ligula. Donec malesuada lectus sit amet nibh fermentum, vel euismod est volutpat. Pellentesque sodales massa eu feugiat volutpat. Donec tincidunt cursus dui, et ornare mi maximus nec. Etiam eu malesuada urna. Proin sed elit nec risus condimentum tristique. Donec fringilla velit non sapien tempor gravida. Curabitur ultricies neque vitae lacus ornare, at interdum ex imperdiet. Phasellus rhoncus justo eros. Sed nec accumsan magna, quis accumsan ex. Vestibulum id neque mauris. Vestibulum convallis vestibulum massa, in molestie eros aliquam venenatis. Maecenas et diam at arcu sodales pretium ut vitae ante. Etiam convallis pulvinar lectus, at pulvinar odio ultricies quis. Suspendisse gravida, eros vitae iaculis maximus, elit dui malesuada nunc, quis porttitor ante neque non leo. Nulla porta facilisis nulla. Donec vel ex et justo ullamcorper congue. Morbi hendrerit sagittis est vel auctor. Aliquam pharetra quam sed viverra vehicula. Curabitur laoreet quis justo elementum elementum. Donec rhoncus orci non mauris aliquet, nec auctor ante mattis. Cras feugiat rhoncus elementum. Maecenas iaculis eget nisl ut porta. Etiam interdum leo eget tortor hendrerit mattis. Phasellus volutpat dignissim nisi, pretium dignissim nunc accumsan vel. Etiam dictum gravida nunc id laoreet. Nullam diam lacus, blandit ut faucibus sed, lobortis in enim. Ut ornare tortor ut rutrum consequat. Pellentesque ac faucibus mauris. Nullam dictum neque dolor, quis tincidunt libero facilisis id. Nunc rhoncus dignissim nisl, ut sagittis tellus. Integer at nulla luctus, vehicula arcu eget, euismod ante. Phasellus nec ante et dui finibus porta. Vestibulum est justo, cursus vel tellus vel, luctus cursus risus. Duis et hendrerit est. Nullam urna dolor, porttitor eu sapien euismod, consequat interdum diam. Nunc eget iaculis ipsum. Ut fermentum quis orci id dictum. Aenean aliquam diam metus, eget fermentum turpis semper sollicitudin. Phasellus id dui eu orci pretium dapibus. Donec ullamcorper rutrum quam, eget sagittis purus maximus ut. Nulla a congue augue. Cras sodales tellus vitae vehicula rutrum. Phasellus gravida libero nec felis pellentesque, eu faucibus magna condimentum. Nulla facilisi. Vestibulum eget placerat quam, a tincidunt libero. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Sed laoreet aliquam odio et consectetur. Fusce hendrerit eleifend faucibus. In hac habitasse platea dictumst. Praesent nec metus et dolor congue ultricies. Sed ut pellentesque leo, sed ultrices ligula. Curabitur suscipit enim quis eros malesuada, at egestas neque efficitur. In sit amet venenatis mi. Curabitur fringilla commodo elit, nec volutpat elit convallis vel. Pellentesque tristique ac augue ac congue. Donec posuere metus eu pellentesque feugiat. Integer id suscipit enim, at vestibulum nunc. Duis mauris nibh, volutpat sit amet tellus et, facilisis pharetra dolor. Mauris ornare non sem in eleifend. Vestibulum lorem velit, sollicitudin id dui eu, tempus interdum tellus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras at quam in turpis convallis aliquam at sit amet elit. Aliquam porttitor quis urna ut ullamcorper. Etiam a pharetra dolor. Sed a sem enim. In a rhoncus ipsum. Nullam ut imperdiet nulla, id ornare enim. Morbi euismod magna vitae lorem convallis commodo. In faucibus nunc sem, eu aliquam ligula molestie at. Praesent pharetra est justo. Phasellus varius nulla sed tellus efficitur laoreet. Vestibulum vehicula, lectus eget convallis ultricies, felis ligula vestibulum ligula, sed faucibus quam justo quis dolor. Mauris vestibulum rutrum sagittis. Mauris tincidunt quis nisl id hendrerit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aenean tellus sapien, maximus et tellus a, semper hendrerit tellus. Mauris sit amet mattis libero. Nullam accumsan, nulla ornare ultrices scelerisque, lectus eros bibendum ligula, vel scelerisque dolor tortor sit amet nibh. Sed luctus aliquet sem a suscipit. Vivamus ac tortor massa. Sed rhoncus ipsum eget mollis suscipit. Suspendisse et fringilla est. Nulla in quam molestie est lobortis bibendum. Nam finibus pharetra nisi, at lacinia ex vestibulum eget. Nullam a elementum ante. In aliquet tortor sit amet maximus dictum. Aliquam sollicitudin tortor elementum porta tincidunt. Duis sed nisl at ex rutrum mollis. Phasellus ultrices libero leo, dignissim volutpat tellus tristique ac. Ut faucibus risus id imperdiet suscipit. Nulla ut libero vitae turpis consectetur elementum et id orci. Suspendisse sit amet mi eget diam pellentesque vulputate. Quisque ut placerat lectus. Vivamus dolor libero, finibus id turpis gravida, lacinia cursus nisi. Donec eu interdum lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Proin ex est, eleifend a tellus eget, lacinia congue lectus. Ut eu mi tincidunt, finibus risus vel, lobortis tortor. Fusce congue elit in maximus finibus. Fusce lobortis urna et orci tincidunt volutpat. Aliquam eu ante dictum, rhoncus arcu ullamcorper, aliquet ex. Curabitur non nisi erat. Aliquam ut fringilla nisi, luctus rutrum dui. Curabitur sit amet elementum quam. Aliquam aliquam ultrices ligula, sit amet volutpat orci elementum vel. Nulla consectetur sapien urna, ac laoreet urna ultricies at. In vulputate urna et eros lobortis, eu tristique odio eleifend. Aenean porttitor libero non odio ullamcorper, id feugiat massa cursus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Morbi at nulla ullamcorper, ullamcorper mauris quis, cursus erat. Nam eu ullamcorper lorem, in interdum lectus. Fusce malesuada et enim eu dapibus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Integer semper libero quis purus fringilla aliquet. Nunc nec sapien ac arcu commodo sagittis eget non metus. In odio purus, mollis interdum est at, feugiat aliquet felis. Sed nibh lacus, interdum at maximus et, gravida id dolor. Proin cursus neque vel nisi egestas vulputate. Praesent sed congue ligula. Sed sollicitudin augue non nisi finibus dignissim. Sed sagittis a orci elementum placerat. Phasellus sodales odio et ipsum ultricies, nec eleifend ipsum luctus. Nunc sit amet blandit nisi. Sed in ultrices risus, non pretium metus. Quisque fermentum lacinia purus, quis pretium erat congue quis. Proin quis dolor nec ipsum pulvinar hendrerit quis a quam. Nullam tincidunt velit at nisi aliquet, non scelerisque metus ornare. Sed risus felis, sodales vel fringilla et, rhoncus in mi. Quisque semper eleifend finibus. Duis tempor lobortis urna non rutrum. Nunc et consequat libero, ac pellentesque enim. Suspendisse in sagittis turpis. Donec euismod sollicitudin tellus, at pellentesque lacus interdum eget. Vestibulum commodo consequat metus, id maximus quam auctor fermentum. Nullam nec egestas risus, in tincidunt ligula. Aenean id consequat nunc. Nulla facilisi. Nullam nec risus eget ligula porta commodo. Etiam eros eros, ullamcorper eget ullamcorper a, lobortis ut quam. Praesent semper, turpis non ullamcorper tincidunt, velit nisi condimentum augue, nec mattis ligula nunc et nibh. Quisque in venenatis lectus. Donec quis nibh nulla. Pellentesque at dui dictum dui volutpat vehicula. Nunc interdum sed leo vel aliquet. Vivamus justo ante, sagittis eget rhoncus id, posuere vitae ligula. Nulla facilisi. Morbi a hendrerit sem. Aliquam erat volutpat. Suspendisse potenti. Praesent ac hendrerit elit. Donec sit amet congue erat. Vivamus et interdum nisi. Donec sed diam nisi. Donec quis porta ex. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin euismod neque vel malesuada imperdiet. Nam a cursus nibh. Cras elit magna, finibus eget nibh non, bibendum dictum odio. Aliquam consequat odio vitae sodales tempor. Nullam urna velit, ullamcorper eget scelerisque lobortis, pharetra at mauris. Integer ac nisi enim. Donec mattis tristique efficitur. Morbi nec nisl viverra, maximus urna a, maximus odio. Phasellus eget laoreet nunc, ut pretium erat. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aliquam vel lectus massa. Vivamus in maximus justo. Mauris aliquet nisl a turpis mollis, vitae porta turpis porta. Ut vel ex egestas, fermentum mauris ac, tristique sapien. Sed rhoncus dolor velit, at iaculis est ornare quis. Morbi consectetur varius quam. Nunc a urna sem. Duis gravida hendrerit metus vitae cursus. Nulla lobortis ullamcorper lobortis. Vestibulum lobortis quam purus, in facilisis magna accumsan vitae. Suspendisse lobortis laoreet odio vitae rhoncus. Sed vitae gravida turpis, eget condimentum ipsum. Nulla pulvinar vel dolor a pellentesque. Phasellus et leo enim. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Curabitur auctor condimentum fermentum. Morbi id est nec risus aliquet tempor. Pellentesque lectus odio, egestas a condimentum sit amet, venenatis id elit. Donec eu nunc ultricies, tincidunt mi id, blandit ipsum. Nulla facilisi. Praesent at ligula libero. Proin venenatis in ligula in mollis. Sed a orci tortor. Aliquam cursus suscipit leo, sed laoreet leo vestibulum quis. Nam faucibus sagittis diam. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Curabitur sit amet est a est tincidunt porta. Aliquam erat volutpat. Integer in commodo dui. Nulla maximus nunc bibendum diam fermentum bibendum. Nullam dictum, leo dignissim feugiat auctor, nisl erat condimentum metus, at mattis nulla erat et magna. Donec eget lorem et ex porttitor pretium. Phasellus pellentesque sapien urna, ac hendrerit dolor elementum sodales. Etiam eget euismod odio, et iaculis nibh. Fusce euismod tincidunt posuere. Nam imperdiet efficitur maximus. Curabitur vitae tincidunt nibh. Fusce varius dictum aliquam. Donec quam ligula, feugiat luctus est eu, pharetra feugiat lacus. Phasellus accumsan purus vitae urna rhoncus condimentum in at nunc. Ut eleifend odio ullamcorper scelerisque eleifend. Nullam pretium, enim ac elementum accumsan, libero est gravida nisl, quis mattis neque tortor sit amet tellus. Pellentesque quis rhoncus eros. Nullam a mi justo. Curabitur vehicula justo vel est porta, sit amet sodales libero eleifend. Proin ullamcorper consectetur risus, quis convallis purus convallis eu. Ut at luctus risus."),
-		).
-		ToNode()
+func initService() *mockTalkService {
+	return &mockTalkService{
+		owner: "human_001",
+		text:  []rune("Hello Golang!"),
+		chat: []chat.Message{
+			{
+				Time:    time.Now().Add(-15 * time.Minute).UnixMilli(),
+				Owner:   "human_001",
+				Message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit?",
+			},
+			{
+				Time:    time.Now().Add(-14 * time.Minute).UnixMilli(),
+				Owner:   "human_002",
+				Message: "Morbi ac ex sit amet diam euismod vulputate ut eu leo.",
+			},
+			{
+				Time:    time.Now().Add(-12 * time.Minute).UnixMilli(),
+				Owner:   "human_001",
+				Message: "Ok.",
+			},
+			{
+				Time:    time.Now().Add(-10 * time.Minute).UnixMilli(),
+				Owner:   "human_001",
+				Message: "Nullam quis ante sodales, aliquet turpis ut, suscipit erat. Cras nec viverra dolor, non egestas erat. Vivamus ac pretium lectus. Proin id ligula scelerisque, condimentum elit sit amet, imperdiet magna.",
+			},
+			{
+				Time:    time.Now().Add(-8 * time.Minute).UnixMilli(),
+				Owner:   "human_002",
+				Message: "Wow! Nunc imperdiet, turpis vel dictum pretium, sem nibh sodales est, nec pulvinar diam leo ac augue.",
+			},
+			{
+				Time:    time.Now().Add(-7 * time.Minute).UnixMilli(),
+				Owner:   "human_002",
+				Message: "Quisque facilisis nisl nec ex feugiat, non tristique sem finibus.",
+			},
+			{
+				Time:    time.Now().Add(-5 * time.Minute).UnixMilli(),
+				Owner:   "human_001",
+				Message: "Sed hendrerit elementum lorem, vel interdum velit. Vestibulum rhoncus rhoncus mi, in efficitur elit. Duis imperdiet dictum erat, vel laoreet lorem hendrerit eu.",
+			},
+			{
+				Time:    time.Now().Add(-4 * time.Minute).UnixMilli(),
+				Owner:   "human_001",
+				Message: "Aenean lacinia porta dictum. Ut sed pulvinar purus, eget pretium tellus. In pretium finibus eros id pretium. Aliquam id interdum magna. Proin feugiat, turpis quis tincidunt elementum, neque justo efficitur elit, ac egestas ex lacus ac ante.",
+			},
+			{
+				Time:    time.Now().Add(-2 * time.Minute).UnixMilli(),
+				Owner:   "human_002",
+				Message: "Entendido. Proin sollicitudin mi ac arcu dictum, eleifend varius tellus ultrices.",
+			},
+			{
+				Time:    time.Now().Add(-1 * time.Minute).UnixMilli(),
+				Owner:   "human_001",
+				Message: "Donec id elit non mi porta gravida at eget metus. Nulli magna feugiat purus, ac porttitor elit sem id tellus. Aliquam erat volutpat.",
+			},
+		},
+	}
 }
 
-func makeTextArea() screen.Node {
+func makeTalk(service *mockTalkService) screen.Node {
+	talk := talk.New().
+		SetName("talk-form - amet").
+		SetOwner("human_001").
+		ToNode()
+
+	talk = view.Use(
+		talk,
+		onTalkView(service),
+	)
+
+	return talk
+}
+
+func onTalkView(service *mockTalkService) view.Middleware {
+	return func(uiState state.UIState, context behavior.Context[screen.ViewFunc]) viewmodel.ViewModel {
+		messagesLen := 0
+		if messages, ok := talk.KeyMessages.Get(
+			uiState.Store,
+			context.Target.Name,
+		); ok {
+			messagesLen = len(messages)
+		}
+
+		talk.KeyMessages.Set(
+			uiState.Store,
+			context.Target.Name,
+			service.chat,
+		)
+
+		vm := context.Next(uiState)
+
+		if messagesLen != len(service.chat) {
+			vm.Pager.SetPredicate(predicate.Last())
+		}
+
+		return vm
+	}
+}
+
+func makeTextArea(service *mockTalkService) screen.Node {
 	textscreen := text_screen.NewArea().
-		SetName("textarea - amet").
+		SetName("textarea-form - amet").
 		SetBuffer(buffer.NewRuneBuffer().
 			PushRules(rule.Full...).
 			Processor(processor.Identity)).
 		EnableBlinking().
-		AddText("asfasf asfas fas asfasf asd asdas ").
 		ToNode()
 
-	textscreen = tick.Apply(
+	textscreen = view.Use(
 		textscreen,
-		injectHello,
+		onTextAreaView(service),
+	)
+
+	textscreen = tick.Use(
+		textscreen,
+		onTextAreaTick(service),
+	)
+
+	textscreen = tick.OnKey(
+		textscreen,
+		onKeyEnter(service),
+		key.ActionEnter,
 	)
 
 	pipeline := node_pipeline.New(textscreen).
@@ -90,30 +203,72 @@ func makeTextArea() screen.Node {
 	return pipeline
 }
 
-func injectHello(target behavior.Target, next screen.TickFunc) screen.TickFunc {
-	return func(u *state.UIState, e screen.Event) screen.Result {
-		result := next(u, e)
+func onTextAreaTick(service *mockTalkService) tick.Middleware {
+	return func(uiState *state.UIState, event screen.Event, context behavior.Context[screen.TickFunc]) screen.Result {
+		result := context.Next(uiState, event)
 
-		currentState, ok := text_screen.KeyState.Get(
-			u.Store,
-			target.Name,
+		if state, ok := text_screen.KeyState.Get(
+			uiState.Store,
+			context.Target.Name,
+		); ok {
+			service.text = state.Buffer
+		}
+
+		return result
+	}
+}
+
+func onTextAreaView(service *mockTalkService) view.Middleware {
+	return func(uiState state.UIState, context behavior.Context[screen.ViewFunc]) viewmodel.ViewModel {
+		text_screen.KeyState.Update(
+			uiState.Store,
+			context.Target.Name,
+			func(s *text_screen.State) {
+				s.Buffer = service.text
+			},
 		)
 
-		if e.Key.Code == key.ActionEnter && ok && currentState.Write {
-			text_screen.KeyPulse.Set(
-				u.Store,
-				target.Name,
-				true,
-			)
+		return context.Next(uiState)
+	}
+}
 
-			text_screen.KeyState.Set(
-				u.Store,
-				target.Name,
-				text_screen.State{
-					Buffer: []rune("Hello Golang"),
+func onKeyEnter(service *mockTalkService) tick.Middleware {
+	return func(uiState *state.UIState, event screen.Event, context behavior.Context[screen.TickFunc]) screen.Result {
+		currentState, ok := text_screen.KeyState.Get(
+			uiState.Store,
+			context.Target.Name,
+		)
+
+		if !ok || !currentState.Write {
+			return context.Next(uiState, event)
+		}
+
+		event = screen.NewEvent(
+			*key.NewKeyIgnore(),
+		)
+
+		result := context.Next(uiState, event)
+
+		text_screen.KeyPulse.Set(
+			uiState.Store,
+			context.Target.Name,
+			true,
+		)
+
+		if state, ok := text_screen.KeyState.Get(
+			uiState.Store,
+			context.Target.Name,
+		); ok {
+			service.chat = append(service.chat,
+				chat.Message{
+					Time:    time.Now().UnixMilli(),
+					Owner:   service.owner,
+					Message: string(state.Buffer),
 				},
 			)
 		}
+
+		service.text = make([]rune, 0)
 
 		return result
 	}
