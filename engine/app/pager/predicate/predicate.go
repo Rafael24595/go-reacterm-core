@@ -30,6 +30,24 @@ func Page() Predicate {
 	}
 }
 
+func First() Predicate {
+	return Predicate{
+		Kind: KindPage,
+		Handler: func(_ state.PagerContext, ctx Context) bool {
+			return true
+		},
+	}
+}
+
+func Last() Predicate {
+	return Predicate{
+		Kind: KindPage,
+		Handler: func(_ state.PagerContext, ctx Context) bool {
+			return false
+		},
+	}
+}
+
 func Focus() Predicate {
 	return Predicate{
 		Kind: KindFocus,
