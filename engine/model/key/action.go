@@ -43,6 +43,7 @@ const (
 
 	CustomActionPointer
 
+	ActionIgnore
 	ActionAll
 )
 
