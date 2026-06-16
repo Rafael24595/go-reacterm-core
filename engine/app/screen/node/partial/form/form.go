@@ -205,7 +205,6 @@ func (n *Form) focusTick(uiState *state.UIState, event screen.Event, focus entry
 
 	if result.Node == nil {
 		return result
-
 	}
 
 	newItems := make([]entry.Entry, len(n.items))
@@ -250,7 +249,8 @@ func (n *Form) view(uiState state.UIState) viewmodel.ViewModel {
 			opts...,
 		)
 
-		vm.Kernel.PushLayer(unit, e.Opts...)
+		layer := layer.New(unit, e.Opts...)
+		vm.Kernel.PushLayer(layer)
 
 		if cvm.Behavior.NeedsPulse {
 			vm.Behavior.NeedsPulse = true
