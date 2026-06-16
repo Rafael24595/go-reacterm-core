@@ -37,6 +37,10 @@ func NewKeyRune(r rune) *Key {
 	}
 }
 
+func NewKeyIgnore() *Key {
+	return NewKeyCode(ActionIgnore)
+}
+
 func NewKeySpace() *Key {
 	return NewKeyRune(' ')
 }
