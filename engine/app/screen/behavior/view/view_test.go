@@ -92,3 +92,54 @@ func TestWrap_TargetIsCorrect(t *testing.T) {
 
 	assert.Equal(t, mock.Name, captured.Name)
 }
+
+func TestUse_ExecutesMiddleware_AndPassesContext(t *testing.T) {
+	mwCalled := uint(0)
+	nxCalled := uint(0)
+
+	name := "test-node"
+
+	middleware := func(uiState state.UIState, ctx behavior.Context[screen.ViewFunc]) viewmodel.ViewModel {
+		mwCalled += 1
+		assert.Equal(t, name, ctx.Target.Name)
+		return ctx.Next(uiState)
+	}
+
+	mock := screen_test.MockNode{
+		Name: name,
+		View: func(uiState state.UIState) viewmodel.ViewModel {
+			nxCalled += 1
+			return viewmodel.ViewModel{}
+		},
+	}
+
+	node := Use(mock.ToNode(), middleware)
+	node.Screen.View(state.UIState{})
+
+	assert.Equal(t, 1, mwCalled)
+	assert.Equal(t, 1, nxCalled)
+}
+
+func TestUse_CanShortCircuitChain(t *testing.T) {
+	mwCalled := uint(0)
+	nxCalled := uint(0)
+
+	middleware := func(uiState state.UIState, ctx behavior.Context[screen.ViewFunc]) viewmodel.ViewModel {
+		mwCalled += 1
+		return viewmodel.ViewModel{}
+	}
+
+	mock := screen_test.MockNode{
+		Name: "test-node",
+		View: func(uiState state.UIState) viewmodel.ViewModel {
+			nxCalled += 1
+			return viewmodel.ViewModel{}
+		},
+	}
+
+	node := Use(mock.ToNode(), middleware)
+	node.Screen.View(state.UIState{})
+
+	assert.Equal(t, 1, mwCalled)
+	assert.Equal(t, 0, nxCalled)
+}
