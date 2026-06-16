@@ -107,7 +107,7 @@ func TestUse_ExecutesMiddleware_AndPassesContext(t *testing.T) {
 
 	mock := screen_test.MockNode{
 		Name: name,
-		KeysFunc: func() screen.Definition {
+		Keys: func() screen.Definition {
 			nxCalled += 1
 			return screen.EmptyDefinition()
 		},
@@ -131,7 +131,7 @@ func TestUse_CanShortCircuitChain(t *testing.T) {
 
 	mock := screen_test.MockNode{
 		Name: "test-node",
-		KeysFunc: func() screen.Definition{
+		Keys: func() screen.Definition {
 			nxCalled += 1
 			return screen.EmptyDefinition()
 		},

@@ -12,13 +12,14 @@ import (
 )
 
 type MockNode struct {
-	Name  string
-	Keys  *screen.Definition
-	Init  screen.InitFunc
-	Tick  screen.TickFunc
-	View  screen.ViewFunc
-	Tags  set.Set[string]
-	Stack set.Set[string]
+	Name       string
+	Definition *screen.Definition
+	Keys       screen.KeysFunc
+	Init       screen.InitFunc
+	Tick       screen.TickFunc
+	View       screen.ViewFunc
+	Tags       set.Set[string]
+	Stack      set.Set[string]
 }
 
 func (t MockNode) ToNode() screen.Node {
@@ -38,13 +39,19 @@ func (t MockNode) ToNode() screen.Node {
 			},
 		).
 		Keys(
-			func() screen.Definition {
+			func() screen.KeysFunc {
 				if t.Keys != nil {
-					return *t.Keys
+					return t.Keys
 				}
 
-				return screen.EmptyDefinition()
-			}).
+				return func() screen.Definition {
+					if t.Definition != nil {
+						return *t.Definition
+					}
+
+					return screen.EmptyDefinition()
+				}
+			}()).
 		Tick(
 			func(s *state.UIState, e screen.Event) screen.Result {
 				if t.Tick != nil {

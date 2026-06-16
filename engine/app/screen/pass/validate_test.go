@@ -15,7 +15,6 @@ import (
 func TestValidateStructure_ValidNode(t *testing.T) {
 	node := screen_test.MockNode{
 		Name: "home",
-		Keys: &screen.Definition{},
 		Init: func(state.UIState) {},
 		Tick: func(*state.UIState, screen.Event) screen.Result {
 			return screen.Result{}

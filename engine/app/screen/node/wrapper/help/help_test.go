@@ -59,7 +59,7 @@ func TestHelp_DelegatesTickWhenKeyRequired(t *testing.T) {
 	definition := screen.DefinitionFromActions(action)
 
 	mock := screen_test.MockNode{
-		Keys: &definition,
+		Definition: &definition,
 		Tick: func(s *state.UIState, e screen.Event) screen.Result {
 			called = true
 			return screen.EmptyResult()
@@ -90,7 +90,7 @@ func TestHelp_WrapsReturnedScreen(t *testing.T) {
 	}
 
 	mockBase := screen_test.MockNode{
-		Keys: &definition,
+		Definition: &definition,
 		Tick: func(s *state.UIState, _ screen.Event) screen.Result {
 			called = true
 			next := mockNext.ToNode()
