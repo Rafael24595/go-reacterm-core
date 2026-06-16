@@ -164,7 +164,7 @@ func (n *Talk) view(uiState state.UIState) viewmodel.ViewModel {
 		indexmenu.ToUnit(),
 	)
 
-	if n.navigation {
+	if n.navigation && len(n.messages) > 0 {
 		index := math.Clamp(
 			n.cursor, 0, uint16(len(n.messages)),
 		)
