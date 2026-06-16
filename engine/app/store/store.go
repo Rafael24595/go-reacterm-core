@@ -8,6 +8,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/platform/clock"
 )
 
+type Updater[T any] func(*T)
+
 type Store struct {
 	mu     sync.RWMutex
 	clock  clock.Clock
@@ -116,7 +118,31 @@ func Push[T any](
 ) *Store {
 	return c.Push(scope, key.Code(), arg)
 }
-    
+
+func Update[T any](
+	c *Store,
+	scope string,
+	key Key[T],
+	updater Updater[T],
+) (T, bool) {
+	arg, ok := c.Find(scope, key.Code())
+	if !ok {
+		var zero T
+		return zero, false
+	}
+
+	value, ok := commons.Map[T](*arg)
+	if !ok {
+		var zero T
+		return zero, false
+	}
+
+	updater(&value)
+	Push(c, scope, key, value)
+
+	return value, true
+}
+
 func Remove[T any](
 	c *Store,
 	scope string,
