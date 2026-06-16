@@ -162,6 +162,8 @@ func (n *TextArea) tickRead(uiState *state.UIState, event screen.Event) screen.R
 		n.writeMode = true
 	}
 
+	n.tickToStore(uiState)
+
 	return screen.ResultFromUIState(uiState)
 }
 
