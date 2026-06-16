@@ -69,6 +69,9 @@ func (n *Form) AddBreak(rows ...winsize.Rows) *Form {
 }
 
 func (n *Form) ToNode() screen.Node {
+	n.setCursor(0)
+	n.cursor = n.incCursor(0)
+
 	builder := screen.NewBuilder().
 		Name(n.reference).
 		Init(n.init).
