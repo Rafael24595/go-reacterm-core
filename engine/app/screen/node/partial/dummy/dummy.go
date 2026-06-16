@@ -7,10 +7,15 @@ import (
 )
 
 const Name = "dummy"
+const Tag = "system_dummy"
 
 func ToNode() screen.Node {
-	return template.New().
+	dummy := template.New().
 		Name(Name).
 		ViewModel(*viewmodel.New()).
 		ToNode()
+
+	dummy.Tags.Add(Tag)
+
+	return dummy
 }

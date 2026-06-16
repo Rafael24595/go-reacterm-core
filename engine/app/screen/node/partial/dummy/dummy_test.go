@@ -21,7 +21,10 @@ func TestDummy_Defaults(t *testing.T) {
 	node := ToNode()
 
 	assert.Equal(t, Name, node.Name)
-	assert.Size(t, 0, node.Tags)
+
+	assert.Size(t, 1, node.Tags)
+	assert.True(t, node.Tags.Has(Tag))
+
 	assert.Size(t, 0, node.Children())
 
 	definition := node.Screen.Keys()
