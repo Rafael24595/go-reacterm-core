@@ -15,7 +15,7 @@ type Layout struct {
 
 type LayoutBuilder struct {
 	transformer *winsize.Transformer
-	compose       Composer
+	compose     Composer
 }
 
 func NewBuilder(composer Composer) *LayoutBuilder {

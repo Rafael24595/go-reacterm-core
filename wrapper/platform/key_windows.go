@@ -57,7 +57,7 @@ func sendDummyKey() error {
 	)
 
 	if ret == 0 {
-		//TODO: Log and force user manual input instead panic.
+		// TODO: Log and force user manual input instead panic.
 		return err
 	}
 
