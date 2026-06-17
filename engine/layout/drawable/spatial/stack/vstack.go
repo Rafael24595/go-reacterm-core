@@ -116,7 +116,7 @@ func (u *VStackUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(NameVStack).
 		MergeTags(u.tags()).
-		Init(u.init).
+		Boot(u.boot).
 		Wipe(u.wipe).
 		Draw(u.draw).
 		ToUnit()
@@ -137,7 +137,7 @@ func (u *VStackUnit) tags() set.Set[string] {
 	return tags
 }
 
-func (u *VStackUnit) init() {
+func (u *VStackUnit) boot() {
 	u.loaded = true
 	u.lazyLoaded = false
 
@@ -146,7 +146,7 @@ func (u *VStackUnit) init() {
 	}
 }
 
-func (u *VStackUnit) lazyInit(size winsize.Winsize) {
+func (u *VStackUnit) lazyBoot(size winsize.Winsize) {
 	if u.lazyLoaded {
 		return
 	}
@@ -157,7 +157,7 @@ func (u *VStackUnit) lazyInit(size winsize.Winsize) {
 	u.fixed = u.fixLayout(size)
 
 	for i := range u.fixed {
-		u.fixed[i].Unit().Drawable.Init()
+		u.fixed[i].Unit().Drawable.Boot()
 		u.fixed[i].Status = true
 	}
 }
@@ -174,7 +174,7 @@ func (u *VStackUnit) wipe() {
 func (u *VStackUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
-	u.lazyInit(size)
+	u.lazyBoot(size)
 
 	if !u.size.Eq(size) {
 		u.fixed = u.fixLayout(size)

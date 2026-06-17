@@ -20,7 +20,7 @@ func TestTable_UnitBasicSuite(t *testing.T) {
 	drawable_test.Test_UnitBasicSuite(t, unit)
 }
 
-func TestTable_LazyInit(t *testing.T) {
+func TestTable_LazyBoot(t *testing.T) {
 	unit := New(
 		*table.NewTable().
 			SetHeaders("lang").
@@ -30,7 +30,7 @@ func TestTable_LazyInit(t *testing.T) {
 
 	assert.Size(t, 0, unit.sections)
 
-	unit.init()
+	unit.boot()
 	unit.draw(winsize.Winsize{
 		Rows: 3,
 		Cols: 11,

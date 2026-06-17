@@ -14,12 +14,12 @@ func TestBox_UnitBasicSuite(t *testing.T) {
 	drawable_test.Test_UnitBasicSuite(t, unit)
 }
 
-func TestBox_Init_ShouldPropagateToChild(t *testing.T) {
+func TestBox_Boot_ShouldPropagateToChild(t *testing.T) {
 	mock := &drawable_test.MockUnit{}
 	unit := New(mock.ToUnit())
 
-	unit.init()
+	unit.boot()
 
 	assert.True(t, unit.loaded)
-	assert.GreaterThan(t, 0, mock.InitCalled)
+	assert.GreaterThan(t, 0, mock.BootCalled)
 }

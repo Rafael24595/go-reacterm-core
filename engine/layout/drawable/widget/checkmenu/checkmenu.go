@@ -67,13 +67,13 @@ func (u *CheckMenuUnit) Cursor(cursor uint16) *CheckMenuUnit {
 func (u *CheckMenuUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(Name).
-		Init(u.init).
+		Boot(u.boot).
 		Wipe(u.wipe).
 		Draw(u.draw).
 		ToUnit()
 }
 
-func (u *CheckMenuUnit) init() {
+func (u *CheckMenuUnit) boot() {
 	u.initialized = true
 
 	opts := u.addStyles()
@@ -89,7 +89,7 @@ func (u *CheckMenuUnit) init() {
 		u.unit = u.makeVertical(opts)
 	}
 
-	u.unit.Drawable.Init()
+	u.unit.Drawable.Boot()
 }
 
 func (u *CheckMenuUnit) wipe() {

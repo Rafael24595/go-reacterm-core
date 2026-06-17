@@ -14,7 +14,7 @@ func TestBuilder_BasicUnit(t *testing.T) {
 
 	unit := NewBuilder().
 		Name(name).
-		Init(func() {}).
+		Boot(func() {}).
 		Wipe(func() {}).
 		Draw(func(size winsize.Winsize) ([]text.Line, bool) {
 			return []text.Line{}, false
@@ -24,7 +24,7 @@ func TestBuilder_BasicUnit(t *testing.T) {
 	assert.Equal(t, name, unit.Name)
 	assert.Size(t, 0, unit.Tags)
 
-	assert.NotNil(t, unit.Drawable.Init)
+	assert.NotNil(t, unit.Drawable.Boot)
 	assert.NotNil(t, unit.Drawable.Wipe)
 	assert.NotNil(t, unit.Drawable.Draw)
 }
@@ -63,7 +63,7 @@ func TestBuilder_IncompleteUnit(t *testing.T) {
 	assert.Equal(t, "empty", unit.Name)
 	assert.NotNil(t, unit.Tags)
 
-	assert.Nil(t, unit.Drawable.Init)
+	assert.Nil(t, unit.Drawable.Boot)
 	assert.Nil(t, unit.Drawable.Wipe)
 	assert.Nil(t, unit.Drawable.Draw)
 }

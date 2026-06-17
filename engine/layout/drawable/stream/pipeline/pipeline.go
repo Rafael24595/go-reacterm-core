@@ -10,14 +10,14 @@ import (
 
 const Name = "pipeline_unit"
 
-type InitTransformer func(winsize.Winsize, drawable.Unit) drawable.Unit
+type BootTransformer func(winsize.Winsize, drawable.Unit) drawable.Unit
 type DrawTransformer func(winsize.Winsize, drawable.Unit) ([]text.Line, bool)
 type DataTransformer func(winsize.Winsize, drawable.Unit, []text.Line, bool) ([]text.Line, bool)
 
 type PipelineUnit struct {
 	loaded    bool
 	unit      drawable.Unit
-	initSteps []InitTransformer
+	bootSteps []BootTransformer
 	drawStep  DrawTransformer
 	dataSteps []DataTransformer
 }
@@ -26,7 +26,7 @@ func New(unit drawable.Unit) *PipelineUnit {
 	return &PipelineUnit{
 		loaded:    false,
 		unit:      unit,
-		initSteps: make([]InitTransformer, 0),
+		bootSteps: make([]BootTransformer, 0),
 		drawStep:  nil,
 		dataSteps: make([]DataTransformer, 0),
 	}
@@ -38,13 +38,13 @@ func DrawToUnit(unit drawable.Unit, step DrawTransformer) drawable.Unit {
 		ToUnit()
 }
 
-func (u *PipelineUnit) PushInitSteps(steps ...InitTransformer) *PipelineUnit {
+func (u *PipelineUnit) PushBootSteps(steps ...BootTransformer) *PipelineUnit {
 	if u.loaded {
 		assert.Unreachable(drawable.MessageNewElement)
 		return u
 	}
 
-	u.initSteps = append(u.initSteps, steps...)
+	u.bootSteps = append(u.bootSteps, steps...)
 	return u
 }
 
@@ -76,7 +76,7 @@ func (u *PipelineUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(Name).
 		MergeTags(u.unit.Tags).
-		Init(u.init).
+		Boot(u.boot).
 		Wipe(u.wipe).
 		Draw(u.draw).
 		ToUnit()
@@ -87,17 +87,17 @@ func (u *PipelineUnit) isAnemic() bool {
 		return false
 	}
 
-	if len(u.initSteps) > 0 {
+	if len(u.bootSteps) > 0 {
 		return false
 	}
 
 	return len(u.dataSteps) == 0
 }
 
-func (u *PipelineUnit) init() {
+func (u *PipelineUnit) boot() {
 	u.loaded = true
 
-	u.unit.Drawable.Init()
+	u.unit.Drawable.Boot()
 }
 
 func (u *PipelineUnit) wipe() {
@@ -110,7 +110,7 @@ func (u *PipelineUnit) wipe() {
 func (u *PipelineUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
-	for _, s := range u.initSteps {
+	for _, s := range u.bootSteps {
 		u.unit = s(size, u.unit)
 	}
 

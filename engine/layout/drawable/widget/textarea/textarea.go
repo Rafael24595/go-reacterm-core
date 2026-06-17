@@ -62,18 +62,18 @@ func (u *TextAreaUnit) PushStep(step Transformer) *TextAreaUnit {
 func (u *TextAreaUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(Name).
-		Init(u.init).
+		Boot(u.boot).
 		Wipe(u.wipe).
 		Draw(u.draw).
 		ToUnit()
 }
 
-func (u *TextAreaUnit) init() {
+func (u *TextAreaUnit) boot() {
 	u.loaded = true
 	u.lazyLoaded = false
 }
 
-func (u *TextAreaUnit) lazyInit(size winsize.Winsize) {
+func (u *TextAreaUnit) lazyBoot(size winsize.Winsize) {
 	if u.lazyLoaded {
 		return
 	}
@@ -100,7 +100,7 @@ func (u *TextAreaUnit) lazyInit(size winsize.Winsize) {
 	lines = wrap.MaterializeEmpty(size, marker.DefaultPaddingText, lines...)
 
 	unit := line.UnitFromLayout(lines...)
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 
 	u.unit = unit
 }
@@ -164,7 +164,7 @@ func (u *TextAreaUnit) blinkStyle() atom.Atom {
 func (u *TextAreaUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
-	u.lazyInit(size)
+	u.lazyBoot(size)
 
 	return u.unit.Drawable.Draw(size)
 }

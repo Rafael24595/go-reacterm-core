@@ -47,13 +47,13 @@ func (u *TableUnit) MinCol(size winsize.Cols) *TableUnit {
 func (u *TableUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(Name).
-		Init(u.init).
+		Boot(u.boot).
 		Wipe(u.wipe).
 		Draw(u.draw).
 		ToUnit()
 }
 
-func (u *TableUnit) init() {
+func (u *TableUnit) boot() {
 	u.loaded = true
 	u.lazyLoaded = false
 }
@@ -62,7 +62,7 @@ func (u *TableUnit) wipe() {
 	u.lazyLoaded = false
 }
 
-func (u *TableUnit) lazyInit(size winsize.Winsize) {
+func (u *TableUnit) lazyBoot(size winsize.Winsize) {
 	if u.lazyLoaded {
 		return
 	}
@@ -74,9 +74,9 @@ func (u *TableUnit) lazyInit(size winsize.Winsize) {
 		render(size)
 
 	for i := range u.sections {
-		u.sections[i].header.Drawable.Init()
-		u.sections[i].rows.Drawable.Init()
-		u.sections[i].footer.Drawable.Init()
+		u.sections[i].header.Drawable.Boot()
+		u.sections[i].rows.Drawable.Boot()
+		u.sections[i].footer.Drawable.Boot()
 	}
 }
 
@@ -87,7 +87,7 @@ func (u *TableUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 		return make([]text.Line, 0), false
 	}
 
-	u.lazyInit(size)
+	u.lazyBoot(size)
 
 	headers, footers, remaining := u.drawStatic(size)
 	bodies, hasNext := u.drawDynamic(size, remaining)

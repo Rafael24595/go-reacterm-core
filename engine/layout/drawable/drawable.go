@@ -5,18 +5,18 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-type InitFunc func()
+type BootFunc func()
 type WipeFunc func()
 type DrawFunc func(size winsize.Winsize) ([]text.Line, bool)
 
 type Drawable struct {
-	Init InitFunc
+	Boot BootFunc
 	Wipe WipeFunc
 	Draw DrawFunc
 }
 
 func IsZeroDrawable(drawable Drawable) bool {
-	if drawable.Init == nil {
+	if drawable.Boot == nil {
 		return true
 	}
 

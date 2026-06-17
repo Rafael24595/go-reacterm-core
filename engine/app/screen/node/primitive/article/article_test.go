@@ -67,11 +67,11 @@ func TestArticle_View(t *testing.T) {
 
 	header := vm.Header.ToUnit()
 
-	header.Drawable.Init()
+	header.Drawable.Boot()
 
 	kernel := vm.Kernel.ToUnit()
 
-	kernel.Drawable.Init()
+	kernel.Drawable.Boot()
 	lines, _ := kernel.Drawable.Draw(size)
 
 	assert.Size(t, 1, lines)
@@ -80,9 +80,9 @@ func TestArticle_View(t *testing.T) {
 
 func TestArticle_Tick(t *testing.T) {
 	article := New()
-	initialState := &state.UIState{}
+	state := &state.UIState{}
 
-	article.tick(initialState, screen.Event{})
+	article.tick(state, screen.Event{})
 
-	assert.Equal(t, initialState, initialState)
+	assert.Equal(t, state, state)
 }

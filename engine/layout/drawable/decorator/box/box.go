@@ -62,18 +62,18 @@ func (u *BoxUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(Name).
 		MergeTags(u.unit.Tags).
-		Init(u.init).
+		Boot(u.boot).
 		Wipe(u.unit.Drawable.Wipe).
 		Draw(u.draw).
 		ToUnit()
 }
 
-func (u *BoxUnit) init() {
+func (u *BoxUnit) boot() {
 	u.loaded = true
 
 	u.unit = u.makeUnit()
 
-	u.unit.Drawable.Init()
+	u.unit.Drawable.Boot()
 }
 
 func (u *BoxUnit) makeUnit() drawable.Unit {

@@ -74,8 +74,8 @@ func TestHStack_Distribution(t *testing.T) {
 		mock3.ToUnit(),
 	)
 
-	stack.init()
-	stack.lazyInit(winsize.Winsize{
+	stack.boot()
+	stack.lazyBoot(winsize.Winsize{
 		Cols: 100,
 	})
 
@@ -98,8 +98,8 @@ func TestHStack_MixedFixedAndDynamic(t *testing.T) {
 	)
 	stack.Push(mock2.ToUnit(), mock3.ToUnit())
 
-	stack.init()
-	stack.lazyInit(winsize.Winsize{
+	stack.boot()
+	stack.lazyBoot(winsize.Winsize{
 		Cols: 100,
 	})
 
@@ -132,7 +132,7 @@ func TestHStack_RenderOutput(t *testing.T) {
 		layer.Percent[winsize.Cols](50),
 	)
 
-	stack.init()
+	stack.boot()
 
 	lines, _ := stack.draw(size)
 

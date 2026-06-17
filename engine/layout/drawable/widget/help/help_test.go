@@ -19,7 +19,7 @@ func TestHelp_UnitBasicSuite(t *testing.T) {
 func TestHelpUnit_EmptyFields(t *testing.T) {
 	unit := New([]key.Descriptor{}).ToUnit()
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 
 	lines, hasNext := unit.Drawable.Draw(
 		winsize.New(5, 80),
@@ -36,7 +36,7 @@ func TestHelpUnit_WithFields(t *testing.T) {
 		{Code: []string{"M-b", "Alt-b"}, Detail: "Back"},
 	}).ToUnit()
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 
 	cols := winsize.Cols(120)
 	lines, hasNext := unit.Drawable.Draw(

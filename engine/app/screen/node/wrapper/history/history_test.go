@@ -75,7 +75,7 @@ func TestHistory_ViewFooter(t *testing.T) {
 	vm := h.view(*state.NewUIState())
 
 	footer := vm.Footer.ToUnit()
-	footer.Drawable.Init()
+	footer.Drawable.Boot()
 
 	lines, _ := footer.Drawable.Draw(winsize.Winsize{})
 
@@ -85,7 +85,7 @@ func TestHistory_ViewFooter(t *testing.T) {
 	vm = h.view(*state.NewUIState())
 
 	footer = vm.Footer.ToUnit()
-	footer.Drawable.Init()
+	footer.Drawable.Boot()
 
 	lines, _ = footer.Drawable.Draw(winsize.Winsize{
 		Rows: 3,

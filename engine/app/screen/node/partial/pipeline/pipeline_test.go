@@ -17,15 +17,15 @@ import (
 
 func drawSources(vm viewmodel.ViewModel, winsize winsize.Winsize) {
 	header := vm.Header.ToUnit()
-	header.Drawable.Init()
+	header.Drawable.Boot()
 	header.Drawable.Draw(winsize)
 
 	footer := vm.Footer.ToUnit()
-	footer.Drawable.Init()
+	footer.Drawable.Boot()
 	footer.Drawable.Draw(winsize)
 
 	lines := vm.Kernel.ToUnit()
-	lines.Drawable.Init()
+	lines.Drawable.Boot()
 	lines.Drawable.Draw(winsize)
 }
 

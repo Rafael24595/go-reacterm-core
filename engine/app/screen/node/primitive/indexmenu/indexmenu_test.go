@@ -201,7 +201,7 @@ func TestIndexMenu_ViewCursor(t *testing.T) {
 
 	kernel := vm.Kernel.ToUnit()
 
-	kernel.Drawable.Init()
+	kernel.Drawable.Boot()
 	lines, _ := kernel.Drawable.Draw(winsize.Winsize{Cols: 10, Rows: 2})
 
 	assert.NotNil(t, vm.Pager)

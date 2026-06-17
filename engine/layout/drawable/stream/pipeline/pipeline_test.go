@@ -37,10 +37,10 @@ func TestPipeline_ShouldPanicIfNewElementsAddedAfterInitialization(t *testing.T)
 	unit := New(mock.ToUnit()).
 		SetDrawStep(mockDrawStep)
 
-	unit.ToUnit().Drawable.Init()
+	unit.ToUnit().Drawable.Boot()
 
 	assert.Panic(t, func() {
-		unit.PushInitSteps(mockInitStep)
+		unit.PushBootSteps(mockInitStep)
 	})
 
 	assert.Panic(t, func() {
@@ -66,7 +66,7 @@ func TestPipeline_ReturnBaseIfNils(t *testing.T) {
 	assert.Equal(t, Name, unit.Name)
 }
 
-func TestPipeline_InitStepTransformation(t *testing.T) {
+func TestPipeline_BootStepTransformation(t *testing.T) {
 	mock1 := &drawable_test.MockUnit{}
 
 	mock2 := &drawable_test.MockUnit{
@@ -78,12 +78,12 @@ func TestPipeline_InitStepTransformation(t *testing.T) {
 	}
 
 	unit := New(mock1.ToUnit()).
-		PushInitSteps(func(_ winsize.Winsize, _ drawable.Unit) drawable.Unit {
+		PushBootSteps(func(_ winsize.Winsize, _ drawable.Unit) drawable.Unit {
 			return mock2.ToUnit()
 		}).
 		ToUnit()
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 
 	lines, status := unit.Drawable.Draw(winsize.Winsize{})
 
@@ -109,7 +109,7 @@ func TestPipeline_DrawStepTransformation(t *testing.T) {
 		}).
 		ToUnit()
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 
 	lines, status := unit.Drawable.Draw(winsize.Winsize{})
 
@@ -140,7 +140,7 @@ func TestPipeline_DataStepsChain(t *testing.T) {
 			},
 		).ToUnit()
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 
 	lines, status := unit.Drawable.Draw(winsize.Winsize{})
 

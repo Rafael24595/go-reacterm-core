@@ -65,18 +65,18 @@ func (u *ModalUnit) SetCursor(cursor uint16) *ModalUnit {
 func (u *ModalUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(Name).
-		Init(u.init).
+		Boot(u.boot).
 		Wipe(u.wipe).
 		Draw(u.draw).
 		ToUnit()
 }
 
-func (u *ModalUnit) init() {
+func (u *ModalUnit) boot() {
 	u.loaded = true
 	u.lazyLoaded = false
 }
 
-func (u *ModalUnit) lazyInit(size winsize.Winsize) {
+func (u *ModalUnit) lazyBoot(size winsize.Winsize) {
 	if u.lazyLoaded {
 		return
 	}
@@ -106,8 +106,8 @@ func (u *ModalUnit) lazyInit(size winsize.Winsize) {
 			ToUnit(),
 	)
 
-	title.Drawable.Init()
-	optionsBlock.Drawable.Init()
+	title.Drawable.Boot()
+	optionsBlock.Drawable.Boot()
 
 	stack := stack.VStackFromUnits(
 		title,
@@ -134,7 +134,7 @@ func (u *ModalUnit) lazyInit(size winsize.Winsize) {
 		).
 		ToUnit(box)
 
-	position.Drawable.Init()
+	position.Drawable.Boot()
 
 	u.unit = position
 }
@@ -152,7 +152,7 @@ func (u *ModalUnit) wipe() {
 func (u *ModalUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
-	u.lazyInit(size)
+	u.lazyBoot(size)
 
 	return u.unit.Drawable.Draw(size)
 }

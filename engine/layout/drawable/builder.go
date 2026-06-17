@@ -6,7 +6,7 @@ import (
 
 const (
 	ErrorMissingName = "missing_name"
-	ErrorMissingInit = "missing_init"
+	ErrorMissingBoot = "missing_boot"
 	ErrorMissingWipe = "missing_wipe"
 	ErrorMissingDraw = "missing_draw"
 )
@@ -14,7 +14,7 @@ const (
 type Builder struct {
 	name string
 	tags set.Set[string]
-	init InitFunc
+	boot BootFunc
 	wipe WipeFunc
 	draw DrawFunc
 }
@@ -23,7 +23,7 @@ func NewBuilder() *Builder {
 	return &Builder{
 		name: "",
 		tags: set.New[string](),
-		init: nil,
+		boot: nil,
 		wipe: nil,
 		draw: nil,
 	}
@@ -44,8 +44,8 @@ func (b *Builder) MergeTags(tags set.Set[string]) *Builder {
 	return b
 }
 
-func (b *Builder) Init(init InitFunc) *Builder {
-	b.init = init
+func (b *Builder) Boot(boot BootFunc) *Builder {
+	b.boot = boot
 	return b
 }
 
@@ -66,8 +66,8 @@ func (b *Builder) makeTags() set.Set[string] {
 		tags.Add(ErrorMissingName)
 	}
 
-	if b.init == nil {
-		b.tags.Add(ErrorMissingInit)
+	if b.boot == nil {
+		b.tags.Add(ErrorMissingBoot)
 	}
 
 	if b.wipe == nil {
@@ -85,7 +85,7 @@ func (b *Builder) makeTags() set.Set[string] {
 
 func (b *Builder) toDrawable() Drawable {
 	return Drawable{
-		Init: b.init,
+		Boot: b.boot,
 		Wipe: b.wipe,
 		Draw: b.draw,
 	}

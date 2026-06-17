@@ -46,13 +46,13 @@ func UnitFromLines(lines ...text.Line) drawable.Unit {
 func (u *LineUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(Name).
-		Init(u.init).
+		Boot(u.boot).
 		Wipe(u.wipe).
 		Draw(u.draw).
 		ToUnit()
 }
 
-func (u *LineUnit) init() {
+func (u *LineUnit) boot() {
 	u.loaded = true
 
 	u.lines = u.normalizer()

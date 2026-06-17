@@ -9,7 +9,7 @@ import (
 
 const Name = "wipe_pipeline"
 
-func InitTransformer() pipeline.InitTransformer {
+func BootTransformer() pipeline.BootTransformer {
 	return func(size winsize.Winsize, unit drawable.Unit) drawable.Unit {
 		unit.Drawable.Wipe()
 		return unit
@@ -46,4 +46,3 @@ func Drawable(unit drawable.Unit) drawable.Unit {
 	unt.Name = Name
 	return unt
 }
-

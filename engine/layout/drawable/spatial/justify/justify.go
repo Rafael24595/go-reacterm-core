@@ -66,13 +66,13 @@ func (u *JustifyUnit) AddFragments(frags []text.Fragment) *JustifyUnit {
 func (u *JustifyUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(Name).
-		Init(u.init).
+		Boot(u.boot).
 		Wipe(u.wipe).
 		Draw(u.draw).
 		ToUnit()
 }
 
-func (u *JustifyUnit) init() {
+func (u *JustifyUnit) boot() {
 	u.loaded = true
 
 	u.cursor = 0

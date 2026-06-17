@@ -17,8 +17,8 @@ type MockUnit struct {
 	Name string
 	Tags set.Set[string]
 
-	InitCalled uint
-	Init       drawable.InitFunc
+	BootCalled uint
+	Boot       drawable.BootFunc
 	Wipe       drawable.WipeFunc
 	WipeCalled uint
 	Draw       drawable.DrawFunc
@@ -39,12 +39,12 @@ func (m *MockUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(name).
 		MergeTags(m.Tags).
-		Init(
+		Boot(
 			func() {
-				m.InitCalled += 1
-				
-				if m.Init != nil {
-					m.Init()
+				m.BootCalled += 1
+
+				if m.Boot != nil {
+					m.Boot()
 				}
 			},
 		).
@@ -99,7 +99,7 @@ func Helper_ToUnit(t *testing.T, unit drawable.Unit) {
 	assert.NotEqual(t, "", unit.Name, "Unit.Name should be set")
 	assert.True(t, len(unit.Tags) >= 0, "Unit.Tags should be set")
 
-	assert.NotNil(t, unit.Drawable.Init, "Drawable.Init should be set")
+	assert.NotNil(t, unit.Drawable.Boot, "Drawable.Boot should be set")
 	assert.NotNil(t, unit.Drawable.Wipe, "Drawable.Wipe should be set")
 	assert.NotNil(t, unit.Drawable, "Drawable.Draw should be set")
 }

@@ -34,7 +34,7 @@ func TestInline_JoinsChildren(t *testing.T) {
 		mock2.ToUnit(),
 	).ToUnit()
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 
 	lines, _ := unit.Drawable.Draw(winsize.Winsize{
 		Rows: 3,
@@ -62,7 +62,7 @@ func TestInline_JoinsChildrenWithSeparator(t *testing.T) {
 		mock2.ToUnit(),
 	).Separator(" | ").ToUnit()
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 
 	lines, _ := unit.Drawable.Draw(winsize.Winsize{
 		Rows: 3,
@@ -85,7 +85,7 @@ func TestInline_MultipleLines(t *testing.T) {
 		mock.ToUnit(),
 	).Separator(" | ").ToUnit()
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 
 	lines, _ := unit.Drawable.Draw(winsize.Winsize{
 		Rows: 3,
@@ -99,7 +99,7 @@ func TestInline_MultipleLines(t *testing.T) {
 func TestInline_Empty(t *testing.T) {
 	unit := New().ToUnit()
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 
 	lines, _ := unit.Drawable.Draw(winsize.Winsize{})
 

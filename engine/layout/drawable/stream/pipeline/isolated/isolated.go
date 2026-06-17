@@ -13,7 +13,7 @@ const Name = "isolated_pipeline"
 
 func Unit(unit drawable.Unit) drawable.Unit {
 	unt := pipeline.New(unit).
-		PushInitSteps(wipe.InitTransformer()).
+		PushBootSteps(wipe.BootTransformer()).
 		SetDrawStep(drain.DrawTransformer(true)).
 		ToUnit()
 

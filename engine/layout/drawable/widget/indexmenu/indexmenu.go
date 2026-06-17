@@ -61,13 +61,13 @@ func (u *IndexMenuUnit) Cursor(cursor uint16) *IndexMenuUnit {
 func (u *IndexMenuUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(Name).
-		Init(u.init).
+		Boot(u.boot).
 		Wipe(u.wipe).
 		Draw(u.draw).
 		ToUnit()
 }
 
-func (u *IndexMenuUnit) init() {
+func (u *IndexMenuUnit) boot() {
 	u.loaded = true
 
 	lines := make([]text.Line, 0)
@@ -107,7 +107,7 @@ func (u *IndexMenuUnit) init() {
 	}
 
 	unit := drain.UnitFromLines(lines...)
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 
 	u.unit = unit
 }

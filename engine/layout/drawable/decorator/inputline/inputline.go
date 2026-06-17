@@ -49,16 +49,16 @@ func FromFragment(frag text.Fragment) drawable.Unit {
 func (u *InputLineUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(Name).
-		Init(u.init).
+		Boot(u.boot).
 		Wipe(u.unit.Drawable.Wipe).
 		Draw(u.draw).
 		ToUnit()
 }
 
-func (u *InputLineUnit) init() {
+func (u *InputLineUnit) boot() {
 	u.loaded = true
 
-	u.unit.Drawable.Init()
+	u.unit.Drawable.Boot()
 }
 
 func (u *InputLineUnit) draw(size winsize.Winsize) ([]text.Line, bool) {

@@ -54,7 +54,7 @@ func Test_PagerRenderer_StaticLayerDoesNotScroll(t *testing.T) {
 		SetRenderer(renderer).
 		ToUnit()
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 
 	size := winsize.New(3, 20)
 

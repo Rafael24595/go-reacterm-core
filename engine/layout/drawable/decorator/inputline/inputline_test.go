@@ -33,7 +33,7 @@ func TestNewInputLine_NoContent_ReturnsPromptOnly(t *testing.T) {
 
 	unit := New(mock.ToUnit()).ToUnit()
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 	lines, status := unit.Drawable.Draw(winsize.Winsize{
 		Rows: 5,
 	})
@@ -55,7 +55,7 @@ func TestNewInputLine_WithSingleLine_AddsPrompt(t *testing.T) {
 
 	unit := New(mock.ToUnit()).ToUnit()
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 	lines, _ := unit.Drawable.Draw(winsize.Winsize{
 		Cols: 10,
 		Rows: 5,
@@ -79,7 +79,7 @@ func TestNewInputLine_MultipleDrawCalls_AccumulatesLines(t *testing.T) {
 
 	unit := New(mock.ToUnit()).ToUnit()
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 	lines, _ := unit.Drawable.Draw(winsize.Winsize{
 		Cols: 10,
 		Rows: 5,

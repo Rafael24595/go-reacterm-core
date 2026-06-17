@@ -65,18 +65,18 @@ func (u *TalkUnit) SetCursor(cursor uint16) *TalkUnit {
 func (u *TalkUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(Name).
-		Init(u.init).
+		Boot(u.boot).
 		Wipe(u.wipe).
 		Draw(u.draw).
 		ToUnit()
 }
 
-func (u *TalkUnit) init() {
+func (u *TalkUnit) boot() {
 	u.loaded = true
 	u.lazyLoaded = false
 }
 
-func (u *TalkUnit) lazyInit(size winsize.Winsize) {
+func (u *TalkUnit) lazyBoot(size winsize.Winsize) {
 	if u.lazyLoaded {
 		return
 	}
@@ -108,7 +108,7 @@ func (u *TalkUnit) lazyInit(size winsize.Winsize) {
 
 	u.unit = drain.UnitFromLines(lines...)
 
-	u.unit.Drawable.Init()
+	u.unit.Drawable.Boot()
 }
 
 func (u *TalkUnit) makeLines(
@@ -166,7 +166,7 @@ func (u *TalkUnit) wipe() {
 func (u *TalkUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
-	u.lazyInit(size)
+	u.lazyBoot(size)
 
 	return u.unit.Drawable.Draw(size)
 }

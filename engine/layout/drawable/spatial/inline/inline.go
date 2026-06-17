@@ -36,13 +36,13 @@ func (u *InlineUnit) Separator(separator string) *InlineUnit {
 func (u *InlineUnit) ToUnit() drawable.Unit {
 	return drawable.NewBuilder().
 		Name(Name).
-		Init(u.init).
+		Boot(u.boot).
 		Wipe(u.wipe).
 		Draw(u.draw).
 		ToUnit()
 }
 
-func (u *InlineUnit) init() {
+func (u *InlineUnit) boot() {
 	u.loaded = true
 }
 
@@ -66,7 +66,7 @@ func (u *InlineUnit) drawChildren(size winsize.Winsize) []text.Line {
 	index := 0
 
 	focus := u.units[index]
-	focus.Drawable.Init()
+	focus.Drawable.Boot()
 
 	for {
 		result, status := focus.Drawable.Draw(size)
@@ -84,7 +84,7 @@ func (u *InlineUnit) drawChildren(size winsize.Winsize) []text.Line {
 		}
 
 		focus = u.units[index]
-		focus.Drawable.Init()
+		focus.Drawable.Boot()
 	}
 
 	return lines

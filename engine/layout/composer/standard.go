@@ -14,11 +14,11 @@ func Standard(
 	size winsize.Winsize,
 ) (*state.UIState, []text.Line) {
 	header := vm.Header.ToUnit()
-	header.Drawable.Init()
+	header.Drawable.Boot()
 	headerLines := drain.UnitEager(size, header)
 
 	footer := vm.Footer.ToUnit()
-	footer.Drawable.Init()
+	footer.Drawable.Boot()
 	footerLines := drain.UnitEager(size, footer)
 
 	staticRows := winsize.Rows(
@@ -39,7 +39,7 @@ func Standard(
 		SetRenderer(renderer).
 		ToUnit()
 
-	kernel.Drawable.Init()
+	kernel.Drawable.Boot()
 
 	dynamicSize := winsize.New(
 		size.Rows.Sub(staticRows),

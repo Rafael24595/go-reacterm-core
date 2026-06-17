@@ -100,7 +100,7 @@ func TestVStack_ShouldPanicIfNewElementsAddedAfterInitialization(t *testing.T) {
 		mock1.ToUnit(),
 	)
 
-	unit.init()
+	unit.boot()
 
 	assert.Panic(t, func() {
 		m2 := &drawable_test.MockUnit{}
@@ -108,7 +108,7 @@ func TestVStack_ShouldPanicIfNewElementsAddedAfterInitialization(t *testing.T) {
 	})
 }
 
-func TestVStack_Init(t *testing.T) {
+func TestVStack_Boot(t *testing.T) {
 	stack := &VStackUnit{}
 
 	mock1 := &drawable_test.MockUnit{}
@@ -119,14 +119,14 @@ func TestVStack_Init(t *testing.T) {
 		mock2.ToUnit(),
 	)
 
-	stack.init()
+	stack.boot()
 	stack.draw(winsize.Winsize{
 		Rows: 10,
 		Cols: 10,
 	})
 
-	assert.GreaterThan(t, 0, mock1.InitCalled)
-	assert.GreaterThan(t, 0, mock2.InitCalled)
+	assert.GreaterThan(t, 0, mock1.BootCalled)
+	assert.GreaterThan(t, 0, mock2.BootCalled)
 }
 
 func TestVStack_Shift_Order(t *testing.T) {
@@ -155,7 +155,7 @@ func TestVStack_Shift_Order(t *testing.T) {
 	stack.Push(unit1)
 	stack.Push(unit2)
 
-	stack.init()
+	stack.boot()
 
 	stack.draw(winsize.Winsize{
 		Rows: 10,
@@ -192,7 +192,7 @@ func TestVStack_Unshift_Order(t *testing.T) {
 	stack.Push(unit1)
 	stack.Unshift(unit2)
 
-	stack.init()
+	stack.boot()
 
 	stack.draw(winsize.Winsize{
 		Rows: 10,
@@ -214,7 +214,7 @@ func TestVStack_Draw_BreaksOnTrue(t *testing.T) {
 		mock2.ToUnit(),
 	)
 
-	stack.init()
+	stack.boot()
 
 	_, global := stack.draw(winsize.Winsize{})
 
@@ -229,7 +229,7 @@ func TestVStack_DisablesLayer(t *testing.T) {
 
 	stack.Push(mock.ToUnit())
 
-	stack.init()
+	stack.boot()
 
 	stack.draw(winsize.Winsize{
 		Rows: 10,
@@ -263,7 +263,7 @@ func TestVStack_BufferConcat(t *testing.T) {
 		mock2.ToUnit(),
 	)
 
-	stack.init()
+	stack.boot()
 
 	buffer, _ := stack.draw(winsize.Winsize{
 		Rows: 10,
@@ -293,7 +293,7 @@ func TestVStack_ShortCircuitStopsPropagation(t *testing.T) {
 		mock3.ToUnit(),
 	)
 
-	stack.init()
+	stack.boot()
 
 	stack.draw(winsize.Winsize{
 		Rows: 3,
@@ -317,7 +317,7 @@ func TestVStack_FixedChunk_PadsWhenChildIsSmaller(t *testing.T) {
 		).
 		ToUnit()
 
-	stack.Drawable.Init()
+	stack.Drawable.Boot()
 
 	lines, _ := stack.Drawable.Draw(winsize.Winsize{Rows: 20, Cols: 10})
 
@@ -336,7 +336,7 @@ func TestVStack_FixedChunk_TruncatesWhenChildIsBigger(t *testing.T) {
 		).
 		ToUnit()
 
-	stack.Drawable.Init()
+	stack.Drawable.Boot()
 
 	lines, _ := stack.Drawable.Draw(winsize.Winsize{Rows: 10, Cols: 10})
 
@@ -363,7 +363,7 @@ func TestVStack_DynamicChunk_FillsRemainingSpace(t *testing.T) {
 		PushWithOpts(mock3.ToUnit()).
 		ToUnit()
 
-	stack.Drawable.Init()
+	stack.Drawable.Boot()
 
 	lines, _ := stack.Drawable.Draw(winsize.Winsize{Rows: 30, Cols: 10})
 
@@ -389,7 +389,7 @@ func TestVStack_FixedOverflow_ShouldNotExceedContainer(t *testing.T) {
 		).
 		ToUnit()
 
-	stack.Drawable.Init()
+	stack.Drawable.Boot()
 
 	lines, _ := stack.Drawable.Draw(winsize.Winsize{Rows: 15, Cols: 10})
 
@@ -413,7 +413,7 @@ func TestVStack_ExactFit_NoExtraNoMissing(t *testing.T) {
 		PushWithOpts(mock3.ToUnit()).
 		ToUnit()
 
-	stack.Drawable.Init()
+	stack.Drawable.Boot()
 
 	lines, _ := stack.Drawable.Draw(winsize.Winsize{Rows: 15, Cols: 10})
 

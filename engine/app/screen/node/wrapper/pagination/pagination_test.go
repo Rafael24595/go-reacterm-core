@@ -72,7 +72,7 @@ func TestPagination_ViewFooter(t *testing.T) {
 	vm := page.view(*uiState)
 
 	footer := vm.Footer.ToUnit()
-	footer.Drawable.Init()
+	footer.Drawable.Boot()
 
 	lines, _ := footer.Drawable.Draw(winsize.Winsize{
 		Rows: 3,

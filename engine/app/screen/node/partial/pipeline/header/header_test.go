@@ -34,7 +34,7 @@ func TestHeader_InsertsBefore(t *testing.T) {
 
 	unit := units[0]
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 	lines, _ := unit.Drawable.Draw(winsize.Winsize{
 		Rows: 1,
 		Cols: 10,
@@ -64,7 +64,7 @@ func TestHeader_InsertsAfter(t *testing.T) {
 
 	unit := units[1]
 
-	unit.Drawable.Init()
+	unit.Drawable.Boot()
 	lines, _ := unit.Drawable.Draw(winsize.Winsize{
 		Rows: 1,
 		Cols: 10,
