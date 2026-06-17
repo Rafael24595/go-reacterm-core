@@ -60,14 +60,14 @@ func (n *IndexMenu) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.reference).
 		NameToStack().
-		Init(n.init).
+		Boot(n.boot).
 		Keys(n.keys).
 		Tick(n.tick).
 		View(n.view).
 		ToNode()
 }
 
-func (n *IndexMenu) init(uiState state.UIState) {
+func (n *IndexMenu) boot(uiState state.UIState) {
 	n.loadFromStore(uiState)
 }
 

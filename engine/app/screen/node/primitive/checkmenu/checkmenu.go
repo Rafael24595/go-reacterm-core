@@ -84,14 +84,14 @@ func (n *CheckMenu) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.reference).
 		NameToStack().
-		Init(n.init).
+		Boot(n.boot).
 		Keys(n.keys).
 		Tick(n.tick).
 		View(n.view).
 		ToNode()
 }
 
-func (n *CheckMenu) init(uiState state.UIState) {
+func (n *CheckMenu) boot(uiState state.UIState) {
 	n.loadFromStore(uiState)
 }
 

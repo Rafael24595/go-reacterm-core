@@ -79,7 +79,7 @@ func (n *Form) ToNode() screen.Node {
 
 	builder := screen.NewBuilder().
 		Name(n.reference).
-		Init(n.init).
+		Boot(n.boot).
 		Keys(n.keys).
 		Tick(n.tick).
 		View(n.view)
@@ -92,9 +92,9 @@ func (n *Form) ToNode() screen.Node {
 	return builder.ToNode()
 }
 
-func (n *Form) init(uiState state.UIState) {
+func (n *Form) boot(uiState state.UIState) {
 	for _, item := range n.items {
-		item.Node.Screen.Init(uiState)
+		item.Node.Screen.Boot(uiState)
 	}
 }
 

@@ -6,7 +6,7 @@ import (
 
 type Behavior func(screen.Node) screen.Node
 
-type Init func(target Target, next screen.InitFunc) screen.InitFunc
+type Boot func(target Target, next screen.BootFunc) screen.BootFunc
 type Tick func(target Target, next screen.TickFunc) screen.TickFunc
 type Keys func(target Target, next screen.KeysFunc) screen.KeysFunc
 type View func(target Target, next screen.ViewFunc) screen.ViewFunc

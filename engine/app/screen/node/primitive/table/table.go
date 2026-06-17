@@ -96,14 +96,14 @@ func (n *Table[T]) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.reference).
 		NameToStack().
-		Init(n.init).
+		Boot(n.boot).
 		Keys(n.keys).
 		Tick(n.tick).
 		View(n.view).
 		ToNode()
 }
 
-func (n *Table[T]) init(uiState state.UIState) {
+func (n *Table[T]) boot(uiState state.UIState) {
 	n.loadFromStore(uiState)
 }
 

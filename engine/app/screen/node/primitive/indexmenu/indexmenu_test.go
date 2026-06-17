@@ -35,7 +35,7 @@ func TestIndexMenu_ToNode(t *testing.T) {
 	assert.Equal(t, node.Name, "base")
 }
 
-func TestIndexMenu_Init(t *testing.T) {
+func TestIndexMenu_Boot(t *testing.T) {
 	menu := New().
 		AddOptions(
 			input.MenuOption{Id: "4"},
@@ -52,7 +52,7 @@ func TestIndexMenu_Init(t *testing.T) {
 		"1",
 	)
 
-	node.Screen.Init(*uiState)
+	node.Screen.Boot(*uiState)
 
 	assert.Equal(t, 3, menu.cursor)
 }

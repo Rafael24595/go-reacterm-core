@@ -17,7 +17,7 @@ func TestTextArea_ToNode(t *testing.T) {
 	assert.Equal(t, node.Name, "base")
 }
 
-func TestTextArea_Init(t *testing.T) {
+func TestTextArea_Boot(t *testing.T) {
 	area := NewArea()
 	node := area.ToNode()
 
@@ -36,7 +36,7 @@ func TestTextArea_Init(t *testing.T) {
 		},
 	)
 
-	node.Screen.Init(*uiState)
+	node.Screen.Boot(*uiState)
 
 	assert.Equal(t, "golang", string(area.buffer.Buffer()))
 	assert.Equal(t, 2, area.caret.Caret())

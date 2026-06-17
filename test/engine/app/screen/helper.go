@@ -15,7 +15,7 @@ type MockNode struct {
 	Name       string
 	Definition *screen.Definition
 	Keys       screen.KeysFunc
-	Init       screen.InitFunc
+	Boot       screen.BootFunc
 	Tick       screen.TickFunc
 	View       screen.ViewFunc
 	Tags       set.Set[string]
@@ -31,10 +31,10 @@ func (t MockNode) ToNode() screen.Node {
 	node := screen.NewBuilder().
 		Name(t.Name).
 		AddStack(stack).
-		Init(
+		Boot(
 			func(uiState state.UIState) {
-				if t.Init != nil {
-					t.Init(uiState)
+				if t.Boot != nil {
+					t.Boot(uiState)
 				}
 			},
 		).
@@ -88,7 +88,7 @@ func Helper_ToNode(t *testing.T, node screen.Node) {
 	assert.NotNil(t, node.Tags, "Node.Stack should be set")
 	assert.NotNil(t, node.Children(), "Node.Stack should be set")
 
-	assert.NotNil(t, node.Screen.Init, "Screen.Init should be set")
+	assert.NotNil(t, node.Screen.Boot, "Screen.Boot should be set")
 	assert.NotNil(t, node.Screen.Keys, "Screen.Keys should be set")
 	assert.NotNil(t, node.Screen.View, "Screen.View should be set")
 	assert.NotNil(t, node.Screen.Tick, "Screen.Tick should be set")

@@ -43,7 +43,7 @@ func (n *Template) ToNode() screen.Node {
 		Name(n.reference).
 		NameToStack().
 		AddStack(n.stack).
-		WithoutInit().
+		WithoutBoot().
 		WithoutKeys().
 		Tick(n.tick).
 		View(n.view).

@@ -24,7 +24,7 @@ func (n *Help) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.node.Name).
 		AddStack(n.node.Stack).
-		Init(n.node.Screen.Init).
+		Boot(n.node.Screen.Boot).
 		Keys(n.node.Screen.Keys).
 		Tick(n.tick).
 		View(n.view).

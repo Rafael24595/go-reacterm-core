@@ -36,7 +36,7 @@ func (n *Article) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.reference).
 		NameToStack().
-		WithoutInit().
+		WithoutBoot().
 		WithoutKeys().
 		Tick(n.tick).
 		View(n.view).

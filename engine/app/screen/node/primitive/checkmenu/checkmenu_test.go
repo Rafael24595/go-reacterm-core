@@ -22,7 +22,7 @@ func TestCheckMenu_ToNode(t *testing.T) {
 	assert.Equal(t, node.Name, "base")
 }
 
-func TestCheckMenu_Init(t *testing.T) {
+func TestCheckMenu_Boot(t *testing.T) {
 	menu := New().
 		AddOptions(
 			input.CheckOption{Id: "4"},
@@ -40,7 +40,7 @@ func TestCheckMenu_Init(t *testing.T) {
 		set.From("2", "4"),
 	)
 
-	node.Screen.Init(*uiState)
+	node.Screen.Boot(*uiState)
 
 	assert.True(t, menu.options[0].Status)
 	assert.False(t, menu.options[1].Status)

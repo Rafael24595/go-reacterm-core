@@ -1,4 +1,4 @@
-package init
+package boot
 
 import (
 	"testing"
@@ -16,7 +16,7 @@ import (
 func TestWrap_AddsTag_AndExecutesDecorator(t *testing.T) {
 	called := uint(0)
 
-	decorator := func(target behavior.Target, next screen.InitFunc) screen.InitFunc {
+	decorator := func(target behavior.Target, next screen.BootFunc) screen.BootFunc {
 		return func(state state.UIState) {
 			called += 1
 			next(state)
@@ -30,14 +30,14 @@ func TestWrap_AddsTag_AndExecutesDecorator(t *testing.T) {
 	wrapped := Wrap(decorator)(mock.ToNode())
 	assert.Inside(t, Tag, wrapped.Tags)
 
-	wrapped.Screen.Init(state.UIState{})
+	wrapped.Screen.Boot(state.UIState{})
 	assert.Equal(t, 1, called)
 }
 
 func TestWrap_PreservesNextChain(t *testing.T) {
 	called := uint(0)
 
-	decorator := func(target behavior.Target, next screen.InitFunc) screen.InitFunc {
+	decorator := func(target behavior.Target, next screen.BootFunc) screen.BootFunc {
 		return func(state state.UIState) {
 			next(state)
 		}
@@ -45,13 +45,13 @@ func TestWrap_PreservesNextChain(t *testing.T) {
 
 	mock := screen_test.MockNode{
 		Name: "test-node",
-		Init: func(state state.UIState) {
+		Boot: func(state state.UIState) {
 			called += 1
 		},
 	}
 
 	wrapped := Wrap(decorator)(mock.ToNode())
-	wrapped.Screen.Init(state.UIState{})
+	wrapped.Screen.Boot(state.UIState{})
 
 	assert.Equal(t, 1, called)
 }
@@ -64,7 +64,7 @@ func TestWrap_DoesNotMutateOriginalNode(t *testing.T) {
 		Tags: tags,
 	}
 
-	_ = Wrap(func(target behavior.Target, next screen.InitFunc) screen.InitFunc {
+	_ = Wrap(func(target behavior.Target, next screen.BootFunc) screen.BootFunc {
 		return next
 	})(mock.ToNode())
 
@@ -74,7 +74,7 @@ func TestWrap_DoesNotMutateOriginalNode(t *testing.T) {
 func TestWrap_TargetIsCorrect(t *testing.T) {
 	captured := behavior.Target{}
 
-	decorator := func(target behavior.Target, next screen.InitFunc) screen.InitFunc {
+	decorator := func(target behavior.Target, next screen.BootFunc) screen.BootFunc {
 		return func(state state.UIState) {
 			captured = target
 			next(state)
@@ -86,7 +86,7 @@ func TestWrap_TargetIsCorrect(t *testing.T) {
 	}
 
 	wrapped := Wrap(decorator)(mock.ToNode())
-	wrapped.Screen.Init(state.UIState{})
+	wrapped.Screen.Boot(state.UIState{})
 
 	assert.Equal(t, mock.Name, captured.Name)
 }
@@ -97,7 +97,7 @@ func TestUse_ExecutesMiddleware_AndPassesContext(t *testing.T) {
 
 	name := "test-node"
 
-	middleware := func(uiState state.UIState, ctx behavior.Context[screen.InitFunc])  {
+	middleware := func(uiState state.UIState, ctx behavior.Context[screen.BootFunc]) {
 		mwCalled += 1
 		assert.Equal(t, name, ctx.Target.Name)
 		ctx.Next(uiState)
@@ -105,13 +105,13 @@ func TestUse_ExecutesMiddleware_AndPassesContext(t *testing.T) {
 
 	mock := screen_test.MockNode{
 		Name: name,
-		Init: func(uiState state.UIState) {
+		Boot: func(uiState state.UIState) {
 			nxCalled += 1
 		},
 	}
 
 	node := Use(mock.ToNode(), middleware)
-	node.Screen.Init(state.UIState{})
+	node.Screen.Boot(state.UIState{})
 
 	assert.Equal(t, 1, mwCalled)
 	assert.Equal(t, 1, nxCalled)
@@ -121,19 +121,19 @@ func TestUse_CanShortCircuitChain(t *testing.T) {
 	mwCalled := uint(0)
 	nxCalled := uint(0)
 
-	middleware := func(uiState state.UIState, ctx behavior.Context[screen.InitFunc]) {
+	middleware := func(uiState state.UIState, ctx behavior.Context[screen.BootFunc]) {
 		mwCalled += 1
 	}
 
 	mock := screen_test.MockNode{
 		Name: "test-node",
-		Init: func(uiState state.UIState) {
+		Boot: func(uiState state.UIState) {
 			nxCalled += 1
 		},
 	}
 
 	node := Use(mock.ToNode(), middleware)
-	node.Screen.Init(state.UIState{})
+	node.Screen.Boot(state.UIState{})
 
 	assert.Equal(t, 1, mwCalled)
 	assert.Equal(t, 0, nxCalled)

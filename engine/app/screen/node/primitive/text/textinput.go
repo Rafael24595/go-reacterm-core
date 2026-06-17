@@ -102,7 +102,7 @@ func (n *TextInput) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.textarea.reference).
 		NameToStack().
-		Init(n.textarea.init).
+		Boot(n.textarea.boot).
 		Keys(n.textarea.keys).
 		Tick(n.textarea.tick).
 		View(n.view).

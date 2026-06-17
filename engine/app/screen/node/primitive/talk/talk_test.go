@@ -19,7 +19,7 @@ func TestTalk_ToNode(t *testing.T) {
 	assert.Equal(t, node.Name, "base")
 }
 
-func TestTalk_Init(t *testing.T) {
+func TestTalk_Boot(t *testing.T) {
 	messges := []chat.Message{
 		{
 			Message: "message_03",
@@ -59,7 +59,7 @@ func TestTalk_Init(t *testing.T) {
 		),
 	)
 
-	node.Screen.Init(*uiState)
+	node.Screen.Boot(*uiState)
 
 	assert.Equal(t, 4, menu.cursor)
 	assert.Size(t, 5, menu.messages)

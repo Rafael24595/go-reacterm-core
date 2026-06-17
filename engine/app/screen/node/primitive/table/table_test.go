@@ -19,7 +19,7 @@ func TestTable_ToNode(t *testing.T) {
 	assert.Equal(t, node.Name, "base")
 }
 
-func TestIndexMenu_Init(t *testing.T) {
+func TestIndexMenu_Boot(t *testing.T) {
 	menu := New[int]().
 		SetHeaders("col_1", "col_2", "col_3").
 		AddItems(
@@ -46,7 +46,7 @@ func TestIndexMenu_Init(t *testing.T) {
 		},
 	)
 
-	node.Screen.Init(*uiState)
+	node.Screen.Boot(*uiState)
 
 	assert.Equal(t, 1, menu.cursor.Row)
 	assert.Equal(t, 3, menu.cursor.Col)

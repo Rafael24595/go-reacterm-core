@@ -10,13 +10,13 @@ import (
 
 const (
 	ErrorMissingName = "missing_name"
-	ErrorMissingInit = "missing_init"
+	ErrorMissingBoot = "missing_boot"
 	ErrorMissingKeys = "missing_keys"
 	ErrorMissingTick = "missing_tick"
 	ErrorMissingView = "missing_view"
 )
 
-func withoutInit(state.UIState) {}
+func withoutBoot(state.UIState) {}
 
 func withoutKeys() Definition {
 	return EmptyDefinition()
@@ -27,7 +27,7 @@ type Builder struct {
 	name     string
 	stack    set.Set[string]
 	children []Node
-	init     InitFunc
+	boot     BootFunc
 	keys     KeysFunc
 	tick     TickFunc
 	view     ViewFunc
@@ -39,7 +39,7 @@ func NewBuilder() *Builder {
 		name:     "",
 		stack:    set.New[string](),
 		children: make([]Node, 0),
-		init:     nil,
+		boot:     nil,
 		keys:     nil,
 		tick:     nil,
 		view:     nil,
@@ -76,13 +76,13 @@ func (b *Builder) Children(children ...Node) *Builder {
 	return b
 }
 
-func (b *Builder) Init(init InitFunc) *Builder {
-	b.init = init
+func (b *Builder) Boot(boot BootFunc) *Builder {
+	b.boot = boot
 	return b
 }
 
-func (b *Builder) WithoutInit() *Builder {
-	b.init = withoutInit
+func (b *Builder) WithoutBoot() *Builder {
+	b.boot = withoutBoot
 	return b
 }
 
@@ -113,8 +113,8 @@ func (b *Builder) makeTags() set.Set[string] {
 		tags.Add(ErrorMissingName)
 	}
 
-	if b.init == nil {
-		tags.Add(ErrorMissingInit)
+	if b.boot == nil {
+		tags.Add(ErrorMissingBoot)
 	}
 
 	if b.keys == nil {
@@ -138,7 +138,7 @@ func (b *Builder) makeID() string {
 
 func (b *Builder) toScreen() Screen {
 	return Screen{
-		Init: b.init,
+		Boot: b.boot,
 		Keys: b.keys,
 		Tick: b.tick,
 		View: b.view,
