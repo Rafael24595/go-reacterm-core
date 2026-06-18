@@ -22,6 +22,10 @@ func withoutKeys() Definition {
 	return EmptyDefinition()
 }
 
+func withoutTick(*state.UIState, Event) Result{
+	return EmptyResult()
+}
+
 type Builder struct {
 	clock    clock.Clock
 	name     string
@@ -98,6 +102,11 @@ func (b *Builder) WithoutKeys() *Builder {
 
 func (b *Builder) Tick(tick TickFunc) *Builder {
 	b.tick = tick
+	return b
+}
+
+func (b *Builder) WithoutTick() *Builder {
+	b.tick = withoutTick
 	return b
 }
 
