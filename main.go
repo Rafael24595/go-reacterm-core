@@ -101,7 +101,7 @@ func makeTerminal(ctx context.Context) terminal.Terminal {
 }
 
 func makeNode() screen.Node {
-	landing := wrapper_screen.NewTestSelect()
+	landing := wrapper_screen.NewDemoSelect()
 
 	history := history.New(landing).ToNode()
 	pagination := pagination.New(history).
@@ -112,7 +112,7 @@ func makeNode() screen.Node {
 }
 
 func makePipeline(node screen.Node) screen.Node {
-	headerStep := wrapper_screen.NewBaseHeader()
+	headerStep := wrapper_screen.NewDemoHeader()
 
 	inlineStep := inline.Transformer(
 		inline.DefaultSeparator,

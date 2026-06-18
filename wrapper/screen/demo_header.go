@@ -8,7 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-func NewBaseHeader() pipeline.Transformer {
+func NewDemoHeader() pipeline.Transformer {
 	lines := text.ApplyLineSpec(
 		spec.AlignCenter(),
 		*text.LineFromFragments(

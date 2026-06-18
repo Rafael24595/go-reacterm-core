@@ -5,7 +5,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/clip"
 )
 
-func NewTestClip() screen.Node {
+func NewDemoClip() screen.Node {
 	return clip.New().
 		Name("article - dolor").
 		SetPause(150).

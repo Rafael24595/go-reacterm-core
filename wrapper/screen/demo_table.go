@@ -69,7 +69,7 @@ func marshal(lang Language) []table.Field {
 	return table.StructFieds(lang)
 }
 
-func NewTestTable() screen.Node {
+func NewDemoTable() screen.Node {
 	title := []text.Line{
 		*text.NewLine("Donec massa sem"),
 		*text.NewLine("=", spec.Cover()),

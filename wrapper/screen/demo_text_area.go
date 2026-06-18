@@ -13,7 +13,7 @@ import (
 	text_screen "github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/text"
 )
 
-func NewTestTextArea() screen.Node {
+func NewDemoTextArea() screen.Node {
 	textTitle := "Suspendisse sem arcu"
 	sizeTitle := runes.Measure(textTitle)
 

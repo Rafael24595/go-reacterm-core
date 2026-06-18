@@ -7,7 +7,7 @@ import (
 	text_screen "github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/text"
 )
 
-func NewTestTextInput() screen.Node {
+func NewDemoTextInput() screen.Node {
 	label := text.FragmentsFromString("Ipsum")
 	return text_screen.NewInput().
 		SetName("textinput - amet").

@@ -13,7 +13,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-func NewTestSelect() screen.Node {
+func NewDemoSelect() screen.Node {
 	textTitle := "Sed facilisis, leo sit amet molestie congue, justo risus bibendum tortor"
 	sizeTitle := runes.Measure(textTitle)
 
@@ -23,16 +23,16 @@ func NewTestSelect() screen.Node {
 	}
 
 	options := input.NewMenuOptions(
-		input.NewMenuOption("opt_art", *text.NewFragment("[Prim] Option Article"), NewTestArticle),
-		input.NewMenuOption("opt_txt", *text.NewFragment("[Prim] Option TextArea"), NewTestTextArea),
-		input.NewMenuOption("opt_tbl", *text.NewFragment("[Prim] Option Table"), NewTestTable),
-		input.NewMenuOption("opt_mdl", *text.NewFragment("[Prim] Option Modal"), NewTestModal),
-		input.NewMenuOption("opt_chk", *text.NewFragment("[Prim] Option Check"), NewTestCheck),
-		input.NewMenuOption("opt_txi", *text.NewFragment("[Prim] Option TextInput"), NewTestTextInput),
-		input.NewMenuOption("opt_tlk", *text.NewFragment("[Prim] Option Talk"), NewTestTalk),
-		input.NewMenuOption("opt_clp", *text.NewFragment("[Prim] Option Clip"), NewTestClip),
+		input.NewMenuOption("opt_art", *text.NewFragment("[Prim] Option Article"), NewDemoArticle),
+		input.NewMenuOption("opt_txt", *text.NewFragment("[Prim] Option TextArea"), NewDemoTextArea),
+		input.NewMenuOption("opt_tbl", *text.NewFragment("[Prim] Option Table"), NewDemoTable),
+		input.NewMenuOption("opt_mdl", *text.NewFragment("[Prim] Option Modal"), NewDemoModal),
+		input.NewMenuOption("opt_chk", *text.NewFragment("[Prim] Option Check"), NewDemoCheck),
+		input.NewMenuOption("opt_txi", *text.NewFragment("[Prim] Option TextInput"), NewDemoTextInput),
+		input.NewMenuOption("opt_tlk", *text.NewFragment("[Prim] Option Talk"), NewDemoTalk),
+		input.NewMenuOption("opt_clp", *text.NewFragment("[Prim] Option Clip"), NewDemoClip),
 		input.NewMenuOption("opt_frm", *text.NewFragment("[Comp] Option Form"), NewTestForm),
-		input.NewMenuOption("opt_hsk", *text.NewFragment("[Demo] Option HStack"), NewTestHStack),
+		input.NewMenuOption("opt_hsk", *text.NewFragment("[Demo] Option HStack"), NewDemoHStack),
 	)
 
 	optsSize := len(options)
@@ -42,7 +42,7 @@ func NewTestSelect() screen.Node {
 			input.NewMenuOption(
 				fmt.Sprintf("opt_%d", i),
 				*text.NewFragment(fmt.Sprintf("Option %d", i+1+optsSize)),
-				NewTestTextArea,
+				NewDemoTextArea,
 			),
 		)
 	}

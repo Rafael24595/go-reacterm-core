@@ -8,7 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-func NewTestArticle() screen.Node {
+func NewDemoArticle() screen.Node {
 	title := []text.Line{
 		*text.NewLine("Ac accumsan dolor laoreet"),
 		*text.NewLine("=", spec.Cover()),

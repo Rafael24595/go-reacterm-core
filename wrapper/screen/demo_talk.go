@@ -9,7 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/talk"
 )
 
-func NewTestTalk() screen.Node {
+func NewDemoTalk() screen.Node {
 	return talk.New().
 		SetName("textinput - amet").
 		SetOwner("human_001").
