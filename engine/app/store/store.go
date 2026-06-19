@@ -143,6 +143,20 @@ func Update[T any](
 	return value, true
 }
 
+func Upsert[T any](
+	store *Store,
+	scope string,
+	key Key[T],
+	updater Updater[T],
+) (T, bool) {
+	value, _ := Find(store, scope, key)
+
+	updater(&value)
+	Push(store, scope, key, value)
+
+	return value, true
+}
+
 func Remove[T any](
 	store *Store,
 	scope string,

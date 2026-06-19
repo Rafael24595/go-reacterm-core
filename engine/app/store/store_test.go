@@ -72,6 +72,132 @@ func TestStore_Push_Overwrite(t *testing.T) {
 	assert.Equal(t, 2, v.Intd(0))
 }
 
+func TestUpsert_InsertWhenMissing(t *testing.T) {
+	store := New()
+
+	var key Key[int] = "counter"
+
+	_, ok := Find(
+		store,
+		"scope",
+		key,
+	)
+
+	assert.False(t, ok)
+
+	value, ok := Upsert(
+		store,
+		"scope",
+		key,
+		func(v *int) {
+			*v = 42
+		},
+	)
+
+	assert.True(t, ok)
+	assert.Equal(t, 42, value)
+
+	found, ok := Find(store, "scope", key)
+
+	assert.True(t, ok)
+	assert.Equal(t, 42, found)
+}
+
+func TestUpsert_UpdateExisting(t *testing.T) {
+	store := New()
+
+	var key Key[int] = "counter"
+
+	Push(store, "scope", key, 1)
+
+	value, ok := Find(
+		store,
+		"scope",
+		key,
+	)
+
+	assert.True(t, ok)
+	assert.Equal(t, 1, value)
+
+	value, ok = Upsert(
+		store,
+		"scope",
+		key,
+		func(v *int) {
+			*v++
+		},
+	)
+
+	assert.True(t, ok)
+	assert.Equal(t, 2, value)
+
+	found, ok := Find(store, "scope", key)
+
+	assert.True(t, ok)
+	assert.Equal(t, 2, found)
+}
+
+func TestUpsert_ReceivesCurrentValue(t *testing.T) {
+	store := New()
+
+	var key Key[string] = "counter"
+
+	Push(store, "scope", key, "hello")
+
+	Upsert(
+		store,
+		"scope",
+		key,
+		func(v *string) {
+			*v += " world"
+		},
+	)
+
+	found, ok := Find(store, "scope", key)
+
+	assert.True(t, ok)
+	assert.Equal(t, "hello world", found)
+}
+
+func TestUpsert_UsesZeroValueWhenMissing(t *testing.T) {
+	store := New()
+
+	var key Key[bool] = "active"
+
+	Upsert(
+		store,
+		"scope",
+		key,
+		func(v *bool) {
+			assert.False(t, *v)
+			*v = true
+		},
+	)
+
+	found, ok := Find(store, "scope", key)
+
+	assert.True(t, ok)
+	assert.True(t, found)
+}
+
+func TestUpsert_CreatesEntryEvenWithoutChanges(t *testing.T) {
+	store := New()
+
+	var key Key[int] = "counter"
+
+	Upsert(
+		store,
+		"scope",
+		key,
+		func(v *int) {},
+	)
+
+	found, ok := Find(store, "scope", key)
+
+	assert.True(t, ok)
+	assert.Equal(t, 0, found)
+}
+
 func TestStore_RemoveScope_DeletesAllKeys(t *testing.T) {
 	store := New()
 
