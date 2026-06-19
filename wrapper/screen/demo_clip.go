@@ -7,7 +7,7 @@ import (
 
 func NewDemoClip() screen.Node {
 	return clip.New().
-		Name("article - dolor").
+		Name("clip - dolor").
 		SetPause(150).
 		SetFrames(
 			clip.FrameLines(
