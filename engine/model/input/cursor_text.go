@@ -66,6 +66,11 @@ func (c *TextCursor) SelectEnd() offset.Offset {
 }
 
 func (c *TextCursor) MoveCaretTo(buff []rune, caret offset.Offset) {
+	c.MoveCaretWithoutTick(buff, caret)
+	c.Tick()
+}
+
+func (c *TextCursor) MoveCaretWithoutTick(buff []rune, caret offset.Offset) {
 	min := offset.Offset(1)
 	len := offset.Offset(len(buff))
 
@@ -75,12 +80,14 @@ func (c *TextCursor) MoveCaretTo(buff []rune, caret offset.Offset) {
 
 	c.caret = math.Clamp(caret, min, len)
 	c.anchor = c.caret
-
-	c.status = true
-	c.time = c.clock()
 }
 
 func (c *TextCursor) MoveSelectTo(buff []rune, caret, anchor offset.Offset) {
+	c.MoveSelectWithoutTick(buff, caret, anchor)
+	c.Tick()
+}
+
+func (c *TextCursor) MoveSelectWithoutTick(buff []rune, caret, anchor offset.Offset) {
 	min := offset.Offset(1)
 	len := offset.Offset(len(buff))
 
@@ -90,7 +97,9 @@ func (c *TextCursor) MoveSelectTo(buff []rune, caret, anchor offset.Offset) {
 
 	c.caret = math.Clamp(caret, min, len)
 	c.anchor = math.Clamp(anchor, min, len)
+}
 
+func (c *TextCursor) Tick() {
 	c.status = true
 	c.time = c.clock()
 }
