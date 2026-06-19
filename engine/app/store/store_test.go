@@ -72,6 +72,123 @@ func TestStore_Push_Overwrite(t *testing.T) {
 	assert.Equal(t, 2, v.Intd(0))
 }
 
+func TestUpdate_ExistingValue(t *testing.T) {
+	store := New()
+
+	var key Key[int] = "counter"
+
+	Push(store, "scope", key, 1)
+
+	value, ok := Update(
+		store,
+		"scope",
+		key,
+		func(v *int) {
+			*v++
+		},
+	)
+
+	assert.True(t, ok)
+	assert.Equal(t, 2, value)
+
+	found, ok := Find(store, "scope", key)
+
+	assert.True(t, ok)
+	assert.Equal(t, 2, found)
+}
+
+func TestUpdate_MissingValue(t *testing.T) {
+	store := New()
+
+	var key Key[int] = "counter"
+
+	called := 0
+
+	value, ok := Update(
+		store,
+		"scope",
+		key,
+		func(v *int) {
+			called += 1
+			*v += 1
+		},
+	)
+
+	assert.False(t, ok)
+	assert.Equal(t, 0, called)
+	assert.Equal(t, 0, value)
+}
+
+func TestUpdate_PersistsChanges(t *testing.T) {
+	store := New()
+
+	var key Key[string] = "text"
+
+	Push(store, "scope", key, "hello")
+
+	Update(
+		store,
+		"scope",
+		key,
+		func(v *string) {
+			*v = "world"
+		},
+	)
+
+	found, ok := Find(store, "scope", key)
+
+	assert.True(t, ok)
+	assert.Equal(t, "world", found)
+}
+
+func TestUpdate_ReceivesCurrentValue(t *testing.T) {
+	store := New()
+
+	var key Key[string] = "text"
+
+	Push(store, "scope", key, "hello")
+
+	Update(
+		store,
+		"scope",
+		key,
+		func(v *string) {
+			assert.Equal(t, "hello", *v)
+		},
+	)
+}
+
+func TestUpdate_Struct(t *testing.T) {
+	type State struct {
+		Buffer string
+	}
+
+	store := New()
+
+	var key Key[State] = "state"
+
+	Push(
+		store,
+		"scope",
+		key,
+		State{Buffer: "old"},
+	)
+
+	Update(
+		store,
+		"scope",
+		key,
+		func(s *State) {
+			s.Buffer = "new"
+		},
+	)
+
+	found, ok := Find(store, "scope", key)
+
+	assert.True(t, ok)
+	assert.Equal(t, "new", found.Buffer)
+}
+
 func TestUpsert_InsertWhenMissing(t *testing.T) {
 	store := New()
 
