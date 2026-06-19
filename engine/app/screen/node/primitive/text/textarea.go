@@ -124,7 +124,7 @@ func (n *TextArea) loadFromStore(uiState state.UIState) {
 
 	buffer := n.buffer.Buffer()
 	if state.Caret == nil && state.Anchor == nil {
-		n.caret.MoveCaretTo(buffer, n.buffer.Size())
+		n.caret.MoveCaretWithoutTick(buffer, n.buffer.Size())
 		return
 	}
 
@@ -134,11 +134,11 @@ func (n *TextArea) loadFromStore(uiState state.UIState) {
 	}
 
 	if state.Anchor == nil {
-		n.caret.MoveCaretTo(buffer, caret)
+		n.caret.MoveCaretWithoutTick(buffer, caret)
 		return
 	}
 
-	n.caret.MoveSelectTo(buffer, caret, *state.Anchor)
+	n.caret.MoveSelectWithoutTick(buffer, caret, *state.Anchor)
 }
 
 func (n *TextArea) keys() screen.Definition {
