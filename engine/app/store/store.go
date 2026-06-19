@@ -23,11 +23,11 @@ func New() *Store {
 	}
 }
 
-func (n *Store) Find(scope string, key string) (*commons.Argument, bool) {
-	n.mu.RLock()
-	defer n.mu.RUnlock()
+func (s *Store) Find(scope string, key string) (*commons.Argument, bool) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
 
-	ctx, ok := n.scopes[scope]
+	ctx, ok := s.scopes[scope]
 	if !ok {
 		return nil, false
 	}
@@ -35,41 +35,41 @@ func (n *Store) Find(scope string, key string) (*commons.Argument, bool) {
 	return ctx.Find(key)
 }
 
-func (n *Store) Push(scope string, key string, arg any) *Store {
-	n.mu.Lock()
-	defer n.mu.Unlock()
+func (s *Store) Push(scope string, key string, arg any) *Store {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 
-	ctx, ok := n.scopes[scope]
+	ctx, ok := s.scopes[scope]
 	if !ok {
-		ctx = newScope(n.clock)
+		ctx = newScope(s.clock)
 	}
 
-	n.scopes[scope] = ctx.Push(key,
-		newArgument(n.clock, arg),
+	s.scopes[scope] = ctx.Push(key,
+		newArgument(s.clock, arg),
 	)
 
-	return n
+	return s
 }
 
-func (n *Store) RemoveScope(scope string) bool {
-	n.mu.Lock()
-	defer n.mu.Unlock()
+func (s *Store) RemoveScope(scope string) bool {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 
-	_, ok := n.scopes[scope]
+	_, ok := s.scopes[scope]
 	if !ok {
 		return false
 	}
 
-	delete(n.scopes, scope)
+	delete(s.scopes, scope)
 
 	return true
 }
 
-func (n *Store) RemoveArgument(scope, key string) (*commons.Argument, bool) {
-	n.mu.Lock()
-	defer n.mu.Unlock()
+func (s *Store) RemoveArgument(scope, key string) (*commons.Argument, bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
 
-	ctx, ok := n.scopes[scope]
+	ctx, ok := s.scopes[scope]
 	if !ok {
 		return nil, false
 	}
@@ -77,23 +77,23 @@ func (n *Store) RemoveArgument(scope, key string) (*commons.Argument, bool) {
 	return ctx.Remove(key)
 }
 
-func (n *Store) RetainOnly(scopes set.Set[string]) *Store {
-	n.mu.Lock()
+func (s *Store) RetainOnly(scopes set.Set[string]) *Store {
+	s.mu.Lock()
 	items := make([]string, 0)
 
-	for scope := range n.scopes {
+	for scope := range s.scopes {
 		if !scopes.Has(scope) {
 			items = append(items, scope)
 		}
 	}
 
-	n.mu.Unlock()
+	s.mu.Unlock()
 
 	for _, name := range items {
-		n.RemoveScope(name)
+		s.RemoveScope(name)
 	}
 
-	return n
+	return s
 }
 
 func Find[T any](
