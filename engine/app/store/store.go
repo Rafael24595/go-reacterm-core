@@ -97,11 +97,11 @@ func (s *Store) RetainOnly(scopes set.Set[string]) *Store {
 }
 
 func Find[T any](
-	c *Store,
+	store *Store,
 	scope string,
 	key Key[T],
 ) (T, bool) {
-	arg, ok := c.Find(scope, key.Code())
+	arg, ok := store.Find(scope, key.Code())
 	if ok {
 		return commons.Map[T](*arg)
 	}
@@ -111,21 +111,21 @@ func Find[T any](
 }
 
 func Push[T any](
-	c *Store,
+	store *Store,
 	scope string,
 	key Key[T],
 	arg T,
 ) *Store {
-	return c.Push(scope, key.Code(), arg)
+	return store.Push(scope, key.Code(), arg)
 }
 
 func Update[T any](
-	c *Store,
+	store *Store,
 	scope string,
 	key Key[T],
 	updater Updater[T],
 ) (T, bool) {
-	arg, ok := c.Find(scope, key.Code())
+	arg, ok := store.Find(scope, key.Code())
 	if !ok {
 		var zero T
 		return zero, false
@@ -138,17 +138,17 @@ func Update[T any](
 	}
 
 	updater(&value)
-	Push(c, scope, key, value)
+	Push(store, scope, key, value)
 
 	return value, true
 }
 
 func Remove[T any](
-	c *Store,
+	store *Store,
 	scope string,
 	key Key[T],
 ) (T, bool) {
-	arg, ok := c.RemoveArgument(scope, key.Code())
+	arg, ok := store.RemoveArgument(scope, key.Code())
 	if ok {
 		return commons.Map[T](*arg)
 	}
