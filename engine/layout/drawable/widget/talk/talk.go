@@ -116,17 +116,12 @@ func (u *TalkUnit) makeLines(
 	message chat.Message,
 	index uint16,
 ) ([]text.Line, []text.Line) {
-	atm := atom.None
-	if u.navigation && index == u.cursor {
-		atm = atom.Focus
-	}
-
 	ownerSelector, messageSelector := u.pointer(u.cursor, index)
 
 	ownerLines := wrap.Lines(
 		size.Cols.Sub(3),
 		*text.LineFromFragments(
-			*text.NewFragment(message.Owner).AddAtom(atm),
+			*text.NewFragment(message.Owner),
 			*text.NewFragment(":"),
 		),
 	)
@@ -149,6 +144,48 @@ func (u *TalkUnit) makeLines(
 	for i := range messageLines {
 		messageLines[i].UnshiftFragments(messageSelector...)
 	}
+
+	return u.addFocus(size, index, ownerLines, messageLines)
+}
+
+func (u *TalkUnit) addFocus(
+	size winsize.Winsize,
+	index uint16,
+	ownerLines, messageLines []text.Line,
+) ([]text.Line, []text.Line) {
+	if !u.navigation || index != u.cursor {
+		return ownerLines, messageLines
+	}
+
+	ownerRows := winsize.Rows(len(ownerLines))
+	messageRows := winsize.Rows(len(messageLines))
+	if ownerRows == 0 && messageRows == 0 {
+		return ownerLines, messageLines
+	}
+
+	focusRow := winsize.Rows(0)
+
+	targetRows := ownerRows
+	targetLines := ownerLines
+	if messageRows != 0 {
+		focusRow = size.Rows.Sub(
+			ownerRows.Sub(1),
+		)
+
+		targetRows = messageRows
+		targetLines = messageLines
+	}
+
+	targetRows = max(0, targetRows-1)
+	focusRow = min(targetRows, focusRow)
+
+	if len(targetLines[focusRow].Text) == 0 {
+		targetLines[focusRow].Text = append(
+			targetLines[focusRow].Text, *text.EmptyFragment(),
+		)
+	}
+
+	targetLines[focusRow].Text[0].Atom = atom.Focus
 
 	return ownerLines, messageLines
 }
