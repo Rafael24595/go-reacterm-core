@@ -9,6 +9,7 @@ import (
 
 const Tag = "behavior:keys"
 
+type Handler func(vm viewmodel.ViewModel) viewmodel.ViewModel
 type Middleware func(uiState state.UIState, context behavior.Context[screen.ViewFunc]) viewmodel.ViewModel
 
 func Apply(node screen.Node, decorator behavior.View) screen.Node {
@@ -26,6 +27,18 @@ func Wrap(decorator behavior.View) behavior.Behavior {
 
 		node.Tags.Add(Tag)
 		return node
+	}
+}
+
+func Map(node screen.Node, handler Handler) screen.Node {
+	return Apply(node, mapp(handler))
+}
+
+func mapp(handler Handler) behavior.View {
+	return func(_ behavior.Target, next screen.ViewFunc) screen.ViewFunc {
+		return func(uiState state.UIState) viewmodel.ViewModel {
+			return handler(next(uiState))
+		}
 	}
 }
 
