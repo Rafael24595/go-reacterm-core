@@ -8,6 +8,7 @@ import (
 
 const Tag = "behavior:boot"
 
+type Handler func()
 type Middleware func(uiState state.UIState, context behavior.Context[screen.BootFunc])
 
 func Apply(node screen.Node, decorator behavior.Boot) screen.Node {
@@ -25,6 +26,19 @@ func Wrap(decorator behavior.Boot) behavior.Behavior {
 
 		node.Tags.Add(Tag)
 		return node
+	}
+}
+
+func Map(node screen.Node, handler Handler) screen.Node {
+	return Apply(node, mapp(handler))
+}
+
+func mapp(handler Handler) behavior.Boot {
+	return func(_ behavior.Target, next screen.BootFunc) screen.BootFunc {
+		return func(uiState state.UIState) {
+			next(uiState)
+			handler()
+		}
 	}
 }
 
