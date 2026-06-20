@@ -3,6 +3,8 @@ package clip
 import (
 	"time"
 
+	assert "github.com/Rafael24595/go-assert/assert/runtime"
+	
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -16,6 +18,7 @@ const defaultPause = time.Millisecond * 500
 
 type Clip struct {
 	reference string
+	loaded    bool
 	clock     clock.Clock
 	pause     time.Duration
 	start     time.Duration
@@ -27,6 +30,7 @@ type Clip struct {
 func New() *Clip {
 	return &Clip{
 		reference: Name,
+		loaded:    false,
 		clock:     clock.UnixMilliClock,
 		pause:     defaultPause,
 		start:     0,
@@ -37,16 +41,36 @@ func New() *Clip {
 }
 
 func (n *Clip) Name(name string) *Clip {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
 	n.reference = name
 	return n
 }
 
+func (n *Clip) Active(active bool) *Clip {
+	n.active = active
+	return n
+}
+
 func (n *Clip) SetPause(pause time.Duration) *Clip {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
 	n.pause = pause
 	return n
 }
 
 func (n *Clip) SetFrames(frames ...Frame) *Clip {
+	if n.loaded {
+		assert.Unreachable(screen.MessageNewElement)
+		return n
+	}
+
 	n.frames = frames
 	return n
 }
@@ -63,8 +87,13 @@ func (n *Clip) ToNode() screen.Node {
 }
 
 func (n *Clip) boot(uiState state.UIState) {
+	if n.loaded {
+		return
+	}
+
 	n.loadFromStore(uiState)
 
+	n.loaded = true
 	n.start = time.Duration(n.clock())
 
 	maxRows := n.maxFrameRows()
