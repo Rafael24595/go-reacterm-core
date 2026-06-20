@@ -1,6 +1,7 @@
 package wrapper_screen
 
 import (
+	"math/rand"
 	"time"
 
 	node_pipeline "github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline"
@@ -15,6 +16,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior/view"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/form"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline/page"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/clip"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/talk"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -22,6 +24,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/config/layer"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/cols"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/rows"
+	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/box"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/stack"
@@ -38,24 +41,96 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-type mockTalkService struct {
-	owner string
-	text  []rune
-	chat  []chat.Message
+type eventKind int
+
+const (
+	eventTypingStarted eventKind = iota
+	eventTypingStopped
+)
+
+type clock[T math.Number] struct {
+	rng *rand.Rand
 }
 
-func NewTestForm() screen.Node {
-	service := initService()
+func newClock[T math.Number](source int64) *clock[T] {
+	return &clock[T]{
+		rng: rand.New(
+			rand.NewSource(source),
+		),
+	}
+}
+
+func (c *clock[T]) rand(n T) T {
+	return T(c.rng.Intn(int(n)))
+}
+
+type mockMessageService struct {
+	clock    *clock[int]
+	messages []chat.Message
+}
+
+func (s *mockMessageService) randMessage() chat.Message {
+	messagesLen := len(s.messages)
+	if messagesLen == 0 {
+		return chat.Message{
+			Time:    time.Now().UnixMilli(),
+			Owner:   "System",
+			Message: "Empty messages buffer",
+		}
+	}
+
+	index := s.clock.rng.Intn(messagesLen)
+	message := s.messages[index]
+	message.Time = time.Now().UnixMilli()
+
+	return message
+}
+
+type mockTalkService struct {
+	clock    *clock[time.Duration]
+	messages *mockMessageService
+	event    eventKind
+	owner    string
+	text     []rune
+	chat     []chat.Message
+}
+
+func (s *mockTalkService) reply() {
+	go func() {
+		time.Sleep(
+			1000 + time.Millisecond*s.clock.rand(2000),
+		)
+
+		s.event = eventTypingStarted
+
+		time.Sleep(
+			1000 + time.Millisecond*s.clock.rand(9000),
+		)
+
+		s.event = eventTypingStopped
+
+		s.chat = append(s.chat, s.messages.randMessage())
+	}()
+}
+
+func NewDemoForm() screen.Node {
+	service := initTalkService()
 
 	node := form.New().
 		AddNode(
 			makeTalk(service),
 			entry.Selectable(),
 			entry.WithLayout(
-				layer.Percent[winsize.Rows](75),
+				layer.Percent[winsize.Rows](73),
 			),
 		).
 		AddBreak(1).
+		AddNode(
+			makeClip(service),
+			entry.WithLayout(
+				layer.Static[winsize.Rows](),
+			),
+		).
 		AddNode(
 			makeTextArea(service),
 			entry.Selectable(),
@@ -71,10 +146,13 @@ func NewTestForm() screen.Node {
 	return node
 }
 
-func initService() *mockTalkService {
+func initTalkService() *mockTalkService {
 	return &mockTalkService{
-		owner: "human_001",
-		text:  []rune("Hello Golang!"),
+		clock:    newClock[time.Duration](12345),
+		messages: initMessagesService(),
+		event:    eventTypingStopped,
+		owner:    "human_001",
+		text:     []rune("Hello Golang!"),
 		chat: []chat.Message{
 			{
 				Time:    time.Now().Add(-15 * time.Minute).UnixMilli(),
@@ -130,6 +208,61 @@ func initService() *mockTalkService {
 	}
 }
 
+func initMessagesService() *mockMessageService {
+	r := rand.New(rand.NewSource(12345))
+
+	users := []string{
+		"human_002",
+		"human_003",
+		"human_004",
+		"human_005",
+		"human_006",
+	}
+
+	texts := []string{
+		"Lorem ipsum dolor sit amet.",
+		"Consectetur adipiscing elit.",
+		"Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+		"Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+		"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+		"Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+		"Integer posuere erat a ante venenatis dapibus posuere velit aliquet.",
+		"Curabitur blandit tempus porttitor.",
+		"Praesent commodo cursus magna, vel scelerisque nisl consectetur et.",
+		"Donec ullamcorper nulla non metus auctor fringilla.",
+		"Vestibulum id ligula porta felis euismod semper.",
+		"Maecenas faucibus mollis interdum.",
+		"Morbi leo risus, porta ac consectetur ac, vestibulum at eros.",
+		"Aenean lacinia bibendum nulla sed consectetur.",
+		"Etiam porta sem malesuada magna mollis euismod.",
+		"Nullam quis risus eget urna mollis ornare vel eu leo.",
+		"Cras mattis consectetur purus sit amet fermentum.",
+		"Sed posuere consectetur est at lobortis.",
+		"Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.",
+		"Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.",
+		"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.",
+		"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed odio dui. Nulla vitae elit libero, a pharetra augue.",
+		"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id ligula porta felis euismod semper. Cras mattis consectetur purus sit amet fermentum.",
+		"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed posuere consectetur est at lobortis. Aenean lacinia bibendum nulla sed consectetur. Donec ullamcorper nulla non metus auctor fringilla.",
+		"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Curabitur blandit tempus porttitor. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Maecenas faucibus mollis interdum.",
+	}
+
+	messages := make([]chat.Message, 500)
+
+	for i := range messages {
+		messages[i] = chat.Message{
+			Time:    0,
+			Owner:   users[r.Intn(len(users))],
+			Message: texts[r.Intn(len(texts))],
+		}
+	}
+
+	return &mockMessageService{
+		clock:    newClock[int](12345),
+		messages: messages,
+	}
+}
+
 func makeTalk(service *mockTalkService) screen.Node {
 	talk := talk.New().
 		SetName("talk-form - amet").
@@ -176,6 +309,7 @@ func makeTextArea(service *mockTalkService) screen.Node {
 		SetBuffer(buffer.NewRuneBuffer().
 			PushRules(rule.Full...).
 			Processor(processor.Identity)).
+		AddText(string(service.text)).
 		EnableBlinking().
 		ToNode()
 
@@ -270,6 +404,8 @@ func onKeyEnter(service *mockTalkService) tick.Middleware {
 
 		service.text = make([]rune, 0)
 
+		service.reply()
+
 		return result
 	}
 }
@@ -314,5 +450,75 @@ func pageTransformer() drawable_pipeline.DrawTransformer {
 	return func(winsize winsize.Winsize, unit drawable.Unit) ([]text.Line, bool) {
 		transformer := focus.DrawTransformer(action)
 		return transformer(winsize, unit)
+	}
+}
+
+func makeClip(service *mockTalkService) screen.Node {
+	clip := clip.New().
+		Name("article - dolor").
+		Active(false).
+		SetPause(150).
+		SetFrames(
+			clip.NewFrame(
+				clip.TextFrags(".", ".", "."),
+			),
+			clip.NewFrame(
+				clip.TextFrags("·", ".", "."),
+			),
+			clip.NewFrame(
+				clip.TextFrags("˙", ".", "."),
+			),
+			clip.NewFrame(
+				clip.TextFrags("·", "·", "."),
+			),
+			clip.NewFrame(
+				clip.TextFrags(".", "˙", "."),
+			),
+			clip.NewFrame(
+				clip.TextFrags(".", "·", "·"),
+			),
+			clip.NewFrame(
+				clip.TextFrags(".", ".", "˙"),
+			),
+			clip.NewFrame(
+				clip.TextFrags(".", ".", "·"),
+			),
+			clip.NewFrame(
+				clip.TextFrags(".", ".", "."),
+			),
+		).
+		ToNode()
+
+	clip = view.Use(
+		clip,
+		onClipView(service),
+	)
+
+	return clip
+}
+
+func onClipView(service *mockTalkService) view.Middleware {
+	return func(uiState state.UIState, context behavior.Context[screen.ViewFunc]) viewmodel.ViewModel {
+		show := service.event == eventTypingStarted
+		restart := false
+
+		clip.KeyActive.Upsert(
+			uiState.Store,
+			context.Target.Name,
+			func(b *bool) {
+				if !*b {
+					restart = true
+				}
+				*b = show
+			},
+		)
+
+		clip.KeyRestart.Set(
+			uiState.Store,
+			context.Target.Name,
+			restart,
+		)
+
+		return context.Next(uiState)
 	}
 }

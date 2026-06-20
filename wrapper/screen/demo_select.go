@@ -31,7 +31,7 @@ func NewDemoSelect() screen.Node {
 		input.NewMenuOption("opt_txi", *text.NewFragment("[Prim] Option TextInput"), NewDemoTextInput),
 		input.NewMenuOption("opt_tlk", *text.NewFragment("[Prim] Option Talk"), NewDemoTalk),
 		input.NewMenuOption("opt_clp", *text.NewFragment("[Prim] Option Clip"), NewDemoClip),
-		input.NewMenuOption("opt_frm", *text.NewFragment("[Comp] Option Form"), NewTestForm),
+		input.NewMenuOption("opt_frm", *text.NewFragment("[Comp] Option Form"), NewDemoForm),
 		input.NewMenuOption("opt_hsk", *text.NewFragment("[Demo] Option HStack"), NewDemoHStack),
 	)
 
