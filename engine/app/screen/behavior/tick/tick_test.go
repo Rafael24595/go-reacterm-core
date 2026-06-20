@@ -8,6 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 
@@ -91,6 +92,76 @@ func TestWrap_TargetIsCorrect(t *testing.T) {
 	wrapped.Screen.Tick(&state.UIState{}, screen.Event{})
 
 	assert.Equal(t, mock.Name, captured.Name)
+}
+
+func TestMap_Transforms(t *testing.T) {
+	handler := func(result screen.Result) screen.Result {
+		mock := screen_test.MockNode{}
+		node := mock.ToNode()
+
+		result.Node = &node
+
+		return result
+	}
+
+	mock := screen_test.MockNode{
+		Name: "test-node",
+		Tick: func(*state.UIState, screen.Event) screen.Result {
+			return screen.EmptyResult()
+		},
+	}
+
+	node := Map(mock.ToNode(), handler)
+
+	result := node.Screen.Tick(&state.UIState{}, screen.Event{})
+
+	assert.NotNil(t, 1, result.Node)
+}
+
+func TestMap_MultipleTransforms(t *testing.T) {
+	count := uint(0)
+
+	called0 := uint(0)
+	handler1 := func(result screen.Result) screen.Result {
+		called0 = count
+		count += 1
+		return result
+	}
+
+	called1 := uint(0)
+	handler2 := func(result screen.Result) screen.Result {
+		called1 = count
+		count += 1
+		return result
+	}
+
+	called2 := uint(0)
+	handler3 := func(result screen.Result) screen.Result {
+		called2 = count
+		count += 1
+		return result
+	}
+
+	mock := screen_test.MockNode{
+		Name: "test-node",
+		View: func(uiState state.UIState) viewmodel.ViewModel {
+			return *viewmodel.New()
+		},
+	}
+
+	node := mock.ToNode()
+
+	node = Map(node, handler1)
+	node = Map(node, handler2)
+	node = Map(node, handler3)
+
+	node.Screen.Tick(&state.UIState{}, screen.Event{})
+
+	assert.Equal(t, 3, count)
+
+	assert.Equal(t, 0, called0)
+	assert.Equal(t, 1, called1)
+	assert.Equal(t, 2, called2)
 }
 
 func TestUse_ExecutesMiddleware_AndPassesContext(t *testing.T) {

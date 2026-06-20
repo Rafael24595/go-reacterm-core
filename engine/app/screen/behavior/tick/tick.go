@@ -11,6 +11,7 @@ import (
 
 const Tag = "behavior:tick"
 
+type Handler func(result screen.Result) screen.Result
 type Middleware func(uiState *state.UIState, event screen.Event, context behavior.Context[screen.TickFunc]) screen.Result
 
 func Apply(node screen.Node, decorator behavior.Tick) screen.Node {
@@ -29,6 +30,18 @@ func Wrap(decorator behavior.Tick) behavior.Behavior {
 		node.Tags.Add(Tag)
 
 		return node
+	}
+}
+
+func Map(node screen.Node, handler Handler) screen.Node {
+	return Apply(node, mapp(handler))
+}
+
+func mapp(handler Handler) behavior.Tick {
+	return func(_ behavior.Target, next screen.TickFunc) screen.TickFunc {
+		return func(uiState *state.UIState, event screen.Event) screen.Result {
+			return handler(next(uiState, event))
+		}
 	}
 }
 
