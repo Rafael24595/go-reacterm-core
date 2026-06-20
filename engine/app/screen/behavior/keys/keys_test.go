@@ -8,6 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
 )
@@ -91,6 +92,73 @@ func TestWrap_TargetIsCorrect(t *testing.T) {
 	wrapped.Screen.Keys()
 
 	assert.Equal(t, mock.Name, captured.Name)
+}
+
+func TestMap_Transforms(t *testing.T) {
+	handler := func(definition screen.Definition) screen.Definition {
+		return screen.DefinitionFromActions(
+			key.ActionAll,
+		)
+	}
+
+	mock := screen_test.MockNode{
+		Name: "test-node",
+		Keys: func() screen.Definition {
+			return screen.EmptyDefinition()
+		},
+	}
+
+	node := Map(mock.ToNode(), handler)
+
+	definition := node.Screen.Keys()
+
+	assert.Equal(t, 1, definition.RequireKeys.Size())
+}
+
+func TestMap_MultipleTransforms(t *testing.T) {
+	count := uint(0)
+
+	called0 := uint(0)
+	handler1 := func(definition screen.Definition) screen.Definition {
+		called0 = count
+		count += 1
+		return definition
+	}
+
+	called1 := uint(0)
+	handler2 := func(definition screen.Definition) screen.Definition {
+		called1 = count
+		count += 1
+		return definition
+	}
+
+	called2 := uint(0)
+	handler3 := func(definition screen.Definition) screen.Definition {
+		called2 = count
+		count += 1
+		return definition
+	}
+
+	mock := screen_test.MockNode{
+		Name: "test-node",
+		Keys: func() screen.Definition {
+			return screen.EmptyDefinition()
+		},
+	}
+
+	node := mock.ToNode()
+
+	node = Map(node, handler1)
+	node = Map(node, handler2)
+	node = Map(node, handler3)
+
+	node.Screen.Keys()
+
+	assert.Equal(t, 3, count)
+
+	assert.Equal(t, 0, called0)
+	assert.Equal(t, 1, called1)
+	assert.Equal(t, 2, called2)
 }
 
 func TestUse_ExecutesMiddleware_AndPassesContext(t *testing.T) {
