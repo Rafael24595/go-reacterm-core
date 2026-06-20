@@ -30,7 +30,7 @@ func Page() Predicate {
 	}
 }
 
-func First() Predicate {
+func ToStart() Predicate {
 	return Predicate{
 		Kind: KindPage,
 		Handler: func(_ state.PagerContext, ctx Context) bool {
@@ -39,7 +39,7 @@ func First() Predicate {
 	}
 }
 
-func Last() Predicate {
+func ToEnd() Predicate {
 	return Predicate{
 		Kind: KindPage,
 		Handler: func(_ state.PagerContext, ctx Context) bool {
