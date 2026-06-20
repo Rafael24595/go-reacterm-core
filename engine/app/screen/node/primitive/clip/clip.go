@@ -151,7 +151,9 @@ func (n *Clip) loadFromStore(uiState state.UIState) {
 	}
 }
 
-func (n *Clip) view(state.UIState) viewmodel.ViewModel {
+func (n *Clip) view(uiState state.UIState) viewmodel.ViewModel {
+	n.loadFromStore(uiState)
+
 	vm := viewmodel.New()
 
 	frame, ok := n.findFrame()
