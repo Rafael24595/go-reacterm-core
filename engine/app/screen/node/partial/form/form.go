@@ -253,8 +253,13 @@ func (n *Form) view(uiState state.UIState) viewmodel.ViewModel {
 		}
 
 		// TODO: Improve pager inheritance policy.
-		if !layer.Static() && !n.dummies.Has(i) {
-			vm.Pager = cvm.Pager
+		// TODO: Inherit headers?
+		if n.cursor == uint16(i) {
+			vm.Footer.Push(cvm.Footer.Units()...)
+
+			if !layer.Static() && !n.dummies.Has(i) {
+				vm.Pager = cvm.Pager
+			}
 		}
 	}
 
