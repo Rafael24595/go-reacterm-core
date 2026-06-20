@@ -15,11 +15,11 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior/tick"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior/view"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/form"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline/page"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/clip"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/talk"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/slot"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/entry"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/layer"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/cols"
@@ -116,9 +116,12 @@ func (s *mockTalkService) reply() {
 func NewDemoForm() screen.Node {
 	service := initTalkService()
 
+	action := action.Scroll()
+	predicate := slot.New[predicate.Predicate]()
+
 	node := form.New().
 		AddNode(
-			makeTalk(service),
+			makeTalk(service, predicate),
 			entry.Selectable(),
 			entry.WithLayout(
 				layer.Percent[winsize.Rows](73),
@@ -138,12 +141,24 @@ func NewDemoForm() screen.Node {
 				layer.Static[winsize.Rows](),
 			),
 		).
-		PushSteps(
-			page.Use(action.Scroll()),
-		).
 		ToNode()
 
+	node = view.Map(
+		node,
+		onFormView(action, predicate),
+	)
+
 	return node
+}
+
+func onFormView(action action.Action, predicate *slot.Slot[predicate.Predicate]) view.Handler {
+	return func(vm viewmodel.ViewModel) viewmodel.ViewModel {
+		vm.Pager.Action = action
+		if predicate, ok := predicate.Take(); ok {
+			vm.Pager.Predicate = predicate
+		}
+		return vm
+	}
 }
 
 func initTalkService() *mockTalkService {
@@ -263,7 +278,7 @@ func initMessagesService() *mockMessageService {
 	}
 }
 
-func makeTalk(service *mockTalkService) screen.Node {
+func makeTalk(service *mockTalkService, slot *slot.Slot[predicate.Predicate]) screen.Node {
 	talk := talk.New().
 		SetName("talk-form - amet").
 		SetOwner("human_001").
@@ -271,13 +286,13 @@ func makeTalk(service *mockTalkService) screen.Node {
 
 	talk = view.Use(
 		talk,
-		onTalkView(service),
+		onTalkView(service, slot),
 	)
 
 	return talk
 }
 
-func onTalkView(service *mockTalkService) view.Middleware {
+func onTalkView(service *mockTalkService, slot *slot.Slot[predicate.Predicate]) view.Middleware {
 	return func(uiState state.UIState, context behavior.Context[screen.ViewFunc]) viewmodel.ViewModel {
 		messagesLen := 0
 		if messages, ok := talk.KeyMessages.Get(
@@ -296,7 +311,7 @@ func onTalkView(service *mockTalkService) view.Middleware {
 		vm := context.Next(uiState)
 
 		if messagesLen != len(service.chat) {
-			vm.Pager.SetPredicate(predicate.Last())
+			slot.Set(predicate.ToEnd())
 		}
 
 		return vm
