@@ -142,6 +142,13 @@ func (n *Clip) loadFromStore(uiState state.UIState) {
 	); ok {
 		n.active = active
 	}
+
+	if restart, ok := KeyRestart.Get(
+		uiState.Store,
+		n.reference,
+	); ok && restart {
+		n.start = time.Duration(n.clock())
+	}
 }
 
 func (n *Clip) view(state.UIState) viewmodel.ViewModel {
