@@ -3,7 +3,6 @@ package form
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/dummy"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
@@ -25,7 +24,6 @@ type Form struct {
 	pointer   uint8
 	focused   bool
 	cursor    uint16
-	steps     []pipeline.Transformer
 	items     []entry.Entry
 	dummies   set.Set[int]
 }
@@ -36,15 +34,9 @@ func New() *Form {
 		pointer:   0,
 		focused:   false,
 		cursor:    0,
-		steps:     make([]pipeline.Transformer, 0),
 		items:     make([]entry.Entry, 0),
 		dummies:   set.New[int](),
 	}
-}
-
-func (n *Form) PushSteps(steps ...pipeline.Transformer) *Form {
-	n.steps = append(n.steps, steps...)
-	return n
 }
 
 func (n *Form) AddNode(
@@ -218,15 +210,11 @@ func (n *Form) focusTick(uiState *state.UIState, event screen.Event, focus entry
 	newItems := make([]entry.Entry, len(n.items))
 	copy(newItems, n.items)
 
-	newSteps := make([]pipeline.Transformer, len(n.steps))
-	copy(newSteps, n.steps)
-
 	newWrapper := New()
 	newWrapper.reference = n.reference
 	newWrapper.pointer = n.pointer
 	newWrapper.focused = n.focused
 	newWrapper.cursor = n.cursor
-	newWrapper.steps = newSteps
 	newWrapper.items = newItems
 
 	newNode := newWrapper.ToNode()
@@ -280,14 +268,7 @@ func (n *Form) view(uiState state.UIState) viewmodel.ViewModel {
 		)
 	}
 
-	return n.applySteps(*vm)
-}
-
-func (n *Form) applySteps(vm viewmodel.ViewModel) viewmodel.ViewModel {
-	for _, s := range n.steps {
-		vm = s(vm)
-	}
-	return vm
+	return *vm
 }
 
 func (n *Form) focusItem() (entry.Entry, bool) {
