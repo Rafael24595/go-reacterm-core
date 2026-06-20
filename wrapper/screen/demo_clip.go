@@ -2,11 +2,20 @@ package wrapper_screen
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior/view"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/clip"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
+	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/cols"
+	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/rows"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/stack"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/padding"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 )
 
 func NewDemoClip() screen.Node {
-	return clip.New().
+	clip := clip.New().
 		Name("clip - dolor").
 		SetPause(150).
 		SetFrames(
@@ -228,4 +237,31 @@ func NewDemoClip() screen.Node {
 			),
 		).
 		ToNode()
+
+	clip = view.Map(
+		clip,
+		mapView,
+	)
+
+	return clip
+}
+
+func mapView(vm viewmodel.ViewModel) viewmodel.ViewModel {
+	kernel := vm.Kernel.ToUnit()
+
+	position := padding.NewBuilder().
+		Rows(
+			hint.Maximize[winsize.Rows](),
+			rows.WithPosition(style.Middle),
+		).
+		Cols(
+			hint.Maximize[winsize.Cols](),
+			cols.WithPosition(style.Center),
+		).
+		ToUnit(kernel)
+
+	vm.Kernel = stack.NewVStack().
+		Push(position)
+
+	return vm
 }
