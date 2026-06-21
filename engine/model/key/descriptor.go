@@ -59,6 +59,10 @@ func ResolveDescriptorsWithDefaults(
 	return help
 }
 
+func FindDescriptor(action Action) *Descriptor {
+	return resolveDescriptor(make(map[Action]Descriptor), action)
+}
+
 func resolveDescriptor(
 	defaults map[Action]Descriptor,
 	action Action,
