@@ -10,6 +10,13 @@ type Descriptor struct {
 	Detail string
 }
 
+func NewDescriptor(detail string, codes ...string) Descriptor {
+	return Descriptor{
+		Code:   codes,
+		Detail: detail,
+	}
+}
+
 var actionHelpMap = map[Action]Descriptor{
 	ActionArrowUp:    {Code: []string{"↑"}, Detail: "Move up"},
 	ActionArrowDown:  {Code: []string{"↓"}, Detail: "Move down"},
