@@ -1,8 +1,9 @@
 package keymap
 
 import (
-	"maps"
-
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/dict"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 )
 
@@ -18,7 +19,7 @@ type Binding[T Command] struct {
 }
 
 type Bindings[T Command] struct {
-	keys     map[key.Action]Binding[T]
+	keys     *dict.LinkedMap[key.Action, Binding[T]]
 	resolver descriptorResolver
 }
 
@@ -28,7 +29,7 @@ func NewBindings[T Command]() *Bindings[T] {
 
 func (b *Bindings[T]) lazyInit() *Bindings[T] {
 	if b.keys == nil {
-		b.keys = make(map[key.Action]Binding[T])
+		b.keys = dict.NewLinkedMap[key.Action, Binding[T]]()
 	}
 
 	if b.resolver == nil {
@@ -41,14 +42,13 @@ func (b *Bindings[T]) lazyInit() *Bindings[T] {
 func (b *Bindings[T]) Has(action key.Action) bool {
 	b.lazyInit()
 
-	_, ok := b.keys[action]
-	return ok
+	return b.keys.Exists(action)
 }
 
 func (b *Bindings[T]) Resolve(action key.Action) (T, bool) {
 	b.lazyInit()
 
-	command, ok := b.keys[action]
+	command, ok := b.keys.Get(action)
 	if !ok {
 		var zero T
 		return zero, false
@@ -67,7 +67,10 @@ func (b *Bindings[T]) Overlay(
 		return result
 	}
 
-	maps.Copy(result.keys, overrides.keys)
+	result.keys.Merge(
+		overrides.keys.Clone(),
+	)
+
 	return result
 }
 
@@ -94,12 +97,12 @@ func (b *Bindings[T]) TryBind(
 		descriptor = b.resolver(action)
 	}
 
-	previous, replaced := b.keys[action]
+	previous, replaced := b.keys.Get(action)
 
-	b.keys[action] = Binding[T]{
+	b.keys.Set(action, Binding[T]{
 		Command:    command,
 		Descriptor: descriptor,
-	}
+	})
 
 	return previous, replaced
 }
@@ -108,7 +111,7 @@ func (b *Bindings[T]) Clone() *Bindings[T] {
 	b.lazyInit()
 	
 	result := NewBindings[T]()
-	maps.Copy(result.keys, b.keys)
+	result.keys = b.keys.Clone()
 	result.resolver = b.resolver
 	return result
 }
