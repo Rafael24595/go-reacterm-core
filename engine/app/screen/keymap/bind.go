@@ -57,6 +57,23 @@ func (b *Bindings[T]) Resolve(action key.Action) (T, bool) {
 	return command.Command, true
 }
 
+func (b *Bindings[T]) Command(action key.Action) T {
+	b.lazyInit()
+
+	command, _ := b.Resolve(action)
+	return command
+}
+
+func (b *Bindings[T]) Commands() set.Set[T] {
+	b.lazyInit()
+
+	commands := set.New[T](int(b.keys.Size()))
+	for v := range b.keys.Values() {
+		commands.Add(v.Command)
+	}
+	return commands
+}
+
 func (b *Bindings[T]) Overlay(
 	overrides *Bindings[T],
 ) *Bindings[T] {

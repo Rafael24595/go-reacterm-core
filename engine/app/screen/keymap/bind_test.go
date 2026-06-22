@@ -64,6 +64,47 @@ func TestResolve(t *testing.T) {
 	assert.Equal(t, CmdSave, cmd)
 }
 
+func TestCommand(t *testing.T) {
+	kb := NewBindings[testCommand]()
+	kb.resolver = mockResolver
+
+	action := key.Action(50)
+
+	cmd := kb.Command(action)
+
+	assert.Equal(t, CmdNone, cmd)
+
+	kb.Bind(action, CmdSave)
+
+	cmd = kb.Command(action)
+
+	assert.Equal(t, CmdSave, cmd)
+}
+
+func TestCommandsEmpty(t *testing.T) {
+	kb := NewBindings[testCommand]()
+
+	commands := kb.Commands()
+
+	assert.Size(t, 0, commands)
+}
+
+func TestCommands(t *testing.T) {
+	kb := NewBindings[testCommand]()
+	kb.resolver = mockResolver
+
+	kb.Bind(key.Action(1), CmdOpen)
+	kb.Bind(key.Action(2), CmdClose)
+	kb.Bind(key.Action(3), CmdOpen)
+
+	commands := kb.Commands()
+
+	assert.Size(t, 2, commands)
+	assert.True(t, commands.Has(CmdOpen))
+	assert.True(t, commands.Has(CmdClose))
+	assert.False(t, commands.Has(CmdSave))
+}
+
 func TestTryBind(t *testing.T) {
 	kb := NewBindings[testCommand]()
 	kb.resolver = mockResolver
