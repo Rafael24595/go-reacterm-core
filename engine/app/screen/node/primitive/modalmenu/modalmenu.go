@@ -1,31 +1,39 @@
 package modalmenu
 
 import (
+	assert "github.com/Rafael24595/go-assert/assert/runtime"
+	
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/modal"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
 const Name = "modal_menu"
 
 type ModalMenu struct {
-	reference string
-	text      []text.Line
-	options   []input.MenuOption
-	cursor    uint16
+	reference  string
+	loaded     bool
+	bindings   *keymap.Bindings[Command]
+	definition screen.Definition
+	text       []text.Line
+	options    []input.MenuOption
+	cursor     uint16
 }
 
 func New() *ModalMenu {
 	return &ModalMenu{
-		reference: Name,
-		text:      make([]text.Line, 0),
-		options:   make([]input.MenuOption, 0),
-		cursor:    0,
+		reference:  Name,
+		loaded:     false,
+		bindings:   defaultBindings,
+		definition: screen.EmptyDefinition(),
+		text:       make([]text.Line, 0),
+		options:    make([]input.MenuOption, 0),
+		cursor:     0,
 	}
 }
 
@@ -34,12 +42,32 @@ func (n *ModalMenu) SetName(name string) *ModalMenu {
 	return n
 }
 
+func (n *ModalMenu) WithBindings(overrides *keymap.Bindings[Command]) *ModalMenu {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings = n.bindings.Overlay(overrides)
+	return n
+}
+
 func (n *ModalMenu) AddText(text ...text.Line) *ModalMenu {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
 	n.text = append(n.text, text...)
 	return n
 }
 
 func (n *ModalMenu) AddOptions(options ...input.MenuOption) *ModalMenu {
+	if n.loaded {
+		assert.Unreachable(screen.MessageNewElement)
+		return n
+	}
+
 	n.options = append(n.options, options...)
 	return n
 }
@@ -62,7 +90,14 @@ func (n *ModalMenu) ToNode() screen.Node {
 }
 
 func (n *ModalMenu) boot(uiState state.UIState) {
+	if n.loaded {
+		return
+	}
+
+	n.loaded = true
+
 	n.loadFromStore(uiState)
+	n.definition = keymap.BindingsToDefinition(n.bindings)
 }
 
 func (n *ModalMenu) loadFromStore(uiState state.UIState) {
@@ -84,29 +119,28 @@ func (n *ModalMenu) loadFromStore(uiState state.UIState) {
 }
 
 func (n *ModalMenu) keys() screen.Definition {
-	return definition
+	return n.definition
 }
 
 func (n *ModalMenu) tick(uiState *state.UIState, event screen.Event) screen.Result {
-	ky := event.Key
 
-	switch ky.Code {
-	case key.ActionArrowUp:
-		n.cursor = 0
+	switch n.bindings.Command(event.Key.Code) {
+	case CmdExecuteAction:
 		n.tickToStore(uiState)
-	case key.ActionArrowDown:
-		n.cursor = math.SubClampZeroAs[int, uint16](len(n.options), 1)
-		n.tickToStore(uiState)
-	case key.ActionArrowLeft:
+		return n.actionEnter()
+	case CmdPrevOption:
 		n.cursor = math.SubClampZero(n.cursor, 1)
 		n.tickToStore(uiState)
-	case key.ActionArrowRight:
+	case CommandNextOption:
 		last := math.SubClampZeroAs[int, uint16](len(n.options), 1)
 		n.cursor = min(last, n.cursor+1)
 		n.tickToStore(uiState)
-	case key.ActionEnter:
+	case CmdFirstOption:
+		n.cursor = 0
 		n.tickToStore(uiState)
-		return n.actionEnter()
+	case CmdLastOption:
+		n.cursor = math.SubClampZeroAs[int, uint16](len(n.options), 1)
+		n.tickToStore(uiState)
 	}
 
 	return screen.ResultFromUIState(uiState)
