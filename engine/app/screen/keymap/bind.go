@@ -39,22 +39,29 @@ func (b *Bindings[T]) lazyInit() *Bindings[T] {
 }
 
 func (b *Bindings[T]) Has(action key.Action) bool {
+	b.lazyInit()
+
 	_, ok := b.keys[action]
 	return ok
 }
 
 func (b *Bindings[T]) Resolve(action key.Action) (T, bool) {
+	b.lazyInit()
+
 	command, ok := b.keys[action]
 	if !ok {
 		var zero T
 		return zero, false
 	}
+
 	return command.Command, true
 }
 
 func (b *Bindings[T]) Overlay(
 	overrides *Bindings[T],
 ) *Bindings[T] {
+	b.lazyInit()
+
 	result := b.Clone()
 	if overrides == nil {
 		return result
@@ -97,7 +104,9 @@ func (b *Bindings[T]) TryBind(
 	return previous, replaced
 }
 
-func (b *Bindings[T]) Clone() *Bindings[T] {	
+func (b *Bindings[T]) Clone() *Bindings[T] {
+	b.lazyInit()
+	
 	result := NewBindings[T]()
 	maps.Copy(result.keys, b.keys)
 	result.resolver = b.resolver
