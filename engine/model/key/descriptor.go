@@ -18,34 +18,34 @@ func NewDescriptor(detail string, codes ...string) Descriptor {
 }
 
 var actionHelpMap = map[Action]Descriptor{
-	ActionArrowUp:    {Code: []string{"↑"}, Detail: "Move up"},
-	ActionArrowDown:  {Code: []string{"↓"}, Detail: "Move down"},
-	ActionArrowLeft:  {Code: []string{"←"}, Detail: "Move left"},
-	ActionArrowRight: {Code: []string{"→"}, Detail: "Move right"},
-	ActionHome:       {Code: []string{"HOME", "^A"}, Detail: "Line start"},
-	ActionEnd:        {Code: []string{"END", "^E"}, Detail: "Line end"},
+	ActionArrowUp:    NewDescriptor("Move up", "↑"),
+	ActionArrowDown:  NewDescriptor("Move down", "↓"),
+	ActionArrowLeft:  NewDescriptor("Move left", "←"),
+	ActionArrowRight: NewDescriptor("Move right", "→"),
+	ActionHome:       NewDescriptor("Line start", "HOME", "^A"),
+	ActionEnd:        NewDescriptor("Line end", "END", "^E"),
 
-	ActionEnter: {Code: []string{"RET"}, Detail: "New line/Accept"},
-	ActionTab:   {Code: []string{"TAB"}, Detail: "Next field"},
-	ActionEsc:   {Code: []string{"ESC"}, Detail: "Back/Cancel"},
-	ActionExit:  {Code: []string{"^C"}, Detail: "Exit"},
+	ActionEnter: NewDescriptor("New line/Accept", "RET"),
+	ActionTab:   NewDescriptor("Next field", "TAB"),
+	ActionEsc:   NewDescriptor("Back/Cancel", "ESC"),
+	ActionExit:  NewDescriptor("Exit", "^C"),
 
-	ActionBackspace:      {Code: []string{"BS"}, Detail: "Delete char"},
-	ActionDelete:         {Code: []string{"DEL"}, Detail: "Delete forward"},
-	ActionDeleteBackward: {Code: []string{"^W"}, Detail: "Delete word"},
-	ActionDeleteForward:  {Code: []string{"^D"}, Detail: "Delete word fwd"},
+	ActionBackspace:      NewDescriptor("Delete char", "BS"),
+	ActionDelete:         NewDescriptor("Delete forward", "DEL"),
+	ActionDeleteBackward: NewDescriptor("Delete word", "^W"),
+	ActionDeleteForward:  NewDescriptor("Delete word fwd", "^D"),
 
-	CustomActionUndo:  {Code: []string{"^G"}, Detail: "Undo"},
-	CustomActionRedo:  {Code: []string{"^T"}, Detail: "Redo"},
-	CustomActionHelp:  {Code: []string{"M-h"}, Detail: "Help"},
-	CustomActionBack:  {Code: []string{"M-b"}, Detail: "Back"},
-	CustomActionCut:   {Code: []string{"M-x"}, Detail: "Cut"},
-	CustomActionCopy:  {Code: []string{"M-c"}, Detail: "Copy"},
-	CustomActionPaste: {Code: []string{"M-v"}, Detail: "Paste"},
+	CustomActionUndo:  NewDescriptor("Undo", "^G"),
+	CustomActionRedo:  NewDescriptor("Redo", "^T"),
+	CustomActionHelp:  NewDescriptor("Help", "M-h"),
+	CustomActionBack:  NewDescriptor("Back", "M-b"),
+	CustomActionCut:   NewDescriptor("Cut", "M-x"),
+	CustomActionCopy:  NewDescriptor("Copy", "M-c"),
+	CustomActionPaste: NewDescriptor("Paste", "M-v"),
 
-	CustomActionPointer: {Code: []string{"M-p"}, Detail: "Switch pointer"},
+	CustomActionPointer: NewDescriptor("Switch pointer", "M-p"),
 
-	ActionRune: {Code: []string{"Text"}, Detail: "Text"},
+	ActionRune: NewDescriptor("Text", "Text"),
 }
 
 func ResolveDescriptors(actions ...Action) *dict.LinkedMap[Action, Descriptor] {
@@ -90,8 +90,6 @@ func resolveDescriptor(
 
 	assert.Unreachable("unhandled action: %d", action)
 
-	return &Descriptor{
-		Code:   []string{"???"},
-		Detail: "Unknown action",
-	}
+	descriptor := NewDescriptor("Unknown action", "???")
+	return &descriptor
 }
