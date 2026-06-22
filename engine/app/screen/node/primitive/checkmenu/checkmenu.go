@@ -107,7 +107,7 @@ func (n *CheckMenu) loadFromStore(uiState state.UIState) {
 
 	for i, o := range n.options {
 		if options.Has(o.Id) {
-			n.switchState(uint16(i))
+			n.switchState(uint16(i), true)
 		}
 	}
 
@@ -175,12 +175,17 @@ func (n *CheckMenu) tickRead(uiState *state.UIState, event screen.Event) screen.
 	return screen.ResultFromUIState(uiState)
 }
 
-func (n *CheckMenu) switchState(cursor uint16) *CheckMenu {
+func (n *CheckMenu) switchState(cursor uint16, state ...bool) *CheckMenu {
 	if cursor >= uint16(len(n.options)) {
 		return n
 	}
 
-	n.options[cursor].Status = !n.options[cursor].Status
+	newState := !n.options[cursor].Status
+	if len(state) > 0 {
+		newState = state[0]
+	}
+
+	n.options[cursor].Status = newState
 
 	if n.options[cursor].Status {
 		n.options[cursor].Timestamp = n.clock()
