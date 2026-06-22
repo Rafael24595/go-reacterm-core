@@ -3,8 +3,11 @@ package checkmenu
 import (
 	"sort"
 
+	assert "github.com/Rafael24595/go-assert/assert/runtime"
+
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
@@ -13,7 +16,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/checkmenu"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/platform/clock"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
@@ -23,6 +25,9 @@ const Name = "check_menu"
 
 type CheckMenu struct {
 	reference    string
+	loaded       bool
+	bindings     bindings
+	definition   definition
 	clock        clock.Clock
 	action       *input.CheckAction
 	meta         marker.CheckMeta
@@ -34,13 +39,16 @@ type CheckMenu struct {
 
 func New() *CheckMenu {
 	return &CheckMenu{
-		reference: Name,
-		clock:     clock.UnixMilliClock,
-		action:    input.EmptyCheckAction(),
-		meta:      marker.BracketsCheck,
-		options:   make([]input.CheckOption, 0),
-		limit:     0,
-		cursor:    0,
+		reference:  Name,
+		loaded:     false,
+		bindings:   defaultBindings,
+		definition: emptyDefinition(),
+		clock:      clock.UnixMilliClock,
+		action:     input.EmptyCheckAction(),
+		meta:       marker.BracketsCheck,
+		options:    make([]input.CheckOption, 0),
+		limit:      0,
+		cursor:     0,
 	}
 }
 
@@ -49,17 +57,52 @@ func (n *CheckMenu) Name(name string) *CheckMenu {
 	return n
 }
 
+func (n *CheckMenu) WithWriteBindings(overrides *keymap.Bindings[CommandWrite]) *CheckMenu {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings.write = n.bindings.write.Overlay(overrides)
+	return n
+}
+
+func (n *CheckMenu) WithReadBindings(overrides *keymap.Bindings[CommandRead]) *CheckMenu {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings.read = n.bindings.read.Overlay(overrides)
+	return n
+}
+
 func (n *CheckMenu) Meta(meta marker.CheckMeta) *CheckMenu {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
 	n.meta = meta
 	return n
 }
 
 func (n *CheckMenu) ActionHandler(handler input.CheckActionHandler) *CheckMenu {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
 	n.action.Handler = handler
 	return n
 }
 
 func (n *CheckMenu) AddOptions(options ...input.CheckOption) *CheckMenu {
+	if n.loaded {
+		assert.Unreachable(screen.MessageNewElement)
+		return n
+	}
+
 	n.options = append(n.options, options...)
 	return n
 }
@@ -92,7 +135,14 @@ func (n *CheckMenu) ToNode() screen.Node {
 }
 
 func (n *CheckMenu) boot(uiState state.UIState) {
+	if n.loaded {
+		return
+	}
+
+	n.loaded = true
+
 	n.loadFromStore(uiState)
+	n.definition = definitionFromBindings(n.bindings)
 }
 
 func (n *CheckMenu) loadFromStore(uiState state.UIState) {
@@ -115,40 +165,34 @@ func (n *CheckMenu) loadFromStore(uiState state.UIState) {
 }
 
 func (n *CheckMenu) keys() screen.Definition {
-	if n.action.WriteMode {
-		return write_definition
-	}
-	return read_definition
+	return n.definition.get(n.action.WriteMode)
 }
 
 func (n *CheckMenu) tick(uiState *state.UIState, event screen.Event) screen.Result {
 	if !n.action.WriteMode {
 		return n.tickRead(uiState, event)
 	}
-
-	return n.tickNavigation(uiState, event)
+	return n.tickWrite(uiState, event)
 }
 
-func (n *CheckMenu) tickNavigation(uiState *state.UIState, event screen.Event) screen.Result {
-	ky := event.Key
-
+func (n *CheckMenu) tickWrite(uiState *state.UIState, event screen.Event) screen.Result {
 	optsLen := uint16(len(n.options))
 
-	switch ky.Code {
-	case key.ActionEsc:
+	switch n.bindings.write.Command(event.Key.Code) {
+	case CmdWriteReadMode:
 		n.action.WriteMode = false
-	case key.ActionEnter:
+	case CmdWriteSwitchState:
 		n.switchState(n.cursor)
 		n.applyLimit()
 		n.tickToStore(uiState)
-	case key.ActionArrowLeft:
+	case CmdWritePrevOption:
 		n.cursor = math.SubClampZero(n.cursor, 1)
-	case key.ActionArrowRight:
+	case CmdWriteNextOption:
 		optsLen = math.SubClampZero(optsLen, 1)
 		n.cursor = min(optsLen, n.cursor+1)
-	case key.ActionArrowUp:
+	case CmdWriteFirstOption:
 		n.cursor = 0
-	case key.ActionArrowDown:
+	case CmdWriteLastOption:
 		optsLen = math.SubClampZero(optsLen, 1)
 		n.cursor = max(0, optsLen)
 	}
@@ -165,10 +209,8 @@ func (n *CheckMenu) tickToStore(uiState *state.UIState) {
 }
 
 func (n *CheckMenu) tickRead(uiState *state.UIState, event screen.Event) screen.Result {
-	ky := event.Key
-
-	switch ky.Code {
-	case key.ActionEnter:
+	switch n.bindings.read.Command(event.Key.Code) {
+	case CmdReadWriteMode:
 		n.action.WriteMode = true
 	}
 
