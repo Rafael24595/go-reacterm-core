@@ -21,14 +21,14 @@ func mockResolver(key.Action) *key.Descriptor {
 }
 
 func TestNewKeysBindings(t *testing.T) {
-	kb := NewKeysBindings[testCommand]()
+	kb := NewBindings[testCommand]()
 
 	assert.NotNil(t, kb)
 	assert.NotNil(t, kb.keys)
 }
 
 func TestLazyInit(t *testing.T) {
-	var kb KeysBindings[testCommand]
+	var kb Bindings[testCommand]
 
 	assert.False(t, kb.Has(key.Action(1)))
 
@@ -38,7 +38,7 @@ func TestLazyInit(t *testing.T) {
 }
 
 func TestBindAndHas(t *testing.T) {
-	kb := NewKeysBindings[testCommand]()
+	kb := NewBindings[testCommand]()
 	action := key.Action(10)
 
 	assert.False(t, kb.Has(action))
@@ -49,7 +49,7 @@ func TestBindAndHas(t *testing.T) {
 }
 
 func TestResolve(t *testing.T) {
-	kb := NewKeysBindings[testCommand]()
+	kb := NewBindings[testCommand]()
 	action := key.Action(20)
 
 	cmd, ok := kb.Resolve(action)
@@ -65,7 +65,7 @@ func TestResolve(t *testing.T) {
 }
 
 func TestTryBind(t *testing.T) {
-	kb := NewKeysBindings[testCommand]()
+	kb := NewBindings[testCommand]()
 	kb.resolver = mockResolver
 
 	action := key.Action(30)
@@ -84,7 +84,7 @@ func TestTryBind(t *testing.T) {
 }
 
 func TestClone(t *testing.T) {
-	kb1 := NewKeysBindings[testCommand]()
+	kb1 := NewBindings[testCommand]()
 	kb1.resolver = mockResolver
 
 	action := key.Action(40)
@@ -104,11 +104,11 @@ func TestClone(t *testing.T) {
 }
 
 func TestOverlay(t *testing.T) {
-	kbBase := NewKeysBindings[testCommand]()
+	kbBase := NewBindings[testCommand]()
 	kbBase.Bind(key.Action(1), CmdOpen)
 	kbBase.Bind(key.Action(2), CmdClose)
 
-	kbOverrides := NewKeysBindings[testCommand]()
+	kbOverrides := NewBindings[testCommand]()
 	kbOverrides.Bind(key.Action(2), CmdSave)
 	kbOverrides.Bind(key.Action(3), CmdOpen)
 

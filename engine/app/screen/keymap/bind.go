@@ -12,23 +12,23 @@ type Command interface {
 	~uint8
 }
 
-type KeyBinding[T Command] struct {
+type Binding[T Command] struct {
 	Command    T
 	Descriptor *key.Descriptor
 }
 
-type KeysBindings[T Command] struct {
-	keys     map[key.Action]KeyBinding[T]
+type Bindings[T Command] struct {
+	keys     map[key.Action]Binding[T]
 	resolver descriptorResolver
 }
 
-func NewKeysBindings[T Command]() *KeysBindings[T] {
-	return new(KeysBindings[T]).lazyInit()
+func NewBindings[T Command]() *Bindings[T] {
+	return new(Bindings[T]).lazyInit()
 }
 
-func (b *KeysBindings[T]) lazyInit() *KeysBindings[T] {
+func (b *Bindings[T]) lazyInit() *Bindings[T] {
 	if b.keys == nil {
-		b.keys = make(map[key.Action]KeyBinding[T])
+		b.keys = make(map[key.Action]Binding[T])
 	}
 
 	if b.resolver == nil {
@@ -38,12 +38,12 @@ func (b *KeysBindings[T]) lazyInit() *KeysBindings[T] {
 	return b
 }
 
-func (b *KeysBindings[T]) Has(action key.Action) bool {
+func (b *Bindings[T]) Has(action key.Action) bool {
 	_, ok := b.keys[action]
 	return ok
 }
 
-func (b *KeysBindings[T]) Resolve(action key.Action) (T, bool) {
+func (b *Bindings[T]) Resolve(action key.Action) (T, bool) {
 	command, ok := b.keys[action]
 	if !ok {
 		var zero T
@@ -52,9 +52,9 @@ func (b *KeysBindings[T]) Resolve(action key.Action) (T, bool) {
 	return command.Command, true
 }
 
-func (b *KeysBindings[T]) Overlay(
-	overrides *KeysBindings[T],
-) *KeysBindings[T] {
+func (b *Bindings[T]) Overlay(
+	overrides *Bindings[T],
+) *Bindings[T] {
 	result := b.Clone()
 	if overrides == nil {
 		return result
@@ -64,20 +64,20 @@ func (b *KeysBindings[T]) Overlay(
 	return result
 }
 
-func (b *KeysBindings[T]) Bind(
+func (b *Bindings[T]) Bind(
 	action key.Action,
 	command T,
 	descriptors ...key.Descriptor,
-) *KeysBindings[T] {
+) *Bindings[T] {
 	b.TryBind(action, command, descriptors...)
 	return b
 }
 
-func (b *KeysBindings[T]) TryBind(
+func (b *Bindings[T]) TryBind(
 	action key.Action,
 	command T,
 	descriptors ...key.Descriptor,
-) (KeyBinding[T], bool) {
+) (Binding[T], bool) {
 	b.lazyInit()
 
 	var descriptor *key.Descriptor
@@ -89,7 +89,7 @@ func (b *KeysBindings[T]) TryBind(
 
 	previous, replaced := b.keys[action]
 
-	b.keys[action] = KeyBinding[T]{
+	b.keys[action] = Binding[T]{
 		Command:    command,
 		Descriptor: descriptor,
 	}
@@ -97,8 +97,8 @@ func (b *KeysBindings[T]) TryBind(
 	return previous, replaced
 }
 
-func (b *KeysBindings[T]) Clone() *KeysBindings[T] {
-	result := NewKeysBindings[T]()
+func (b *Bindings[T]) Clone() *Bindings[T] {	
+	result := NewBindings[T]()
 	maps.Copy(result.keys, b.keys)
 	result.resolver = b.resolver
 	return result
