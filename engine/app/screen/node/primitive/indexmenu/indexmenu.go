@@ -110,9 +110,7 @@ func (n *IndexMenu) tick(uiState *state.UIState, event screen.Event) screen.Resu
 		n.cursor = 0
 		n.tickToStore(uiState)
 	case key.ActionArrowRight:
-		optsLen := uint16(len(n.options))
-		optsLen = math.SubClampZero(optsLen, 1)
-		n.cursor = min(optsLen, n.cursor+1)
+		n.cursor = math.SubClampZero(size, 1)
 		n.tickToStore(uiState)
 	case key.ActionEnter:
 		n.tickToStore(uiState)
