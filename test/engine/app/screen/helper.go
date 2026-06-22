@@ -105,3 +105,18 @@ func Helper_Propagate(
 	assert.True(t, node.Stack.Has(name))
 	assert.Equal(t, name, node.Children()[child].Name)
 }
+
+func Helper_BindingsCover[T keymap.Command](
+	t *testing.T,
+	bindings *keymap.Bindings[T],
+	Commands []T,
+) {
+	found := bindings.Commands()
+
+	assert.Equal(t, len(Commands), len(found))
+
+	for _, cmd := range Commands {
+		_, ok := found[cmd]
+		assert.True(t, ok)
+	}
+}
