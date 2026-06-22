@@ -132,3 +132,18 @@ func (b *Bindings[T]) Clone() *Bindings[T] {
 	result.resolver = b.resolver
 	return result
 }
+
+func BindingsToDefinition[T Command](b *Bindings[T]) screen.Definition {
+	required := dict.NewLinkedMap[key.Action, key.Key]()
+	descriptor := dict.NewLinkedMap[key.Action, key.Descriptor]()
+
+	for k, v := range b.keys.All() {
+		required.Set(k, *key.NewKeyCode(k))
+		descriptor.Set(k, *v.Descriptor)
+	}
+
+	return screen.Definition{
+		RequireKeys: required,
+		Descriptor:  descriptor,
+	}
+}
