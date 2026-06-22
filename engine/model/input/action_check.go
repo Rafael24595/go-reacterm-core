@@ -5,14 +5,14 @@ type CheckActionHandler = func()
 func voidCheckHandler() {}
 
 type CheckAction struct {
-	ActionMode bool
-	Handler    CheckActionHandler
+	WriteMode bool
+	Handler   CheckActionHandler
 }
 
 func NewCheckAction(handler CheckActionHandler) *CheckAction {
 	return &CheckAction{
-		ActionMode: false,
-		Handler:    handler,
+		WriteMode: false,
+		Handler:   handler,
 	}
 }
 

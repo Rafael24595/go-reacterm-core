@@ -115,14 +115,14 @@ func (n *CheckMenu) loadFromStore(uiState state.UIState) {
 }
 
 func (n *CheckMenu) keys() screen.Definition {
-	if n.action.ActionMode {
+	if n.action.WriteMode {
 		return write_definition
 	}
 	return read_definition
 }
 
 func (n *CheckMenu) tick(uiState *state.UIState, event screen.Event) screen.Result {
-	if !n.action.ActionMode {
+	if !n.action.WriteMode {
 		return n.tickRead(uiState, event)
 	}
 
@@ -136,7 +136,7 @@ func (n *CheckMenu) tickNavigation(uiState *state.UIState, event screen.Event) s
 
 	switch ky.Code {
 	case key.ActionEsc:
-		n.action.ActionMode = false
+		n.action.WriteMode = false
 	case key.ActionEnter:
 		n.switchState(n.cursor)
 		n.applyLimit()
@@ -169,7 +169,7 @@ func (n *CheckMenu) tickRead(uiState *state.UIState, event screen.Event) screen.
 
 	switch ky.Code {
 	case key.ActionEnter:
-		n.action.ActionMode = true
+		n.action.WriteMode = true
 	}
 
 	return screen.ResultFromUIState(uiState)
@@ -238,7 +238,7 @@ func (n *CheckMenu) view(uiState state.UIState) viewmodel.ViewModel {
 	n.loadFromStore(uiState)
 
 	indexmenu := checkmenu.New(n.options).
-		WriteMode(n.action.ActionMode).
+		WriteMode(n.action.WriteMode).
 		Meta(n.meta).
 		Cursor(n.cursor)
 
