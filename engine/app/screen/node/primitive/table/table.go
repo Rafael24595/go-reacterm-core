@@ -1,8 +1,11 @@
 package table
 
 import (
+	assert "github.com/Rafael24595/go-assert/assert/runtime"
+	
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/cols"
@@ -13,7 +16,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/padding"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/table"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
@@ -26,27 +28,53 @@ const Name = "table"
 type MarshalFunc[T any] func(T) []table.Field
 
 type Table[T any] struct {
-	reference string
-	action    *input.TableAction
-	table     *table.Table
-	cursor    *input.MatrixCursor
-	positionY style.VerticalPosition
-	positionX style.HorizontalPosition
+	reference  string
+	loaded     bool
+	bindings   bindings
+	definition definition
+	action     *input.TableAction
+	table      *table.Table
+	cursor     *input.MatrixCursor
+	positionY  style.VerticalPosition
+	positionX  style.HorizontalPosition
 }
 
 func New[T any]() *Table[T] {
 	return &Table[T]{
-		reference: Name,
-		action:    input.NewTableAction(),
-		table:     table.NewTable(),
-		cursor:    input.NewMatrixCursor(0, 0, false),
-		positionY: style.Middle,
-		positionX: style.Center,
+		reference:  Name,
+		loaded:     false,
+		bindings:   defaultBindings,
+		definition: emptyDefinition(),
+		action:     input.NewTableAction(),
+		table:      table.NewTable(),
+		cursor:     input.NewMatrixCursor(0, 0, false),
+		positionY:  style.Middle,
+		positionX:  style.Center,
 	}
 }
 
 func (n *Table[T]) SetName(name string) *Table[T] {
 	n.reference = name
+	return n
+}
+
+func (n *Table[T]) WithWriteBindings(overrides *keymap.Bindings[CommandWrite]) *Table[T] {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings.write = n.bindings.write.Overlay(overrides)
+	return n
+}
+
+func (n *Table[T]) WithReadBindings(overrides *keymap.Bindings[CommandRead]) *Table[T] {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings.read = n.bindings.read.Overlay(overrides)
 	return n
 }
 
@@ -61,6 +89,11 @@ func (n *Table[T]) DisableAction() *Table[T] {
 }
 
 func (n *Table[T]) SetActionHandler(handler input.TableActionHandler) *Table[T] {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
 	n.action.Handler = handler
 	return n
 }
@@ -76,19 +109,31 @@ func (n *Table[T]) SetPositionX(position style.HorizontalPosition) *Table[T] {
 }
 
 func (n *Table[T]) SetHeaders(headers ...string) *Table[T] {
+	if n.loaded {
+		assert.Unreachable(screen.MessageNewElement)
+		return n
+	}
+
 	n.table = table.NewTable()
 	n.table.SetHeaders(headers...)
 	return n
 }
 
 func (n *Table[T]) AddItems(marshal MarshalFunc[T], items ...T) *Table[T] {
+	if n.loaded {
+		assert.Unreachable(screen.MessageNewElement)
+		return n
+	}
+
 	rows := n.table.RowCount()
+
 	for i, item := range items {
 		index := rows + uint16(i)
 		for _, field := range marshal(item) {
 			n.table.SetCell(field.Header, index, field.Value)
 		}
 	}
+
 	return n
 }
 
@@ -104,7 +149,14 @@ func (n *Table[T]) ToNode() screen.Node {
 }
 
 func (n *Table[T]) boot(uiState state.UIState) {
+	if n.loaded {
+		return
+	}
+
+	n.loaded = true
+
 	n.loadFromStore(uiState)
+	n.definition = definitionFromBindings(n.bindings)
 }
 
 func (n *Table[T]) loadFromStore(uiState state.UIState) {
@@ -125,12 +177,7 @@ func (n *Table[T]) keys() screen.Definition {
 	if !n.action.EnableMode {
 		return screen.EmptyDefinition()
 	}
-
-	if n.action.WriteMode {
-		return write_definition
-	}
-
-	return read_definition
+	return n.definition.get(n.action.WriteMode)
 }
 
 func (n *Table[T]) tick(uiState *state.UIState, event screen.Event) screen.Result {
@@ -143,28 +190,26 @@ func (n *Table[T]) tick(uiState *state.UIState, event screen.Event) screen.Resul
 	if !n.action.WriteMode {
 		return n.tickRead(uiState, event)
 	}
-	return n.tickeNavigation(uiState, event)
+	return n.tickWrite(uiState, event)
 }
 
-func (n *Table[T]) tickeNavigation(uiState *state.UIState, event screen.Event) screen.Result {
-	ky := event.Key
-
-	switch ky.Code {
-	case key.ActionEsc:
+func (n *Table[T]) tickWrite(uiState *state.UIState, event screen.Event) screen.Result {
+	switch n.bindings.write.Command(event.Key.Code) {
+	case CmdWriteReadMode:
 		n.action.WriteMode = false
 		n.cursor.Show = n.action.WriteMode
-	case key.ActionArrowLeft:
+	case CmdWriteMoveLeft:
 		n.cursor.DecCol()
 		n.tickToStore(uiState)
-	case key.ActionArrowRight:
+	case CmdWriteMoveRight:
 		n.cursor.IncCol(
 			math.SubClampZero(n.table.ColCount(), 1),
 		)
 		n.tickToStore(uiState)
-	case key.ActionArrowUp:
+	case CmdWriteMoveUp:
 		n.cursor.DecRow()
 		n.tickToStore(uiState)
-	case key.ActionArrowDown:
+	case CmdWriteMoveDown:
 		n.cursor.IncRow(
 			math.SubClampZero(n.table.RowCount(), 1),
 		)
@@ -175,10 +220,8 @@ func (n *Table[T]) tickeNavigation(uiState *state.UIState, event screen.Event) s
 }
 
 func (n *Table[T]) tickRead(uiState *state.UIState, event screen.Event) screen.Result {
-	ky := event.Key
-
-	switch ky.Code {
-	case key.ActionEnter:
+	switch n.bindings.read.Command(event.Key.Code) {
+	case CmdReadWriteMode:
 		n.action.WriteMode = true
 		n.cursor.Show = n.action.WriteMode
 	}
