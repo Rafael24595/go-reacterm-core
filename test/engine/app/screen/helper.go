@@ -6,6 +6,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
@@ -94,7 +95,12 @@ func Helper_ToNode(t *testing.T, node screen.Node) {
 	assert.NotNil(t, node.Screen.Tick, "Screen.Tick should be set")
 }
 
-func Helper_Propagate(t *testing.T, name string, child uint, node screen.Node) {
+func Helper_Propagate(
+	t *testing.T,
+	name string,
+	child uint,
+	node screen.Node,
+) {
 	assert.GreaterOrEqual(t, child+1, node.Children())
 	assert.True(t, node.Stack.Has(name))
 	assert.Equal(t, name, node.Children()[child].Name)
