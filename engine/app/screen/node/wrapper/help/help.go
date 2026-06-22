@@ -2,22 +2,29 @@ package help
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/help"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 )
 
 type Help struct {
-	visible bool
-	node    screen.Node
+	bindings *keymap.Bindings[Command]
+	visible  bool
+	node     screen.Node
 }
 
 func New(node screen.Node) *Help {
 	return &Help{
-		visible: false,
-		node:    node,
+		bindings: defaultBindings,
+		visible:  false,
+		node:     node,
 	}
+}
+
+func (n *Help) WithBindings(overrides *keymap.Bindings[Command]) *Help {
+	n.bindings = n.bindings.Overlay(overrides)
+	return n
 }
 
 func (n *Help) ToNode() screen.Node {
@@ -34,16 +41,24 @@ func (n *Help) ToNode() screen.Node {
 
 func (n *Help) tick(uiState *state.UIState, event screen.Event) screen.Result {
 	definition := n.node.Screen.Keys()
-
 	if !definition.IsRequired(event.Key) {
-		if event.Key.Code == key.CustomActionHelp {
-			n.visible = !n.visible
-		}
-
-		uiState.Helper.ShowHelp = n.visible
-		return screen.ResultFromUIState(uiState)
+		return n.localTick(uiState, event)
 	}
 
+	return n.childTick(uiState, event)
+}
+
+func (n *Help) localTick(uiState *state.UIState, event screen.Event) screen.Result {
+	switch n.bindings.Command(event.Key.Code) {
+	case CmdSwitchDisplay:
+		n.visible = !n.visible
+	}
+
+	uiState.Helper.ShowHelp = n.visible
+	return screen.ResultFromUIState(uiState)
+}
+
+func (n *Help) childTick(uiState *state.UIState, event screen.Event) screen.Result {
 	n.visible = uiState.Helper.ShowHelp
 
 	result := n.node.Screen.Tick(uiState, event)
