@@ -1,17 +1,39 @@
 package indexmenu
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 )
 
-var definition = screen.DefinitionFromActions(
-	[]key.Action{
-		key.ActionEnter,
-		key.ActionArrowLeft,
-		key.ActionArrowRight,
-		key.ActionArrowUp,
-		key.ActionArrowDown,
-		key.CustomActionPointer,
-	}...,
+type Command uint8
+
+const (
+	CmdNone Command = iota
+
+	CmdExecuteAction
+
+	CmdPrevOption
+	CommandNextOption
+
+	CmdFirstOption
+	CmdLastOption
+
+	CmdSwitchPointer
 )
+
+var Commands = []Command{
+	CmdExecuteAction,
+	CmdPrevOption,
+	CommandNextOption,
+	CmdFirstOption,
+	CmdLastOption,
+	CmdSwitchPointer,
+}
+
+var defaultBindings = keymap.NewBindings[Command]().
+	Bind(key.ActionEnter, CmdExecuteAction, key.NewDescriptor("Accept", "RET")).
+	Bind(key.ActionArrowLeft, CmdFirstOption,  key.NewDescriptor("←", "Move first")).
+	Bind(key.ActionArrowRight, CmdLastOption, key.NewDescriptor("→", "Move last")).
+	Bind(key.ActionArrowUp, CmdPrevOption).
+	Bind(key.ActionArrowDown, CommandNextOption).
+	Bind(key.CustomActionPointer, CmdSwitchPointer)

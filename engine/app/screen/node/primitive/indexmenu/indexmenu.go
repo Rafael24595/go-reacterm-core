@@ -1,35 +1,43 @@
 package indexmenu
 
 import (
+	assert "github.com/Rafael24595/go-assert/assert/runtime"
+	
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/inputline"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/indexmenu"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 )
 
 const Name = "index_menu"
 
 type IndexMenu struct {
-	reference string
-	pointer   uint8
-	meta      marker.IndexMeta
-	options   []input.MenuOption
-	cursor    uint16
+	reference  string
+	loaded     bool
+	bindings   *keymap.Bindings[Command]
+	definition screen.Definition
+	pointer    uint8
+	meta       marker.IndexMeta
+	options    []input.MenuOption
+	cursor     uint16
 }
 
 func New() *IndexMenu {
 	return &IndexMenu{
-		reference: Name,
-		pointer:   0,
-		meta:      marker.HyphenIndex,
-		options:   make([]input.MenuOption, 0),
-		cursor:    0,
+		reference:  Name,
+		loaded:     false,
+		bindings:   defaultBindings,
+		definition: screen.EmptyDefinition(),
+		pointer:    0,
+		meta:       marker.HyphenIndex,
+		options:    make([]input.MenuOption, 0),
+		cursor:     0,
 	}
 }
 
@@ -38,12 +46,32 @@ func (n *IndexMenu) SetName(name string) *IndexMenu {
 	return n
 }
 
+func (n *IndexMenu) WithBindings(overrides *keymap.Bindings[Command]) *IndexMenu {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings = n.bindings.Overlay(overrides)
+	return n
+}
+
 func (n *IndexMenu) SetMeta(meta marker.IndexMeta) *IndexMenu {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
 	n.meta = meta
 	return n
 }
 
 func (n *IndexMenu) AddOptions(options ...input.MenuOption) *IndexMenu {
+	if n.loaded {
+		assert.Unreachable(screen.MessageNewElement)
+		return n
+	}
+
 	n.options = append(n.options,
 		input.NormalizeMenuOptions(options...)...,
 	)
@@ -68,7 +96,14 @@ func (n *IndexMenu) ToNode() screen.Node {
 }
 
 func (n *IndexMenu) boot(uiState state.UIState) {
+	if n.loaded {
+		return
+	}
+
+	n.loaded = true
+
 	n.loadFromStore(uiState)
+	n.definition = keymap.BindingsToDefinition(n.bindings)
 }
 
 func (n *IndexMenu) loadFromStore(uiState state.UIState) {
@@ -90,7 +125,7 @@ func (n *IndexMenu) loadFromStore(uiState state.UIState) {
 }
 
 func (n *IndexMenu) keys() screen.Definition {
-	return definition
+	return n.definition
 }
 
 func (n *IndexMenu) tick(uiState *state.UIState, event screen.Event) screen.Result {
@@ -99,23 +134,23 @@ func (n *IndexMenu) tick(uiState *state.UIState, event screen.Event) screen.Resu
 		return screen.EmptyResult()
 	}
 
-	switch event.Key.Code {
-	case key.ActionArrowUp:
+	switch n.bindings.Command(event.Key.Code) {
+	case CmdPrevOption:
 		n.cursor = (n.cursor + size - 1) % size
 		n.tickToStore(uiState)
-	case key.ActionArrowDown:
+	case CommandNextOption:
 		n.cursor = (n.cursor + 1) % size
 		n.tickToStore(uiState)
-	case key.ActionArrowLeft:
+	case CmdFirstOption:
 		n.cursor = 0
 		n.tickToStore(uiState)
-	case key.ActionArrowRight:
+	case CmdLastOption:
 		n.cursor = math.SubClampZero(size, 1)
 		n.tickToStore(uiState)
-	case key.ActionEnter:
+	case CmdExecuteAction:
 		n.tickToStore(uiState)
 		return n.actionEnter()
-	case key.CustomActionPointer:
+	case CmdSwitchPointer:
 		n.pointer = indexmenu.NextPointer(n.pointer)
 	}
 
