@@ -6,22 +6,22 @@ func voidTableHandler(_ MatrixCursor) {}
 
 type TableAction struct {
 	EnableMode bool
-	ActionMode bool
+	WriteMode  bool
 	Handler    TableActionHandler
 }
 
 func NewTableAction(handler ...TableActionHandler) *TableAction {
-	enb := false
-	hdl := voidTableHandler
+	enable := false
+	handle := voidTableHandler
 	if len(handler) > 0 {
-		enb = true
-		hdl = handler[0]
+		enable = true
+		handle = handler[0]
 	}
 
 	return &TableAction{
-		EnableMode: enb,
-		ActionMode: false,
-		Handler:    hdl,
+		EnableMode: enable,
+		WriteMode:  false,
+		Handler:    handle,
 	}
 }
 

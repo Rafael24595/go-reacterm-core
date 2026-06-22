@@ -126,7 +126,7 @@ func (n *Table[T]) keys() screen.Definition {
 		return screen.EmptyDefinition()
 	}
 
-	if n.action.ActionMode {
+	if n.action.WriteMode {
 		return write_definition
 	}
 
@@ -140,7 +140,7 @@ func (n *Table[T]) tick(uiState *state.UIState, event screen.Event) screen.Resul
 		return screen.ResultFromUIState(uiState)
 	}
 
-	if !n.action.ActionMode {
+	if !n.action.WriteMode {
 		return n.tickRead(uiState, event)
 	}
 	return n.tickeNavigation(uiState, event)
@@ -151,8 +151,8 @@ func (n *Table[T]) tickeNavigation(uiState *state.UIState, event screen.Event) s
 
 	switch ky.Code {
 	case key.ActionEsc:
-		n.action.ActionMode = false
-		n.cursor.Show = n.action.ActionMode
+		n.action.WriteMode = false
+		n.cursor.Show = n.action.WriteMode
 	case key.ActionArrowLeft:
 		n.cursor.DecCol()
 		n.tickToStore(uiState)
@@ -179,8 +179,8 @@ func (n *Table[T]) tickRead(uiState *state.UIState, event screen.Event) screen.R
 
 	switch ky.Code {
 	case key.ActionEnter:
-		n.action.ActionMode = true
-		n.cursor.Show = n.action.ActionMode
+		n.action.WriteMode = true
+		n.cursor.Show = n.action.WriteMode
 	}
 
 	return screen.ResultFromUIState(uiState)
@@ -220,7 +220,7 @@ func (n *Table[T]) view(uiState state.UIState) viewmodel.ViewModel {
 	vm.Kernel.Push(position)
 
 	preficate := predicate.Page()
-	if n.action.EnableMode && n.action.ActionMode {
+	if n.action.EnableMode && n.action.WriteMode {
 		preficate = predicate.Focus()
 
 		cell, _ := n.table.FindCellByCoords(n.cursor.Row, n.cursor.Col)
