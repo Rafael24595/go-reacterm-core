@@ -3,20 +3,25 @@ package talk
 import (
 	"fmt"
 
+	assert "github.com/Rafael24595/go-assert/assert/runtime"
+	
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/inputline"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/talk"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/chat"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 )
 
 const Name = "talk"
 
 type Talk struct {
 	reference  string
+	loaded     bool
+	bindings   bindings
+	definition definition
 	navigation bool
 	pointer    uint8
 	owner      string
@@ -26,10 +31,13 @@ type Talk struct {
 
 func New() *Talk {
 	return &Talk{
-		reference: Name,
-		owner:     "",
-		messages:  make([]chat.Message, 0),
-		cursor:    0,
+		reference:  Name,
+		loaded:     false,
+		bindings:   defaultBindings,
+		definition: emptyDefinition(),
+		owner:      "",
+		messages:   make([]chat.Message, 0),
+		cursor:     0,
 	}
 }
 
@@ -38,7 +46,32 @@ func (n *Talk) SetName(name string) *Talk {
 	return n
 }
 
+func (n *Talk) WithWriteBindings(overrides *keymap.Bindings[CommandWrite]) *Talk {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings.write = n.bindings.write.Overlay(overrides)
+	return n
+}
+
+func (n *Talk) WithReadBindings(overrides *keymap.Bindings[CommandRead]) *Talk {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings.read = n.bindings.read.Overlay(overrides)
+	return n
+}
+
 func (n *Talk) SetOwner(owner string) *Talk {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
 	n.owner = owner
 	return n
 }
@@ -66,7 +99,14 @@ func (n *Talk) ToNode() screen.Node {
 }
 
 func (n *Talk) boot(uiState state.UIState) {
+	if n.loaded {
+		return
+	}
+
+	n.loaded = true
+
 	n.loadFromStore(uiState)
+	n.definition = definitionFromBindings(n.bindings)
 }
 
 func (n *Talk) loadFromStore(uiState state.UIState) {
@@ -86,7 +126,7 @@ func (n *Talk) loadFromStore(uiState state.UIState) {
 }
 
 func (n *Talk) keys() screen.Definition {
-	return definitions[n.navigation]
+	return n.definition.get(n.navigation)
 }
 
 func (n *Talk) tick(uiState *state.UIState, event screen.Event) screen.Result {
@@ -94,8 +134,8 @@ func (n *Talk) tick(uiState *state.UIState, event screen.Event) screen.Result {
 		return n.tickNavigation(uiState, event)
 	}
 
-	switch event.Key.Code {
-	case key.ActionEnter:
+	switch n.bindings.read.Command(event.Key.Code) {
+	case CmdReadWriteMode:
 		n.navigation = true
 	}
 
@@ -108,24 +148,23 @@ func (n *Talk) tickNavigation(uiState *state.UIState, event screen.Event) screen
 		return screen.ResultFromUIState(uiState)
 	}
 
-	switch event.Key.Code {
-	case key.ActionEsc:
+	switch n.bindings.write.Command(event.Key.Code) {
+	case CmdWriteReadMode:
 		n.navigation = false
-	case key.ActionArrowUp:
+	case CmdWritePrevOption:
 		n.cursor = (n.cursor + size - 1) % size
 		n.tickToStore(uiState)
-	case key.ActionArrowDown:
+	case CmdWriteNextOption:
 		n.cursor = (n.cursor + 1) % size
 		n.tickToStore(uiState)
-	case key.ActionArrowLeft:
+	case CmdWriteFirstOption:
 		n.cursor = 0
 		n.tickToStore(uiState)
-	case key.ActionArrowRight:
+	case CmdWriteLastOption:
 		optsLen := uint16(len(n.messages))
-		optsLen = math.SubClampZero(optsLen, 1)
-		n.cursor = min(optsLen, n.cursor+1)
+		n.cursor = math.SubClampZero(optsLen, 1)
 		n.tickToStore(uiState)
-	case key.CustomActionPointer:
+	case CmdWriteSwitchPointer:
 		n.pointer = talk.NextPointer(n.pointer)
 	}
 
