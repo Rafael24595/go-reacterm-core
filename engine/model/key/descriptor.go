@@ -17,7 +17,7 @@ func NewDescriptor(detail string, codes ...string) Descriptor {
 	}
 }
 
-var actionHelpMap = map[Action]Descriptor{
+var descriptors = map[Action]Descriptor{
 	ActionArrowUp:    NewDescriptor("Move up", "↑"),
 	ActionArrowDown:  NewDescriptor("Move down", "↓"),
 	ActionArrowLeft:  NewDescriptor("Move left", "←"),
@@ -87,7 +87,7 @@ func resolveDescriptor(
 		}
 	}
 
-	if str, exist := actionHelpMap[action]; exist {
+	if str, exist := descriptors[action]; exist {
 		return &str
 	}
 
