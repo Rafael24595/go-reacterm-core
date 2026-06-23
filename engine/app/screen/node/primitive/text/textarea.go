@@ -173,6 +173,7 @@ func (n *TextArea) tickWrite(uiState *state.UIState, event screen.Event) screen.
 	switch ky.Code {
 	case key.ActionEsc:
 		n.writeMode = false
+		n.tickToStore(uiState)
 		return screen.ResultFromUIState(uiState)
 
 	case key.ActionHome:
