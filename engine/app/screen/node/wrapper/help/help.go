@@ -67,7 +67,10 @@ func (n *Help) childTick(uiState *state.UIState, event screen.Event) screen.Resu
 	}
 
 	newWrapper := New(*result.Node)
+
+	newWrapper.bindings = n.bindings
 	newWrapper.visible = n.visible
+
 	newScreen := newWrapper.ToNode()
 	result.Node = &newScreen
 
