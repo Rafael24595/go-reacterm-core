@@ -34,7 +34,7 @@ var CommandsRead = []CommandRead{
 }
 
 var defaultReadBindings = keymap.NewBindings[CommandRead]().
-	Bind(key.ActionEnter, CmdReadWriteMode, key.NewDescriptor("Read mode", "RET"))
+	Bind(key.ActionEnter, CmdReadWriteMode, key.NewDescriptor("Write mode", "RET"))
 
 var CommandsWrite = []CommandWrite{
 	CmdWriteReadMode,
@@ -46,7 +46,7 @@ var CommandsWrite = []CommandWrite{
 }
 
 var defaultWriteBindings = keymap.NewBindings[CommandWrite]().
-	Bind(key.ActionEsc, CmdWriteReadMode, key.NewDescriptor("Write mode", "ESC")).
+	Bind(key.ActionEsc, CmdWriteReadMode, key.NewDescriptor("Read mode", "ESC")).
 	Bind(key.ActionEnter, CmdWriteExecuteAction, key.NewDescriptor("Active selected", "RET")).
 	Bind(key.ActionArrowUp, CmdWriteMoveUp).
 	Bind(key.ActionArrowDown, CmdWriteMoveDown).
