@@ -35,6 +35,9 @@ var actionHelpMap = map[Action]Descriptor{
 	ActionDeleteBackward: NewDescriptor("Delete word", "^W"),
 	ActionDeleteForward:  NewDescriptor("Delete word fwd", "^D"),
 
+	ActionPageUp:   NewDescriptor("⇞", "Prev page"),
+	ActionPageDown: NewDescriptor("⇟", "Next page"),
+
 	CustomActionUndo:  NewDescriptor("Undo", "^G"),
 	CustomActionRedo:  NewDescriptor("Redo", "^T"),
 	CustomActionHelp:  NewDescriptor("Help", "M-h"),
