@@ -8,10 +8,10 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
@@ -19,6 +19,9 @@ import (
 const errf_unhandled = "unhandled pager type '%d'"
 
 type Pagination struct {
+	loaded      bool
+	bindings    bindings
+	definition  definition
 	actionKind  action.Kind
 	forceAction *action.Action
 	node        screen.Node
@@ -26,10 +29,43 @@ type Pagination struct {
 
 func New(screen screen.Node) *Pagination {
 	return &Pagination{
+		loaded:      false,
+		bindings:    defaultBindings,
+		definition:  emptyDefinition(),
 		actionKind:  action.KindPaged,
 		forceAction: nil,
 		node:        screen,
 	}
+}
+
+func (n *Pagination) WithBaseBindings(overrides *keymap.Bindings[Command]) *Pagination {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings.base = n.bindings.base.Overlay(overrides)
+	return n
+}
+
+func (n *Pagination) WithBindingsForPaged(overrides *keymap.Bindings[Command]) *Pagination {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings.pager = n.bindings.pager.Overlay(overrides)
+	return n
+}
+
+func (n *Pagination) WithBindingsForScroll (overrides *keymap.Bindings[Command]) *Pagination {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings.scroll = n.bindings.scroll.Overlay(overrides)
+	return n
 }
 
 func (n *Pagination) ForceEngine(forceAction action.Action) *Pagination {
@@ -43,7 +79,7 @@ func (n *Pagination) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.node.Name).
 		AddStack(n.node.Stack).
-		Boot(n.node.Screen.Boot).
+		Boot(n.boot).
 		Keys(n.keys).
 		Tick(n.tick).
 		View(n.view).
@@ -51,20 +87,18 @@ func (n *Pagination) ToNode() screen.Node {
 		ToNode()
 }
 
-func (n *Pagination) keys() screen.Definition {
-	node := n.node.Screen.Keys()
-	return base_definition.Merge(
-		n.findDefinition().Merge(node),
-	)
-}
-
-func (n *Pagination) findDefinition() screen.Definition {
-	if source, ok := definitions[n.actionKind]; ok {
-		return source
+func (n *Pagination) boot(uiState state.UIState) {
+	if !n.loaded {
+		n.loaded = true
+		n.definition = definitionFromBindings(n.bindings)
 	}
 
-	assert.Unreachable("unhandled action definition %d", n.actionKind)
-	return pager_definition
+	n.node.Screen.Boot(uiState)
+}
+
+func (n *Pagination) keys() screen.Definition {
+	return n.definition.get(n.actionKind).
+		Merge(n.node.Screen.Keys())
 }
 
 func (n *Pagination) tick(uiState *state.UIState, event screen.Event) screen.Result {
@@ -77,38 +111,44 @@ func (n *Pagination) tick(uiState *state.UIState, event screen.Event) screen.Res
 		}
 	}
 
-	result := n.node.Screen.Tick(uiState, event)
-	if result.Node == nil {
-		return result
-	}
-
-	newWrapper := New(*result.Node)
-	newWrapper.actionKind = n.actionKind
-	newWrapper.forceAction = n.forceAction
-	newNode := newWrapper.ToNode()
-	result.Node = &newNode
-
-	return result
+	return n.childTick(uiState, event)
 }
 
 func (n *Pagination) localTick(uiState *state.UIState, event screen.Event) *screen.Result {
-	keys, ok := keys[n.actionKind]
+	binding := n.bindings.get(n.actionKind)
 
-	assert.True(ok, errf_unhandled, action.KindPaged)
-
-	if event.Key.Code == key.ActionPageUp || event.Key.Code == keys.back {
+	switch binding.Command(event.Key.Code) {
+	case CmdPageUp, CmdPrevPage:
 		uiState.Pager.DecTarget()
 		result := screen.ResultFromUIState(uiState)
 		return &result
-	}
-
-	if event.Key.Code == key.ActionPageDown || event.Key.Code == keys.next {
+	case CmdPageDown, CmdNextPage:
 		uiState.Pager.IncTarget()
 		result := screen.ResultFromUIState(uiState)
 		return &result
 	}
 
 	return nil
+}
+
+func (n *Pagination) childTick(uiState *state.UIState, event screen.Event) screen.Result {
+	result := n.node.Screen.Tick(uiState, event)
+	if result.Node == nil {
+		return result
+	}
+
+	newWrapper := New(*result.Node)
+
+	newWrapper.loaded = n.loaded
+	newWrapper.bindings = n.bindings
+	newWrapper.definition = n.definition
+	newWrapper.actionKind = n.actionKind
+	newWrapper.forceAction = n.forceAction
+
+	newNode := newWrapper.ToNode()
+	result.Node = &newNode
+
+	return result
 }
 
 func (n *Pagination) view(uiState state.UIState) viewmodel.ViewModel {
