@@ -1,6 +1,8 @@
 package form
 
 import (
+	assert "github.com/Rafael24595/go-assert/assert/runtime"
+	
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/dummy"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
@@ -11,7 +13,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/inputline"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/gutter"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/form"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
@@ -20,29 +21,37 @@ import (
 const Name = "form"
 
 type Form struct {
-	reference string
-	pointer   uint8
-	focused   bool
-	cursor    uint16
-	items     []entry.Entry
-	dummies   set.Set[int]
+	reference  string
+	loaded     bool
+	bindings   bindings
+	definition definition
+	pointer    uint8
+	focused    bool
+	cursor     uint16
+	items      []entry.Entry
+	dummies    set.Set[int]
 }
 
 func New() *Form {
 	return &Form{
-		reference: Name,
-		pointer:   0,
-		focused:   false,
-		cursor:    0,
-		items:     make([]entry.Entry, 0),
-		dummies:   set.New[int](),
+		reference:  Name,
+		loaded:     false,
+		bindings:   defaultBindings,
+		definition: emptyDefinition(),
+		pointer:    0,
+		focused:    false,
+		cursor:     0,
+		items:      make([]entry.Entry, 0),
+		dummies:    set.New[int](),
 	}
 }
 
-func (n *Form) AddNode(
-	node screen.Node,
-	opts ...entry.Option,
-) *Form {
+func (n *Form) AddNode(node screen.Node, opts ...entry.Option) *Form {
+	if n.loaded {
+		assert.Unreachable(screen.MessageNewElement)
+		return n
+	}
+
 	n.items = append(n.items,
 		entry.New(node, opts...),
 	)
@@ -50,6 +59,11 @@ func (n *Form) AddNode(
 }
 
 func (n *Form) AddBreak(rows ...winsize.Rows) *Form {
+	if n.loaded {
+		assert.Unreachable(screen.MessageNewElement)
+		return n
+	}
+
 	fixed := winsize.Rows(1)
 	if len(rows) > 0 {
 		fixed = rows[0]
@@ -85,64 +99,108 @@ func (n *Form) ToNode() screen.Node {
 }
 
 func (n *Form) boot(uiState state.UIState) {
+	if n.loaded {
+		return
+	}
+
+	n.loaded = true
+	n.definition = definitionFromBindings(n.bindings)
+
 	for _, item := range n.items {
 		item.Node.Screen.Boot(uiState)
 	}
 }
 
 func (n *Form) keys() screen.Definition {
-	local := sources
-
-	item := n.items[n.cursor]
-	if item.Selectable {
-		local = local.Merge(
-			item.Node.Screen.Keys(),
-		)
+	local := n.definition.get(n.focused)
+	if !n.focused {
+		return local
 	}
 
-	return local
+	focus, ok := n.focusItem()
+	if !ok || !focus.Selectable {
+		return local
+	}
+
+	return local.Merge(
+		focus.Node.Screen.Keys(),
+	)
 }
 
 func (n *Form) tick(uiState *state.UIState, event screen.Event) screen.Result {
-	focus, ok := n.focusItem()
-
-	definition := focus.Node.Screen.Keys()
-	required := ok && definition.IsRequired(event.Key)
-
-	if required {
-		result := n.focusTick(uiState, event, focus)
-		if event.Key.Code != key.ActionEsc {
-			return result
-		}
+	if !n.focused {
+		return n.readTick(uiState, event)
 	}
-
-	return n.localTick(uiState, event)
+	return n.writeTick(uiState, event)
 }
 
-func (n *Form) localTick(uiState *state.UIState, event screen.Event) screen.Result {
-	ky := event.Key
-
-	switch ky.Code {
-	case key.ActionEsc:
+func (n *Form) writeTick(uiState *state.UIState, event screen.Event) screen.Result {
+	switch n.bindings.write.Command(event.Key.Code) {
+	case CmdWriteReadMode:
 		n.focused = false
-	case key.ActionArrowUp:
+	}
+
+	return n.tryFocusTick(uiState, event)
+}
+
+func (n *Form) readTick(uiState *state.UIState, event screen.Event) screen.Result {
+	switch n.bindings.read.Command(event.Key.Code) {
+	case CmdReadWriteMode:
+		n.focused = true
+		return n.tryFocusTick(uiState, event)
+	case CmdReadPrevOption:
 		n.cursor = n.decCursor()
-	case key.ActionArrowDown:
+	case CmdReadNextOption:
 		n.cursor = n.incCursor()
-	case key.ActionArrowLeft:
+	case CmdReadFirstOption:
 		n.setCursor(0)
 		n.cursor = n.incCursor(0)
-	case key.ActionArrowRight:
+	case CmdReadLastOption:
 		items := len(n.items)
 		n.setCursor(uint16(items))
 		n.cursor = n.decCursor(0)
-	case key.ActionEnter:
-		n.focused = true
-	case key.CustomActionPointer:
+	case CmdReadSwitchPointer:
 		n.pointer = form.NextPointer(n.pointer)
 	}
 
 	return screen.ResultFromUIState(uiState)
+}
+
+func (n *Form) tryFocusTick(uiState *state.UIState, event screen.Event) screen.Result {
+	focus, ok := n.focusItem()
+	if !ok {
+		return screen.ResultFromUIState(uiState)
+	}
+
+	definition := focus.Node.Screen.Keys()
+	if !definition.IsRequired(event.Key) {
+		return screen.ResultFromUIState(uiState)
+	}
+
+	return n.focusTick(uiState, event, focus)
+}
+
+func (n *Form) focusTick(uiState *state.UIState, event screen.Event, focus entry.Entry) screen.Result {
+	result := focus.Node.Screen.Tick(uiState, event)
+	if result.Node == nil {
+		return result
+	}
+
+	newItems := make([]entry.Entry, len(n.items))
+	copy(newItems, n.items)
+
+	newWrapper := New()
+
+	newWrapper.reference = n.reference
+	newWrapper.pointer = n.pointer
+	newWrapper.focused = n.focused
+	newWrapper.cursor = n.cursor
+	newWrapper.items = newItems
+
+	newNode := newWrapper.ToNode()
+	result.Node = &newNode
+
+	return result
 }
 
 func (n *Form) setCursor(cursor uint16) uint16 {
@@ -198,29 +256,6 @@ func (n *Form) moveCursor(sign bool, step int) uint16 {
 	}
 
 	return n.cursor
-}
-
-func (n *Form) focusTick(uiState *state.UIState, event screen.Event, focus entry.Entry) screen.Result {
-	result := focus.Node.Screen.Tick(uiState, event)
-
-	if result.Node == nil {
-		return result
-	}
-
-	newItems := make([]entry.Entry, len(n.items))
-	copy(newItems, n.items)
-
-	newWrapper := New()
-	newWrapper.reference = n.reference
-	newWrapper.pointer = n.pointer
-	newWrapper.focused = n.focused
-	newWrapper.cursor = n.cursor
-	newWrapper.items = newItems
-
-	newNode := newWrapper.ToNode()
-	result.Node = &newNode
-
-	return result
 }
 
 func (n *Form) view(uiState state.UIState) viewmodel.ViewModel {
