@@ -8,6 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap/rw"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
@@ -26,8 +27,8 @@ const Name = "check_menu"
 type CheckMenu struct {
 	reference    string
 	loaded       bool
-	bindings     bindings
-	definition   definition
+	bindings     rw.Bindings[CommandRead, CommandWrite]
+	definition   rw.Definition
 	clock        clock.Clock
 	action       *input.CheckAction
 	meta         marker.CheckMeta
@@ -42,7 +43,7 @@ func New() *CheckMenu {
 		reference:  Name,
 		loaded:     false,
 		bindings:   defaultBindings,
-		definition: emptyDefinition(),
+		definition: rw.EmptyDefinition(),
 		clock:      clock.UnixMilliClock,
 		action:     input.EmptyCheckAction(),
 		meta:       marker.BracketsCheck,
@@ -63,7 +64,7 @@ func (n *CheckMenu) WithWriteBindings(overrides *keymap.Bindings[CommandWrite]) 
 		return n
 	}
 
-	n.bindings.write = n.bindings.write.Overlay(overrides)
+	n.bindings.Write = n.bindings.Write.Overlay(overrides)
 	return n
 }
 
@@ -73,7 +74,7 @@ func (n *CheckMenu) WithReadBindings(overrides *keymap.Bindings[CommandRead]) *C
 		return n
 	}
 
-	n.bindings.read = n.bindings.read.Overlay(overrides)
+	n.bindings.Read = n.bindings.Read.Overlay(overrides)
 	return n
 }
 
@@ -142,7 +143,7 @@ func (n *CheckMenu) boot(uiState state.UIState) {
 	n.loaded = true
 
 	n.loadFromStore(uiState)
-	n.definition = definitionFromBindings(n.bindings)
+	n.definition = rw.DefinitionFromBindings(n.bindings)
 }
 
 func (n *CheckMenu) loadFromStore(uiState state.UIState) {
@@ -165,7 +166,7 @@ func (n *CheckMenu) loadFromStore(uiState state.UIState) {
 }
 
 func (n *CheckMenu) keys() screen.Definition {
-	return n.definition.get(n.action.WriteMode)
+	return n.definition.Get(n.action.WriteMode)
 }
 
 func (n *CheckMenu) tick(uiState *state.UIState, event screen.Event) screen.Result {
@@ -178,7 +179,7 @@ func (n *CheckMenu) tick(uiState *state.UIState, event screen.Event) screen.Resu
 func (n *CheckMenu) tickWrite(uiState *state.UIState, event screen.Event) screen.Result {
 	optsLen := uint16(len(n.options))
 
-	switch n.bindings.write.Command(event.Key.Code) {
+	switch n.bindings.Write.Command(event.Key.Code) {
 	case CmdWriteReadMode:
 		n.action.WriteMode = false
 	case CmdWriteSwitchState:
@@ -209,7 +210,7 @@ func (n *CheckMenu) tickToStore(uiState *state.UIState) {
 }
 
 func (n *CheckMenu) tickRead(uiState *state.UIState, event screen.Event) screen.Result {
-	switch n.bindings.read.Command(event.Key.Code) {
+	switch n.bindings.Read.Command(event.Key.Code) {
 	case CmdReadWriteMode:
 		n.action.WriteMode = true
 	}
