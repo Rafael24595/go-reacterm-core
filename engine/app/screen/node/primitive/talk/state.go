@@ -6,6 +6,16 @@ import (
 )
 
 const (
-	KeyCursor   store.Key[uint16]         = "talk_cursor"
-	KeyMessages store.Key[[]chat.Message] = "talk_messages"
+	KeyState store.Key[State] = "talk_state"
+	KeySync  store.Key[Sync]  = "talk_sync"
 )
+
+type State struct {
+	Cursor   uint16
+	Messages []chat.Message
+}
+
+type Sync struct {
+	Cursor   *uint16
+	Messages *[]chat.Message
+}

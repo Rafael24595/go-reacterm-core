@@ -111,19 +111,23 @@ func (n *Talk) boot(uiState state.UIState) {
 }
 
 func (n *Talk) loadFromStore(uiState state.UIState) {
-	if cursor, ok := KeyCursor.Get(
+	sync, ok := KeySync.Take(
 		uiState.Store,
 		n.reference,
-	); ok {
-		n.cursor = cursor
+	)
+
+	if !ok {
+		return
 	}
 
-	if messages, ok := KeyMessages.Get(
-		uiState.Store,
-		n.reference,
-	); ok {
-		n.messages = messages
+	if sync.Cursor != nil {
+		n.cursor = *sync.Cursor
 	}
+
+	if sync.Messages != nil {
+		n.messages = *sync.Messages
+	}
+
 }
 
 func (n *Talk) keys() screen.Definition {
@@ -173,16 +177,15 @@ func (n *Talk) tickNavigation(uiState *state.UIState, event screen.Event) screen
 }
 
 func (n *Talk) tickToStore(uiState *state.UIState) {
-	KeyCursor.Set(
-		uiState.Store,
-		n.reference,
-		n.cursor,
-	)
+	state := State{
+		Cursor:   n.cursor,
+		Messages: n.messages,
+	}
 
-	KeyMessages.Set(
+	KeyState.Set(
 		uiState.Store,
 		n.reference,
-		n.messages,
+		state,
 	)
 }
 

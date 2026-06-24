@@ -35,34 +35,37 @@ func TestTalk_Boot(t *testing.T) {
 		},
 	}
 
-	menu := New().AddMessage(messges...)
-	node := menu.ToNode()
+	talk := New().AddMessage(messges...)
+	node := talk.ToNode()
 
-	assert.Equal(t, 0, menu.cursor)
-	assert.Size(t, 4, menu.messages)
+	assert.Equal(t, 0, talk.cursor)
+	assert.Size(t, 4, talk.messages)
 
 	uiState := state.NewUIState()
 
-	KeyCursor.Set(
-		uiState.Store,
-		node.Name,
-		4,
-	)
+	cursor := uint16(4)
+	newMessages := append(messges,
+		chat.Message{
+			Message: "message_05",
+		})
 
-	KeyMessages.Set(
+	KeySync.Set(
 		uiState.Store,
 		node.Name,
-		append(messges,
-			chat.Message{
-				Message: "message_05",
-			},
-		),
+		Sync{
+			Cursor:   &cursor,
+			Messages: &newMessages,
+		},
 	)
 
 	node.Screen.Boot(*uiState)
 
-	assert.Equal(t, 4, menu.cursor)
-	assert.Size(t, 5, menu.messages)
+	_, ok := KeySync.Get(uiState.Store, talk.reference)
+
+	assert.False(t, ok)
+
+	assert.Equal(t, 4, talk.cursor)
+	assert.Size(t, 5, talk.messages)
 }
 
 func TestTalk_Stack(t *testing.T) {
