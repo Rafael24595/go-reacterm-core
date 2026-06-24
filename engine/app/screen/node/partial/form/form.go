@@ -2,8 +2,9 @@ package form
 
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap/rw"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/dummy"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -23,8 +24,8 @@ const Name = "form"
 type Form struct {
 	reference  string
 	loaded     bool
-	bindings   bindings
-	definition definition
+	bindings   rw.Bindings[CommandRead, CommandWrite]
+	definition rw.Definition
 	pointer    uint8
 	focused    bool
 	cursor     uint16
@@ -37,7 +38,7 @@ func New() *Form {
 		reference:  Name,
 		loaded:     false,
 		bindings:   defaultBindings,
-		definition: emptyDefinition(),
+		definition: rw.EmptyDefinition(),
 		pointer:    0,
 		focused:    false,
 		cursor:     0,
@@ -104,7 +105,7 @@ func (n *Form) boot(uiState state.UIState) {
 	}
 
 	n.loaded = true
-	n.definition = definitionFromBindings(n.bindings)
+	n.definition = rw.DefinitionFromBindings(n.bindings)
 
 	for _, item := range n.items {
 		item.Node.Screen.Boot(uiState)
@@ -112,7 +113,7 @@ func (n *Form) boot(uiState state.UIState) {
 }
 
 func (n *Form) keys() screen.Definition {
-	local := n.definition.get(n.focused)
+	local := n.definition.Get(n.focused)
 	if !n.focused {
 		return local
 	}
@@ -135,7 +136,7 @@ func (n *Form) tick(uiState *state.UIState, event screen.Event) screen.Result {
 }
 
 func (n *Form) writeTick(uiState *state.UIState, event screen.Event) screen.Result {
-	switch n.bindings.write.Command(event.Key.Code) {
+	switch n.bindings.Write.Command(event.Key.Code) {
 	case CmdWriteReadMode:
 		n.focused = false
 	}
@@ -144,7 +145,7 @@ func (n *Form) writeTick(uiState *state.UIState, event screen.Event) screen.Resu
 }
 
 func (n *Form) readTick(uiState *state.UIState, event screen.Event) screen.Result {
-	switch n.bindings.read.Command(event.Key.Code) {
+	switch n.bindings.Read.Command(event.Key.Code) {
 	case CmdReadWriteMode:
 		n.focused = true
 		return n.tryFocusTick(uiState, event)
