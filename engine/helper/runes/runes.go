@@ -248,10 +248,22 @@ func Measure(text string) winsize.Cols {
 	return winsize.Cols(measure(text))
 }
 
+func MeasureRunes(runes []rune) winsize.Cols {
+	return winsize.Cols(measureRunes(runes))
+}
+
 func Measureo(text string) offset.Offset {
 	return offset.Offset(measure(text))
 }
 
+func MeasureoRunes(runes []rune) offset.Offset {
+	return offset.Offset(measureRunes(runes))
+}
+
 func measure(text string) int {
 	return utf8.RuneCountInString(text)
+}
+
+func measureRunes(runes []rune) int {
+	return len(runes)
 }
