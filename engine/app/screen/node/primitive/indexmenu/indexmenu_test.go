@@ -46,13 +46,17 @@ func TestIndexMenu_Boot(t *testing.T) {
 	node := menu.ToNode()
 
 	uiState := state.NewUIState()
-	KeyActive.Set(
+	KeySync.Set(
 		uiState.Store,
 		node.Name,
 		"1",
 	)
 
 	node.Screen.Boot(*uiState)
+
+	_, ok := KeySync.Get(uiState.Store, menu.reference)
+
+	assert.False(t, ok)
 
 	assert.Equal(t, 3, menu.cursor)
 }
