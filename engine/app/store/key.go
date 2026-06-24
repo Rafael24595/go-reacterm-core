@@ -30,6 +30,10 @@ func (t Key[T]) Upsert(c *Store, scope string, updater Updater[T]) Key[T] {
 	return t
 }
 
+func (t Key[T]) Take(c *Store, scope string) (T, bool) {
+	return Remove(c, scope, t)
+}
+
 func (t Key[T]) Delete(c *Store, scope string) Key[T] {
 	Remove(c, scope, t)
 	return t
