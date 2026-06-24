@@ -37,19 +37,26 @@ func TestIndexMenu_Boot(t *testing.T) {
 
 	uiState := state.NewUIState()
 
-	KeyState.Set(
+	row := uint16(1)
+	col := uint16(3)
+
+	KeySync.Set(
 		uiState.Store,
 		menu.reference,
-		State{
-			Row: 1,
-			Col: 3,
+		Sync{
+			Row: &row,
+			Col: &col,
 		},
 	)
 
 	node.Screen.Boot(*uiState)
 
-	assert.Equal(t, 1, menu.cursor.Row)
-	assert.Equal(t, 3, menu.cursor.Col)
+	_, ok := KeySync.Get(uiState.Store, menu.reference)
+
+	assert.False(t, ok)
+
+	assert.Equal(t, row, menu.cursor.Row)
+	assert.Equal(t, col, menu.cursor.Col)
 }
 
 func TestTable_Stack(t *testing.T) {

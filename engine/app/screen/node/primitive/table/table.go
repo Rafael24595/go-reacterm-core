@@ -161,7 +161,7 @@ func (n *Table[T]) boot(uiState state.UIState) {
 }
 
 func (n *Table[T]) loadFromStore(uiState state.UIState) {
-	state, ok := KeyState.Get(
+	sync, ok := KeySync.Take(
 		uiState.Store,
 		n.reference,
 	)
@@ -170,8 +170,13 @@ func (n *Table[T]) loadFromStore(uiState state.UIState) {
 		return
 	}
 
-	n.cursor.Row = min(n.table.RowCount(), state.Row)
-	n.cursor.Col = min(n.table.ColCount(), state.Col)
+	if sync.Row != nil {
+		n.cursor.Row = min(n.table.RowCount(), *sync.Row)
+	}
+
+	if sync.Col != nil {
+		n.cursor.Col = min(n.table.ColCount(), *sync.Col)
+	}
 }
 
 func (n *Table[T]) keys() screen.Definition {
@@ -231,7 +236,7 @@ func (n *Table[T]) tickRead(uiState *state.UIState, event screen.Event) screen.R
 }
 
 func (n *Table[T]) tickToStore(uiState *state.UIState) {
-	tableState := State{
+	state := State{
 		Row: n.cursor.Row,
 		Col: n.cursor.Col,
 	}
@@ -239,7 +244,7 @@ func (n *Table[T]) tickToStore(uiState *state.UIState) {
 	KeyState.Set(
 		uiState.Store,
 		n.reference,
-		tableState,
+		state,
 	)
 }
 
