@@ -2,10 +2,11 @@ package table
 
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap/rw"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/cols"
@@ -30,8 +31,8 @@ type MarshalFunc[T any] func(T) []table.Field
 type Table[T any] struct {
 	reference  string
 	loaded     bool
-	bindings   bindings
-	definition definition
+	bindings   rw.Bindings[CommandRead, CommandWrite]
+	definition rw.Definition
 	action     *input.TableAction
 	table      *table.Table
 	cursor     *input.MatrixCursor
@@ -44,7 +45,7 @@ func New[T any]() *Table[T] {
 		reference:  Name,
 		loaded:     false,
 		bindings:   defaultBindings,
-		definition: emptyDefinition(),
+		definition: rw.EmptyDefinition(),
 		action:     input.NewTableAction(),
 		table:      table.NewTable(),
 		cursor:     input.NewMatrixCursor(0, 0, false),
@@ -64,7 +65,7 @@ func (n *Table[T]) WithWriteBindings(overrides *keymap.Bindings[CommandWrite]) *
 		return n
 	}
 
-	n.bindings.write = n.bindings.write.Overlay(overrides)
+	n.bindings.Write = n.bindings.Write.Overlay(overrides)
 	return n
 }
 
@@ -74,7 +75,7 @@ func (n *Table[T]) WithReadBindings(overrides *keymap.Bindings[CommandRead]) *Ta
 		return n
 	}
 
-	n.bindings.read = n.bindings.read.Overlay(overrides)
+	n.bindings.Read = n.bindings.Read.Overlay(overrides)
 	return n
 }
 
@@ -156,7 +157,7 @@ func (n *Table[T]) boot(uiState state.UIState) {
 	n.loaded = true
 
 	n.loadFromStore(uiState)
-	n.definition = definitionFromBindings(n.bindings)
+	n.definition = rw.DefinitionFromBindings(n.bindings)
 }
 
 func (n *Table[T]) loadFromStore(uiState state.UIState) {
@@ -177,7 +178,7 @@ func (n *Table[T]) keys() screen.Definition {
 	if !n.action.EnableMode {
 		return screen.EmptyDefinition()
 	}
-	return n.definition.get(n.action.WriteMode)
+	return n.definition.Get(n.action.WriteMode)
 }
 
 func (n *Table[T]) tick(uiState *state.UIState, event screen.Event) screen.Result {
@@ -194,7 +195,7 @@ func (n *Table[T]) tick(uiState *state.UIState, event screen.Event) screen.Resul
 }
 
 func (n *Table[T]) tickWrite(uiState *state.UIState, event screen.Event) screen.Result {
-	switch n.bindings.write.Command(event.Key.Code) {
+	switch n.bindings.Write.Command(event.Key.Code) {
 	case CmdWriteReadMode:
 		n.action.WriteMode = false
 		n.cursor.Show = n.action.WriteMode
@@ -220,7 +221,7 @@ func (n *Table[T]) tickWrite(uiState *state.UIState, event screen.Event) screen.
 }
 
 func (n *Table[T]) tickRead(uiState *state.UIState, event screen.Event) screen.Result {
-	switch n.bindings.read.Command(event.Key.Code) {
+	switch n.bindings.Read.Command(event.Key.Code) {
 	case CmdReadWriteMode:
 		n.action.WriteMode = true
 		n.cursor.Show = n.action.WriteMode
