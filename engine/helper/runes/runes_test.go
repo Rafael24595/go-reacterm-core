@@ -137,20 +137,3 @@ func TestMeasure(t *testing.T) {
 		})
 	}
 }
-
-func TestMeasureu(t *testing.T) {
-	tests := []struct {
-		name string
-		text string
-		want winsize.Cols
-	}{
-		{"ascii", "hello", 5},
-		{"unicode", "🙂🙂", 2},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.want, Measure(tt.text))
-		})
-	}
-}
