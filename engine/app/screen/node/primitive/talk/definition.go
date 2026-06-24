@@ -3,8 +3,8 @@ package talk
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap/rw"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 )
 
@@ -32,6 +32,11 @@ const (
 	CmdWriteSwitchPointer
 )
 
+var defaultBindings = rw.Bindings[CommandRead, CommandWrite]{
+	Read:  defaultReadBindings,
+	Write: defaultWriteBindings,
+}
+
 var CommandsRead = []CommandRead{
 	CmdReadWriteMode,
 }
@@ -55,42 +60,6 @@ var defaultWriteBindings = keymap.NewBindings[CommandWrite]().
 	Bind(key.ActionArrowUp, CmdWritePrevOption).
 	Bind(key.ActionArrowDown, CmdWriteNextOption).
 	Bind(key.CustomActionPointer, CmdWriteSwitchPointer)
-
-type bindings struct {
-	read  *keymap.Bindings[CommandRead]
-	write *keymap.Bindings[CommandWrite]
-}
-
-var defaultBindings = bindings{
-	read:  defaultReadBindings,
-	write: defaultWriteBindings,
-}
-
-type definition struct {
-	read  screen.Definition
-	write screen.Definition
-}
-
-func emptyDefinition() definition {
-	return definition{
-		read:  screen.EmptyDefinition(),
-		write: screen.EmptyDefinition(),
-	}
-}
-
-func definitionFromBindings(bindings bindings) definition {
-	return definition{
-		read:  keymap.BindingsToDefinition(bindings.read),
-		write: keymap.BindingsToDefinition(bindings.write),
-	}
-}
-
-func (d definition) get(write bool) screen.Definition {
-	if write {
-		return d.write
-	}
-	return d.read
-}
 
 var predicates = map[bool]predicate.Predicate{
 	false: predicate.Page(),

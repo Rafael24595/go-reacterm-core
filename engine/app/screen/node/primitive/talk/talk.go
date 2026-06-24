@@ -4,9 +4,10 @@ import (
 	"fmt"
 
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap/rw"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
@@ -20,8 +21,8 @@ const Name = "talk"
 type Talk struct {
 	reference  string
 	loaded     bool
-	bindings   bindings
-	definition definition
+	bindings   rw.Bindings[CommandRead, CommandWrite]
+	definition rw.Definition
 	navigation bool
 	pointer    uint8
 	owner      string
@@ -34,7 +35,7 @@ func New() *Talk {
 		reference:  Name,
 		loaded:     false,
 		bindings:   defaultBindings,
-		definition: emptyDefinition(),
+		definition: rw.EmptyDefinition(),
 		owner:      "",
 		messages:   make([]chat.Message, 0),
 		cursor:     0,
@@ -52,7 +53,7 @@ func (n *Talk) WithWriteBindings(overrides *keymap.Bindings[CommandWrite]) *Talk
 		return n
 	}
 
-	n.bindings.write = n.bindings.write.Overlay(overrides)
+	n.bindings.Write = n.bindings.Write.Overlay(overrides)
 	return n
 }
 
@@ -62,7 +63,7 @@ func (n *Talk) WithReadBindings(overrides *keymap.Bindings[CommandRead]) *Talk {
 		return n
 	}
 
-	n.bindings.read = n.bindings.read.Overlay(overrides)
+	n.bindings.Read = n.bindings.Read.Overlay(overrides)
 	return n
 }
 
@@ -106,7 +107,7 @@ func (n *Talk) boot(uiState state.UIState) {
 	n.loaded = true
 
 	n.loadFromStore(uiState)
-	n.definition = definitionFromBindings(n.bindings)
+	n.definition = rw.DefinitionFromBindings(n.bindings)
 }
 
 func (n *Talk) loadFromStore(uiState state.UIState) {
@@ -126,7 +127,7 @@ func (n *Talk) loadFromStore(uiState state.UIState) {
 }
 
 func (n *Talk) keys() screen.Definition {
-	return n.definition.get(n.navigation)
+	return n.definition.Get(n.navigation)
 }
 
 func (n *Talk) tick(uiState *state.UIState, event screen.Event) screen.Result {
@@ -134,7 +135,7 @@ func (n *Talk) tick(uiState *state.UIState, event screen.Event) screen.Result {
 		return n.tickNavigation(uiState, event)
 	}
 
-	switch n.bindings.read.Command(event.Key.Code) {
+	switch n.bindings.Read.Command(event.Key.Code) {
 	case CmdReadWriteMode:
 		n.navigation = true
 	}
@@ -148,7 +149,7 @@ func (n *Talk) tickNavigation(uiState *state.UIState, event screen.Event) screen
 		return screen.ResultFromUIState(uiState)
 	}
 
-	switch n.bindings.write.Command(event.Key.Code) {
+	switch n.bindings.Write.Command(event.Key.Code) {
 	case CmdWriteReadMode:
 		n.navigation = false
 	case CmdWritePrevOption:
