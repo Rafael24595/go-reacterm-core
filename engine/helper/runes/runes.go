@@ -1,6 +1,7 @@
 package runes
 
 import (
+	"slices"
 	"strings"
 	"unicode/utf8"
 
@@ -242,6 +243,22 @@ func RuneIndexToByteIndex(text string, index offset.Offset) (offset.Offset, bool
 
 	return 0, false
 
+}
+
+func SanitizeRunes(runes []rune) []rune {
+	if !slices.Contains(runes, 0) {
+		return runes
+	}
+
+	last := 0
+	for _, r := range runes {
+		if r != 0 {
+			runes[last] = r
+			last++
+		}
+	}
+
+	return runes[:last]
 }
 
 func Measure(text string) winsize.Cols {

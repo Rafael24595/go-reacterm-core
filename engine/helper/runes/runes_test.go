@@ -119,6 +119,70 @@ func TestRuneIndexToByteIndex(t *testing.T) {
 	}
 }
 
+func TestSanitizeRunes(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    []rune
+		want     []rune
+		wantSame bool
+	}{
+		{
+			name:     "Without null values",
+			input:    []rune{'a', 'b', 'c'},
+			want:     []rune{'a', 'b', 'c'},
+			wantSame: true,
+		},
+		{
+			name:     "Empty buffer",
+			input:    []rune{},
+			want:     []rune{},
+			wantSame: true,
+		},
+		{
+			name:     "Nil buffer",
+			input:    nil,
+			want:     nil,
+			wantSame: true,
+		},
+		{
+			name:     "Null at start",
+			input:    []rune{0, 'a', 'b'},
+			want:     []rune{'a', 'b'},
+			wantSame: false,
+		},
+		{
+			name:     "Null at end",
+			input:    []rune{'a', 'b', 0},
+			want:     []rune{'a', 'b'},
+			wantSame: false,
+		},
+		{
+			name:     "Null intercalated",
+			input:    []rune{'a', 0, 'b', 0, 'c'},
+			want:     []rune{'a', 'b', 'c'},
+			wantSame: false,
+		},
+		{
+			name:     "Only",
+			input:    []rune{0, 0, 0},
+			want:     []rune{},
+			wantSame: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := SanitizeRunes(tt.input)
+
+			assert.DeepEqual(t, tt.want, got)
+
+			if tt.wantSame && len(tt.input) > 0 {
+				assert.Equal(t, &tt.input[0], &got[0])
+			}
+		})
+	}
+}
+
 func TestMeasure(t *testing.T) {
 	tests := []struct {
 		name string
