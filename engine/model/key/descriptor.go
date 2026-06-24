@@ -38,8 +38,8 @@ var descriptors = map[Action]Descriptor{
 	ActionPageUp:   NewDescriptor("⇞", "Prev page"),
 	ActionPageDown: NewDescriptor("⇟", "Next page"),
 
-	CustomActionUndo:  NewDescriptor("Undo", "^G"),
-	CustomActionRedo:  NewDescriptor("Redo", "^T"),
+	CustomActionUndo:  NewDescriptor("Undo", "M-z"),
+	CustomActionRedo:  NewDescriptor("Redo", "M-y"),
 	CustomActionHelp:  NewDescriptor("Help", "M-h"),
 	CustomActionBack:  NewDescriptor("Back", "M-b"),
 	CustomActionCut:   NewDescriptor("Cut", "M-x"),
