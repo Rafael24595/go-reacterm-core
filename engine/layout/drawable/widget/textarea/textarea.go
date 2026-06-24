@@ -129,6 +129,11 @@ func (u *TextAreaUnit) resolveFragments(
 ) []text.Fragment {
 	frags := make([]text.Fragment, 0, 6)
 
+	bufferLen := offset.Offset(len(renderBuffer))
+
+	start = min(start, bufferLen.Sub(1))
+	end = min(end, bufferLen)
+
 	if start > 0 {
 		frags = append(frags,
 			*text.NewFragment(string(renderBuffer[:start])),
