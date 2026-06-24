@@ -101,7 +101,7 @@ func (n *ModalMenu) boot(uiState state.UIState) {
 }
 
 func (n *ModalMenu) loadFromStore(uiState state.UIState) {
-	option, ok := KeyActive.Get(
+	option, ok := KeySync.Take(
 		uiState.Store,
 		n.reference,
 	)
@@ -148,14 +148,14 @@ func (n *ModalMenu) tick(uiState *state.UIState, event screen.Event) screen.Resu
 
 func (n *ModalMenu) tickToStore(uiState *state.UIState) {
 	if n.cursor >= uint16(len(n.options)) {
-		KeyActive.Delete(
+		KeyState.Delete(
 			uiState.Store,
 			n.reference,
 		)
 		return
 	}
 
-	KeyActive.Set(
+	KeyState.Set(
 		uiState.Store,
 		n.reference,
 		n.options[n.cursor].Id,
