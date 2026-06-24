@@ -34,13 +34,17 @@ func TestCheckMenu_Boot(t *testing.T) {
 
 	uiState := state.NewUIState()
 
-	KeyActive.Set(
+	KeySync.Set(
 		uiState.Store,
 		node.Name,
 		set.From("2", "4"),
 	)
 
 	node.Screen.Boot(*uiState)
+
+	_, ok := KeySync.Get(uiState.Store, menu.reference)
+
+	assert.False(t, ok)
 
 	assert.True(t, menu.options[0].Status)
 	assert.False(t, menu.options[1].Status)

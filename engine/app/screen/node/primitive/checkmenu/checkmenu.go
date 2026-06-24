@@ -147,7 +147,7 @@ func (n *CheckMenu) boot(uiState state.UIState) {
 }
 
 func (n *CheckMenu) loadFromStore(uiState state.UIState) {
-	options, ok := KeyActive.Get(
+	options, ok := KeySync.Take(
 		uiState.Store,
 		n.reference,
 	)
@@ -202,7 +202,7 @@ func (n *CheckMenu) tickWrite(uiState *state.UIState, event screen.Event) screen
 }
 
 func (n *CheckMenu) tickToStore(uiState *state.UIState) {
-	KeyActive.Set(
+	KeyState.Set(
 		uiState.Store,
 		n.reference,
 		n.activeIds(),
