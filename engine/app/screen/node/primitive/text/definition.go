@@ -2,52 +2,109 @@ package text
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap/rw"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 )
+
+type CommandRead uint8
+
+const (
+	CmdReadNone CommandRead = iota
+
+	CmdReadWriteMode
+)
+
+type CommandWrite uint8
+
+const (
+	CmdWriteNone CommandWrite = iota
+
+	CmdWriteReadMode
+
+	CmdWriteMoveHome
+	CmdWriteMoveEnd
+
+	CmdWriteMoveBackward
+	CmdWriteMoveForward
+	CmdWriteMoveUp
+	CmdWriteMoveDown
+
+	CmdWriteDeleteCharBackward
+	CmdWriteDeleteWordBackward
+	CmdWriteDeleteCharForward
+	CmdWriteDeleteWordForward
+
+	CmdWriteUndo
+	CmdWriteRedo
+
+	CmdWriteCut
+	CmdWriteCopy
+	CmdWritePaste
+
+	sysWriteNewLine
+	sysWriteRune
+)
+
+var defaultBindings = rw.Bindings[CommandRead, CommandWrite]{
+	Read:  defaultReadBindings,
+	Write: defaultWriteBindings,
+}
+
+var CommandsRead = []CommandRead{
+	CmdReadWriteMode,
+}
+
+var defaultReadBindings = keymap.NewBindings[CommandRead]().
+	Bind(key.ActionEnter, CmdReadWriteMode, key.NewDescriptor("Edit mode", "RET"))
+
+var systemWrite = []CommandWrite{
+	sysWriteNewLine,
+	sysWriteRune,
+}
+
+var CommandsWrite = []CommandWrite{
+	CmdWriteReadMode,
+	CmdWriteMoveHome,
+	CmdWriteMoveEnd,
+	CmdWriteMoveBackward,
+	CmdWriteMoveForward,
+	CmdWriteMoveUp,
+	CmdWriteMoveDown,
+	CmdWriteDeleteCharBackward,
+	CmdWriteDeleteWordBackward,
+	CmdWriteDeleteCharForward,
+	CmdWriteDeleteWordForward,
+	CmdWriteUndo,
+	CmdWriteRedo,
+	CmdWriteCut,
+	CmdWriteCopy,
+	CmdWritePaste,
+}
+
+var systemWriteBindings = keymap.NewBindings[CommandWrite]().
+	Bind(key.ActionEnter, sysWriteNewLine, key.NewDescriptor("New line", "RET")).
+	Bind(key.ActionRune, sysWriteRune)
+
+var defaultWriteBindings = keymap.NewBindings[CommandWrite]().
+	Bind(key.ActionEsc, CmdWriteReadMode, key.NewDescriptor("Read mode", "ESC")).
+	Bind(key.ActionHome, CmdWriteMoveHome).
+	Bind(key.ActionEnd, CmdWriteMoveEnd).
+	Bind(key.ActionArrowLeft, CmdWriteMoveBackward).
+	Bind(key.ActionArrowRight, CmdWriteMoveForward).
+	Bind(key.ActionArrowUp, CmdWriteMoveUp).
+	Bind(key.ActionArrowDown, CmdWriteMoveDown).
+	Bind(key.ActionBackspace, CmdWriteDeleteCharBackward).
+	Bind(key.ActionDeleteBackward, CmdWriteDeleteWordBackward).
+	Bind(key.ActionDelete, CmdWriteDeleteCharForward).
+	Bind(key.ActionDeleteForward, CmdWriteDeleteWordForward).
+	Bind(key.CustomActionUndo, CmdWriteUndo).
+	Bind(key.CustomActionRedo, CmdWriteRedo).
+	Bind(key.CustomActionCut, CmdWriteCut).
+	Bind(key.CustomActionCopy, CmdWriteCopy).
+	Bind(key.CustomActionPaste, CmdWritePaste)
 
 var predicates = map[bool]predicate.Predicate{
 	false: predicate.Page(),
 	true:  predicate.Focus(),
 }
-
-var definitions = map[bool]screen.Definition{
-	false: read_definition,
-	true:  write_definition,
-}
-
-var read_definition = screen.NewDefinition(
-	map[key.Action]key.Descriptor{
-		key.ActionEnter: {Code: []string{"RET"}, Detail: "Edit text"},
-	},
-	[]key.Action{
-		key.ActionEnter,
-	},
-)
-
-var write_definition = screen.NewDefinition(
-	map[key.Action]key.Descriptor{
-		key.ActionEsc:   {Code: []string{"ESC"}, Detail: "Save & Quit"},
-		key.ActionEnter: {Code: []string{"RET"}, Detail: "New line"},
-	},
-	[]key.Action{
-		key.ActionEsc,
-		key.ActionHome,
-		key.ActionEnd,
-		key.ActionArrowLeft,
-		key.ActionArrowRight,
-		key.ActionBackspace,
-		key.ActionDeleteBackward,
-		key.ActionDelete,
-		key.ActionDeleteForward,
-		key.ActionEnter,
-		key.ActionArrowUp,
-		key.ActionArrowDown,
-		key.CustomActionUndo,
-		key.CustomActionRedo,
-		key.CustomActionCut,
-		key.CustomActionCopy,
-		key.CustomActionPaste,
-		key.ActionRune,
-	},
-)

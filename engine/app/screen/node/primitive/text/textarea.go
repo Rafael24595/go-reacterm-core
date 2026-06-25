@@ -5,6 +5,7 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap/rw"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/line"
@@ -22,14 +23,18 @@ import (
 
 const NameArea = "text_area"
 
+//TODO: Expose bindings configuration?
 type TextArea struct {
-	reference string
-	history   *event.TextEventService
-	writeMode bool
-	indexMode bool
-	buffer    *buffer.RuneBuffer
-	clipboard *buffer.Clipboard
-	caret     *input.TextCursor
+	reference  string
+	loaded     bool
+	bindings   rw.Bindings[CommandRead, CommandWrite]
+	definition rw.Definition
+	history    *event.TextEventService
+	writeMode  bool
+	indexMode  bool
+	buffer     *buffer.RuneBuffer
+	clipboard  *buffer.Clipboard
+	caret      *input.TextCursor
 }
 
 func NewArea() *TextArea {
@@ -37,13 +42,16 @@ func NewArea() *TextArea {
 		PushRules(rule.Full...)
 
 	return &TextArea{
-		reference: NameArea,
-		history:   event.NewTextEventService(),
-		writeMode: false,
-		indexMode: false,
-		buffer:    runeBuffer,
-		clipboard: buffer.NewClipboard(),
-		caret:     input.NewTextCursor(false),
+		reference:  NameArea,
+		loaded:     false,
+		bindings:   defaultBindings,
+		definition: rw.EmptyDefinition(),
+		history:    event.NewTextEventService(),
+		writeMode:  false,
+		indexMode:  false,
+		buffer:     runeBuffer,
+		clipboard:  buffer.NewClipboard(),
+		caret:      input.NewTextCursor(false),
 	}
 }
 
@@ -53,9 +61,15 @@ func (n *TextArea) SetName(name string) *TextArea {
 }
 
 func (n *TextArea) SetBuffer(buffer *buffer.RuneBuffer) *TextArea {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
 	if buffer != nil {
 		n.buffer = buffer
 	}
+
 	return n
 }
 
@@ -80,8 +94,16 @@ func (n *TextArea) DisableBlinking() *TextArea {
 }
 
 func (n *TextArea) AddText(text string) *TextArea {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
 	n.buffer.Append([]rune(text))
-	n.caret.MoveCaretTo(n.buffer.Buffer(), n.buffer.Size())
+	n.caret.MoveCaretTo(
+		n.buffer.Buffer(), n.buffer.Size(),
+	)
+
 	return n
 }
 
@@ -107,11 +129,20 @@ func (n *TextArea) ToNode() screen.Node {
 }
 
 func (n *TextArea) boot(uiState state.UIState) {
+	if n.loaded {
+		return
+	}
+
+	n.loaded = true
+
 	n.loadFromStore(uiState)
+
+	n.bindings.Write = n.bindings.Write.Overlay(systemWriteBindings)
+	n.definition = rw.DefinitionFromBindings(n.bindings)
 }
 
 func (n *TextArea) loadFromStore(uiState state.UIState) {
-	state, ok := KeyState.Get(
+	sync, ok := KeySync.Take(
 		uiState.Store,
 		n.reference,
 	)
@@ -120,29 +151,32 @@ func (n *TextArea) loadFromStore(uiState state.UIState) {
 		return
 	}
 
-	n.buffer.Clean().Append(state.Buffer)
+	if sync.Buffer != nil {
+		n.buffer.Clean().Append(*sync.Buffer)
+	}
 
 	buffer := n.buffer.Buffer()
-	if state.Caret == nil && state.Anchor == nil {
+
+	if sync.Caret == nil && sync.Anchor == nil {
 		n.caret.MoveCaretWithoutTick(buffer, n.buffer.Size())
 		return
 	}
 
 	caret := offset.Offset(0)
-	if state.Caret != nil {
-		caret = *state.Caret
+	if sync.Caret != nil {
+		caret = *sync.Caret
 	}
 
-	if state.Anchor == nil {
+	if sync.Anchor == nil {
 		n.caret.MoveCaretWithoutTick(buffer, caret)
 		return
 	}
 
-	n.caret.MoveSelectWithoutTick(buffer, caret, *state.Anchor)
+	n.caret.MoveSelectWithoutTick(buffer, caret, *sync.Anchor)
 }
 
 func (n *TextArea) keys() screen.Definition {
-	return definitions[n.writeMode]
+	return n.definition.Get(n.writeMode)
 }
 
 func (n *TextArea) tick(uiState *state.UIState, event screen.Event) screen.Result {
@@ -151,14 +185,13 @@ func (n *TextArea) tick(uiState *state.UIState, event screen.Event) screen.Resul
 	if !n.writeMode {
 		return n.tickRead(uiState, event)
 	}
+
 	return n.tickWrite(uiState, event)
 }
 
 func (n *TextArea) tickRead(uiState *state.UIState, event screen.Event) screen.Result {
-	ky := event.Key
-
-	switch ky.Code {
-	case key.ActionEnter:
+	switch n.bindings.Read.Command(event.Key.Code) {
+	case CmdReadWriteMode:
 		n.writeMode = true
 	}
 
@@ -170,44 +203,41 @@ func (n *TextArea) tickRead(uiState *state.UIState, event screen.Event) screen.R
 func (n *TextArea) tickWrite(uiState *state.UIState, event screen.Event) screen.Result {
 	ky := event.Key
 
-	switch ky.Code {
-	case key.ActionEsc:
+	switch n.bindings.Write.Command(event.Key.Code) {
+	case CmdWriteReadMode:
 		n.writeMode = false
 		n.tickToStore(uiState)
 		return screen.ResultFromUIState(uiState)
 
-	case key.ActionHome:
+	case CmdWriteMoveHome:
 		result := n.moveHome(uiState, event)
 		n.tickToStore(uiState)
 		return result
 
-	case key.ActionEnd:
+	case CmdWriteMoveEnd:
 		result := n.moveEnd(uiState, event)
 		n.tickToStore(uiState)
 		return result
 
-	case key.ActionArrowLeft:
+	case CmdWriteMoveBackward:
 		result := n.moveBackward(uiState, event)
 		n.tickToStore(uiState)
 		return result
 
-	case key.ActionArrowRight:
+	case CmdWriteMoveForward:
 		result := n.moveForward(uiState, event)
 		n.tickToStore(uiState)
 		return result
 
-	case key.ActionArrowUp:
+	case CmdWriteMoveUp:
 		result := n.moveUp(uiState, event)
 		n.tickToStore(uiState)
 		return result
 
-	case key.ActionArrowDown:
+	case CmdWriteMoveDown:
 		result := n.moveDown(uiState, event)
 		n.tickToStore(uiState)
 		return result
-
-	case key.ActionEnter:
-		ky = *key.NewKeyRune(ascii.ENTER_LF)
 	}
 
 	result := n.tickBuffer(uiState, ky)
@@ -221,10 +251,11 @@ func (n *TextArea) tickToStore(uiState *state.UIState) {
 	anchor := n.caret.Anchor()
 
 	textAreaState := State{
-		Write:  n.writeMode,
-		Buffer: n.buffer.Buffer(),
-		Caret:  &caret,
-		Anchor: &anchor,
+		WriteMode: n.writeMode,
+		Version:   n.buffer.Version(),
+		Buffer:    n.buffer.Buffer(),
+		Caret:     caret,
+		Anchor:    anchor,
 	}
 
 	KeyState.Set(
@@ -234,30 +265,41 @@ func (n *TextArea) tickToStore(uiState *state.UIState) {
 	)
 }
 
-func (n *TextArea) tickBuffer(uiState *state.UIState, ky key.Key) screen.Result {
-	switch ky.Code {
-	case key.ActionBackspace, key.ActionDeleteBackward:
-		word := ky.Code == key.ActionDeleteBackward
-		return n.deleteBackward(uiState, word)
+func (n *TextArea) tickBuffer(uiState *state.UIState, action key.Key) screen.Result {
+	command := n.bindings.Write.Command(action.Code)
 
-	case key.ActionDelete, key.ActionDeleteForward:
-		word := ky.Code == key.ActionDeleteForward
-		return n.deleteForward(uiState, word)
-	case key.CustomActionUndo, key.CustomActionRedo:
-		return n.undoRedo(uiState, ky)
+	switch command {
+	case sysWriteNewLine:
+		action = *key.NewKeyRune(ascii.ENTER_LF)
 
-	case key.CustomActionCut, key.CustomActionCopy:
-		cut := ky.Code == key.CustomActionCut
-		return n.copyCut(uiState, cut)
+	case CmdWriteDeleteCharBackward, CmdWriteDeleteWordBackward:
+		isWord := command == CmdWriteDeleteWordBackward
+		return n.deleteBackward(uiState, isWord)
 
-	case key.CustomActionPaste:
+	case CmdWriteDeleteCharForward, CmdWriteDeleteWordForward:
+		isWord := command == CmdWriteDeleteWordForward
+		return n.deleteForward(uiState, isWord)
+
+	case CmdWriteUndo, CmdWriteRedo:
+		return n.undoRedo(uiState, command)
+
+	case CmdWriteCut, CmdWriteCopy:
+		isCut := command == CmdWriteCut
+		return n.copyCut(uiState, isCut)
+
+	case CmdWritePaste:
 		return n.paste(uiState)
 	}
 
-	return n.pushRune(uiState, ky)
+	return n.pushRune(uiState, action)
 }
 
 func (n *TextArea) pushRune(uiState *state.UIState, ky key.Key) screen.Result {
+	result := screen.ResultFromUIState(uiState)
+	if ky.Rune == 0 {
+		return result
+	}
+
 	start, end, fixEnd := n.insertSelection()
 
 	insert, delete := n.buffer.ReplaceWithRules([]rune{ky.Rune}, start, end)
@@ -266,20 +308,22 @@ func (n *TextArea) pushRune(uiState *state.UIState, ky key.Key) screen.Result {
 	position := start + offset.Offset(len(insert))
 	n.caret.MoveCaretTo(n.buffer.Buffer(), position)
 
-	return screen.ResultFromUIState(uiState)
+	return result
 }
 
-func (n *TextArea) undoRedo(uiState *state.UIState, ky key.Key) screen.Result {
+func (n *TextArea) undoRedo(uiState *state.UIState, command CommandWrite) screen.Result {
 	result := screen.ResultFromUIState(uiState)
 
 	var delta *delta.Delta
-	switch ky.Code {
-	case key.CustomActionUndo:
+	switch command {
+	case CmdWriteUndo:
 		delta = n.history.Undo()
-	case key.CustomActionRedo:
+
+	case CmdWriteRedo:
 		delta = n.history.Redo()
+
 	default:
-		assert.Unreachable("unsupported key code '%d'", ky.Code)
+		assert.Unreachable("unsupported command '%d'", command)
 		delta = n.history.Redo()
 	}
 
@@ -574,12 +618,10 @@ func (n *TextArea) viewSources(uiState state.UIState) (
 }
 
 func (n *TextArea) needsPulse(uiState state.UIState) bool {
-	state, ok := KeyPulse.Get(
+	if state, ok := KeyPulse.Take(
 		uiState.Store,
 		n.reference,
-	)
-
-	if ok && state {
+	); ok && state {
 		return true
 	}
 

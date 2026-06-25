@@ -26,11 +26,13 @@ func TestTextArea_Boot(t *testing.T) {
 	caret := offset.Offset(2)
 	anchor := offset.Offset(4)
 
-	KeyState.Set(
+	buffer := []rune("golang")
+
+	KeySync.Set(
 		uiState.Store,
 		area.reference,
-		State{
-			Buffer: []rune("golang"),
+		Sync{
+			Buffer: &buffer,
 			Caret:  &caret,
 			Anchor: &anchor,
 		},
@@ -38,9 +40,31 @@ func TestTextArea_Boot(t *testing.T) {
 
 	node.Screen.Boot(*uiState)
 
+	_, ok := KeySync.Get(uiState.Store, area.reference)
+
+	assert.False(t, ok)
+
 	assert.Equal(t, "golang", string(area.buffer.Buffer()))
 	assert.Equal(t, 2, area.caret.Caret())
 	assert.Equal(t, 4, area.caret.Anchor())
+}
+
+func TestTextArea_NeedPulse(t *testing.T) {
+	area := NewArea()
+
+	uiState := state.NewUIState()
+
+	KeyPulse.Set(
+		uiState.Store,
+		area.reference,
+		true,
+	)
+
+	assert.True(t, area.needsPulse(*uiState))
+
+	_, ok := KeyPulse.Get(uiState.Store, area.reference)
+	
+	assert.False(t, ok)
 }
 
 func TestTextArea_Stack(t *testing.T) {
