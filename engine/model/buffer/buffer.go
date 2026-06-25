@@ -58,8 +58,8 @@ func (b *RuneBuffer) Range(start offset.Offset, end offset.Offset) []rune {
 	return b.buffer[start:end]
 }
 
-func (b *RuneBuffer) Append(rns []rune) *RuneBuffer {
-	b.Replace(rns, b.Size(), b.Size())
+func (b *RuneBuffer) Append(buffer []rune) *RuneBuffer {
+	b.Replace(buffer, b.Size(), b.Size())
 	return b
 }
 
@@ -69,13 +69,13 @@ func (b *RuneBuffer) Clean() *RuneBuffer {
 	return b
 }
 
-func (b *RuneBuffer) Replace(rns []rune, start offset.Offset, end offset.Offset) ([]rune, []rune) {
+func (b *RuneBuffer) Replace(buffer []rune, start offset.Offset, end offset.Offset) ([]rune, []rune) {
 	if end < start {
 		zero := make([]rune, 0)
 		return zero, zero
 	}
 
-	return b.commitReplace(rns, start, end)
+	return b.commitReplace(buffer, start, end)
 }
 
 func (b *RuneBuffer) ReplaceWithRules(buffer []rune, start offset.Offset, end offset.Offset) ([]rune, []rune) {
@@ -84,17 +84,17 @@ func (b *RuneBuffer) ReplaceWithRules(buffer []rune, start offset.Offset, end of
 		return zero, zero
 	}
 
-	insert := b.applyRules(buffer, start, end, b.buffer)
-	return b.commitReplace(insert, start, end)
+	buffer = b.applyRules(buffer, start, end, b.buffer)
+	return b.commitReplace(buffer, start, end)
 }
 
-func (b *RuneBuffer) applyRules(text []rune, start, end offset.Offset, buff []rune) []rune {
+func (b *RuneBuffer) applyRules(buffer []rune, start, end offset.Offset, buff []rune) []rune {
 	for _, rule := range b.rules {
-		if text, ok := rule(text, start, end, buff); ok {
+		if text, ok := rule(buffer, start, end, buff); ok {
 			return text
 		}
 	}
-	return text
+	return buffer
 }
 
 func (b *RuneBuffer) Delete(start offset.Offset, end offset.Offset) []rune {
@@ -107,12 +107,12 @@ func (b *RuneBuffer) Delete(start offset.Offset, end offset.Offset) []rune {
 	return deleted
 }
 
-func (b *RuneBuffer) commitReplace(insert []rune, start, end offset.Offset) ([]rune, []rune) {
+func (b *RuneBuffer) commitReplace(buffer []rune, start, end offset.Offset) ([]rune, []rune) {
 	end = min(end, offset.Offset(len(b.buffer)))
 
 	deleted := b.Range(start, end)
 
-	rawBuffer := runes.AppendRange(b.buffer, insert, start, end)
+	rawBuffer := runes.AppendRange(b.buffer, buffer, start, end)
 	newBuffer, newFacade := b.processor(rawBuffer)
 
 	newBufferLen := offset.Offset(len(newBuffer))
