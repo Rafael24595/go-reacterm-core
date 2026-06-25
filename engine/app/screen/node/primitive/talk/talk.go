@@ -144,6 +144,8 @@ func (n *Talk) tick(uiState *state.UIState, event screen.Event) screen.Result {
 		n.navigation = true
 	}
 
+	n.tickToStore(uiState)
+
 	return screen.ResultFromUIState(uiState)
 }
 
@@ -158,20 +160,18 @@ func (n *Talk) tickNavigation(uiState *state.UIState, event screen.Event) screen
 		n.navigation = false
 	case CmdWritePrevOption:
 		n.cursor = (n.cursor + size - 1) % size
-		n.tickToStore(uiState)
 	case CmdWriteNextOption:
 		n.cursor = (n.cursor + 1) % size
-		n.tickToStore(uiState)
 	case CmdWriteFirstOption:
 		n.cursor = 0
-		n.tickToStore(uiState)
 	case CmdWriteLastOption:
 		optsLen := uint16(len(n.messages))
 		n.cursor = math.SubClampZero(optsLen, 1)
-		n.tickToStore(uiState)
 	case CmdWriteSwitchPointer:
 		n.pointer = talk.NextPointer(n.pointer)
 	}
+
+	n.tickToStore(uiState)
 
 	return screen.ResultFromUIState(uiState)
 }
