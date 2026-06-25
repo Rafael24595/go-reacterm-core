@@ -15,11 +15,18 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/gutter"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/form"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
 const Name = "form"
+
+const (
+	nonSelected = " " + " "
+	selected    = marker.U258C_Text + " "
+	focused     = marker.U2588_Text + " "
+)
 
 type Form struct {
 	reference  string
@@ -268,17 +275,13 @@ func (n *Form) view(uiState state.UIState) viewmodel.ViewModel {
 	for i, e := range n.items {
 		cvm := e.Node.Screen.View(uiState)
 
-		opts := make([]gutter.Option, 0, 1)
-
-		if pointer.HasNone(form.PointerGutter) || n.cursor != uint16(i) {
-			opts = append(opts,
-				gutter.WithLeftGutter(gutter.DefaultEmpty),
-			)
-		}
+		opt := gutter.WithLeftGutter(
+			n.findGutterPattern(pointer, uint16(i)),
+		)
 
 		unit := gutter.Unit(
 			cvm.Kernel.ToUnit(),
-			opts...,
+			opt,
 		)
 
 		layer := layer.New(unit, e.Opts...)
@@ -310,6 +313,18 @@ func (n *Form) view(uiState state.UIState) viewmodel.ViewModel {
 	}
 
 	return *vm
+}
+
+func (n *Form) findGutterPattern(pointer form.Pointer, cursor uint16) string {
+	if pointer.HasNone(form.PointerGutter) || n.cursor != cursor {
+		return nonSelected
+	}
+
+	if !n.focused {
+		return selected
+	}
+
+	return focused
 }
 
 func (n *Form) focusItem() (entry.Entry, bool) {
