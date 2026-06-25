@@ -75,6 +75,7 @@ func (b *RuneBuffer) Replace(buffer []rune, start offset.Offset, end offset.Offs
 		return zero, zero
 	}
 
+	buffer = runes.SanitizeRunes(buffer)
 	return b.commitReplace(buffer, start, end)
 }
 
@@ -84,6 +85,7 @@ func (b *RuneBuffer) ReplaceWithRules(buffer []rune, start offset.Offset, end of
 		return zero, zero
 	}
 
+	buffer = runes.SanitizeRunes(buffer)
 	buffer = b.applyRules(buffer, start, end, b.buffer)
 	return b.commitReplace(buffer, start, end)
 }
