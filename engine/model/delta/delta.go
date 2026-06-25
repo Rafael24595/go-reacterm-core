@@ -25,7 +25,11 @@ func Apply(buffer []rune, delta *Delta) []rune {
 		return buffer
 	}
 
-	runesSize := runes.Measureo(delta.Text)
+	deltaBuffer := runes.SanitizeRunes(
+		[]rune(delta.Text),
+	)
+
+	runesSize := runes.MeasureoRunes(deltaBuffer)
 
 	tail := size - delta.End
 	total := delta.Start + runesSize + tail
@@ -33,7 +37,7 @@ func Apply(buffer []rune, delta *Delta) []rune {
 	newBuffer := make([]rune, total)
 
 	copy(newBuffer[:delta.Start], buffer[:delta.Start])
-	copy(newBuffer[delta.Start:], []rune(delta.Text))
+	copy(newBuffer[delta.Start:], deltaBuffer)
 	copy(newBuffer[delta.Start+runesSize:], buffer[delta.End:])
 
 	return newBuffer
