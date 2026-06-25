@@ -3,7 +3,7 @@ package gutter
 import "github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 
 const (
-	DefaultLeft  = marker.DefaultLeftGutterText + " "
+	DefaultLeft  = marker.U258C_Text + " "
 	DefaultEmpty = marker.DefaultPaddingText + marker.DefaultPaddingText
 )
 

@@ -65,7 +65,7 @@ func gutterProvider() PointerProvider {
 	}
 
 	selectedOwner := []text.Fragment{
-		*text.NewFragment(marker.DefaultMiddleGutterText),
+		*text.NewFragment(marker.U2503_Text),
 		*text.NewFragment(marker.DefaultPaddingText).
 			AddSpec(spec.ExtendRight(2)),
 	}
@@ -76,7 +76,7 @@ func gutterProvider() PointerProvider {
 	}
 
 	selectedMessage := []text.Fragment{
-		*text.NewFragment(marker.DefaultMiddleGutterText),
+		*text.NewFragment(marker.U2503_Text),
 		*text.NewFragment(marker.DefaultPaddingText).
 			AddSpec(spec.ExtendRight(4)),
 	}

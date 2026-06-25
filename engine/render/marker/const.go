@@ -17,12 +17,18 @@ const (
 const DefaultPromptText = ">"
 
 const (
-	DefaultLeftGutterText   = "▌"
-	DefaultMiddleGutterText = "┃"
-	DefaultRightGutterText  = "▐"
-)
+	U258C      = '▌'
+	U258C_Text = string(U258C)
 
-const (
+	U2503      = '┃'
+	U2503_Text = string(U2503)
+
+	U2590      = '▐'
+	U2590_Text = string(U2590)
+	
+	U2588      = '█'
+	U2588_Text = string(U2588)
+
 	U25B6      = '▶'
 	U25B6_Text = string(U25B6)
 )
