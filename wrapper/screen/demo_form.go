@@ -295,17 +295,19 @@ func makeTalk(service *mockTalkService, slot *slot.Slot[predicate.Predicate]) sc
 func onTalkView(service *mockTalkService, slot *slot.Slot[predicate.Predicate]) view.Middleware {
 	return func(uiState state.UIState, context behavior.Context[screen.ViewFunc]) viewmodel.ViewModel {
 		messagesLen := 0
-		if messages, ok := talk.KeyMessages.Get(
+		if state, ok := talk.KeyState.Get(
 			uiState.Store,
 			context.Target.Name,
 		); ok {
-			messagesLen = len(messages)
+			messagesLen = len(state.Messages)
 		}
 
-		talk.KeyMessages.Set(
+		talk.KeySync.Set(
 			uiState.Store,
 			context.Target.Name,
-			service.chat,
+			talk.Sync{
+				Messages: &service.chat,
+			},
 		)
 
 		vm := context.Next(uiState)
@@ -328,11 +330,6 @@ func makeTextArea(service *mockTalkService) screen.Node {
 		EnableBlinking().
 		ToNode()
 
-	textscreen = view.Use(
-		textscreen,
-		onTextAreaView(service),
-	)
-
 	textscreen = tick.Use(
 		textscreen,
 		onTextAreaTick(service),
@@ -353,31 +350,23 @@ func makeTextArea(service *mockTalkService) screen.Node {
 }
 
 func onTextAreaTick(service *mockTalkService) tick.Middleware {
+	var version uint64
+	var synced bool
+
 	return func(uiState *state.UIState, event screen.Event, context behavior.Context[screen.TickFunc]) screen.Result {
 		result := context.Next(uiState, event)
 
 		if state, ok := text_screen.KeyState.Get(
 			uiState.Store,
 			context.Target.Name,
-		); ok {
+		); ok && (!synced || version != state.Version) {
 			service.text = state.Buffer
+
+			version = state.Version
+			synced = true
 		}
 
 		return result
-	}
-}
-
-func onTextAreaView(service *mockTalkService) view.Middleware {
-	return func(uiState state.UIState, context behavior.Context[screen.ViewFunc]) viewmodel.ViewModel {
-		text_screen.KeyState.Update(
-			uiState.Store,
-			context.Target.Name,
-			func(s *text_screen.State) {
-				s.Buffer = service.text
-			},
-		)
-
-		return context.Next(uiState)
 	}
 }
 
@@ -388,7 +377,7 @@ func onKeyEnter(service *mockTalkService) tick.Middleware {
 			context.Target.Name,
 		)
 
-		if !ok || !currentState.Write {
+		if !ok || !currentState.WriteMode {
 			return context.Next(uiState, event)
 		}
 
@@ -418,6 +407,14 @@ func onKeyEnter(service *mockTalkService) tick.Middleware {
 		}
 
 		service.text = make([]rune, 0)
+
+		text_screen.KeySync.Upsert(
+			uiState.Store,
+			context.Target.Name,
+			func(s *text_screen.Sync) {
+				s.Buffer = &service.text
+			},
+		)
 
 		service.reply()
 
