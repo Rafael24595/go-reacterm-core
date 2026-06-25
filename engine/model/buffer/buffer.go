@@ -13,6 +13,7 @@ type RuneBuffer struct {
 	facade    []rune
 	rules     []rule.Rule
 	processor processor.Processor
+	version   uint64
 }
 
 func NewRuneBuffer() *RuneBuffer {
@@ -21,6 +22,7 @@ func NewRuneBuffer() *RuneBuffer {
 		facade:    make([]rune, 0),
 		rules:     make([]rule.Rule, 0),
 		processor: processor.Identity,
+		version:   0,
 	}
 }
 
@@ -32,6 +34,10 @@ func (b *RuneBuffer) PushRules(rules ...rule.Rule) *RuneBuffer {
 func (b *RuneBuffer) Processor(processor processor.Processor) *RuneBuffer {
 	b.processor = processor
 	return b
+}
+
+func (b *RuneBuffer) Version() uint64 {
+	return b.version
 }
 
 func (b *RuneBuffer) Size() offset.Offset {
@@ -66,6 +72,9 @@ func (b *RuneBuffer) Append(buffer []rune) *RuneBuffer {
 func (b *RuneBuffer) Clean() *RuneBuffer {
 	b.buffer = make([]rune, 0)
 	b.facade = make([]rune, 0)
+
+	b.version += 1
+
 	return b
 }
 
@@ -132,6 +141,8 @@ func (b *RuneBuffer) commitReplace(buffer []rune, start, end offset.Offset) ([]r
 	b.buffer = newBuffer
 	b.facade = newFacade
 
+	b.version += 1
+
 	return fixedInsert, deleted
 }
 
@@ -141,6 +152,8 @@ func (b *RuneBuffer) ApplyDelta(d *delta.Delta) *RuneBuffer {
 
 	b.buffer = buffer
 	b.facade = facade
+
+	b.version += 1
 
 	return b
 }

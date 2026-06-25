@@ -1,9 +1,11 @@
 package buffer
 
 import (
+	"math"
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
+
 	"github.com/Rafael24595/go-reacterm-core/engine/model/buffer/processor"
 )
 
@@ -81,4 +83,82 @@ func TestRuneBuffer_ReplaceAll(t *testing.T) {
 	assert.Equal(t, "Hello Golang", string(deleted))
 	assert.Equal(t, "Ziglang", string(inserted))
 	assert.Equal(t, "Ziglang", string(rb.Buffer()))
+}
+
+func TestRuneBuffer_VersionStartsAtZero(t *testing.T) {
+	buffer := NewRuneBuffer()
+
+	assert.Equal(t, 0, buffer.Version())
+}
+
+func TestRuneBuffer_AppendIncrementsVersion(t *testing.T) {
+	buffer := NewRuneBuffer()
+
+	before := buffer.Version()
+
+	buffer.Append([]rune("hello"))
+
+	assert.Equal(t, before+1, buffer.Version())
+}
+
+func TestRuneBuffer_ReplaceIncrementsVersion(t *testing.T) {
+	buffer := NewRuneBuffer()
+
+	buffer.Append([]rune("hello"))
+
+	before := buffer.Version()
+
+	buffer.Replace([]rune("x"), 0, 1)
+
+	assert.Equal(t, before+1, buffer.Version())
+}
+
+func TestRuneBuffer_DeleteIncrementsVersion(t *testing.T) {
+	buffer := NewRuneBuffer()
+
+	buffer.Append([]rune("hello"))
+
+	before := buffer.Version()
+
+	buffer.Delete(0, 1)
+
+	assert.Equal(t, before+1, buffer.Version())
+}
+
+func TestRuneBuffer_CleanIncrementsVersion(t *testing.T) {
+	buffer := NewRuneBuffer()
+
+	buffer.Append([]rune("hello"))
+
+	before := buffer.Version()
+
+	buffer.Clean()
+
+	assert.Equal(t, before+1, buffer.Version())
+}
+
+func TestRuneBuffer_ReadOperationsDoNotIncrementVersion(t *testing.T) {
+	buffer := NewRuneBuffer()
+
+	buffer.Append([]rune("hello"))
+
+	version := buffer.Version()
+
+	_ = buffer.Buffer()
+	_ = buffer.Facade()
+	_ = buffer.Size()
+	_ = buffer.Empty()
+	_ = buffer.Range(0, 2)
+
+	assert.Equal(t, version, buffer.Version())
+}
+
+func TestRuneBuffer_VersionWrapAround(t *testing.T) {
+	buffer := NewRuneBuffer()
+
+	buffer.version = math.MaxUint64
+
+	buffer.Append([]rune("x"))
+
+	assert.Equal(t, 0, buffer.Version())
 }
