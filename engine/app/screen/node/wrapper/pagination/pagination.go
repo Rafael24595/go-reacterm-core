@@ -58,7 +58,7 @@ func (n *Pagination) WithBindingsForPaged(overrides *keymap.Bindings[Command]) *
 	return n
 }
 
-func (n *Pagination) WithBindingsForScroll (overrides *keymap.Bindings[Command]) *Pagination {
+func (n *Pagination) WithBindingsForScroll(overrides *keymap.Bindings[Command]) *Pagination {
 	if n.loaded {
 		assert.Unreachable(screen.MessageModified)
 		return n
