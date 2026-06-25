@@ -15,26 +15,26 @@ func (d Delta) Measure() offset.Offset {
 	return runes.Measureo(d.Text)
 }
 
-func Apply(buffer []rune, d *Delta) []rune {
-	if d.Start > d.End {
+func Apply(buffer []rune, delta *Delta) []rune {
+	if delta.Start > delta.End {
 		return buffer
 	}
 
 	size := offset.Offset(len(buffer))
-	if d.Start > size || d.End > size {
+	if delta.Start > size || delta.End > size {
 		return buffer
 	}
 
-	runesSize := runes.Measureo(d.Text)
+	runesSize := runes.Measureo(delta.Text)
 
-	tail := size - d.End
-	total := d.Start + runesSize + tail
+	tail := size - delta.End
+	total := delta.Start + runesSize + tail
 
 	newBuffer := make([]rune, total)
 
-	copy(newBuffer[:d.Start], buffer[:d.Start])
-	copy(newBuffer[d.Start:], []rune(d.Text))
-	copy(newBuffer[d.Start+runesSize:], buffer[d.End:])
+	copy(newBuffer[:delta.Start], buffer[:delta.Start])
+	copy(newBuffer[delta.Start:], []rune(delta.Text))
+	copy(newBuffer[delta.Start+runesSize:], buffer[delta.End:])
 
 	return newBuffer
 }
