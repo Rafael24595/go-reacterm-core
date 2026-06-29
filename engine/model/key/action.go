@@ -69,7 +69,7 @@ var AltKeyMap = map[rune]*Key{
 	'v': NewKeyCode(CustomActionPaste, ModAlt),
 	'z': NewKeyCode(CustomActionUndo, ModAlt),
 	'y': NewKeyCode(CustomActionRedo, ModAlt),
-	'p': NewKeyCode(CustomActionPointer, ModAlt),
+	's': NewKeyCode(CustomActionPointer, ModAlt),
 }
 
 var CsiFinalMap = map[rune]Action{

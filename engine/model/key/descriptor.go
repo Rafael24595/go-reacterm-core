@@ -46,7 +46,7 @@ var descriptors = map[Action]Descriptor{
 	CustomActionCopy:  NewDescriptor("Copy", "M-c"),
 	CustomActionPaste: NewDescriptor("Paste", "M-v"),
 
-	CustomActionPointer: NewDescriptor("Switch pointer", "M-p"),
+	CustomActionPointer: NewDescriptor("Switch pointer", "M-s"),
 
 	ActionRune: NewDescriptor("Text", "Text"),
 }
