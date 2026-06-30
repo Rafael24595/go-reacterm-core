@@ -23,6 +23,12 @@ type MockNode struct {
 	Stack      set.Set[string]
 }
 
+func MockByName(name string) screen.Node {
+	return MockNode{
+		Name: name,
+	}.ToNode()
+}
+
 func (t MockNode) ToNode() screen.Node {
 	stack := t.Stack
 	if t.Stack == nil {
