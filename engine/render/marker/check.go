@@ -13,4 +13,3 @@ type CheckMeta struct {
 	Checked   string
 	Unchecked string
 }
-

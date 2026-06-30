@@ -23,7 +23,7 @@ import (
 
 const NameArea = "text_area"
 
-//TODO: Expose bindings configuration?
+// TODO: Expose bindings configuration?
 type TextArea struct {
 	reference  string
 	loaded     bool
