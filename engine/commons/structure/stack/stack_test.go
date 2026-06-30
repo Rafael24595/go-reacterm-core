@@ -81,7 +81,7 @@ func TestStack_Len(t *testing.T) {
 	assert.Equal(t, 1, s.Len())
 }
 
-func TestStack_Capacity1(t *testing.T) {
+func TestStack_Capacity(t *testing.T) {
 	s := New[int](3)
 
 	assert.Equal(t, 3, s.Cap())
