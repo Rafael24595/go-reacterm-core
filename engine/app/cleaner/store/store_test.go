@@ -22,9 +22,7 @@ func TestStore__PreservesActiveState(t *testing.T) {
 	cleaner := NewCleaner()
 	uiState := state.NewUIState()
 
-	nodeBase := screen_test.MockNode{
-		Name: "base",
-	}.ToNode()
+	nodeBase := screen_test.MockByName("base")
 
 	uiState.Store.Push(nodeBase.Name, "lang-1", "golang")
 
@@ -47,15 +45,10 @@ func TestStore__RemovesInactiveState(t *testing.T) {
 	cleaner := NewCleaner()
 	uiState := state.NewUIState()
 
-	nodeBase := screen_test.MockNode{
-		Name: "base",
-	}.ToNode()
+	nodeBase := screen_test.MockByName("base")
+	nodeNext := screen_test.MockByName("next")
 
 	uiState.Store.Push(nodeBase.Name, "lang-1", "golang")
-
-	nodeNext := screen_test.MockNode{
-		Name: "next",
-	}.ToNode()
 
 	nodeWrapper := screen_test.MockNode{}.ToNode()
 	nodeWrapper.Stack = nodeNext.Stack
@@ -79,13 +72,8 @@ func TestStore__TransitionBetweenScreens(t *testing.T) {
 	cleaner := NewCleaner()
 	uiState := state.NewUIState()
 
-	nodeBase := screen_test.MockNode{
-		Name: "base",
-	}.ToNode()
-
-	nodeNext := screen_test.MockNode{
-		Name: "next",
-	}.ToNode()
+	nodeBase := screen_test.MockByName("base")
+	nodeNext := screen_test.MockByName("next")
 
 	uiState.Store.Push(nodeBase.Name, "lang-1", "golang")
 

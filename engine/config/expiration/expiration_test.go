@@ -10,22 +10,15 @@ import (
 func TestExpiration_Persistent_NeverExpires(t *testing.T) {
 	exp := Persistent()
 
-	mock1 := screen_test.MockNode{
-		Name: "A",
-	}.ToNode()
-
-	mock2 := screen_test.MockNode{
-		Name: "B",
-	}.ToNode()
+	mock1 := screen_test.MockByName("A")
+	mock2 := screen_test.MockByName("B")
 
 	assert.False(t, exp.On(&mock1))
 	assert.False(t, exp.On(&mock2))
 }
 
 func TestExpiration_OnNode_SameNode_DoesNotExpire(t *testing.T) {
-	mock := screen_test.MockNode{
-		Name: "A",
-	}.ToNode()
+	mock := screen_test.MockByName("A")
 
 	exp := OnNode(&mock)
 
@@ -33,13 +26,8 @@ func TestExpiration_OnNode_SameNode_DoesNotExpire(t *testing.T) {
 }
 
 func TestExpiration_OnNode_DifferentNode_Expires(t *testing.T) {
-	mock1 := screen_test.MockNode{
-		Name: "A",
-	}.ToNode()
-
-	mock2 := screen_test.MockNode{
-		Name: "B",
-	}.ToNode()
+	mock1 := screen_test.MockByName("A")
+	mock2 := screen_test.MockByName("B")
 
 	exp := OnNode(&mock1)
 
@@ -47,9 +35,7 @@ func TestExpiration_OnNode_DifferentNode_Expires(t *testing.T) {
 }
 
 func TestExpiration_OnName_SameName_Expires(t *testing.T) {
-	mock := screen_test.MockNode{
-		Name: "A",
-	}.ToNode()
+	mock := screen_test.MockByName("A")
 
 	exp := OnName("A")
 
@@ -57,9 +43,7 @@ func TestExpiration_OnName_SameName_Expires(t *testing.T) {
 }
 
 func TestExpiration_OnName_DifferentName_DoesNotExpire(t *testing.T) {
-	mock := screen_test.MockNode{
-		Name: "A",
-	}.ToNode()
+	mock := screen_test.MockByName("A")
 
 	exp := OnName("B")
 

@@ -25,11 +25,9 @@ func TestWrap_AddsTag_AndExecutesDecorator(t *testing.T) {
 		}
 	}
 
-	mock := screen_test.MockNode{
-		Name: "test-node",
-	}
+	mock := screen_test.MockByName("test-node")
 
-	wrapped := Wrap(decorator)(mock.ToNode())
+	wrapped := Wrap(decorator)(mock)
 	assert.Inside(t, Tag, wrapped.Tags)
 
 	wrapped.Screen.Tick(&state.UIState{}, screen.Event{})
@@ -84,11 +82,9 @@ func TestWrap_TargetIsCorrect(t *testing.T) {
 		}
 	}
 
-	mock := screen_test.MockNode{
-		Name: "node-123",
-	}
+	mock := screen_test.MockByName("node-123")
 
-	wrapped := Wrap(decorator)(mock.ToNode())
+	wrapped := Wrap(decorator)(mock)
 	wrapped.Screen.Tick(&state.UIState{}, screen.Event{})
 
 	assert.Equal(t, mock.Name, captured.Name)
@@ -223,11 +219,9 @@ func TestOnKey_ExecutesMiddleware_WhenKeyMatches(t *testing.T) {
 		return screen.EmptyResult()
 	}
 
-	mock := screen_test.MockNode{
-		Name: "test-node",
-	}
+	mock := screen_test.MockByName("test-node")
 
-	node := OnKey(mock.ToNode(), middleware, key.ActionEnter, key.ActionEsc)
+	node := OnKey(mock, middleware, key.ActionEnter, key.ActionEsc)
 
 	matchingEvent := screen.Event{
 		Key: key.Key{

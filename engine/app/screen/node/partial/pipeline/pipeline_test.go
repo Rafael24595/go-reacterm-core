@@ -31,11 +31,9 @@ func drawSources(vm viewmodel.ViewModel, winsize winsize.Winsize) {
 
 func TestPipeline_ToNode(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockNode{
-		Name: name,
-	}
+	mock := screen_test.MockByName(name)
 
-	node := New(mock.ToNode()).ToNode()
+	node := New(mock).ToNode()
 	screen_test.Helper_ToNode(t, node)
 
 	assert.Equal(t, node.Name, name)
@@ -43,25 +41,19 @@ func TestPipeline_ToNode(t *testing.T) {
 
 func TestPipeline_Propagate(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockNode{
-		Name: name,
-	}
+	mock := screen_test.MockByName(name)
 
-	node := New(mock.ToNode()).ToNode()
+	node := New(mock).ToNode()
 	screen_test.Helper_Propagate(t, name, 0, node)
 }
 
 func TestPipeline_WrapsReturnedScreen(t *testing.T) {
 	called := false
 
-	mockNext := screen_test.MockNode{
-		Name: "next",
-	}
-
 	mockBase := screen_test.MockNode{
 		Tick: func(s *state.UIState, _ screen.Event) screen.Result {
 			called = true
-			next := mockNext.ToNode()
+			next := screen_test.MockByName("next")
 			return screen.Result{
 				Node: &next,
 			}

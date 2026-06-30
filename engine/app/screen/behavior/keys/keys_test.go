@@ -23,11 +23,9 @@ func TestWrap_AddsTag_AndExecutesDecorator(t *testing.T) {
 		}
 	}
 
-	mock := screen_test.MockNode{
-		Name: "test-node",
-	}
+	mock := screen_test.MockByName("test-node")
 
-	wrapped := Wrap(decorator)(mock.ToNode())
+	wrapped := Wrap(decorator)(mock)
 	assert.Inside(t, Tag, wrapped.Tags)
 
 	wrapped.Screen.Keys()
@@ -43,11 +41,7 @@ func TestWrap_PreservesNextChain(t *testing.T) {
 		}
 	}
 
-	mock := screen_test.MockNode{
-		Name: "test-node",
-	}
-
-	node := mock.ToNode()
+	node := screen_test.MockByName("test-node")
 	node.Screen.Keys = func() screen.Definition {
 		called += 1
 		return screen.DefinitionFromActions()
@@ -84,11 +78,9 @@ func TestWrap_TargetIsCorrect(t *testing.T) {
 		}
 	}
 
-	mock := screen_test.MockNode{
-		Name: "node-123",
-	}
+	mock := screen_test.MockByName("node-123")
 
-	wrapped := Wrap(decorator)(mock.ToNode())
+	wrapped := Wrap(decorator)(mock)
 	wrapped.Screen.Keys()
 
 	assert.Equal(t, mock.Name, captured.Name)

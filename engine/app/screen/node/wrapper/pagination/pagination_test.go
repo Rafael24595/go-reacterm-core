@@ -18,11 +18,9 @@ import (
 
 func TestPagination_ToNode(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockNode{
-		Name: name,
-	}
+	mock := screen_test.MockByName(name)
 
-	node := New(mock.ToNode()).ToNode()
+	node := New(mock).ToNode()
 	screen_test.Helper_ToNode(t, node)
 
 	assert.Equal(t, node.Name, name)
@@ -30,21 +28,16 @@ func TestPagination_ToNode(t *testing.T) {
 
 func TestPagination_Propagate(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockNode{
-		Name: name,
-	}
+	mock := screen_test.MockByName(name)
 
-	node := New(mock.ToNode()).ToNode()
+	node := New(mock).ToNode()
 	screen_test.Helper_Propagate(t, name, 0, node)
 }
 
 func TestPagination_LocalTick(t *testing.T) {
 	uiState := state.NewUIState()
-	base := screen_test.MockNode{
-		Name: "base",
-	}
-
-	page := New(base.ToNode())
+	base := screen_test.MockByName("base")
+	page := New(base)
 	node := page.ToNode()
 
 	uiState.Pager.TargetPage = 0
@@ -106,11 +99,8 @@ func TestPagination_PageNeverNegative(t *testing.T) {
 	uiState := state.NewUIState()
 	uiState.Pager.TargetPage = 0
 
-	base := screen_test.MockNode{
-		Name: "base",
-	}
-
-	page := New(base.ToNode())
+	base := screen_test.MockByName("base")
+	page := New(base)
 	node := page.ToNode()
 
 	node.Screen.Tick(uiState, screen.Event{Key: *key.NewKeyCode(key.ActionArrowLeft)})

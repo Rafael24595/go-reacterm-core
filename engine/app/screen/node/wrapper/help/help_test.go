@@ -14,11 +14,9 @@ import (
 
 func TestHelp_ToNode(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockNode{
-		Name: name,
-	}
+	mock := screen_test.MockByName(name)
 
-	node := New(mock.ToNode()).ToNode()
+	node := New(mock).ToNode()
 	screen_test.Helper_ToNode(t, node)
 
 	assert.Equal(t, node.Name, name)
@@ -26,11 +24,9 @@ func TestHelp_ToNode(t *testing.T) {
 
 func TestHelp_Propagate(t *testing.T) {
 	name := "base"
-	mock := screen_test.MockNode{
-		Name: name,
-	}
+	mock := screen_test.MockByName(name)
 
-	node := New(mock.ToNode()).ToNode()
+	node := New(mock).ToNode()
 	screen_test.Helper_Propagate(t, name, 0, node)
 }
 
@@ -85,15 +81,11 @@ func TestHelp_WrapsReturnedScreen(t *testing.T) {
 	action := key.ActionEnter
 	definition := screen.DefinitionFromActions(action)
 
-	mockNext := screen_test.MockNode{
-		Name: "next",
-	}
-
 	mockBase := screen_test.MockNode{
 		Definition: &definition,
 		Tick: func(s *state.UIState, _ screen.Event) screen.Result {
 			called = true
-			next := mockNext.ToNode()
+			next := screen_test.MockByName("next")
 			return screen.Result{
 				Node: &next,
 			}
