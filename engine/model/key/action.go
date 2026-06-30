@@ -33,8 +33,6 @@ const (
 
 	CustomActionHelp
 
-	CustomActionBack
-
 	CustomActionPrev
 	CustomActionNext
 
@@ -66,7 +64,6 @@ var ControlKeyMap = map[rune]*Key{
 
 var AltKeyMap = map[rune]*Key{
 	'd': NewKeyCode(ActionDeleteForward, ModAlt),
-	'b': NewKeyCode(CustomActionBack, ModAlt),
 	'h': NewKeyCode(CustomActionHelp, ModAlt),
 	'x': NewKeyCode(CustomActionCut, ModAlt),
 	'c': NewKeyCode(CustomActionCopy, ModAlt),

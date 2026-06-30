@@ -40,8 +40,6 @@ var descriptors = map[Action]Descriptor{
 
 	CustomActionHelp:  NewDescriptor("Help", "M-h"),
 
-	CustomActionBack:  NewDescriptor("Back", "M-b"),
-
 	CustomActionPrev:  NewDescriptor("Prev", "M-p"),
 	CustomActionNext:  NewDescriptor("Prev", "M-n"),
 
