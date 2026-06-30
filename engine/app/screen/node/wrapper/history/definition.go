@@ -10,12 +10,15 @@ type Command uint8
 const (
 	CmdNone Command = iota
 
-	CmdBack
+	CmdPrev
+	CmdNext
 )
 
 var Commands = []Command{
-	CmdBack,
+	CmdPrev,
+	CmdNext,
 }
 
 var defaultBindings = keymap.NewBindings[Command]().
-	Bind(key.CustomActionBack, CmdBack)
+	Bind(key.CustomActionPrev, CmdPrev).
+	Bind(key.CustomActionNext, CmdNext)
