@@ -38,10 +38,16 @@ var descriptors = map[Action]Descriptor{
 	ActionPageUp:   NewDescriptor("⇞", "Prev page"),
 	ActionPageDown: NewDescriptor("⇟", "Next page"),
 
+	CustomActionHelp:  NewDescriptor("Help", "M-h"),
+
+	CustomActionBack:  NewDescriptor("Back", "M-b"),
+
+	CustomActionPrev:  NewDescriptor("Prev", "M-p"),
+	CustomActionNext:  NewDescriptor("Prev", "M-n"),
+
 	CustomActionUndo:  NewDescriptor("Undo", "M-z"),
 	CustomActionRedo:  NewDescriptor("Redo", "M-y"),
-	CustomActionHelp:  NewDescriptor("Help", "M-h"),
-	CustomActionBack:  NewDescriptor("Back", "M-b"),
+
 	CustomActionCut:   NewDescriptor("Cut", "M-x"),
 	CustomActionCopy:  NewDescriptor("Copy", "M-c"),
 	CustomActionPaste: NewDescriptor("Paste", "M-v"),

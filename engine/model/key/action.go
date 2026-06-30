@@ -32,7 +32,11 @@ const (
 	ActionPageDown
 
 	CustomActionHelp
+
 	CustomActionBack
+
+	CustomActionPrev
+	CustomActionNext
 
 	CustomActionUndo
 	CustomActionRedo
@@ -70,6 +74,8 @@ var AltKeyMap = map[rune]*Key{
 	'z': NewKeyCode(CustomActionUndo, ModAlt),
 	'y': NewKeyCode(CustomActionRedo, ModAlt),
 	's': NewKeyCode(CustomActionPointer, ModAlt),
+	'p': NewKeyCode(CustomActionPrev, ModAlt),
+	'n': NewKeyCode(CustomActionNext, ModAlt),
 }
 
 var CsiFinalMap = map[rune]Action{
