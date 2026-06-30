@@ -18,6 +18,15 @@ func (s *Stack[T]) Cap() uint {
 	return uint(cap(s.data))
 }
 
+func (s *Stack[T]) Items() []T {
+	items := make([]T, len(s.data))
+	for i := range s.data {
+		index := len(s.data) - 1 - i
+		items[i] = s.data[index]
+	}
+	return items
+}
+
 func (s *Stack[T]) Peek() (T, bool) {
 	var zero T
 

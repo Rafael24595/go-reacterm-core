@@ -90,3 +90,31 @@ func TestStack_Capacity(t *testing.T) {
 
 	assert.Equal(t, 6, s.Cap())
 }
+
+func TestStack_Items(t *testing.T) {
+	s := New[int](3)
+
+	s.Push(1)
+	s.Push(2)
+	s.Push(3)
+
+	items := s.Items()
+
+	assert.DeepEqual(t, []int{3, 2, 1}, items)
+}
+
+func TestStack_ItemsReturnsCopy(t *testing.T) {
+	s := New[int](3)
+
+	s.Push(1)
+	s.Push(2)
+	s.Push(3)
+
+	items := s.Items()
+
+	items[0] = 100
+
+	again := s.Items()
+
+	assert.DeepEqual(t, []int{3, 2, 1}, again)
+}
