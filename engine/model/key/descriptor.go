@@ -5,6 +5,9 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/dict"
 )
 
+type DescriptorResolver func(action Action) *Descriptor
+type DescriptorsResolver func(action ...Action) *dict.LinkedMap[Action, Descriptor]
+
 type Descriptor struct {
 	Code   []string
 	Detail string

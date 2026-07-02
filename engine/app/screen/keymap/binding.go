@@ -7,8 +7,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 )
 
-type descriptorResolver func(action key.Action) *key.Descriptor
-
 type Command interface {
 	~uint8
 }
@@ -20,7 +18,7 @@ type Binding[T Command] struct {
 
 type Bindings[T Command] struct {
 	keys     *dict.LinkedMap[key.Action, Binding[T]]
-	resolver descriptorResolver
+	resolver key.DescriptorResolver
 }
 
 func NewBindings[T Command]() *Bindings[T] {
