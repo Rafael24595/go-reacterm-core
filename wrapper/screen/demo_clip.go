@@ -17,6 +17,7 @@ import (
 func NewDemoClip() screen.Node {
 	clip := clip.New().
 		Name("clip - dolor").
+		EnableWriteMode().
 		SetPause(150).
 		SetFrames(
 			clip.FrameLines(
