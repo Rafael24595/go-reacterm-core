@@ -23,7 +23,10 @@ func (d Definition) Merge(other Definition) Definition {
 	}
 }
 
-func NewDefinition(actions ...key.Action) Definition {
+func NewDefinition(
+	resolver key.DescriptorsResolver,
+	actions ...key.Action,
+) Definition {
 	keys := key.NewKeysCode(actions...)
 
 	required := dict.NewLinkedMap[key.Action, key.Key]()
@@ -31,7 +34,7 @@ func NewDefinition(actions ...key.Action) Definition {
 		required.Set(v.Code, v)
 	}
 
-	descriptor := key.ResolveDescriptors(actions...)
+	descriptor := resolver(actions...)
 
 	return Definition{
 		RequireKeys: required,
@@ -44,10 +47,6 @@ func EmptyDefinition() Definition {
 		RequireKeys: dict.NewLinkedMap[key.Action, key.Key](),
 		Descriptor:  dict.NewLinkedMap[key.Action, key.Descriptor](),
 	}
-}
-
-func DefinitionFromActions(actions ...key.Action) Definition {
-	return NewDefinition(actions...)
 }
 
 func (d Definition) IsRequired(ky key.Key) bool {

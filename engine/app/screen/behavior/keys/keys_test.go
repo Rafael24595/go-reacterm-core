@@ -88,7 +88,8 @@ func TestWrap_TargetIsCorrect(t *testing.T) {
 
 func TestMap_Transforms(t *testing.T) {
 	handler := func(definition screen.Definition) screen.Definition {
-		return screen.DefinitionFromActions(
+		return screen.NewDefinition(
+			key.ResolveDescriptors,
 			key.ActionAll,
 		)
 	}

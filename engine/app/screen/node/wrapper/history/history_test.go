@@ -36,7 +36,8 @@ func TestHistory_Propagate(t *testing.T) {
 func TestHistory_Navigation(t *testing.T) {
 	uiState := &state.UIState{}
 
-	definition := screen.DefinitionFromActions(
+	definition := screen.NewDefinition(
+		key.ResolveDescriptors,
 		key.ActionEnter,
 	)
 

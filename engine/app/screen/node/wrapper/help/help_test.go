@@ -52,7 +52,10 @@ func TestHelp_DelegatesTickWhenKeyRequired(t *testing.T) {
 	called := false
 
 	action := key.CustomActionHelp
-	definition := screen.DefinitionFromActions(action)
+	definition := screen.NewDefinition(
+		key.ResolveDescriptors,
+		action,
+	)
 
 	mock := screen_test.MockNode{
 		Definition: &definition,
@@ -79,7 +82,10 @@ func TestHelp_WrapsReturnedScreen(t *testing.T) {
 	called := false
 
 	action := key.ActionEnter
-	definition := screen.DefinitionFromActions(action)
+	definition := screen.NewDefinition(
+		key.ResolveDescriptors,
+		action,
+	)
 
 	mockBase := screen_test.MockNode{
 		Definition: &definition,
