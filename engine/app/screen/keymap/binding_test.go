@@ -21,7 +21,8 @@ func mockResolver(key.Action) *key.Descriptor {
 }
 
 func TestNewKeysBindings(t *testing.T) {
-	kb := NewBindings[testCommand]()
+	kb := NewBindings[testCommand]().
+		SetResolver(mockResolver)
 
 	assert.NotNil(t, kb)
 	assert.NotNil(t, kb.keys)
@@ -29,6 +30,7 @@ func TestNewKeysBindings(t *testing.T) {
 
 func TestLazyInit(t *testing.T) {
 	var kb Bindings[testCommand]
+	kb.resolver = mockResolver
 
 	assert.False(t, kb.Has(key.Action(1)))
 
@@ -38,7 +40,9 @@ func TestLazyInit(t *testing.T) {
 }
 
 func TestBindAndHas(t *testing.T) {
-	kb := NewBindings[testCommand]()
+	kb := NewBindings[testCommand]().
+		SetResolver(mockResolver)
+
 	action := key.Action(10)
 
 	assert.False(t, kb.Has(action))
@@ -49,7 +53,9 @@ func TestBindAndHas(t *testing.T) {
 }
 
 func TestResolve(t *testing.T) {
-	kb := NewBindings[testCommand]()
+	kb := NewBindings[testCommand]().
+		SetResolver(mockResolver)
+
 	action := key.Action(20)
 
 	cmd, ok := kb.Resolve(action)
@@ -65,8 +71,8 @@ func TestResolve(t *testing.T) {
 }
 
 func TestCommand(t *testing.T) {
-	kb := NewBindings[testCommand]()
-	kb.resolver = mockResolver
+	kb := NewBindings[testCommand]().
+		SetResolver(mockResolver)
 
 	action := key.Action(50)
 
@@ -82,7 +88,8 @@ func TestCommand(t *testing.T) {
 }
 
 func TestCommandsEmpty(t *testing.T) {
-	kb := NewBindings[testCommand]()
+	kb := NewBindings[testCommand]().
+		SetResolver(mockResolver)
 
 	commands := kb.Commands()
 
@@ -90,8 +97,8 @@ func TestCommandsEmpty(t *testing.T) {
 }
 
 func TestCommands(t *testing.T) {
-	kb := NewBindings[testCommand]()
-	kb.resolver = mockResolver
+	kb := NewBindings[testCommand]().
+		SetResolver(mockResolver)
 
 	kb.Bind(key.Action(1), CmdOpen)
 	kb.Bind(key.Action(2), CmdClose)
@@ -106,8 +113,8 @@ func TestCommands(t *testing.T) {
 }
 
 func TestTryBind(t *testing.T) {
-	kb := NewBindings[testCommand]()
-	kb.resolver = mockResolver
+	kb := NewBindings[testCommand]().
+		SetResolver(mockResolver)
 
 	action := key.Action(30)
 
@@ -143,8 +150,10 @@ func TestClone(t *testing.T) {
 
 	assert.Equal(t, CmdOpen, cmdOrig)
 }
+
 func TestOverlay(t *testing.T) {
-	kb := NewBindings[testCommand]()
+	kb := NewBindings[testCommand]().
+		SetResolver(mockResolver)
 
 	kb.Bind(key.Action(1), CmdOpen)
 	kb.Bind(key.Action(2), CmdClose)
