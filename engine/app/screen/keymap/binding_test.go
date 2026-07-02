@@ -143,23 +143,23 @@ func TestClone(t *testing.T) {
 
 	assert.Equal(t, CmdOpen, cmdOrig)
 }
-
 func TestOverlay(t *testing.T) {
-	kbBase := NewBindings[testCommand]()
-	kbBase.Bind(key.Action(1), CmdOpen)
-	kbBase.Bind(key.Action(2), CmdClose)
+	kb := NewBindings[testCommand]()
+
+	kb.Bind(key.Action(1), CmdOpen)
+	kb.Bind(key.Action(2), CmdClose)
 
 	kbOverrides := NewBindings[testCommand]()
 	kbOverrides.Bind(key.Action(2), CmdSave)
 	kbOverrides.Bind(key.Action(3), CmdOpen)
 
-	kbNilResult := kbBase.Overlay(nil)
+	kbNilResult := kb.Overlay(nil)
 
-	assert.NotEqual(t, kbBase, kbNilResult)
+	assert.NotEqual(t, kb, kbNilResult)
 
-	kbResult := kbBase.Overlay(kbOverrides)
+	kbResult := kb.Overlay(kbOverrides)
 
-	cmdBase, _ := kbBase.Resolve(key.Action(2))
+	cmdBase, _ := kb.Resolve(key.Action(2))
 
 	assert.Equal(t, CmdClose, cmdBase)
 
