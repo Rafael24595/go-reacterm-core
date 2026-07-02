@@ -5,6 +5,7 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap/rw"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -23,7 +24,6 @@ import (
 
 const NameArea = "text_area"
 
-// TODO: Expose bindings configuration?
 type TextArea struct {
 	reference  string
 	loaded     bool
@@ -57,6 +57,26 @@ func NewArea() *TextArea {
 
 func (n *TextArea) SetName(name string) *TextArea {
 	n.reference = name
+	return n
+}
+
+func (n *TextArea) WithWriteBindings(overrides *keymap.Bindings[CommandWrite]) *TextArea {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings.Write = n.bindings.Write.Overlay(overrides)
+	return n
+}
+
+func (n *TextArea) WithReadBindings(overrides *keymap.Bindings[CommandRead]) *TextArea {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings.Read = n.bindings.Read.Overlay(overrides)
 	return n
 }
 

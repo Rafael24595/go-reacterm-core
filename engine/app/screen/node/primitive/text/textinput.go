@@ -5,6 +5,7 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/cols"
@@ -50,6 +51,16 @@ func NewInput() *TextInput {
 
 func (n *TextInput) SetName(name string) *TextInput {
 	n.textarea.SetName(name)
+	return n
+}
+
+func (n *TextInput) WithWriteBindings(overrides *keymap.Bindings[CommandWrite]) *TextInput {
+	n.textarea.WithWriteBindings(overrides)
+	return n
+}
+
+func (n *TextInput) WithReadBindings(overrides *keymap.Bindings[CommandRead]) *TextInput {
+	n.textarea.WithReadBindings(overrides)
 	return n
 }
 
