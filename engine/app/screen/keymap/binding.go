@@ -130,10 +130,11 @@ func (b *Bindings[T]) TryBind(
 
 func (b *Bindings[T]) Clone() *Bindings[T] {
 	b.lazyInit()
-	
+
 	result := NewBindings[T]()
 	result.keys = b.keys.Clone()
 	result.resolver = b.resolver
+
 	return result
 }
 
