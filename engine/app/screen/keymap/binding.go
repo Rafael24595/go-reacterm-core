@@ -39,6 +39,12 @@ func (b *Bindings[T]) lazyInit() *Bindings[T] {
 	return b
 }
 
+func (b *Bindings[T]) Size() uint {
+	b.lazyInit()
+
+	return b.keys.Size()
+}
+
 func (b *Bindings[T]) Has(action key.Action) bool {
 	b.lazyInit()
 
