@@ -44,7 +44,7 @@ func TestWrap_PreservesNextChain(t *testing.T) {
 	node := screen_test.MockByName("test-node")
 	node.Screen.Keys = func() screen.Definition {
 		called += 1
-		return screen.DefinitionFromActions()
+		return screen.EmptyDefinition()
 	}
 
 	wrapped := Wrap(decorator)(node)
