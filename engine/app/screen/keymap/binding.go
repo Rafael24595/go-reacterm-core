@@ -37,6 +37,13 @@ func (b *Bindings[T]) lazyInit() *Bindings[T] {
 	return b
 }
 
+func (b *Bindings[T]) SetResolver(resolver key.DescriptorResolver) *Bindings[T] {
+	b.lazyInit()
+
+	b.resolver = resolver
+	return b
+}
+
 func (b *Bindings[T]) Size() uint {
 	b.lazyInit()
 
