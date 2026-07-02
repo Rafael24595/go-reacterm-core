@@ -4,17 +4,22 @@ import (
 	"time"
 
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
+	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/platform/clock"
 )
 
 const Name = "clip"
 
-const defaultPause = time.Millisecond * 500
+const (
+	defaultPause = time.Millisecond * 500
+	defaultDelta = time.Duration(10)
+	defaultLimit = time.Duration(5000)
+)
 
 type Clip struct {
 	reference string
@@ -136,14 +141,22 @@ func (n *Clip) maxFrameRows() int {
 }
 
 func (n *Clip) loadFromStore(uiState state.UIState) {
-	if active, ok := KeyActive.Get(
+	sync, _ := KeySync.Take(
 		uiState.Store,
 		n.reference,
-	); ok {
-		n.active = active
+	)
+
+	if sync.Active != nil {
+		n.active = *sync.Active
 	}
 
-	if restart, ok := KeyRestart.Get(
+	if sync.Pause != nil {
+		n.pause = math.Clamp(
+			*sync.Pause, defaultDelta, defaultLimit,
+		)
+	}
+
+	if restart, ok := KeyRestart.Take(
 		uiState.Store,
 		n.reference,
 	); ok && restart {

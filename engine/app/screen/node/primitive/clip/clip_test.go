@@ -61,12 +61,19 @@ func TestClip_Boot(t *testing.T) {
 
 	node := clip.ToNode()
 
+	active := false
+	pause := defaultLimit
+
 	uiState := state.NewUIState()
-	KeyActive.Set(uiState.Store, node.Name, false)
+	KeySync.Set(uiState.Store, node.Name, Sync{
+		Active: &active,
+		Pause:  &pause,
+	})
 
 	node.Screen.Boot(*uiState)
 
 	assert.False(t, clip.active)
+	assert.Equal(t, pause, clip.pause)
 
 	assert.Equal(t, clip.start, time.Duration(1000))
 

@@ -510,26 +510,26 @@ func makeClip(service *mockTalkService) screen.Node {
 }
 
 func onClipView(service *mockTalkService) view.Middleware {
+	isShowing := false
+	
 	return func(uiState state.UIState, context behavior.Context[screen.ViewFunc]) viewmodel.ViewModel {
 		show := service.event == eventTypingStarted
-		restart := false
 
-		clip.KeyActive.Upsert(
+		clip.KeySync.Upsert(
 			uiState.Store,
 			context.Target.Name,
-			func(b *bool) {
-				if !*b {
-					restart = true
-				}
-				*b = show
+			func(s *clip.Sync) {
+				s.Active = &show
 			},
 		)
 
 		clip.KeyRestart.Set(
 			uiState.Store,
 			context.Target.Name,
-			restart,
+			!isShowing,
 		)
+
+		isShowing = show
 
 		return context.Next(uiState)
 	}
