@@ -1,16 +1,19 @@
 package clip
 
 import (
+	"fmt"
 	"time"
 
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/platform/clock"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
 const Name = "clip"
@@ -22,26 +25,30 @@ const (
 )
 
 type Clip struct {
-	reference string
-	loaded    bool
-	clock     clock.Clock
-	pause     time.Duration
-	start     time.Duration
-	active    bool
-	empty     Frame
-	frames    []Frame
+	reference  string
+	loaded     bool
+	clock      clock.Clock
+	bindings   *keymap.Bindings[Command]
+	definition screen.Definition
+	pause      time.Duration
+	start      time.Duration
+	active     bool
+	empty      Frame
+	frames     []Frame
 }
 
 func New() *Clip {
 	return &Clip{
-		reference: Name,
-		loaded:    false,
-		clock:     clock.UnixMilliClock,
-		pause:     defaultPause,
-		start:     0,
-		active:    true,
-		empty:     NewFrame(),
-		frames:    make([]Frame, 0),
+		reference:  Name,
+		loaded:     false,
+		clock:      clock.UnixMilliClock,
+		bindings:   defaultReadBindings,
+		definition: screen.EmptyDefinition(),
+		pause:      defaultPause,
+		start:      0,
+		active:     true,
+		empty:      NewFrame(),
+		frames:     make([]Frame, 0),
 	}
 }
 
@@ -52,6 +59,26 @@ func (n *Clip) Name(name string) *Clip {
 	}
 
 	n.reference = name
+	return n
+}
+
+func (n *Clip) EnableWriteMode() *Clip {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings = defaultWriteBindings
+	return n
+}
+
+func (n *Clip) WithBindings(overrides *keymap.Bindings[Command]) *Clip {
+	if n.loaded {
+		assert.Unreachable(screen.MessageModified)
+		return n
+	}
+
+	n.bindings = n.bindings.Overlay(overrides)
 	return n
 }
 
@@ -84,9 +111,9 @@ func (n *Clip) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.reference).
 		NameToStack().
-		WithoutKeys().
-		WithoutTick().
 		Boot(n.boot).
+		Keys(n.keys).
+		Tick(n.tick).
 		View(n.view).
 		ToNode()
 }
@@ -105,6 +132,8 @@ func (n *Clip) boot(uiState state.UIState) {
 
 	n.empty = makeEmptyFrame(maxRows)
 	n.frames = fixFramesSize(maxRows, n.frames)
+
+	n.definition = keymap.BindingsToDefinition(n.bindings)
 }
 
 func fixFramesSize(maxRows int, frames []Frame) []Frame {
@@ -164,6 +193,35 @@ func (n *Clip) loadFromStore(uiState state.UIState) {
 	}
 }
 
+func (n *Clip) keys() screen.Definition {
+	return n.definition
+}
+
+func (n *Clip) tick(uiState *state.UIState, event screen.Event) screen.Result {
+	switch n.bindings.Command(event.Key.Code) {
+	case CmdWriteDec:
+		n.pause = max(defaultDelta, n.pause-defaultDelta)
+	case CmdWriteInc:
+		n.pause = min(defaultLimit, n.pause+defaultDelta)
+	}
+
+	n.tickToStore(uiState)
+	return screen.ResultFromUIState(uiState)
+}
+
+func (n *Clip) tickToStore(uiState *state.UIState) {
+	state := State{
+		Active: n.active,
+		Pause:  n.pause,
+	}
+
+	KeyState.Set(
+		uiState.Store,
+		n.reference,
+		state,
+	)
+}
+
 func (n *Clip) view(uiState state.UIState) viewmodel.ViewModel {
 	n.loadFromStore(uiState)
 
@@ -176,6 +234,16 @@ func (n *Clip) view(uiState state.UIState) viewmodel.ViewModel {
 	vm.Kernel.Push(
 		drain.UnitFromLines(line...),
 	)
+
+	if n.bindings.Size() > 0 {
+		line := text.NewLine(
+			fmt.Sprintf("Speed: %d", n.pause),
+		)
+
+		vm.Footer.Push(
+			drain.UnitFromLines(*line),
+		)
+	}
 
 	return *vm
 }
