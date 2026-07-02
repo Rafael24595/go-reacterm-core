@@ -33,6 +33,9 @@ var descriptors = map[Action]Descriptor{
 	ActionEnter:     NewDescriptor("New line/Accept", "RET"),
 	ActionBackspace: NewDescriptor("Delete char", "BS"),
 
+	ActionPlus:  NewDescriptor("Increment", "+"),
+	ActionMinus: NewDescriptor("Decrement", "-"),
+
 	ActionArrowUp:    NewDescriptor("Move up", "↑"),
 	ActionArrowDown:  NewDescriptor("Move down", "↓"),
 	ActionArrowLeft:  NewDescriptor("Move left", "←"),

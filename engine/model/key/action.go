@@ -22,6 +22,9 @@ const (
 	ActionEnter
 	ActionBackspace
 
+	ActionPlus
+	ActionMinus
+
 	ActionArrowUp
 	ActionArrowDown
 	ActionArrowLeft
@@ -60,6 +63,8 @@ var ControlKeyMap = map[rune]*Key{
 	ascii.ENTER_CR:   NewKeyCode(ActionEnter),
 	ascii.DEL:        NewKeyCode(ActionBackspace),
 	ascii.BACK_SPACE: NewKeyCode(ActionBackspace),
+	ascii.PLUS:       NewKeyCode(ActionPlus),
+	ascii.MINUS:      NewKeyCode(ActionMinus),
 }
 
 var AltKeyMap = map[rune]*Key{
