@@ -31,7 +31,7 @@ func (b *Bindings[T]) lazyInit() *Bindings[T] {
 	}
 
 	if b.resolver == nil {
-		b.resolver = key.FindDescriptor
+		b.resolver = key.ResolveDescriptor
 	}
 
 	return b

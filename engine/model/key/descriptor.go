@@ -58,40 +58,9 @@ var descriptors = map[Action]Descriptor{
 	ActionRune: NewDescriptor("Text", "Text"),
 }
 
-func ResolveDescriptors(actions ...Action) *dict.LinkedMap[Action, Descriptor] {
-	return ResolveDescriptorsWithDefaults(nil, actions...)
-}
-
-func ResolveDescriptorsWithDefaults(
-	defaults map[Action]Descriptor,
-	actions ...Action,
-) *dict.LinkedMap[Action, Descriptor] {
-	help := dict.NewLinkedMap[Action, Descriptor]()
-	for _, a := range actions {
-		if action := resolveDescriptor(defaults, a); action != nil {
-			help.Set(a, *action)
-		}
-	}
-
-	return help
-}
-
-func FindDescriptor(action Action) *Descriptor {
-	return resolveDescriptor(make(map[Action]Descriptor), action)
-}
-
-func resolveDescriptor(
-	defaults map[Action]Descriptor,
-	action Action,
-) *Descriptor {
+func ResolveDescriptor(action Action) *Descriptor {
 	if action == ActionAll {
 		return nil
-	}
-
-	if defaults != nil {
-		if field, exists := defaults[action]; exists {
-			return &field
-		}
 	}
 
 	if str, exist := descriptors[action]; exist {
@@ -102,4 +71,15 @@ func resolveDescriptor(
 
 	descriptor := NewDescriptor("Unknown action", "???")
 	return &descriptor
+}
+
+func ResolveDescriptors(actions ...Action) *dict.LinkedMap[Action, Descriptor] {
+	help := dict.NewLinkedMap[Action, Descriptor]()
+	for _, a := range actions {
+		if action := ResolveDescriptor(a); action != nil {
+			help.Set(a, *action)
+		}
+	}
+
+	return help
 }
