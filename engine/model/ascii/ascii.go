@@ -9,4 +9,6 @@ const (
 	ENTER_CR   = 0x0D
 	TILDE      = 0x7E
 	BACK_SPACE = 0x08
+	PLUS       = 0x2B
+	MINUS      = 0x2D
 )
