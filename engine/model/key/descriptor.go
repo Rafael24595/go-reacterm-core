@@ -21,41 +21,43 @@ func NewDescriptor(detail string, codes ...string) Descriptor {
 }
 
 var descriptors = map[Action]Descriptor{
+	ActionRune: NewDescriptor("Text", "Text"),
+
+	ActionEsc:  NewDescriptor("Back/Cancel", "ESC"),
+	ActionExit: NewDescriptor("Exit", "^C"),
+
+	ActionDeleteBackward: NewDescriptor("Delete word", "^W"),
+	ActionDeleteForward:  NewDescriptor("Delete word fwd", "^D"),
+
+	ActionTab:       NewDescriptor("Next field", "TAB"),
+	ActionEnter:     NewDescriptor("New line/Accept", "RET"),
+	ActionBackspace: NewDescriptor("Delete char", "BS"),
+
 	ActionArrowUp:    NewDescriptor("Move up", "↑"),
 	ActionArrowDown:  NewDescriptor("Move down", "↓"),
 	ActionArrowLeft:  NewDescriptor("Move left", "←"),
 	ActionArrowRight: NewDescriptor("Move right", "→"),
-	ActionHome:       NewDescriptor("Line start", "HOME", "^A"),
-	ActionEnd:        NewDescriptor("Line end", "END", "^E"),
 
-	ActionEnter: NewDescriptor("New line/Accept", "RET"),
-	ActionTab:   NewDescriptor("Next field", "TAB"),
-	ActionEsc:   NewDescriptor("Back/Cancel", "ESC"),
-	ActionExit:  NewDescriptor("Exit", "^C"),
-
-	ActionBackspace:      NewDescriptor("Delete char", "BS"),
-	ActionDelete:         NewDescriptor("Delete forward", "DEL"),
-	ActionDeleteBackward: NewDescriptor("Delete word", "^W"),
-	ActionDeleteForward:  NewDescriptor("Delete word fwd", "^D"),
+	ActionHome:   NewDescriptor("Line start", "HOME", "^A"),
+	ActionEnd:    NewDescriptor("Line end", "END", "^E"),
+	ActionDelete: NewDescriptor("Delete forward", "DEL"),
 
 	ActionPageUp:   NewDescriptor("⇞", "Prev page"),
 	ActionPageDown: NewDescriptor("⇟", "Next page"),
 
-	CustomActionHelp:  NewDescriptor("Help", "M-h"),
+	CustomActionHelp: NewDescriptor("Help", "M-h"),
 
-	CustomActionPrev:  NewDescriptor("Prev", "M-p"),
-	CustomActionNext:  NewDescriptor("Prev", "M-n"),
+	CustomActionPrev: NewDescriptor("Prev", "M-p"),
+	CustomActionNext: NewDescriptor("Prev", "M-n"),
 
-	CustomActionUndo:  NewDescriptor("Undo", "M-z"),
-	CustomActionRedo:  NewDescriptor("Redo", "M-y"),
+	CustomActionUndo: NewDescriptor("Undo", "M-z"),
+	CustomActionRedo: NewDescriptor("Redo", "M-y"),
 
 	CustomActionCut:   NewDescriptor("Cut", "M-x"),
 	CustomActionCopy:  NewDescriptor("Copy", "M-c"),
 	CustomActionPaste: NewDescriptor("Paste", "M-v"),
 
 	CustomActionPointer: NewDescriptor("Switch pointer", "M-s"),
-
-	ActionRune: NewDescriptor("Text", "Text"),
 }
 
 func ResolveDescriptor(action Action) *Descriptor {

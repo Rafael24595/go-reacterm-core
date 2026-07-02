@@ -7,7 +7,10 @@ import (
 type Action int
 
 const (
-	ActionRune Action = iota
+	ActionAll Action = iota
+	ActionIgnore
+	
+	ActionRune 
 
 	ActionEsc
 	ActionExit
@@ -44,9 +47,6 @@ const (
 	CustomActionPaste
 
 	CustomActionPointer
-
-	ActionIgnore
-	ActionAll
 )
 
 var ControlKeyMap = map[rune]*Key{
