@@ -302,3 +302,83 @@ func TestSplitLongWord(t *testing.T) {
 		})
 	}
 }
+
+func TestWordMeasure_CacheSameCols(t *testing.T) {
+	w := newWord(
+		*text.NewFragment("golang"),
+	)
+
+	calls := uint(0)
+
+	resolver := func(cols winsize.Cols, frags ...text.Fragment) winsize.Cols {
+		calls++
+		return 42
+	}
+
+	first := w.measureWith(80, resolver)
+	second := w.measureWith(80, resolver)
+
+	assert.Equal(t, first, second)
+	assert.Equal(t, winsize.Cols(80), w.cols)
+
+	assert.Equal(t, 1, calls)
+}
+
+func TestWordMeasure_RecalculateOnColsChange(t *testing.T) {
+	w := newWord(
+		*text.NewFragment("golang"),
+	)
+
+	calls := uint(0)
+
+	resolver := func(cols winsize.Cols, frags ...text.Fragment) winsize.Cols {
+		calls++
+		return 42
+	}
+
+	_ = w.measureWith(80, resolver)
+	m40 := w.measureWith(40, resolver)
+
+	assert.Equal(t, winsize.Cols(40), w.cols)
+	assert.Equal(t, m40, w.measure)
+
+	assert.Equal(t, 2, calls)
+}
+
+func TestWordMeasure_CacheAfterColsChange(t *testing.T) {
+	w := newWord(
+		*text.NewFragment("golang"),
+	)
+
+	calls := uint(0)
+
+	resolver := func(cols winsize.Cols, frags ...text.Fragment) winsize.Cols {
+		calls++
+		return 42
+	}
+
+	w.measureWith(80, resolver)
+	w.measureWith(40, resolver)
+	w.measureWith(40, resolver)
+
+	assert.Equal(t, uint(2), calls)
+}
+
+func TestWordMeasure_RecalculateWhenReturningToPreviousCols(t *testing.T) {
+	w := newWord(
+		*text.NewFragment("golang"),
+	)
+
+	calls := uint(0)
+
+	resolver := func(cols winsize.Cols, frags ...text.Fragment) winsize.Cols {
+		calls++
+		return 42
+	}
+
+	w.measureWith(80, resolver)
+	w.measureWith(40, resolver)
+	w.measureWith(80, resolver)
+
+	assert.Equal(t, uint(3), calls)
+}

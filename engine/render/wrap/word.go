@@ -9,14 +9,39 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
+type measureResolver func(winsize.Cols, ...text.Fragment) winsize.Cols
+
 type word struct {
-	Text []text.Fragment
+	Text     []text.Fragment
+	measured bool
+	cols     winsize.Cols
+	measure  winsize.Cols
 }
 
-func newWord(text ...text.Fragment) *word {
+func newWord(frags ...text.Fragment) *word {
 	return &word{
-		Text: text,
+		Text:     frags,
+		measured: false,
+		cols:     0,
+		measure:  0,
 	}
+}
+
+func (w *word) Measure(cols winsize.Cols) winsize.Cols {
+	return w.measureWith(cols, text.FragmentMeasure)
+}
+
+func (w *word) measureWith(
+	cols winsize.Cols,
+	resolver measureResolver,
+) winsize.Cols {
+	if !w.measured || w.cols != cols {
+		w.measure = resolver(cols, w.Text...)
+		w.cols = cols
+		w.measured = true
+	}
+
+	return w.measure
 }
 
 func splitLineWords(line *text.Line) []word {
