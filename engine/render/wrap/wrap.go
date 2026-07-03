@@ -118,23 +118,25 @@ func wrapOnce(cols winsize.Cols, line LayoutLine) (*text.Line, *LayoutLine) {
 	cursor := text.LineFromMeta(line.Source)
 
 	remaining := cols
+	currentWidth := winsize.Cols(0)
 
 	words := line.Words
 
 	for len(words) > 0 {
 		focus := words[0]
 
-		wordMeasure := text.FragmentMeasure(cols, focus.Text...)
+		wordMeasure := focus.Measure(cols)
 
 		if wordMeasure <= remaining {
 			cursor.PushFragments(focus.Text...)
 			remaining = remaining.Sub(wordMeasure)
+			currentWidth += wordMeasure
 			words = words[1:]
 
 			continue
 		}
 
-		if shouldWrap(cols, cursor, focus) {
+		if shouldWrap(focus, currentWidth) {
 			break
 		}
 
@@ -161,12 +163,12 @@ func wrapOnce(cols winsize.Cols, line LayoutLine) (*text.Line, *LayoutLine) {
 	return cursor, rest
 }
 
-func shouldWrap(cols winsize.Cols, line *text.Line, word word) bool {
+func shouldWrap(word word, currentWidth winsize.Cols) bool {
 	if text.FragsHasAtom(atom.Break, word.Text...) {
 		return false
 	}
 
-	return text.FragmentMeasure(cols, line.Text...) > 0
+	return currentWidth > 0
 }
 
 func splitLineFeeds(line *text.Line, order bool) []text.Line {
