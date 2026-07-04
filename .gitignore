@@ -2,4 +2,6 @@
 .temp
 .logs
 .vscode
+*.out
+*.test
 __debug_*
