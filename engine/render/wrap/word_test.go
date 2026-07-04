@@ -11,6 +11,18 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
+func wordsToString(words ...word) string {
+	var sb strings.Builder
+
+	for _, w := range words {
+		for _, f := range w.Text {
+			sb.WriteString(f.Base.Text)
+		}
+	}
+
+	return sb.String()
+}
+
 func tokenString(token word) string {
 	var b strings.Builder
 	for _, f := range token.Text {

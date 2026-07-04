@@ -157,15 +157,3 @@ func splitLongWord(
 
 	return current, nil
 }
-
-func wordsToString(words ...word) string {
-	var sb strings.Builder
-
-	for _, w := range words {
-		for _, f := range w.Text {
-			sb.WriteString(f.Text)
-		}
-	}
-
-	return sb.String()
-}
