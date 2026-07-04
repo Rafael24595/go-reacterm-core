@@ -22,12 +22,20 @@ func NewLine(text string, styles ...spec.Spec) *Line {
 	}
 }
 
-func EmptyLine() *Line {
-	return LineFromFragments()
+func EmptyLine(size ...int) *Line {
+	bufferSize := 0
+	if len(size) > 0 {
+		bufferSize = size[0]
+	}
+
+	return LineFromFragments(
+		make([]Fragment, 0, bufferSize)...,
+	)
 }
 
-func LineFromMeta(other *Line) *Line {
-	return EmptyLine().CopyMeta(other)
+func LineFromMeta(other *Line, size ...int) *Line {
+	return EmptyLine(size...).
+		CopyMeta(other)
 }
 
 func LineFromFragments(frags ...Fragment) *Line {
