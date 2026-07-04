@@ -14,14 +14,6 @@ func NewLayoutLine(source *text.Line, words ...word) *LayoutLine {
 	}
 }
 
-func (l *LayoutLine) toLine() *text.Line {
-	line := text.LineFromMeta(l.Source)
-	for _, v := range l.Words {
-		line.PushFragments(v.Text...)
-	}
-	return line
-}
-
 func (l *LayoutLine) clone() *LayoutLine {
 	newLine := NewLayoutLine(l.Source)
 	newLine.Words = make([]word, len(l.Words))

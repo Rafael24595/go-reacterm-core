@@ -74,12 +74,15 @@ func Lines(cols winsize.Cols, lines ...text.Line) []text.Line {
 }
 
 func wrapLine(cols winsize.Cols, line text.Line, dst []text.Line) []text.Line {
-	current := &line
+	words := splitLineWords(&line)
+	layout := NewLayoutLine(&line, words...)
+
+	current := layout
 
 	for current != nil {
-		head, rest := wrapOnceFromLine(cols, *current)
-		dst = append(dst, *head)
-		current = rest
+		head, rest := wrapOnce(cols, *current)
+        dst = append(dst, *head)
+        current = rest
 	}
 
 	return dst
@@ -99,19 +102,6 @@ func NextLine(cols winsize.Cols, lines []LayoutLine) (*text.Line, []LayoutLine) 
 	}
 
 	return result, remain
-}
-
-func wrapOnceFromLine(cols winsize.Cols, line text.Line) (*text.Line, *text.Line) {
-	words := splitLineWords(&line)
-
-	layout := NewLayoutLine(&line, words...)
-
-	result, rest := wrapOnce(cols, *layout)
-	if rest == nil {
-		return result, nil
-	}
-
-	return result, rest.toLine()
 }
 
 func wrapOnce(cols winsize.Cols, line LayoutLine) (*text.Line, *LayoutLine) {
