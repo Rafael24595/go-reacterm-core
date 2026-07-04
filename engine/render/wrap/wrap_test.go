@@ -34,6 +34,21 @@ func assembleLines(t *testing.T, lines ...text.Line) string {
 	return sb.String()
 }
 
+func benchmarkLine(words int) text.Line {
+	builder := strings.Builder{}
+
+	for range words {
+		builder.WriteString("Lorem ")
+	}
+
+	line := text.NewLine("")
+	line.PushFragments(
+		*text.NewFragment(builder.String()),
+	)
+
+	return *line
+}
+
 func TestWrapOnce(t *testing.T) {
 	tests := []struct {
 		name         string
@@ -574,5 +589,77 @@ func TestSplitLineFeeds_Ordering(t *testing.T) {
 				assert.Equal(t, tt.expectedOrders[i], line.Order, "Order mismatch at index %d", i)
 			}
 		})
+	}
+}
+
+func BenchmarkWrapLine_Short(b *testing.B) {
+	line := benchmarkLine(20)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = wrapLine(80, line, nil)
+	}
+}
+
+func BenchmarkWrapLine_Medium(b *testing.B) {
+	line := benchmarkLine(100)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = wrapLine(80, line, nil)
+	}
+}
+
+func BenchmarkWrapLine_Long(b *testing.B) {
+	line := benchmarkLine(500)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = wrapLine(80, line, nil)
+	}
+}
+
+func BenchmarkWrapLine_VeryLong(b *testing.B) {
+	line := benchmarkLine(2000)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = wrapLine(winsize.Cols(80), line, nil)
+	}
+}
+
+func BenchmarkWrapOnce(b *testing.B) {
+	line := text.LineFromFragments(
+		text.FragmentsFromString(
+			"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+		)...,
+	)
+
+	layout := NewLayoutLine(
+		line, splitLineWords(line)...,
+	)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_, _ = wrapOnce(40, *layout)
+	}
+}
+
+func BenchmarkWrapOnce_VeryLong(b *testing.B) {
+	line := benchmarkLine(2000)
+
+	layout := NewLayoutLine(
+		&line, splitLineWords(&line)...,
+	)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		wrapOnce(20, *layout)
 	}
 }
