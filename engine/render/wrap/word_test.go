@@ -394,3 +394,109 @@ func TestWordMeasure_RecalculateWhenReturningToPreviousCols(t *testing.T) {
 
 	assert.Equal(t, uint(3), calls)
 }
+
+func BenchmarkSplitLineWords(b *testing.B) {
+	line := text.LineFromFragments(
+		text.FragmentsFromString(
+			"Lorem ipsum dolor sit amet, consectetur adipiscing elit. "+
+				"Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+		)...,
+	)
+
+	b.ReportAllocs()
+	
+
+	for b.Loop() {
+		_ = splitLineWords(line)
+	}
+}
+
+func BenchmarkSplitLineWords_Long(b *testing.B) {
+    line := benchmarkLine(2000)
+
+    b.ReportAllocs()
+    
+
+    for b.Loop() {
+        _ = splitLineWords(&line)
+    }
+}
+
+func BenchmarkSplitLongWord_Fits(b *testing.B) {
+    w := wordFromFrags(
+        toWordFrag(
+            *text.NewFragment("hello"),
+        )...,
+    )
+
+    b.ReportAllocs()
+    
+
+    for b.Loop() {
+        splitLongWord(*w, 80, 80)
+    }
+}
+
+func BenchmarkSplitLongWord_SplitMiddle(b *testing.B) {
+    w := wordFromFrags(
+        toWordFrag(
+            *text.NewFragment(strings.Repeat("a", 200)),
+        )...,
+    )
+
+    b.ReportAllocs()
+    
+
+    for b.Loop() {
+        splitLongWord(*w, 80, 40)
+    }
+}
+
+func BenchmarkSplitLongWord_SplitFirstRune(b *testing.B) {
+    w := wordFromFrags(
+        toWordFrag(
+            *text.NewFragment(strings.Repeat("a", 200)),
+        )...,
+    )
+
+    b.ReportAllocs()
+    b.ResetTimer()
+
+    for i := 0; i < b.N; i++ {
+        splitLongWord(*w, 80, 1)
+    }
+}
+
+func BenchmarkSplitLongWord_ManyFragments(b *testing.B) {
+    frags := make([]text.Fragment, 0, 128)
+
+    for range 128 {
+        frags = append(frags, *text.NewFragment("abcdefghij"))
+    }
+
+    w := wordFromFrags(
+        toWordFrag(frags...)...,
+    )
+
+    b.ReportAllocs()
+    
+
+    for b.Loop() {
+        splitLongWord(*w, 80, 40)
+    }
+}
+
+func BenchmarkSplitLongWord_WorstCase(b *testing.B) {
+    w := wordFromFrags(
+        toWordFrag(
+            *text.NewFragment(strings.Repeat("a", 5000)),
+        )...,
+    )
+
+    b.ReportAllocs()
+    
+
+    for b.Loop() {
+        splitLongWord(*w, 80, 1)
+    }
+}
