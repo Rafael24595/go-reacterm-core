@@ -15,9 +15,9 @@ type Line struct {
 
 func NewLine(text string, styles ...spec.Spec) *Line {
 	return &Line{
-		Text: []Fragment{{
-			Text: text,
-		}},
+		Text: []Fragment{
+			*NewFragment(text),
+		},
 		Spec: spec.Merge(styles...),
 	}
 }
