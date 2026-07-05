@@ -2,7 +2,6 @@ package spec
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons"
-	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/dict"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 )
 
@@ -11,52 +10,88 @@ type LayoutContext struct {
 	TextSize winsize.Cols
 }
 
-var measureTable = dict.NewInmutableLinkedMap(
-	dict.P(KindFill, func(spep Spec, ctx LayoutContext) winsize.Cols {
-		return commons.Mapd(spep.args.Get(KeyFillSize), ctx.SizeCols)
-	}),
-	dict.P(KindTruncateLeft, func(spec Spec, ctx LayoutContext) winsize.Cols {
-		arg := commons.Mapd(spec.args.Get(KeyTruncateLeftSize), ctx.TextSize)
-		return min(ctx.TextSize, arg)
-	}),
-	dict.P(KindTruncateRight, func(spec Spec, ctx LayoutContext) winsize.Cols {
-		arg := commons.Mapd(spec.args.Get(KeyTruncateRightSize), ctx.TextSize)
-		return min(ctx.TextSize, arg)
-	}),
-	dict.P(KindJustifyCenter, func(spec Spec, ctx LayoutContext) winsize.Cols {
-		arg := commons.Mapd(spec.args.Get(KeyJustifyCenterSize), ctx.SizeCols)
-		return min(ctx.SizeCols, arg)
-	}),
-	dict.P(KindJustifyRight, func(spec Spec, ctx LayoutContext) winsize.Cols {
-		arg := commons.Mapd(spec.args.Get(KeyJustifyRightSize), ctx.TextSize)
-		return max(ctx.TextSize, arg)
-	}),
-	dict.P(KindJustifyLeft, func(spec Spec, ctx LayoutContext) winsize.Cols {
-		arg := commons.Mapd(spec.args.Get(KeyJustifyLeftSize), ctx.TextSize)
-		return max(ctx.TextSize, arg)
-	}),
-	dict.P(KindExtendLeft, func(spec Spec, ctx LayoutContext) winsize.Cols {
-		arg := commons.Mapd(spec.args.Get(KeyExtendLeftSize), ctx.TextSize)
-		return max(ctx.TextSize, arg)
-	}),
-	dict.P(KindExtendRight, func(spec Spec, ctx LayoutContext) winsize.Cols {
-		arg := commons.Mapd(spec.args.Get(KeyExtendRightSize), ctx.TextSize)
-		return max(ctx.TextSize, arg)
-	}),
-)
+type measureFn func(Spec, LayoutContext) winsize.Cols
+
+type measureRule struct {
+	kind Kind
+	fn   measureFn
+}
+
+func init() {
+	measureLookup = make(map[Kind]measureFn, len(measurePipeline))
+
+	for _, r := range measurePipeline {
+		measureLookup[r.kind] = r.fn
+	}
+}
+
+var measureLookup map[Kind]measureFn
+
+var measurePipeline = [...]measureRule{
+	{KindFill, measureFill},
+	{KindTruncateLeft, measureTruncateLeft},
+	{KindTruncateRight, measureTruncateRight},
+	{KindJustifyCenter, measureJustifyCenter},
+	{KindJustifyRight, measureJustifyRight},
+	{KindJustifyLeft, measureJustifyLeft},
+	{KindExtendLeft, measureExtendLeft},
+	{KindExtendRight, measureExtendRight},
+}
+
+func measureFill(spec Spec, ctx LayoutContext) winsize.Cols {
+	return commons.Mapd(spec.args.Get(KeyFillSize), ctx.SizeCols)
+}
+
+func measureTruncateLeft(spec Spec, ctx LayoutContext) winsize.Cols {
+	arg := commons.Mapd(spec.args.Get(KeyTruncateLeftSize), ctx.TextSize)
+	return min(ctx.TextSize, arg)
+}
+
+func measureTruncateRight(spec Spec, ctx LayoutContext) winsize.Cols {
+	arg := commons.Mapd(spec.args.Get(KeyTruncateRightSize), ctx.TextSize)
+	return min(ctx.TextSize, arg)
+}
+
+func measureJustifyCenter(spec Spec, ctx LayoutContext) winsize.Cols {
+	arg := commons.Mapd(spec.args.Get(KeyJustifyCenterSize), ctx.SizeCols)
+	return min(ctx.SizeCols, arg)
+}
+
+func measureJustifyRight(spec Spec, ctx LayoutContext) winsize.Cols {
+	arg := commons.Mapd(spec.args.Get(KeyJustifyRightSize), ctx.TextSize)
+	return max(ctx.TextSize, arg)
+}
+
+func measureJustifyLeft(spec Spec, ctx LayoutContext) winsize.Cols {
+	arg := commons.Mapd(spec.args.Get(KeyJustifyLeftSize), ctx.TextSize)
+	return max(ctx.TextSize, arg)
+}
+
+func measureExtendLeft(spec Spec, ctx LayoutContext) winsize.Cols {
+	arg := commons.Mapd(spec.args.Get(KeyExtendLeftSize), ctx.TextSize)
+	return max(ctx.TextSize, arg)
+}
+
+func measureExtendRight(spec Spec, ctx LayoutContext) winsize.Cols {
+	arg := commons.Mapd(spec.args.Get(KeyExtendRightSize), ctx.TextSize)
+	return max(ctx.TextSize, arg)
+}
 
 func Measure(spec Spec, ctx LayoutContext) winsize.Cols {
-	for k, c := range measureTable.All() {
-		if spec.kind.HasAny(k) {
-			ctx.TextSize = c(spec, ctx)
+	for i := range measurePipeline {
+		rule := &measurePipeline[i]
+
+		if spec.kind.HasAny(rule.kind) {
+			ctx.TextSize = rule.fn(spec, ctx)
 		}
 	}
+
 	return ctx.TextSize
 }
 
 func MeasureOf(kind Kind, spec Spec, ctx LayoutContext) winsize.Cols {
-	if c, ok := measureTable.Get(kind); ok {
-		return c(spec, ctx)
+	if fn, ok := measureLookup[kind]; ok {
+		return fn(spec, ctx)
 	}
 	return ctx.TextSize
 }
