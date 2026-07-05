@@ -1,39 +1,31 @@
 package spec
 
-import (
-	"maps"
-
-	"github.com/Rafael24595/go-reacterm-core/engine/commons"
-)
-
-type argMap = map[ArgKey]commons.Argument
-
 type Spec struct {
 	kind Kind
-	args argMap
+	args args
 }
 
 func Empty() Spec {
 	return Spec{
 		kind: KindNone,
-		args: make(argMap),
+		args: args{},
 	}
 }
 
 func fromKind(kind Kind) Spec {
 	return Spec{
 		kind: kind,
-		args: make(argMap),
+		args: args{},
 	}
 }
 
 func Merge(styles ...Spec) Spec {
 	kind := KindNone
-	args := make(argMap)
+	args := args{}
 
 	for _, style := range styles {
 		kind |= style.kind
-		maps.Copy(args, style.args)
+		args.Copy(style.args)
 	}
 
 	return Spec{
@@ -56,13 +48,13 @@ func Erase(target Spec, styles Kind) (Spec, Spec) {
 		}
 
 		for _, key := range keys {
-			val, ok := target.args[key]
+			val, ok := target.args.TryGet(key)
 			if !ok {
 				continue
 			}
 
-			removedSpec.args[key] = val
-			delete(target.args, key)
+			removedSpec.args.Set(key, val)
+			target.args.Delete(key)
 		}
 	}
 
@@ -76,5 +68,5 @@ func (s Spec) Kind() Kind {
 }
 
 func (s Spec) Args() argMap {
-	return s.args
+	return s.args.Items()
 }

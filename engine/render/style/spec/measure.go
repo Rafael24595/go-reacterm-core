@@ -13,34 +13,34 @@ type LayoutContext struct {
 
 var measureTable = dict.NewInmutableLinkedMap(
 	dict.P(KindFill, func(spep Spec, ctx LayoutContext) winsize.Cols {
-		return commons.Mapd(spep.args[KeyFillSize], ctx.SizeCols)
+		return commons.Mapd(spep.args.Get(KeyFillSize), ctx.SizeCols)
 	}),
 	dict.P(KindTruncateLeft, func(spec Spec, ctx LayoutContext) winsize.Cols {
-		arg := commons.Mapd(spec.args[KeyTruncateLeftSize], ctx.TextSize)
+		arg := commons.Mapd(spec.args.Get(KeyTruncateLeftSize), ctx.TextSize)
 		return min(ctx.TextSize, arg)
 	}),
 	dict.P(KindTruncateRight, func(spec Spec, ctx LayoutContext) winsize.Cols {
-		arg := commons.Mapd(spec.args[KeyTruncateRightSize], ctx.TextSize)
+		arg := commons.Mapd(spec.args.Get(KeyTruncateRightSize), ctx.TextSize)
 		return min(ctx.TextSize, arg)
 	}),
 	dict.P(KindJustifyCenter, func(spec Spec, ctx LayoutContext) winsize.Cols {
-		arg := commons.Mapd(spec.args[KeyJustifyCenterSize], ctx.SizeCols)
+		arg := commons.Mapd(spec.args.Get(KeyJustifyCenterSize), ctx.SizeCols)
 		return min(ctx.SizeCols, arg)
 	}),
 	dict.P(KindJustifyRight, func(spec Spec, ctx LayoutContext) winsize.Cols {
-		arg := commons.Mapd(spec.args[KeyJustifyRightSize], ctx.TextSize)
+		arg := commons.Mapd(spec.args.Get(KeyJustifyRightSize), ctx.TextSize)
 		return max(ctx.TextSize, arg)
 	}),
 	dict.P(KindJustifyLeft, func(spec Spec, ctx LayoutContext) winsize.Cols {
-		arg := commons.Mapd(spec.args[KeyJustifyLeftSize], ctx.TextSize)
+		arg := commons.Mapd(spec.args.Get(KeyJustifyLeftSize), ctx.TextSize)
 		return max(ctx.TextSize, arg)
 	}),
 	dict.P(KindExtendLeft, func(spec Spec, ctx LayoutContext) winsize.Cols {
-		arg := commons.Mapd(spec.args[KeyExtendLeftSize], ctx.TextSize)
+		arg := commons.Mapd(spec.args.Get(KeyExtendLeftSize), ctx.TextSize)
 		return max(ctx.TextSize, arg)
 	}),
 	dict.P(KindExtendRight, func(spec Spec, ctx LayoutContext) winsize.Cols {
-		arg := commons.Mapd(spec.args[KeyExtendRightSize], ctx.TextSize)
+		arg := commons.Mapd(spec.args.Get(KeyExtendRightSize), ctx.TextSize)
 		return max(ctx.TextSize, arg)
 	}),
 )

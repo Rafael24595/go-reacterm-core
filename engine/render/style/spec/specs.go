@@ -79,7 +79,10 @@ func TruncateLeft(size winsize.Cols, ellipsis ...string) Spec {
 	)
 
 	if len(ellipsis) > 0 {
-		spec.args[KeyTruncateEllipsisText] = commons.ArgumentFrom(ellipsis[0])
+		spec.args.Set(
+			KeyTruncateEllipsisText,
+			commons.ArgumentFrom(ellipsis[0]),
+		)
 	}
 
 	return spec
@@ -93,7 +96,10 @@ func TruncateRight(size winsize.Cols, ellipsis ...string) Spec {
 	)
 
 	if len(ellipsis) > 0 {
-		spec.args[KeyTruncateEllipsisText] = commons.ArgumentFrom(ellipsis[0])
+		spec.args.Set(
+			KeyTruncateEllipsisText,
+			commons.ArgumentFrom(ellipsis[0]),
+		)
 	}
 
 	return spec
@@ -116,10 +122,12 @@ func specFromSize(
 	sizeKey ArgKey,
 	size winsize.Cols,
 ) Spec {
-	args := make(argMap)
+	args := args{}
 
 	if size != WinSize {
-		args[sizeKey] = commons.ArgumentFrom(size)
+		args.Set(
+			sizeKey, commons.ArgumentFrom(size),
+		)
 	}
 
 	return Spec{
@@ -135,14 +143,19 @@ func specFromTextAndSize(
 	size winsize.Cols,
 	text ...string,
 ) Spec {
-	args := make(argMap)
+	args := args{}
 
 	if size != WinSize {
-		args[sizeKey] = commons.ArgumentFrom(size)
+		args.Set(
+			sizeKey, commons.ArgumentFrom(size),
+		)
 	}
 
 	if len(text) > 0 {
-		args[textKey] = commons.ArgumentFrom(strings.Join(text, ""))
+		args.Set(
+			textKey,
+			commons.ArgumentFrom(strings.Join(text, "")),
+		)
 	}
 
 	return Spec{
