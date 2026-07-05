@@ -118,7 +118,10 @@ func wrapOnce(cols winsize.Cols, line LayoutLine) (*text.Line, *LayoutLine) {
 		wordMeasure := focus.Measure(cols)
 
 		if wordMeasure <= remaining {
-			cursor.PushFragments(focus.Text...)
+			cursor.Text = appendFragments(
+				cursor.Text, focus.Text...,
+			)
+
 			remaining = remaining.Sub(wordMeasure)
 			currentWidth += wordMeasure
 			words = words[1:]
@@ -134,7 +137,9 @@ func wrapOnce(cols winsize.Cols, line LayoutLine) (*text.Line, *LayoutLine) {
 
 		newWord, restWord := splitLongWord(focus, cols, remaining)
 		if newWord != nil {
-			cursor.PushFragments(newWord.Text...)
+			cursor.Text = appendFragments(
+				cursor.Text, newWord.Text...,
+			)
 		}
 
 		if restWord != nil {
@@ -154,7 +159,7 @@ func wrapOnce(cols winsize.Cols, line LayoutLine) (*text.Line, *LayoutLine) {
 }
 
 func shouldWrap(word word, currentWidth winsize.Cols) bool {
-	if text.FragsHasAtom(atom.Break, word.Text...) {
+	if word.HasAtom(atom.Break) {
 		return false
 	}
 
@@ -209,22 +214,23 @@ func splitLineFeeds(line *text.Line, order bool) []text.Line {
 	return result
 }
 
-func splitFragmentAt(frag *text.Fragment, cols winsize.Cols) (*text.Fragment, *text.Fragment) {
+func splitFragmentAt(frag *wordFrag, cols winsize.Cols) (*wordFrag, *wordFrag) {
 	if cols <= 0 {
-		return text.EmptyFragment().
-			CopyMeta(frag), frag
+		newFrag := text.EmptyFragment().
+			CopyMeta(frag.Base)
+		return newWordFrag(newFrag), frag
 	}
 
-	byteIndex, canBreak := runes.RuneIndexToByteIndex(frag.Text, offset.Offset(cols))
+	byteIndex, canBreak := runes.RuneIndexToByteIndex(frag.Base.Text, offset.Offset(cols))
 	if !canBreak {
 		return frag, nil
 	}
 
-	taken := text.NewFragment(frag.Text[:byteIndex]).
-		CopyMeta(frag)
+	taken := text.NewFragment(frag.Base.Text[:byteIndex]).
+		CopyMeta(frag.Base)
 
-	rest := text.NewFragment(frag.Text[byteIndex:]).
-		CopyMeta(frag)
+	rest := text.NewFragment(frag.Base.Text[byteIndex:]).
+		CopyMeta(frag.Base)
 
-	return taken, rest
+	return newWordFrag(taken), newWordFrag(rest)
 }

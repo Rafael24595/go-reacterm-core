@@ -26,7 +26,7 @@ func wordsToString(words ...word) string {
 func tokenString(token word) string {
 	var b strings.Builder
 	for _, f := range token.Text {
-		b.WriteString(f.Text)
+		b.WriteString(f.Base.Text)
 	}
 	return b.String()
 }
@@ -173,8 +173,8 @@ func TestSplitLineWords_StyleChangeRequiresFragmentSplit(t *testing.T) {
 	assert.Equal(t, 1, len(tokens))
 	assert.Equal(t, 2, len(tokens[0].Text))
 
-	assert.True(t, tokens[0].Text[0].Atom.HasAny(atom.Bold))
-	assert.True(t, tokens[0].Text[1].Atom.HasAny(atom.Bold))
+	assert.True(t, tokens[0].Text[0].Base.Atom.HasAny(atom.Bold))
+	assert.True(t, tokens[0].Text[1].Base.Atom.HasAny(atom.Bold))
 }
 
 func TestSplitLineWords_PreservesStylesAcrossFragments(t *testing.T) {
@@ -188,9 +188,9 @@ func TestSplitLineWords_PreservesStylesAcrossFragments(t *testing.T) {
 
 	assert.Equal(t, 1, len(tokens))
 
-	assert.True(t, tokens[0].Text[0].Atom.HasNone(atom.Select))
-	assert.True(t, tokens[0].Text[1].Atom.HasAny(atom.Select))
-	assert.True(t, tokens[0].Text[2].Atom.HasNone(atom.Select))
+	assert.True(t, tokens[0].Text[0].Base.Atom.HasNone(atom.Select))
+	assert.True(t, tokens[0].Text[1].Base.Atom.HasAny(atom.Select))
+	assert.True(t, tokens[0].Text[2].Base.Atom.HasNone(atom.Select))
 }
 
 func TestSplitLineWords_MultipleSpaceFragmentsKeepStyles(t *testing.T) {
@@ -206,15 +206,15 @@ func TestSplitLineWords_MultipleSpaceFragmentsKeepStyles(t *testing.T) {
 
 	assert.Equal(t, 2, len(tokens[0].Text))
 
-	assert.Equal(t, " ", tokens[0].Text[0].Text)
-	assert.True(t, tokens[0].Text[0].Atom.HasAny(atom.Bold))
+	assert.Equal(t, " ", tokens[0].Text[0].Base.Text)
+	assert.True(t, tokens[0].Text[0].Base.Atom.HasAny(atom.Bold))
 
-	assert.Equal(t, " ", tokens[0].Text[1].Text)
-	assert.True(t, tokens[0].Text[1].Atom.HasAny(atom.Select))
+	assert.Equal(t, " ", tokens[0].Text[1].Base.Text)
+	assert.True(t, tokens[0].Text[1].Base.Atom.HasAny(atom.Select))
 
 	assert.Equal(t, 1, len(tokens[1].Text))
-	assert.Equal(t, "c", tokens[1].Text[0].Text)
-	assert.True(t, tokens[1].Text[0].Atom.HasAny(atom.Bold))
+	assert.Equal(t, "c", tokens[1].Text[0].Base.Text)
+	assert.True(t, tokens[1].Text[0].Base.Atom.HasAny(atom.Bold))
 }
 
 func TestSplitLineWords_FinalFlushPreservesStyles(t *testing.T) {
@@ -226,7 +226,7 @@ func TestSplitLineWords_FinalFlushPreservesStyles(t *testing.T) {
 
 	assert.Equal(t, 1, len(tokens))
 
-	assert.True(t, tokens[0].Text[0].Atom.HasAny(atom.Bold))
+	assert.True(t, tokens[0].Text[0].Base.Atom.HasAny(atom.Bold))
 }
 
 func TestSplitLongWord(t *testing.T) {
@@ -322,7 +322,7 @@ func TestWordMeasure_CacheSameCols(t *testing.T) {
 
 	calls := uint(0)
 
-	resolver := func(cols winsize.Cols, frags ...text.Fragment) winsize.Cols {
+	resolver := func(cols winsize.Cols, frags ...wordFrag) winsize.Cols {
 		calls++
 		return 42
 	}
@@ -343,7 +343,7 @@ func TestWordMeasure_RecalculateOnColsChange(t *testing.T) {
 
 	calls := uint(0)
 
-	resolver := func(cols winsize.Cols, frags ...text.Fragment) winsize.Cols {
+	resolver := func(cols winsize.Cols, frags ...wordFrag) winsize.Cols {
 		calls++
 		return 42
 	}
@@ -364,7 +364,7 @@ func TestWordMeasure_CacheAfterColsChange(t *testing.T) {
 
 	calls := uint(0)
 
-	resolver := func(cols winsize.Cols, frags ...text.Fragment) winsize.Cols {
+	resolver := func(cols winsize.Cols, frags ...wordFrag) winsize.Cols {
 		calls++
 		return 42
 	}
@@ -383,7 +383,7 @@ func TestWordMeasure_RecalculateWhenReturningToPreviousCols(t *testing.T) {
 
 	calls := uint(0)
 
-	resolver := func(cols winsize.Cols, frags ...text.Fragment) winsize.Cols {
+	resolver := func(cols winsize.Cols, frags ...wordFrag) winsize.Cols {
 		calls++
 		return 42
 	}

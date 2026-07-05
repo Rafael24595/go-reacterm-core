@@ -286,7 +286,7 @@ func TestMaterializeEmpty(t *testing.T) {
 			word := layout.Words[len(layout.Words)-1]
 			text := word.Text[len(word.Text)-1]
 
-			assert.Equal(t, tt.expectedAtom, text.Atom)
+			assert.Equal(t, tt.expectedAtom, text.Base.Atom)
 		})
 	}
 }

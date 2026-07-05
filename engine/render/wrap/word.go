@@ -9,16 +9,20 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-type measureResolver func(winsize.Cols, ...text.Fragment) winsize.Cols
-
 type word struct {
-	Text     []text.Fragment
+	Text     []wordFrag
 	measured bool
 	cols     winsize.Cols
 	measure  winsize.Cols
 }
 
 func newWord(frags ...text.Fragment) *word {
+	return wordFromFrags(
+		toWordFrag(frags...)...,
+	)
+}
+
+func wordFromFrags(frags ...wordFrag) *word {
 	return &word{
 		Text:     frags,
 		measured: false,
@@ -27,8 +31,17 @@ func newWord(frags ...text.Fragment) *word {
 	}
 }
 
+func (w *word) HasAtom(atm atom.Atom) bool {
+	for _, v := range w.Text {
+		if v.Base.Atom.HasAny(atm) {
+			return true
+		}
+	}
+	return false
+}
+
 func (w *word) Measure(cols winsize.Cols) winsize.Cols {
-	return w.measureWith(cols, text.FragmentMeasure)
+	return w.measureWith(cols, fragmentMeasure)
 }
 
 func (w *word) measureWith(
@@ -70,11 +83,8 @@ func splitLineWords(line *text.Line) []word {
 			return
 		}
 
-		tokenFrags := make([]text.Fragment, len(frags))
-		copy(tokenFrags, frags)
-
 		words = append(words, word{
-			Text: tokenFrags,
+			Text: toWordFrag(frags...),
 		})
 
 		frags = frags[:0]
@@ -86,7 +96,7 @@ func splitLineWords(line *text.Line) []word {
 			flushWord()
 
 			words = append(words, word{
-				Text: []text.Fragment{frag},
+				Text: toWordFrag(frag),
 			})
 
 			hasState = false
@@ -128,21 +138,21 @@ func splitLongWord(
 	frags := word.Text
 
 	for len(frags) > 0 {
-		frag := frags[0]
-		size := text.FragmentMeasure(cols, frag)
+		frag := &frags[0]
+		size := frag.Measure(cols)
 
 		if size <= remaining {
-			current.Text = append(current.Text, frag)
+			current.Text = append(current.Text, *frag)
 			remaining = remaining.Sub(size)
 			frags = frags[1:]
 
 			continue
 		}
 
-		takenFrag, restFrag := splitFragmentAt(&frag, remaining)
+		takenFrag, restFrag := splitFragmentAt(frag, remaining)
 		current.Text = append(current.Text, *takenFrag)
 
-		rest := make([]text.Fragment, 0)
+		rest := make([]wordFrag, 0, len(frags))
 		if restFrag != nil {
 			rest = append(rest, *restFrag)
 		}
@@ -152,7 +162,7 @@ func splitLongWord(
 			return current, nil
 		}
 
-		return current, newWord(rest...)
+		return current, wordFromFrags(rest...)
 	}
 
 	return current, nil
