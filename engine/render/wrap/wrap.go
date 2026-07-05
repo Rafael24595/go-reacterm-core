@@ -105,7 +105,7 @@ func NextLine(cols winsize.Cols, lines []LayoutLine) (*text.Line, []LayoutLine) 
 }
 
 func wrapOnce(cols winsize.Cols, line LayoutLine) (*text.Line, *LayoutLine) {
-	cursor := text.LineFromMeta(line.Source)
+	cursor := text.LineFromMeta(line.Source, len(line.Source.Text))
 
 	remaining := cols
 	currentWidth := winsize.Cols(0)
@@ -113,7 +113,7 @@ func wrapOnce(cols winsize.Cols, line LayoutLine) (*text.Line, *LayoutLine) {
 	words := line.Words
 
 	for len(words) > 0 {
-		focus := words[0]
+		focus := &words[0]
 
 		wordMeasure := focus.Measure(cols)
 
@@ -129,13 +129,13 @@ func wrapOnce(cols winsize.Cols, line LayoutLine) (*text.Line, *LayoutLine) {
 			continue
 		}
 
-		if shouldWrap(focus, currentWidth) {
+		if shouldWrap(*focus, currentWidth) {
 			break
 		}
 
 		words = words[1:]
 
-		newWord, restWord := splitLongWord(focus, cols, remaining)
+		newWord, restWord := splitLongWord(*focus, cols, remaining)
 		if newWord != nil {
 			cursor.Text = appendFragments(
 				cursor.Text, newWord.Text...,
