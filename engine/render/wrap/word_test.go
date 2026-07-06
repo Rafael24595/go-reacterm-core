@@ -431,6 +431,72 @@ func BenchmarkSplitLineFeeds_ManyLF(b *testing.B) {
 	}
 }
 
+func BenchmarkSplitLineWords_ASCII(b *testing.B) {
+	line := *text.NewLine(
+		strings.Repeat("hello world ", 300),
+	)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		splitLineWords(&line)
+	}
+}
+
+func BenchmarkSplitLineWords_Unicode(b *testing.B) {
+	line := *text.NewLine(
+		strings.Repeat("áéíóú 世界 😀 ", 300),
+	)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		splitLineWords(&line)
+	}
+}
+
+func BenchmarkSplitLineWords_LongWord(b *testing.B) {
+	line := *text.NewLine(
+		strings.Repeat("abcdefgh", 1000),
+	)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		splitLineWords(&line)
+	}
+}
+
+func BenchmarkSplitLineWords_ManySpaces(b *testing.B) {
+	line := *text.NewLine(
+		strings.Repeat("word     ", 500),
+	)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		splitLineWords(&line)
+	}
+}
+
+func BenchmarkSplitLineWords_ManyFragments(b *testing.B) {
+	frags := make([]text.Fragment, 1000)
+
+	for i := range frags {
+		frags[i] = *text.NewFragment("hello ")
+	}
+
+	line := text.Line{
+		Text: frags,
+	}
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		splitLineWords(&line)
+	}
+}
+
 func BenchmarkSplitLineWords(b *testing.B) {
 	line := text.LineFromFragments(
 		text.FragmentsFromString(
