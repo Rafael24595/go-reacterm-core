@@ -395,6 +395,42 @@ func TestWordMeasure_RecalculateWhenReturningToPreviousCols(t *testing.T) {
 	assert.Equal(t, uint(3), calls)
 }
 
+func BenchmarkSplitLineFeeds_NoLF(b *testing.B) {
+	line := *text.NewLine(
+		strings.Repeat("Hello World ", 100),
+	)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		splitLineFeeds(&line, false)
+	}
+}
+
+func BenchmarkSplitLineFeeds_SomeLF(b *testing.B) {
+	line := *text.NewLine(
+		strings.Repeat("Hello\nWorld\n", 100),
+	)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		splitLineFeeds(&line, false)
+	}
+}
+
+func BenchmarkSplitLineFeeds_ManyLF(b *testing.B) {
+	line := *text.NewLine(
+		strings.Repeat("\n", 1000),
+	)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		splitLineFeeds(&line, false)
+	}
+}
+
 func BenchmarkSplitLineWords(b *testing.B) {
 	line := text.LineFromFragments(
 		text.FragmentsFromString(
