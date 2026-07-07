@@ -592,6 +592,29 @@ func TestSplitLineFeeds_Ordering(t *testing.T) {
 	}
 }
 
+func TestSplitFragmentAt_EndOfFragment(t *testing.T) {
+    frag := newWordFrag(
+        text.NewFragment("abcdef"),
+    )
+
+    left, right := splitFragmentAt(frag, 6)
+
+    assert.NotNil(t, left)
+    assert.Nil(t, right)
+
+    assert.Equal(t, "abcdef", left.Base.Text)
+}
+
+func TestSplitFragmentAt_EmptyRestNeverCreated(t *testing.T) {
+    frag := newWordFrag(
+        text.NewFragment("abc"),
+    )
+
+    _, right := splitFragmentAt(frag, 3)
+
+    assert.Nil(t, right)
+}
+
 func BenchmarkWrapLine_Short(b *testing.B) {
 	line := benchmarkLine(20)
 

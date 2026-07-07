@@ -222,7 +222,7 @@ func splitFragmentAt(frag *wordFrag, cols winsize.Cols) (*wordFrag, *wordFrag) {
 	}
 
 	byteIndex, canBreak := runes.RuneIndexToByteIndex(frag.Base.Text, offset.Offset(cols))
-	if !canBreak {
+	if !canBreak || int(byteIndex) >= len(frag.Base.Text)  {
 		return frag, nil
 	}
 
