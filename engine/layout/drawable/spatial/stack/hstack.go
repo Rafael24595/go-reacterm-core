@@ -268,7 +268,7 @@ func (u *HStackUnit) inheritCols(
 	}
 
 	line := block.lines[lineIndex]
-	if text.FragmentMeasure(size.Cols, line.Text...) != 0 {
+	if text.FragsMeasure(size.Cols, line.Text...) != 0 {
 		return 0
 	}
 
@@ -288,7 +288,7 @@ func (u *HStackUnit) makeLines(blocks []block) []text.Line {
 			result := sink.ApplySinks(&l, b.size.Cols)
 
 			line.CopyMeta(result)
-			line.PushFragments(result.Text...)
+			line.PushFrags(result.Text...)
 		}
 		buffer = append(buffer, *line)
 	}

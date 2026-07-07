@@ -18,7 +18,7 @@ func Cols(hintSize hint.Size[winsize.Cols], opts ...cols.Option) transform.Trans
 		margin := hintSize.Min(size.Cols) * HorizontalFactor(cfg.Position)
 
 		for i := range lines {
-			measure := text.FragmentMeasure(size.Cols, lines[i].Text...) + margin
+			measure := text.FragsMeasure(size.Cols, lines[i].Text...) + margin
 
 			cols := size.Cols + margin
 			if cols.Sub(measure) == 0 {

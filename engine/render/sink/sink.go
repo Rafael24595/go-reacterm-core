@@ -21,8 +21,8 @@ func sinkLinePaddingLeft(style spec.Kind, line *text.Line, _ winsize.Cols) *text
 	}
 
 	line.Spec = resSpec
-	line.UnshiftFragments(
-		*text.EmptyFragment().AddSpec(delSpec),
+	line.UnshiftFrags(
+		*text.EmptyFrag().AddSpec(delSpec),
 	)
 
 	return line
@@ -35,8 +35,8 @@ func sinkLinePaddingRight(style spec.Kind, line *text.Line, _ winsize.Cols) *tex
 	}
 
 	line.Spec = resSpec
-	line.PushFragments(
-		*text.EmptyFragment().AddSpec(delSpec),
+	line.PushFrags(
+		*text.EmptyFrag().AddSpec(delSpec),
 	)
 
 	return line
@@ -53,7 +53,7 @@ func sinkLinePaddingCenter(style spec.Kind, line *text.Line, cols winsize.Cols) 
 	size := commons.Mapd(delSpec.Args()[spec.KeyJustifyCenterSize], cols)
 	txt := delSpec.Args()[spec.KeyJustifyCenterText].Stringf()
 
-	fragSize := text.FragmentMeasure(cols, line.Text...)
+	fragSize := text.FragsMeasure(cols, line.Text...)
 
 	available := size.Sub(fragSize)
 	available = max(0, available)
@@ -61,16 +61,16 @@ func sinkLinePaddingCenter(style spec.Kind, line *text.Line, cols winsize.Cols) 
 	left := available / 2
 	if left > 0 {
 		paddLeft := spec.JustifyRight(left, txt)
-		line.UnshiftFragments(
-			*text.EmptyFragment().AddSpec(paddLeft),
+		line.UnshiftFrags(
+			*text.EmptyFrag().AddSpec(paddLeft),
 		)
 	}
 
 	right := available.Sub(left)
 	if right > 0 {
 		paddRight := spec.JustifyLeft(right, txt)
-		line.PushFragments(
-			*text.EmptyFragment().AddSpec(paddRight),
+		line.PushFrags(
+			*text.EmptyFrag().AddSpec(paddRight),
 		)
 	}
 

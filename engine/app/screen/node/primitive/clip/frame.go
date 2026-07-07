@@ -2,7 +2,7 @@ package clip
 
 import "github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
-type row []text.Fragment
+type row []text.Frag
 
 type Frame struct {
 	frags []row
@@ -15,21 +15,21 @@ func NewFrame(frags ...row) Frame {
 }
 
 func FrameLines(lines ...string) Frame {
-    frags := make([]row, len(lines))
+	frags := make([]row, len(lines))
 
-    for i, line := range lines {
-        frags[i] = row{
-            *text.NewFragment(line),
-        }
-    }
+	for i, line := range lines {
+		frags[i] = row{
+			*text.NewFrag(line),
+		}
+	}
 
-    return NewFrame(frags...)
+	return NewFrame(frags...)
 }
 
 func TextFrags(texts ...string) row {
 	frags := make(row, len(texts))
 	for i := range texts {
-		frags[i] = *text.NewFragment(texts[i])
+		frags[i] = *text.NewFrag(texts[i])
 	}
 	return frags
 }
@@ -37,7 +37,7 @@ func TextFrags(texts ...string) row {
 func frameToLines(frame Frame) []text.Line {
 	lines := make([]text.Line, len(frame.frags))
 	for i := range frame.frags {
-		lines[i] = *text.LineFromFragments(
+		lines[i] = *text.LineFromFrags(
 			frame.frags[i]...,
 		)
 	}
@@ -51,7 +51,7 @@ func normalizeFrame(frame *Frame) *Frame {
 		}
 
 		frame.frags[j] = append(
-			frame.frags[j], *text.EmptyFragment(),
+			frame.frags[j], *text.EmptyFrag(),
 		)
 	}
 	return frame

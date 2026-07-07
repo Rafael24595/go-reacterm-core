@@ -7,71 +7,71 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 )
 
-type Fragment struct {
+type Frag struct {
 	Text string
 	Atom atom.Atom
 	Spec spec.Spec
 }
 
-func NewFragment(text string) *Fragment {
-	return &Fragment{
+func NewFrag(text string) *Frag {
+	return &Frag{
 		Text: text,
 		Atom: atom.None,
 		Spec: spec.Empty(),
 	}
 }
 
-func EmptyFragment() *Fragment {
-	return NewFragment("")
+func EmptyFrag() *Frag {
+	return NewFrag("")
 }
 
-func FragmentFromRunes(runes []rune) *Fragment {
-	return NewFragment(string(runes))
+func FragFromRunes(runes []rune) *Frag {
+	return NewFrag(string(runes))
 }
 
-func FragmentFromMeta(other *Fragment) *Fragment {
-	return EmptyFragment().CopyMeta(other)
+func FragFromMeta(other *Frag) *Frag {
+	return EmptyFrag().CopyMeta(other)
 }
 
-func (f *Fragment) CopyMeta(other *Fragment) *Fragment {
+func (f *Frag) CopyMeta(other *Frag) *Frag {
 	f.Atom = other.Atom
 	f.Spec = other.Spec
 	return f
 }
 
-func (f *Fragment) AddAtom(styles ...atom.Atom) *Fragment {
+func (f *Frag) AddAtom(styles ...atom.Atom) *Frag {
 	newAtom := atom.Merge(styles...)
 	f.Atom = atom.Merge(f.Atom, newAtom)
 	return f
 }
 
-func (f *Fragment) CutAtom(styles atom.Atom) *Fragment {
+func (f *Frag) CutAtom(styles atom.Atom) *Frag {
 	f.Atom = atom.Erase(f.Atom, styles)
 	return f
 }
 
-func (f *Fragment) AddSpec(styles ...spec.Spec) *Fragment {
+func (f *Frag) AddSpec(styles ...spec.Spec) *Frag {
 	newSpec := spec.Merge(styles...)
 	f.Spec = spec.Merge(f.Spec, newSpec)
 	return f
 }
 
-func (f *Fragment) CutSpec(styles spec.Kind) *Fragment {
+func (f *Frag) CutSpec(styles spec.Kind) *Frag {
 	f.Spec, _ = spec.Erase(f.Spec, styles)
 	return f
 }
 
-func (f *Fragment) Size() winsize.Cols {
+func (f *Frag) Size() winsize.Cols {
 	return runes.Measure(f.Text)
 }
 
-func (f *Fragment) Clone() *Fragment {
-	clone := FragmentFromMeta(f)
+func (f *Frag) Clone() *Frag {
+	clone := FragFromMeta(f)
 	clone.Text = f.Text
 	return clone
 }
 
-func FragmentMeasure(cols winsize.Cols, frags ...Fragment) winsize.Cols {
+func FragsMeasure(cols winsize.Cols, frags ...Frag) winsize.Cols {
 	measure := winsize.Cols(0)
 	for _, f := range frags {
 		ctx := spec.LayoutContext{
@@ -83,13 +83,13 @@ func FragmentMeasure(cols winsize.Cols, frags ...Fragment) winsize.Cols {
 	return measure
 }
 
-func IsZeroFragment(frag Fragment) bool {
+func IsZeroFrag(frag Frag) bool {
 	return frag.Text == "" &&
 		frag.Atom == atom.None &&
 		frag.Spec.Kind() == spec.KindNone
 }
 
-func IsStructuralFragment(frag Fragment) bool {
+func IsStructuralFrag(frag Frag) bool {
 	hasStyles := frag.Atom != atom.None || frag.Spec.Kind() != spec.KindNone
 	return frag.Text == "" && hasStyles
 }

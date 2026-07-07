@@ -27,7 +27,7 @@ func Cols(hint hint.Size[winsize.Cols], opts ...cols.Option) transform.Transform
 
 		for i := range lines {
 			remaining := fixedMin.Sub(
-				text.FragmentMeasure(size.Cols, lines[i].Text...),
+				text.FragsMeasure(size.Cols, lines[i].Text...),
 			)
 
 			if remaining == 0 {
@@ -73,7 +73,7 @@ func AddColsPadding(
 
 	paddingL, paddingR := positioner(size)
 
-	frags := make([]text.Fragment, 0, 3)
+	frags := make([]text.Frag, 0, 3)
 
 	if paddingL > 0 {
 		frag := frag.Clone().
@@ -90,5 +90,5 @@ func AddColsPadding(
 	}
 
 	return *text.LineFromMeta(&line).
-		PushFragments(frags...)
+		PushFrags(frags...)
 }

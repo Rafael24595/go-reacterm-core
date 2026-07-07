@@ -32,16 +32,16 @@ func UnitFromLines(lines ...text.Line) drawable.Unit {
 	)
 }
 
-func UnitFromFragments(frags ...text.Fragment) drawable.Unit {
+func UnitFromFrags(frags ...text.Frag) drawable.Unit {
 	return UnitFromLines(
-		*text.LineFromFragments(frags...),
+		*text.LineFromFrags(frags...),
 	)
 }
 
 func UnitFromString(txt ...string) drawable.Unit {
 	return UnitFromLines(
-		*text.LineFromFragments(
-			text.FragmentsFromString(txt...)...,
+		*text.LineFromFrags(
+			text.FragsFromString(txt...)...,
 		),
 	)
 }

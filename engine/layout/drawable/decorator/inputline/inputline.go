@@ -40,9 +40,9 @@ func FromString(text string) drawable.Unit {
 	)
 }
 
-func FromFragment(frag text.Fragment) drawable.Unit {
+func FromFrag(frag text.Frag) drawable.Unit {
 	return Wrap(
-		drawable_drain.UnitFromFragments(frag),
+		drawable_drain.UnitFromFrags(frag),
 	)
 }
 
@@ -74,7 +74,7 @@ func (u *InputLineUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 		return []text.Line{*line}, false
 	}
 
-	prompt := text.FragmentsFromString(u.prompt + marker.DefaultPaddingText)
+	prompt := text.FragsFromString(u.prompt + marker.DefaultPaddingText)
 	lines[0].Text = append(prompt, lines[0].Text...)
 
 	return lines, false

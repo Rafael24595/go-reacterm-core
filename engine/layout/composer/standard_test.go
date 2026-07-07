@@ -39,11 +39,11 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 		),
 	)
 
-	frag := text.FragmentsFromString("INPUT")
+	frag := text.FragsFromString("INPUT")
 	mock := &drawable_test.MockUnit{
 		Status: false,
 		Lines: []text.Line{
-			*text.LineFromFragments(frag...),
+			*text.LineFromFrags(frag...),
 		},
 	}
 
@@ -73,7 +73,7 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 	for i := 1; i < len(lines)-1; i++ {
 		width := winsize.Cols(0)
 		for _, f := range lines[i].Text {
-			width += text.FragmentMeasure(size.Cols, f)
+			width += text.FragsMeasure(size.Cols, f)
 		}
 
 		assert.LessOrEqual(t, size.Cols, width)
@@ -106,11 +106,11 @@ func TestStandard_InitializeLayers(t *testing.T) {
 		layer.Fixed[winsize.Rows](1),
 	)
 
-	frag := text.FragmentsFromString("X")
+	frag := text.FragsFromString("X")
 	mock := &drawable_test.MockUnit{
 		Status: false,
 		Lines: []text.Line{
-			*text.LineFromFragments(frag...),
+			*text.LineFromFrags(frag...),
 		},
 	}
 

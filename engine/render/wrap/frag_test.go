@@ -10,7 +10,7 @@ import (
 
 func TestWordFragMeasure_CacheSameCols(t *testing.T) {
 	w := newWordFrag(
-		text.NewFragment("golang"),
+		text.NewFrag("golang"),
 	)
 
 	calls := uint(0)
@@ -31,7 +31,7 @@ func TestWordFragMeasure_CacheSameCols(t *testing.T) {
 
 func TestWordFragMeasure_RecalculateOnColsChange(t *testing.T) {
 	w := newWordFrag(
-		text.NewFragment("golang"),
+		text.NewFrag("golang"),
 	)
 
 	calls := uint(0)
@@ -52,7 +52,7 @@ func TestWordFragMeasure_RecalculateOnColsChange(t *testing.T) {
 
 func TestWordFragMeasure_CacheAfterColsChange(t *testing.T) {
 	w := newWordFrag(
-		text.NewFragment("golang"),
+		text.NewFrag("golang"),
 	)
 
 	calls := uint(0)
@@ -71,7 +71,7 @@ func TestWordFragMeasure_CacheAfterColsChange(t *testing.T) {
 
 func TestWordFragMeasure_RecalculateWhenReturningToPreviousCols(t *testing.T) {
 	w := newWordFrag(
-		text.NewFragment("golang"),
+		text.NewFrag("golang"),
 	)
 
 	calls := uint(0)

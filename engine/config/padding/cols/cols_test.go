@@ -25,11 +25,11 @@ func TestWithPosition(t *testing.T) {
 	assert.Equal(t, style.Right, cfg.Position)
 }
 
-func TestWithFragment(t *testing.T) {
-	expected := *text.NewFragment(".")
+func TestWithFrag(t *testing.T) {
+	expected := *text.NewFrag(".")
 
 	cfg := ResolveConfig(
-		WithFragment(expected),
+		WithFrag(expected),
 	)
 
 	got := cfg.Provider(10)

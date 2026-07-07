@@ -112,8 +112,8 @@ func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...text.Line) []text.Li
 	measure := min(maxLine+vertical, size.Cols)
 
 	specCover := spec.ExtendLeft(measure)
-	cover := text.LineFromFragments(
-		*text.NewFragment(u.separator.Top).AddSpec(specCover),
+	cover := text.LineFromFrags(
+		*text.NewFrag(u.separator.Top).AddSpec(specCover),
 	)
 
 	result := make([]text.Line, 0)
@@ -141,11 +141,11 @@ func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...text.Line) []text.Li
 }
 
 func (u *BoxUnit) wrapLine(line text.Line) text.Line {
-	frags := make([]text.Fragment, 0)
+	frags := make([]text.Frag, 0)
 
-	frags = append(frags, *text.NewFragment(u.separator.Left))
+	frags = append(frags, *text.NewFrag(u.separator.Left))
 	frags = append(frags, line.Text...)
-	frags = append(frags, *text.NewFragment(u.separator.Right))
+	frags = append(frags, *text.NewFrag(u.separator.Right))
 
 	line.Text = frags
 

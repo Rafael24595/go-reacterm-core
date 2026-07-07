@@ -126,10 +126,10 @@ func TestColsTransformer(t *testing.T) {
 			transformer := Cols(tt.hint, cols.WithPosition(tt.pos))
 			resLines := transformer(tt.size, mockLines)
 
-			gotSize := text.FragmentMeasure(tt.size.Cols, resLines[0].Text...)
+			gotSize := text.FragsMeasure(tt.size.Cols, resLines[0].Text...)
 
 			assert.Equal(t, tt.wantLength, gotSize)
-			assert.Equal(t, tt.wantString, render_test.Fragments(styler, tt.size, resLines[0].Text))
+			assert.Equal(t, tt.wantString, render_test.Frags(styler, tt.size, resLines[0].Text))
 		})
 	}
 }

@@ -9,23 +9,23 @@ import (
 func MaxLineMeasure(cols winsize.Cols, lines ...Line) winsize.Cols {
 	size := winsize.Cols(0)
 	for _, l := range lines {
-		measure := FragmentMeasure(cols, l.Text...)
+		measure := FragsMeasure(cols, l.Text...)
 		size = max(size, measure)
 	}
 	return size
 }
 
-func FragmentsFromString(text ...string) []Fragment {
-	fragments := make([]Fragment, len(text))
+func FragsFromString(text ...string) []Frag {
+	frags := make([]Frag, len(text))
 	for i, v := range text {
-		fragments[i] = *NewFragment(v)
+		frags[i] = *NewFrag(v)
 	}
-	return fragments
+	return frags
 }
 
 func LineJump() *Line {
 	return &Line{
-		Text: FragmentsFromString(""),
+		Text: FragsFromString(""),
 		Spec: spec.Cover(),
 	}
 }
@@ -46,7 +46,7 @@ func LinesHasAtom(atm atom.Atom, lines ...Line) bool {
 	return false
 }
 
-func FragsHasAtom(atm atom.Atom, frags ...Fragment) bool {
+func FragsHasAtom(atm atom.Atom, frags ...Frag) bool {
 	for _, v := range frags {
 		if v.Atom.HasAny(atm) {
 			return true

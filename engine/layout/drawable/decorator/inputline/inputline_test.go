@@ -44,12 +44,12 @@ func TestNewInputLine_NoContent_ReturnsPromptOnly(t *testing.T) {
 }
 
 func TestNewInputLine_WithSingleLine_AddsPrompt(t *testing.T) {
-	frag := text.FragmentsFromString("golang")
+	frag := text.FragsFromString("golang")
 
 	mock := &drawable_test.MockUnit{
 		Status: false,
 		Lines: []text.Line{
-			*text.LineFromFragments(frag...),
+			*text.LineFromFrags(frag...),
 		},
 	}
 
@@ -66,14 +66,14 @@ func TestNewInputLine_WithSingleLine_AddsPrompt(t *testing.T) {
 }
 
 func TestNewInputLine_MultipleDrawCalls_AccumulatesLines(t *testing.T) {
-	frag1 := text.FragmentsFromString("ziglang")
-	frag2 := text.FragmentsFromString("golang")
+	frag1 := text.FragsFromString("ziglang")
+	frag2 := text.FragsFromString("golang")
 
 	mock := &drawable_test.MockUnit{
 		Status: false,
 		Lines: []text.Line{
-			*text.LineFromFragments(frag1...),
-			*text.LineFromFragments(frag2...),
+			*text.LineFromFrags(frag1...),
+			*text.LineFromFrags(frag2...),
 		},
 	}
 

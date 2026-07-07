@@ -30,7 +30,7 @@ const input_max_limit = 30
 
 type TextInput struct {
 	limit    winsize.Cols
-	label    []text.Fragment
+	label    []text.Frag
 	textarea *TextArea
 }
 
@@ -79,7 +79,7 @@ func (n *TextInput) SetProcessor(limit winsize.Cols, process processor.Processor
 	return n
 }
 
-func (n *TextInput) SetLabel(label []text.Fragment) *TextInput {
+func (n *TextInput) SetLabel(label []text.Frag) *TextInput {
 	n.label = label
 	return n
 }
@@ -140,9 +140,9 @@ func (n *TextInput) view(uiState state.UIState) viewmodel.ViewModel {
 		ToUnit()
 
 	if len(n.label) != 0 {
-		frags := append(n.label, *text.NewFragment(": "))
+		frags := append(n.label, *text.NewFrag(": "))
 		vm.Kernel.Push(
-			drain.UnitFromFragments(frags...),
+			drain.UnitFromFrags(frags...),
 		)
 	}
 

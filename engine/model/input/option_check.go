@@ -7,19 +7,19 @@ import (
 type CheckOption struct {
 	Id        string
 	Status    bool
-	Label     text.Fragment
+	Label     text.Frag
 	Timestamp int64
 }
 
-func NewCheckOption(id string, option text.Fragment) CheckOption {
+func NewCheckOption(id string, option text.Frag) CheckOption {
 	return CheckOption{
 		Id:    id,
 		Label: option,
 	}
 }
 
-func FragmentFromCheckOption(options ...CheckOption) []text.Fragment {
-	lines := make([]text.Fragment, len(options))
+func FragsFromCheckOption(options ...CheckOption) []text.Frag {
+	lines := make([]text.Frag, len(options))
 	for i := range options {
 		lines[i] = options[i].Label
 	}

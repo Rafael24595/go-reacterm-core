@@ -70,7 +70,7 @@ func makeUnit(fields []key.Descriptor) drawable.Unit {
 		return drain.UnitFromLines()
 	}
 
-	frags := make([]text.Fragment, fieldsLen)
+	frags := make([]text.Frag, fieldsLen)
 
 	for i, field := range fields {
 		code := strings.Join(field.Code, ", ")
@@ -81,18 +81,18 @@ func makeUnit(fields []key.Descriptor) drawable.Unit {
 		}
 
 		frag := fmt.Sprintf("[%s] %s%s", code, field.Detail, separator)
-		frags[i] = *text.NewFragment(frag).
+		frags[i] = *text.NewFrag(frag).
 			AddAtom(atom.Wrap)
 
 	}
 
 	return drain.UnitFromLines(
-		*text.LineFromFragments(
-			*text.NewFragment("--Help--"),
-			*text.NewFragment("-").
+		*text.LineFromFrags(
+			*text.NewFrag("--Help--"),
+			*text.NewFrag("-").
 				AddSpec(spec.Cover()),
 		),
-		*text.LineFromFragments(frags...),
+		*text.LineFromFrags(frags...),
 		*text.NewLine("-", spec.Cover()),
 	)
 }

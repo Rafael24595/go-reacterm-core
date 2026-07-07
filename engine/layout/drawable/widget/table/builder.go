@@ -16,7 +16,7 @@ import (
 	drawable_line "github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/line"
 )
 
-type cellRenderer func(col int, header string) text.Fragment
+type cellRenderer func(col int, header string) text.Frag
 
 type section struct {
 	header drawable.Unit
@@ -62,12 +62,12 @@ func (b builder) render(size winsize.Winsize) []section {
 			b.calcRowCapacity(chunk),
 		)
 
-		topCover := text.LineFromFragments(
-			*text.NewFragment(separator.Top).AddSpec(specCover),
+		topCover := text.LineFromFrags(
+			*text.NewFrag(separator.Top).AddSpec(specCover),
 		)
 
-		bottomCover := text.LineFromFragments(
-			*text.NewFragment(separator.Bottom).AddSpec(specCover),
+		bottomCover := text.LineFromFrags(
+			*text.NewFrag(separator.Bottom).AddSpec(specCover),
 		)
 
 		bodyRows := b.renderBody(chunk, headers, separator, fixedCursor)
@@ -244,7 +244,7 @@ func (b builder) renderHeaders(
 	headers []string,
 	separator marker.TableSeparatorMeta,
 ) *text.Line {
-	renderer := func(col int, header string) text.Fragment {
+	renderer := func(col int, header string) text.Frag {
 		maxCol := maxCols[header]
 
 		spec := spec.Merge(
@@ -252,7 +252,7 @@ func (b builder) renderHeaders(
 			spec.TruncateRight(maxCol, marker.DefaultElipsisText),
 		)
 
-		return *text.NewFragment(header).AddSpec(spec)
+		return *text.NewFrag(header).AddSpec(spec)
 	}
 
 	return b.renderRow(headers, separator, renderer)
@@ -271,7 +271,7 @@ func (b builder) renderBody(
 	lines := make([]text.Line, rows)
 
 	for row := range rows {
-		renderer := func(col int, header string) text.Fragment {
+		renderer := func(col int, header string) text.Frag {
 			maxCol := maxCols[header]
 			return *b.renderCell(
 				maxCol, cursor, header, row, uint16(col),
@@ -292,10 +292,10 @@ func (b builder) renderRow(
 	headersLen := len(headers)
 	capacity := 2*headersLen + 1
 
-	frags := make([]text.Fragment, 0, capacity)
+	frags := make([]text.Frag, 0, capacity)
 
 	frags = append(frags,
-		*text.NewFragment(separator.Left).
+		*text.NewFrag(separator.Left).
 			AddAtom(atom.Wrap),
 	)
 
@@ -306,18 +306,18 @@ func (b builder) renderRow(
 
 		if col < headersLen-1 {
 			frags = append(frags,
-				*text.NewFragment(separator.Center).
+				*text.NewFrag(separator.Center).
 					AddAtom(atom.Wrap),
 			)
 		}
 	}
 
 	frags = append(frags,
-		*text.NewFragment(separator.Right).
+		*text.NewFrag(separator.Right).
 			AddAtom(atom.Wrap),
 	)
 
-	return text.LineFromFragments(frags...)
+	return text.LineFromFrags(frags...)
 }
 
 func (b builder) renderCell(
@@ -326,7 +326,7 @@ func (b builder) renderCell(
 	header string,
 	row uint16,
 	col uint16,
-) *text.Fragment {
+) *text.Frag {
 	atm := atom.Wrap
 	if cursor != nil && cursor.IsAt(row, col) {
 		atm = atom.Merge(atm, atom.Select, atom.Focus)
@@ -336,7 +336,7 @@ func (b builder) renderCell(
 	if !ok {
 		scp := spec.ExtendRight(maxCol)
 
-		return text.NewFragment("").
+		return text.NewFrag("").
 			AddSpec(scp).
 			AddAtom(atm)
 	}
@@ -346,7 +346,7 @@ func (b builder) renderCell(
 		spec.TruncateRight(maxCol, marker.DefaultElipsisText),
 	)
 
-	return text.NewFragment(cell).
+	return text.NewFrag(cell).
 		AddSpec(scp).
 		AddAtom(atm)
 }

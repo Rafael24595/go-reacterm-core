@@ -9,7 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-func Fragments(styler *styler.Spec, size winsize.Winsize, frags []text.Fragment) string {
+func Frags(styler *styler.Spec, size winsize.Winsize, frags []text.Frag) string {
 	var buffer strings.Builder
 
 	lineSize := winsize.New(
@@ -24,7 +24,7 @@ func Fragments(styler *styler.Spec, size winsize.Winsize, frags []text.Fragment)
 		)
 		spec := styler.Apply(f.Spec, lineSize, txt)
 
-		fragSize := text.FragmentMeasure(size.Cols, f)
+		fragSize := text.FragsMeasure(size.Cols, f)
 		lineSize.Cols = lineSize.Cols.Sub(fragSize)
 
 		buffer.WriteString(spec)

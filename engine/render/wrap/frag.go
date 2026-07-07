@@ -8,13 +8,13 @@ import (
 type measureResolver func(winsize.Cols, ...wordFrag) winsize.Cols
 
 type wordFrag struct {
-	Base     *text.Fragment
+	Base     *text.Frag
 	measured bool
 	cols     winsize.Cols
 	measure  winsize.Cols
 }
 
-func newWordFrag(frag *text.Fragment) *wordFrag {
+func newWordFrag(frag *text.Frag) *wordFrag {
 	return &wordFrag{
 		Base:     frag,
 		measured: false,
@@ -24,7 +24,7 @@ func newWordFrag(frag *text.Fragment) *wordFrag {
 }
 
 func (w *wordFrag) Measure(cols winsize.Cols) winsize.Cols {
-	return w.measureWith(cols, fragmentMeasure)
+	return w.measureWith(cols, fragMeasure)
 }
 
 func (w *wordFrag) measureWith(
@@ -40,7 +40,7 @@ func (w *wordFrag) measureWith(
 	return w.measure
 }
 
-func toWordFrag(frags ...text.Fragment) []wordFrag {
+func toWordFrag(frags ...text.Frag) []wordFrag {
 	result := make([]wordFrag, len(frags))
 	for i, f := range frags {
 		result[i] = *newWordFrag(&f)
@@ -48,17 +48,17 @@ func toWordFrag(frags ...text.Fragment) []wordFrag {
 	return result
 }
 
-func appendFragments(dst []text.Fragment, src []wordFrag) []text.Fragment {
-    for _, f := range src {
-        dst = append(dst, *f.Base)
-    }
-    return dst
+func appendFrags(dst []text.Frag, src []wordFrag) []text.Frag {
+	for _, f := range src {
+		dst = append(dst, *f.Base)
+	}
+	return dst
 }
 
-func fragmentMeasure(cols winsize.Cols, frags ...wordFrag) winsize.Cols {
+func fragMeasure(cols winsize.Cols, frags ...wordFrag) winsize.Cols {
 	measure := winsize.Cols(0)
 	for _, f := range frags {
-		measure += text.FragmentMeasure(cols, *f.Base)
+		measure += text.FragsMeasure(cols, *f.Base)
 	}
 	return measure
 }

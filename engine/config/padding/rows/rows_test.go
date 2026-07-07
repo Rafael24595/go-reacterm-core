@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
@@ -30,11 +30,11 @@ func TestWithPosition(t *testing.T) {
 	assert.Equal(t, style.Bottom, cfg.Position)
 }
 
-func TestWithFragment(t *testing.T) {
+func TestWithFrag(t *testing.T) {
 	cfg := defaultConfig()
 
-	WithFragment(
-		*text.NewFragment("golang"),
+	WithFrag(
+		*text.NewFrag("golang"),
 	)(&cfg)
 
 	frag := cfg.Provider(
@@ -44,10 +44,10 @@ func TestWithFragment(t *testing.T) {
 	assert.Equal(t, "golang", frag.Text)
 }
 
-func TestWithFillFragment(t *testing.T) {
+func TestWithFillFrag(t *testing.T) {
 	cfg := defaultConfig()
 
-	WithFillFragment(".")(&cfg)
+	WithFillFrag(".")(&cfg)
 
 	lines := []text.Line{
 		*text.NewLine("Golang"),

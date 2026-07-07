@@ -63,7 +63,7 @@ func makeKernel() drawable.Unit {
 		).
 		MarginRows(
 			hint.Fixed[winsize.Rows](1),
-			rows.WithFillFragment(),
+			rows.WithFillFrag(),
 			rows.WithPosition(style.Middle),
 		).
 		ToUnit(box)

@@ -12,7 +12,7 @@ import (
 )
 
 type Result struct {
-	Frags []text.Fragment
+	Frags []text.Frag
 	End   offset.Offset
 }
 
@@ -54,7 +54,7 @@ func (r Renderer) Resolve(caret *input.TextCursor) Result {
 }
 
 func (r Renderer) resolveBackward() Result {
-	frags := make([]text.Fragment, 0, 2)
+	frags := make([]text.Frag, 0, 2)
 	focusAtom := atom.Focus
 
 	selection := r.selection()
@@ -86,7 +86,7 @@ func (r Renderer) resolveForward() Result {
 }
 
 func (r Renderer) resolveForwardNonEnter() Result {
-	frags := make([]text.Fragment, 0, 3)
+	frags := make([]text.Frag, 0, 3)
 
 	selection := r.selection()
 	if len(selection) > 1 {
@@ -106,7 +106,7 @@ func (r Renderer) resolveForwardNonEnter() Result {
 }
 
 func (r Renderer) resolveForwardEnter() Result {
-	frags := make([]text.Fragment, 0, 3)
+	frags := make([]text.Frag, 0, 3)
 
 	selection := r.selection()
 	if len(selection) == 1 {
@@ -143,8 +143,8 @@ func (r Renderer) resolveEnterFooter() ([]rune, offset.Offset) {
 func (r Renderer) resolveEmpty() Result {
 	assert.Unreachable("selection should have at least one character")
 
-	frags := []text.Fragment{
-		*text.EmptyFragment().AddAtom(atom.Focus),
+	frags := []text.Frag{
+		*text.EmptyFrag().AddAtom(atom.Focus),
 	}
 
 	return Result{
@@ -153,7 +153,7 @@ func (r Renderer) resolveEmpty() Result {
 	}
 }
 
-func frag(runes []rune, atoms ...atom.Atom) text.Fragment {
-	return *text.FragmentFromRunes(runes).
+func frag(runes []rune, atoms ...atom.Atom) text.Frag {
+	return *text.FragFromRunes(runes).
 		AddAtom(atoms...)
 }

@@ -64,9 +64,9 @@ func TestBuilder_RenderHeaders_Structure(t *testing.T) {
 
 	line := builder{}.renderHeaders(maxCols, headers, sep)
 
-	expectedFragments := 2*len(headers) + 1
+	wantFrags := 2*len(headers) + 1
 
-	assert.Size(t, expectedFragments, line.Text)
+	assert.Size(t, wantFrags, line.Text)
 
 	assert.Equal(t, "|", line.Text[0].Text)
 	assert.Equal(t, "id", line.Text[1].Text)

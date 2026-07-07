@@ -24,7 +24,7 @@ type ModalUnit struct {
 	loaded     bool
 	lazyLoaded bool
 	text       []text.Line
-	options    []text.Fragment
+	options    []text.Frag
 	limit      uint
 	cursor     uint16
 	unit       drawable.Unit
@@ -35,7 +35,7 @@ func New() *ModalUnit {
 		loaded:     false,
 		lazyLoaded: false,
 		text:       make([]text.Line, 0),
-		options:    make([]text.Fragment, 0),
+		options:    make([]text.Frag, 0),
 		limit:      style.DefaultMaxOpts,
 		cursor:     0,
 		unit:       drawable.Unit{},
@@ -47,7 +47,7 @@ func (u *ModalUnit) AddText(text ...text.Line) *ModalUnit {
 	return u
 }
 
-func (u *ModalUnit) AddOptions(options ...text.Fragment) *ModalUnit {
+func (u *ModalUnit) AddOptions(options ...text.Frag) *ModalUnit {
 	u.options = append(u.options, options...)
 	return u
 }
@@ -83,10 +83,10 @@ func (u *ModalUnit) lazyBoot(size winsize.Winsize) {
 
 	u.lazyLoaded = true
 
-	opts := make([]text.Fragment, len(u.options))
+	opts := make([]text.Frag, len(u.options))
 	for i := range u.options {
 		old := u.options[i]
-		opts[i] = *text.NewFragment(old.Text).
+		opts[i] = *text.NewFrag(old.Text).
 			AddAtom(old.Atom).
 			AddSpec(old.Spec)
 

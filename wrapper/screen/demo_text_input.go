@@ -8,7 +8,7 @@ import (
 )
 
 func NewDemoTextInput() screen.Node {
-	label := text.FragmentsFromString("Ipsum")
+	label := text.FragsFromString("Ipsum")
 	return text_screen.NewInput().
 		SetName("textinput - amet").
 		EnableBlinking().

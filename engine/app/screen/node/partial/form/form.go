@@ -304,11 +304,11 @@ func (n *Form) view(uiState state.UIState) viewmodel.ViewModel {
 
 	focus, ok := n.focusItem()
 	if ok && pointer.HasAny(form.PointerPrompt) {
-		label := text.NewFragment(focus.Node.Name).
+		label := text.NewFrag(focus.Node.Name).
 			AddAtom(atom.Select)
 
 		vm.Footer.Push(
-			inputline.FromFragment(*label),
+			inputline.FromFrag(*label),
 		)
 	}
 

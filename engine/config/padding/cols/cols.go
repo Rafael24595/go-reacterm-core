@@ -7,13 +7,13 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-type FragmentProvider func(winsize.Cols, ...text.Line) text.Fragment
+type FragProvider func(winsize.Cols, ...text.Line) text.Frag
 
 type Option func(*Config)
 
 type Config struct {
 	Position style.HorizontalPosition
-	Provider FragmentProvider
+	Provider FragProvider
 }
 
 func ResolveConfig(opts ...Option) Config {
@@ -27,8 +27,8 @@ func ResolveConfig(opts ...Option) Config {
 func defaultColsConfig() Config {
 	return Config{
 		Position: style.Left,
-		Provider: func(_ winsize.Cols, _ ...text.Line) text.Fragment {
-			return *text.NewFragment(marker.DefaultPaddingText)
+		Provider: func(_ winsize.Cols, _ ...text.Line) text.Frag {
+			return *text.NewFrag(marker.DefaultPaddingText)
 		},
 	}
 }
@@ -40,14 +40,14 @@ func WithPosition(position style.HorizontalPosition) Option {
 }
 
 func WithText(frag string) Option {
-	return WithFragment(
-		*text.NewFragment(frag),
+	return WithFrag(
+		*text.NewFrag(frag),
 	)
 }
 
-func WithFragment(frag text.Fragment) Option {
+func WithFrag(frag text.Frag) Option {
 	return func(cfg *Config) {
-		cfg.Provider = func(_ winsize.Cols, _ ...text.Line) text.Fragment {
+		cfg.Provider = func(_ winsize.Cols, _ ...text.Line) text.Frag {
 			return frag
 		}
 	}

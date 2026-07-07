@@ -99,23 +99,23 @@ func (u *CheckMenuUnit) wipe() {
 	u.unit.Drawable.Wipe()
 }
 
-func (u *CheckMenuUnit) makeVertical(opts []text.Fragment) drawable.Unit {
+func (u *CheckMenuUnit) makeVertical(opts []text.Frag) drawable.Unit {
 	lines := make([]text.Line, len(opts))
 	for i := range opts {
-		lines[i] = *text.LineFromFragments(opts[i])
+		lines[i] = *text.LineFromFrags(opts[i])
 	}
 	return line.UnitFromLines(lines...)
 }
 
-func (u *CheckMenuUnit) makeHorizontal(opts []text.Fragment) drawable.Unit {
+func (u *CheckMenuUnit) makeHorizontal(opts []text.Frag) drawable.Unit {
 	return justify.New(opts).
 		Justify(u.distribution.Justify).
 		MaxOpts(u.distribution.Limit).
 		ToUnit()
 }
 
-func (u *CheckMenuUnit) addStyles() []text.Fragment {
-	frags := make([]text.Fragment, len(u.options))
+func (u *CheckMenuUnit) addStyles() []text.Frag {
+	frags := make([]text.Frag, len(u.options))
 
 	for i := range frags {
 		status := u.meta.Unchecked
@@ -128,7 +128,7 @@ func (u *CheckMenuUnit) addStyles() []text.Fragment {
 			label = marker.DefaultPaddingText + label
 		}
 
-		frags[i] = *text.NewFragment(u.meta.Open + status + u.meta.Close + label).
+		frags[i] = *text.NewFrag(u.meta.Open + status + u.meta.Close + label).
 			CopyMeta(&u.options[i].Label)
 
 		if u.writeMode && i == int(u.cursor) {

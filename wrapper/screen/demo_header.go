@@ -11,14 +11,14 @@ import (
 func NewDemoHeader() pipeline.Transformer {
 	lines := text.ApplyLineSpec(
 		spec.AlignCenter(),
-		*text.LineFromFragments(
-			*text.NewFragment("Lorem ipsum dolor sit amet").AddAtom(atom.Upper),
+		*text.LineFromFrags(
+			*text.NewFrag("Lorem ipsum dolor sit amet").AddAtom(atom.Upper),
 		),
-		*text.LineFromFragments(
-			*text.NewFragment("consectetur adipiscing").AddAtom(atom.Upper),
+		*text.LineFromFrags(
+			*text.NewFrag("consectetur adipiscing").AddAtom(atom.Upper),
 		),
-		*text.LineFromFragments(
-			*text.NewFragment("-Server 00-").AddAtom(atom.Upper),
+		*text.LineFromFrags(
+			*text.NewFrag("-Server 00-").AddAtom(atom.Upper),
 		),
 	)
 

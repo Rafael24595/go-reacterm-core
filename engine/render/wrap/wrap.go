@@ -40,20 +40,20 @@ func MaterializeEmpty(
 	lines ...LayoutLine,
 ) []LayoutLine {
 	for i, line := range lines {
-		if text.FragmentMeasure(size.Cols, line.Source.Text...) != 0 {
+		if text.FragsMeasure(size.Cols, line.Source.Text...) != 0 {
 			continue
 		}
 
-		lastFrag := text.Fragment{}
+		lastFrag := text.Frag{}
 		if len(line.Source.Text) > 0 {
 			lastFrag = line.Source.Text[len(line.Source.Text)-1]
 		}
 
-		fragment := *text.NewFragment(placeholder).
+		frag := *text.NewFrag(placeholder).
 			CopyMeta(&lastFrag)
 
-		lines[i].Source.PushFragments(fragment)
-		lines[i].pushFrags(fragment)
+		lines[i].Source.PushFrags(frag)
+		lines[i].pushFrags(frag)
 	}
 
 	return lines
@@ -116,7 +116,7 @@ func wrapOnce(cols winsize.Cols, line *LayoutLine) (*text.Line, *LayoutLine) {
 		wordMeasure := line.measure(wordIdx, cols)
 
 		if wordMeasure <= remaining {
-			cursor.Text = appendFragments(
+			cursor.Text = appendFrags(
 				cursor.Text,
 				line.findFrags(wordIdx),
 			)
@@ -136,7 +136,7 @@ func wrapOnce(cols winsize.Cols, line *LayoutLine) (*text.Line, *LayoutLine) {
 			cols,
 			remaining,
 		); ok {
-			cursor.Text = appendFragments(
+			cursor.Text = appendFrags(
 				cursor.Text, line.findFrags(wordIdx),
 			)
 		}
@@ -182,7 +182,7 @@ func splitLineFeeds(line *text.Line, order bool) []text.Line {
 
 	for _, frag := range line.Text {
 		if !strings.ContainsAny(frag.Text, "\n\r") {
-			current.PushFragments(frag)
+			current.PushFrags(frag)
 			continue
 		}
 
@@ -191,8 +191,8 @@ func splitLineFeeds(line *text.Line, order bool) []text.Line {
 		parts := strings.Split(normalizedText, "\n")
 		for i, part := range parts {
 			if part != "" {
-				current.PushFragments(
-					*text.NewFragment(part).CopyMeta(&frag),
+				current.PushFrags(
+					*text.NewFrag(part).CopyMeta(&frag),
 				)
 			}
 
@@ -215,23 +215,23 @@ func splitLineFeeds(line *text.Line, order bool) []text.Line {
 	return result
 }
 
-func splitFragmentAt(frag *wordFrag, cols winsize.Cols) (*wordFrag, *wordFrag) {
+func splitFragAt(frag *wordFrag, cols winsize.Cols) (*wordFrag, *wordFrag) {
 	if cols <= 0 {
-		newFrag := text.EmptyFragment().
+		newFrag := text.EmptyFrag().
 			CopyMeta(frag.Base)
-			
+
 		return newWordFrag(newFrag), frag
 	}
 
 	byteIndex, canBreak := runes.RuneIndexToByteIndex(frag.Base.Text, offset.Offset(cols))
-	if !canBreak || int(byteIndex) >= len(frag.Base.Text)  {
+	if !canBreak || int(byteIndex) >= len(frag.Base.Text) {
 		return frag, nil
 	}
 
-	taken := text.NewFragment(frag.Base.Text[:byteIndex]).
+	taken := text.NewFrag(frag.Base.Text[:byteIndex]).
 		CopyMeta(frag.Base)
 
-	rest := text.NewFragment(frag.Base.Text[byteIndex:]).
+	rest := text.NewFrag(frag.Base.Text[byteIndex:]).
 		CopyMeta(frag.Base)
 
 	return newWordFrag(taken), newWordFrag(rest)

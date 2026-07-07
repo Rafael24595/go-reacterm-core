@@ -9,14 +9,14 @@ import (
 
 type Line struct {
 	Order uint16
-	Text  []Fragment
+	Text  []Frag
 	Spec  spec.Spec
 }
 
 func NewLine(text string, styles ...spec.Spec) *Line {
 	return &Line{
-		Text: []Fragment{
-			*NewFragment(text),
+		Text: []Frag{
+			*NewFrag(text),
 		},
 		Spec: spec.Merge(styles...),
 	}
@@ -28,8 +28,8 @@ func EmptyLine(size ...int) *Line {
 		bufferSize = size[0]
 	}
 
-	return LineFromFragments(
-		make([]Fragment, 0, bufferSize)...,
+	return LineFromFrags(
+		make([]Frag, 0, bufferSize)...,
 	)
 }
 
@@ -38,7 +38,7 @@ func LineFromMeta(other *Line, size ...int) *Line {
 		CopyMeta(other)
 }
 
-func LineFromFragments(frags ...Fragment) *Line {
+func LineFromFrags(frags ...Frag) *Line {
 	return &Line{
 		Text: frags,
 		Spec: spec.Empty(),
@@ -56,12 +56,12 @@ func (l *Line) SetOrder(order uint16) *Line {
 	return l
 }
 
-func (l *Line) UnshiftFragments(frags ...Fragment) *Line {
+func (l *Line) UnshiftFrags(frags ...Frag) *Line {
 	l.Text = append(frags, l.Text...)
 	return l
 }
 
-func (l *Line) PushFragments(frags ...Fragment) *Line {
+func (l *Line) PushFrags(frags ...Frag) *Line {
 	l.Text = append(l.Text, frags...)
 	return l
 }
@@ -84,7 +84,7 @@ func (l *Line) CutSpec(styles spec.Kind) *Line {
 
 func (l *Line) Clone() *Line {
 	newLine := EmptyLine().CopyMeta(l)
-	newLine.Text = make([]Fragment, len(l.Text))
+	newLine.Text = make([]Frag, len(l.Text))
 	copy(newLine.Text, l.Text)
 	return newLine
 }
@@ -92,7 +92,7 @@ func (l *Line) Clone() *Line {
 func LineMeasure(line *Line, cols winsize.Cols) winsize.Cols {
 	return spec.Measure(line.Spec, spec.LayoutContext{
 		SizeCols: cols,
-		TextSize: FragmentMeasure(cols, line.Text...),
+		TextSize: FragsMeasure(cols, line.Text...),
 	})
 }
 

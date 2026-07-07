@@ -27,12 +27,12 @@ func splitLineWords(line *text.Line) ([]word, []wordFrag) {
 
 	wordStart := 0
 
-	flushFrag := func(frag text.Fragment) {
+	flushFrag := func(frag text.Frag) {
 		if sb.Len() == 0 {
 			return
 		}
 
-		f := text.NewFragment(sb.String()).
+		f := text.NewFrag(sb.String()).
 			CopyMeta(&frag)
 
 		frags = append(frags, *newWordFrag(f))
@@ -53,7 +53,7 @@ func splitLineWords(line *text.Line) ([]word, []wordFrag) {
 	}
 
 	for _, frag := range line.Text {
-		if frag.Atom.HasAny(atom.Wrap) || text.IsStructuralFragment(frag) {
+		if frag.Atom.HasAny(atom.Wrap) || text.IsStructuralFrag(frag) {
 			flushFrag(frag)
 			flushWord()
 

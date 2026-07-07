@@ -17,11 +17,11 @@ func TestFocusInitTransformer_FocusAtStart(t *testing.T) {
 	mock := &drawable_test.MockUnit{
 		Lines: []text.Line{
 			*text.NewLine("base_01"),
-			*text.LineFromFragments(
-				*text.NewFragment("base").
+			*text.LineFromFrags(
+				*text.NewFrag("base").
 					AddAtom(atom.Focus),
-				*text.NewFragment("_"),
-				*text.NewFragment("02"),
+				*text.NewFrag("_"),
+				*text.NewFrag("02"),
 			),
 			*text.NewLine("base_03"),
 		},
@@ -49,11 +49,11 @@ func TestFocusInitTransformer_FocusAtEnd(t *testing.T) {
 		Lines: []text.Line{
 			*text.NewLine("base_01"),
 			*text.NewLine("base_02"),
-			*text.LineFromFragments(
-				*text.NewFragment("base"),
-				*text.NewFragment("_").
+			*text.LineFromFrags(
+				*text.NewFrag("base"),
+				*text.NewFrag("_").
 					AddAtom(atom.Focus),
-				*text.NewFragment("03"),
+				*text.NewFrag("03"),
 			),
 		},
 		Batch: 1,

@@ -97,9 +97,9 @@ func (u *InlineUnit) joinChildren(lines []text.Line) []text.Line {
 
 	merged := text.EmptyLine()
 
-	var separator *text.Fragment
+	var separator *text.Frag
 	if u.separator != "" {
-		frag := text.NewFragment(u.separator)
+		frag := text.NewFrag(u.separator)
 		separator = frag
 	}
 
@@ -109,7 +109,7 @@ func (u *InlineUnit) joinChildren(lines []text.Line) []text.Line {
 			frags = append(frags, *separator)
 		}
 
-		merged.PushFragments(frags...).
+		merged.PushFrags(frags...).
 			CopyMeta(&line)
 	}
 

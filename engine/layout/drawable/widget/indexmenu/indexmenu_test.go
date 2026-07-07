@@ -9,6 +9,6 @@ import (
 )
 
 func TestIndexMenu_UnitBasicSuite(t *testing.T) {
-	unit := UnitFromOptions([]text.Fragment{})
+	unit := UnitFromOptions([]text.Frag{})
 	drawable_test.Test_UnitBasicSuite(t, unit)
 }

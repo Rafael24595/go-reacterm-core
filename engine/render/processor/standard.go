@@ -27,8 +27,8 @@ func (r Standard) Render(lines []text.Line, size winsize.Winsize) []string {
 
 	for i, line := range lines {
 		text := format.NewText(
-			r.renderLineFragments(line, size),
-			text.FragmentMeasure(size.Cols, line.Text...),
+			r.renderLineFrags(line, size),
+			text.FragsMeasure(size.Cols, line.Text...),
 		)
 
 		buffer[i] = r.spec.Apply(line.Spec, size, text)
@@ -37,11 +37,11 @@ func (r Standard) Render(lines []text.Line, size winsize.Winsize) []string {
 	return buffer
 }
 
-func (r Standard) renderLineFragments(line text.Line, size winsize.Winsize) string {
+func (r Standard) renderLineFrags(line text.Line, size winsize.Winsize) string {
 	var buffer strings.Builder
 
-	fragments := ""
-	atomStyles := atom.None
+	frags := ""
+	atoms := atom.None
 
 	lineSize := winsize.New(
 		size.Rows,
@@ -56,25 +56,25 @@ func (r Standard) renderLineFragments(line text.Line, size winsize.Winsize) stri
 
 		spec := r.spec.Apply(f.Spec, lineSize, txt)
 
-		fragSize := text.FragmentMeasure(size.Cols, f)
+		fragSize := text.FragsMeasure(size.Cols, f)
 		lineSize.Cols = lineSize.Cols.Sub(fragSize)
 
-		if atomStyles != f.Atom && len(fragments) != 0 {
-			atom := r.atom.Apply(fragments, atomStyles)
+		if atoms != f.Atom && len(frags) != 0 {
+			atom := r.atom.Apply(frags, atoms)
 			buffer.WriteString(atom)
 
-			fragments = spec
-			atomStyles = f.Atom
+			frags = spec
+			atoms = f.Atom
 
 			continue
 		}
 
-		fragments += spec
-		atomStyles = f.Atom
+		frags += spec
+		atoms = f.Atom
 	}
 
-	if len(fragments) != 0 {
-		atom := r.atom.Apply(fragments, atomStyles)
+	if len(frags) != 0 {
+		atom := r.atom.Apply(frags, atoms)
 		buffer.WriteString(atom)
 	}
 

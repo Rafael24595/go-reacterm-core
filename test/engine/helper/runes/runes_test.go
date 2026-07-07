@@ -288,7 +288,7 @@ func TestJoinReverse_WithUnicode(t *testing.T) {
 	assert.Equal(t, "🌍界世", result)
 }
 
-func TestJoinReverse_WithEmptyFragments(t *testing.T) {
+func TestJoinReverse_WithEmptyFrags(t *testing.T) {
 	result := runes.JoinReverse([]string{"a", "", "b", ""})
 	assert.Equal(t, "ba", result)
 }

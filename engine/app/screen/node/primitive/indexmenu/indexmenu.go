@@ -2,7 +2,7 @@ package indexmenu
 
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
@@ -183,7 +183,7 @@ func (n *IndexMenu) view(uiState state.UIState) viewmodel.ViewModel {
 
 	n.loadFromStore(uiState)
 
-	frags := input.FragmentFromMenuOption(n.options...)
+	frags := input.FragsFromMenuOption(n.options...)
 
 	pointer := indexmenu.FindPointer(n.pointer)
 

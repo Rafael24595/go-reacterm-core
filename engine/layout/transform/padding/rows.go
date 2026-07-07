@@ -11,7 +11,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-type rowPositioner func([]text.Line, text.Fragment, winsize.Rows) []text.Line
+type rowPositioner func([]text.Line, text.Frag, winsize.Rows) []text.Line
 
 var rowPositionerMap = map[style.VerticalPosition]rowPositioner{
 	style.Top:    rowsToTop,
@@ -40,13 +40,13 @@ func Rows(hint hint.Size[winsize.Rows], opts ...rows.Option) transform.Transform
 	}
 }
 
-func rowsToTop(lines []text.Line, frag text.Fragment, padding winsize.Rows) []text.Line {
+func rowsToTop(lines []text.Line, frag text.Frag, padding winsize.Rows) []text.Line {
 	newLines := paddingLines(padding, frag)
 	copy(newLines, lines)
 	return newLines
 }
 
-func rowsToBottom(lines []text.Line, frag text.Fragment, padding winsize.Rows) []text.Line {
+func rowsToBottom(lines []text.Line, frag text.Frag, padding winsize.Rows) []text.Line {
 	rest := padding.Sub(
 		winsize.Rows(len(lines)),
 	)
@@ -55,7 +55,7 @@ func rowsToBottom(lines []text.Line, frag text.Fragment, padding winsize.Rows) [
 	return append(newLines, lines...)
 }
 
-func rowsToMiddle(lines []text.Line, frag text.Fragment, padding winsize.Rows) []text.Line {
+func rowsToMiddle(lines []text.Line, frag text.Frag, padding winsize.Rows) []text.Line {
 	rest := padding.Sub(
 		winsize.Rows(len(lines)),
 	)
@@ -69,7 +69,7 @@ func rowsToMiddle(lines []text.Line, frag text.Fragment, padding winsize.Rows) [
 	return append(newLines, bottom...)
 }
 
-func paddingLines(rows winsize.Rows, frag text.Fragment) []text.Line {
+func paddingLines(rows winsize.Rows, frag text.Frag) []text.Line {
 	result := make([]text.Line, rows)
 
 	for i := range result {

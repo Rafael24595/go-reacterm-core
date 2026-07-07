@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
@@ -13,11 +13,11 @@ type MenuOptionAction = func() screen.Node
 
 type MenuOption struct {
 	Id     string
-	Label  text.Fragment
+	Label  text.Frag
 	Action MenuOptionAction
 }
 
-func NewMenuOption(id string, option text.Fragment, action MenuOptionAction) MenuOption {
+func NewMenuOption(id string, option text.Frag, action MenuOptionAction) MenuOption {
 	return MenuOption{
 		Id:     id,
 		Label:  option,
@@ -29,8 +29,8 @@ func NewMenuOptions(options ...MenuOption) []MenuOption {
 	return options
 }
 
-func FragmentFromMenuOption(options ...MenuOption) []text.Fragment {
-	lines := make([]text.Fragment, len(options))
+func FragsFromMenuOption(options ...MenuOption) []text.Frag {
+	lines := make([]text.Frag, len(options))
 	for i := range options {
 		lines[i] = options[i].Label
 	}

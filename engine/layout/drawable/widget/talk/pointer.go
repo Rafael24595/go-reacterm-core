@@ -6,7 +6,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-type PointerProvider func(cursor uint16, index uint16) ([]text.Fragment, []text.Fragment)
+type PointerProvider func(cursor uint16, index uint16) ([]text.Frag, []text.Frag)
 
 var providers = []PointerProvider{
 	arrowProvider(),
@@ -33,23 +33,23 @@ func arrowProvider(arrow ...rune) PointerProvider {
 		pointer = string(arrow[0])
 	}
 
-	defaultOwner := []text.Fragment{
-		*text.NewFragment(marker.DefaultPaddingText).
+	defaultOwner := []text.Frag{
+		*text.NewFrag(marker.DefaultPaddingText).
 			AddSpec(spec.ExtendRight(3)),
 	}
 
-	selectedOwner := []text.Fragment{
-		*text.NewFragment(
+	selectedOwner := []text.Frag{
+		*text.NewFrag(
 			marker.DefaultPaddingText + pointer + marker.DefaultPaddingText,
 		),
 	}
 
-	defaultMessage := []text.Fragment{
-		*text.NewFragment(marker.DefaultPaddingText).
+	defaultMessage := []text.Frag{
+		*text.NewFrag(marker.DefaultPaddingText).
 			AddSpec(spec.ExtendRight(5)),
 	}
 
-	return func(cursor, index uint16) ([]text.Fragment, []text.Fragment) {
+	return func(cursor, index uint16) ([]text.Frag, []text.Frag) {
 		if index == cursor {
 			return selectedOwner, defaultMessage
 		}
@@ -59,29 +59,29 @@ func arrowProvider(arrow ...rune) PointerProvider {
 }
 
 func gutterProvider() PointerProvider {
-	defaultOwner := []text.Fragment{
-		*text.NewFragment(marker.DefaultPaddingText).
+	defaultOwner := []text.Frag{
+		*text.NewFrag(marker.DefaultPaddingText).
 			AddSpec(spec.ExtendRight(3)),
 	}
 
-	selectedOwner := []text.Fragment{
-		*text.NewFragment(marker.U2503_Text),
-		*text.NewFragment(marker.DefaultPaddingText).
+	selectedOwner := []text.Frag{
+		*text.NewFrag(marker.U2503_Text),
+		*text.NewFrag(marker.DefaultPaddingText).
 			AddSpec(spec.ExtendRight(2)),
 	}
 
-	defaultMessage := []text.Fragment{
-		*text.NewFragment(marker.DefaultPaddingText).
+	defaultMessage := []text.Frag{
+		*text.NewFrag(marker.DefaultPaddingText).
 			AddSpec(spec.ExtendRight(5)),
 	}
 
-	selectedMessage := []text.Fragment{
-		*text.NewFragment(marker.U2503_Text),
-		*text.NewFragment(marker.DefaultPaddingText).
+	selectedMessage := []text.Frag{
+		*text.NewFrag(marker.U2503_Text),
+		*text.NewFrag(marker.DefaultPaddingText).
 			AddSpec(spec.ExtendRight(4)),
 	}
 
-	return func(cursor, index uint16) ([]text.Fragment, []text.Fragment) {
+	return func(cursor, index uint16) ([]text.Frag, []text.Frag) {
 		if index == cursor {
 			return selectedOwner, selectedMessage
 		}

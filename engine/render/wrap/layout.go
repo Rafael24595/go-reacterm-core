@@ -35,7 +35,7 @@ func (l *LayoutLine) findFrags(idx int) []wordFrag {
 	return l.frags[word.start:word.end]
 }
 
-func (l *LayoutLine) pushFrags(frags ...text.Fragment) *LayoutLine {
+func (l *LayoutLine) pushFrags(frags ...text.Frag) *LayoutLine {
 	lenFrags := len(l.frags)
 	word := word{
 		start: uint32(lenFrags),
@@ -108,7 +108,7 @@ func (l *LayoutLine) splitFrag(
 
 	frag := &l.frags[fragIdx]
 
-	left, right := splitFragmentAt(frag, cols)
+	left, right := splitFragAt(frag, cols)
 	if right == nil {
 		return
 	}
@@ -158,7 +158,7 @@ func (l *LayoutLine) hasAtom(idx int, atm atom.Atom) bool {
 }
 
 func (l *LayoutLine) measure(idx int, cols winsize.Cols) winsize.Cols {
-	return l.measureWith(idx, cols, fragmentMeasure)
+	return l.measureWith(idx, cols, fragMeasure)
 }
 
 func (l *LayoutLine) measureWith(

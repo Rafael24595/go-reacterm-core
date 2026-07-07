@@ -17,7 +17,7 @@ func TestRowPositioners(t *testing.T) {
 		*text.NewLine("Golang"),
 	}
 
-	frag := *text.EmptyFragment()
+	frag := *text.EmptyFrag()
 
 	tests := []struct {
 		name         string

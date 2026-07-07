@@ -12,13 +12,13 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 )
 
-type expectedFragment struct {
+type wantFrag struct {
 	content string
 	atoms   atom.Atom
 }
 
-func ef(content string, atoms ...atom.Atom) expectedFragment {
-	return expectedFragment{
+func wf(content string, atoms ...atom.Atom) wantFrag {
+	return wantFrag{
 		content: content,
 		atoms:   atom.Merge(atoms...),
 	}
@@ -40,7 +40,7 @@ func TestRendererResolve(t *testing.T) {
 		anchor offset.Offset
 
 		expectedEnd offset.Offset
-		expected    []expectedFragment
+		expected    []wantFrag
 	}{
 		{
 			name:   "forward non-enter single rune",
@@ -51,8 +51,8 @@ func TestRendererResolve(t *testing.T) {
 			anchor: 1,
 
 			expectedEnd: 2,
-			expected: []expectedFragment{
-				ef("b", atom.Focus),
+			expected: []wantFrag{
+				wf("b", atom.Focus),
 			},
 		},
 		{
@@ -64,9 +64,9 @@ func TestRendererResolve(t *testing.T) {
 			anchor: 1,
 
 			expectedEnd: 3,
-			expected: []expectedFragment{
-				ef("b"),
-				ef("c", atom.Focus),
+			expected: []wantFrag{
+				wf("b"),
+				wf("c", atom.Focus),
 			},
 		},
 		{
@@ -78,10 +78,10 @@ func TestRendererResolve(t *testing.T) {
 			anchor: 3,
 
 			expectedEnd: 4,
-			expected: []expectedFragment{
-				ef(marker.DefaultPaddingText),
-				ef("\n"),
-				ef(marker.DefaultPaddingText, atom.Focus),
+			expected: []wantFrag{
+				wf(marker.DefaultPaddingText),
+				wf("\n"),
+				wf(marker.DefaultPaddingText, atom.Focus),
 			},
 		},
 		{
@@ -93,10 +93,10 @@ func TestRendererResolve(t *testing.T) {
 			anchor: 3,
 
 			expectedEnd: 5,
-			expected: []expectedFragment{
-				ef(marker.DefaultPaddingText),
-				ef("\n"),
-				ef("d", atom.Focus),
+			expected: []wantFrag{
+				wf(marker.DefaultPaddingText),
+				wf("\n"),
+				wf("d", atom.Focus),
 			},
 		},
 		{
@@ -108,8 +108,8 @@ func TestRendererResolve(t *testing.T) {
 			anchor: 3,
 
 			expectedEnd: 3,
-			expected: []expectedFragment{
-				ef("bc", atom.Focus),
+			expected: []wantFrag{
+				wf("bc", atom.Focus),
 			},
 		},
 		{
@@ -121,9 +121,9 @@ func TestRendererResolve(t *testing.T) {
 			anchor: 3,
 
 			expectedEnd: 3,
-			expected: []expectedFragment{
-				ef(marker.DefaultPaddingText, atom.Focus),
-				ef("\nb"),
+			expected: []wantFrag{
+				wf(marker.DefaultPaddingText, atom.Focus),
+				wf("\nb"),
 			},
 		},
 		{
@@ -135,10 +135,10 @@ func TestRendererResolve(t *testing.T) {
 			anchor: 3,
 
 			expectedEnd: 4,
-			expected: []expectedFragment{
-				ef(marker.DefaultPaddingText),
-				ef("\n"),
-				ef(marker.DefaultPaddingText, atom.Focus),
+			expected: []wantFrag{
+				wf(marker.DefaultPaddingText),
+				wf("\n"),
+				wf(marker.DefaultPaddingText, atom.Focus),
 			},
 		},
 	}

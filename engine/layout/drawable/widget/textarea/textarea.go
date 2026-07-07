@@ -89,12 +89,12 @@ func (u *TextAreaUnit) lazyBoot(size winsize.Winsize) {
 		end = 1
 	}
 
-	frags := u.resolveFragments(u.buffer, start, end)
+	frags := u.resolveFrags(u.buffer, start, end)
 	for _, step := range u.steps {
 		frags = step(frags)
 	}
 
-	base := text.LineFromFragments(frags...)
+	base := text.LineFromFrags(frags...)
 
 	lines := u.makeLines(base)
 	lines = wrap.MaterializeEmpty(size, marker.DefaultPaddingText, lines...)
@@ -123,11 +123,11 @@ func (u *TextAreaUnit) wipe() {
 	u.unit.Drawable.Wipe()
 }
 
-func (u *TextAreaUnit) resolveFragments(
+func (u *TextAreaUnit) resolveFrags(
 	renderBuffer []rune,
 	start, end offset.Offset,
-) []text.Fragment {
-	frags := make([]text.Fragment, 0, 6)
+) []text.Frag {
+	frags := make([]text.Frag, 0, 6)
 
 	bufferLen := offset.Offset(len(renderBuffer))
 
@@ -136,7 +136,7 @@ func (u *TextAreaUnit) resolveFragments(
 
 	if start > 0 {
 		frags = append(frags,
-			*text.NewFragment(string(renderBuffer[:start])),
+			*text.NewFrag(string(renderBuffer[:start])),
 		)
 	}
 
@@ -151,7 +151,7 @@ func (u *TextAreaUnit) resolveFragments(
 
 	if int(end) < len(renderBuffer) {
 		frags = append(frags,
-			*text.NewFragment(string(renderBuffer[end:])),
+			*text.NewFrag(string(renderBuffer[end:])),
 		)
 	}
 

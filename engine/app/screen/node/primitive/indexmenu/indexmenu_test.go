@@ -24,7 +24,7 @@ func TestIndexMenu_ToNode(t *testing.T) {
 		AddOptions(
 			input.NewMenuOption(
 				"opt_1",
-				*text.NewFragment("Option 1"),
+				*text.NewFrag("Option 1"),
 				voidAction,
 			),
 		).
@@ -80,12 +80,12 @@ func TestIndexMenu_AddTitleAndOptions(t *testing.T) {
 		AddOptions(
 			input.NewMenuOption(
 				"opt_1",
-				*text.NewFragment("Option 1"),
+				*text.NewFrag("Option 1"),
 				voidAction,
 			),
 			input.NewMenuOption(
 				"opt_2",
-				*text.NewFragment("Option 2"),
+				*text.NewFrag("Option 2"),
 				voidAction,
 			),
 		)
@@ -98,12 +98,12 @@ func TestIndexMenu_SetCursor_Clamp(t *testing.T) {
 		AddOptions(
 			input.NewMenuOption(
 				"opt_a",
-				*text.NewFragment("A"),
+				*text.NewFrag("A"),
 				voidAction,
 			),
 			input.NewMenuOption(
 				"opt_b",
-				*text.NewFragment("B"),
+				*text.NewFrag("B"),
 				voidAction,
 			),
 		)
@@ -127,12 +127,12 @@ func TestIndexMenu_CursorNavigation(t *testing.T) {
 		AddOptions(
 			input.NewMenuOption(
 				"opt_a",
-				*text.NewFragment("A"),
+				*text.NewFrag("A"),
 				voidAction,
 			),
 			input.NewMenuOption(
 				"opt_b",
-				*text.NewFragment("B"),
+				*text.NewFrag("B"),
 				voidAction,
 			),
 		)
@@ -164,7 +164,7 @@ func TestIndexMenu_Action(t *testing.T) {
 		AddOptions(
 			input.NewMenuOption(
 				"opt_go",
-				*text.NewFragment("Go"),
+				*text.NewFrag("Go"),
 				func() screen.Node { return expected },
 			),
 		)
@@ -184,12 +184,12 @@ func TestIndexMenu_ViewCursor(t *testing.T) {
 		AddOptions(
 			input.NewMenuOption(
 				"opt_a",
-				*text.NewFragment("A"),
+				*text.NewFrag("A"),
 				voidAction,
 			),
 			input.NewMenuOption(
 				"opt_b",
-				*text.NewFragment("B"),
+				*text.NewFrag("B"),
 				voidAction,
 			),
 		)
