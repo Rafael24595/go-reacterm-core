@@ -186,10 +186,10 @@ func TestWrapOnce(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			words := splitLineWords(tt.line)
-			layout := NewLayoutLine(tt.line, words...)
+			words, frags := splitLineWords(tt.line)
+			layout := NewLayoutLine(tt.line, words, frags)
 
-			head, rest := wrapOnce(tt.cols, *layout)
+			head, rest := wrapOnce(tt.cols, layout)
 
 			assert.NotNil(t, head)
 
@@ -198,7 +198,7 @@ func TestWrapOnce(t *testing.T) {
 
 			if tt.expectedRest != "" {
 				assert.NotNil(t, rest)
-				assert.Equal(t, tt.expectedRest, wordsToString(rest.Words...))
+				assert.Equal(t, tt.expectedRest, wordsToString(rest.words, rest.frags))
 			}
 		})
 	}
@@ -209,10 +209,10 @@ func TestNormalizeLines_Integrity(t *testing.T) {
 
 	assert.Size(t, 1, line.Text)
 
-	tokenized := NormalizeLines(*line)
+	layouts := NormalizeLines(*line)
 
-	assert.Size(t, 1, tokenized)
-	assert.Size(t, 7, tokenized[0].Words)
+	assert.Size(t, 1, layouts)
+	assert.Size(t, 7, layouts[0].words)
 }
 
 func TestMaterializeEmpty(t *testing.T) {
@@ -232,7 +232,7 @@ func TestMaterializeEmpty(t *testing.T) {
 		{
 			name: "ShouldMaterializeTotallyEmptyLine",
 			input: []LayoutLine{
-				*NewLayoutLine(text.EmptyLine()),
+				*sourceLayout(text.EmptyLine()),
 			},
 			expectedCount: 1,
 			expectedText:  " ",
@@ -241,9 +241,10 @@ func TestMaterializeEmpty(t *testing.T) {
 		{
 			name: "ShouldNotMaterializeLineWithContent",
 			input: []LayoutLine{
-				*NewLayoutLine(
+				*sourceLayout(
 					text.LineFromFragments(*text.NewFragment("Content")),
-					*newWord(*text.NewFragment("Content")),
+				).pushFrags(
+					*text.NewFragment("Content"),
 				),
 			},
 			expectedCount: 1,
@@ -253,7 +254,11 @@ func TestMaterializeEmpty(t *testing.T) {
 		{
 			name: "ShouldMaterializeLineWithOnlyZeroWidthFragments",
 			input: []LayoutLine{
-				*NewLayoutLine(text.NewLine("")),
+				*sourceLayout(
+					text.NewLine(""),
+				).pushFrags(
+					*text.NewFragment(""),
+				),
 			},
 			expectedCount: 2,
 			expectedText:  " ",
@@ -262,10 +267,12 @@ func TestMaterializeEmpty(t *testing.T) {
 		{
 			name: "ShouldInheritStyleFromLastZeroWidthFragment",
 			input: []LayoutLine{
-				*NewLayoutLine(
+				*sourceLayout(
 					text.LineFromFragments(
 						*text.NewFragment("").AddAtom(atom.Bold),
 					),
+				).pushFrags(
+					*text.NewFragment("").AddAtom(atom.Bold),
 				),
 			},
 			expectedCount: 2,
@@ -279,14 +286,14 @@ func TestMaterializeEmpty(t *testing.T) {
 			got := MaterializeEmpty(size, placeholder, tt.input...)
 
 			assert.Size(t, tt.expectedCount, got[0].Source.Text)
-			assert.GreaterThan(t, 0, len(got[0].Words))
+			assert.GreaterThan(t, 0, len(got[0].words))
 			assert.Equal(t, tt.expectedText, text.LineToString(got[0].Source))
 
 			layout := got[len(got)-1]
-			word := layout.Words[len(layout.Words)-1]
-			text := word.Text[len(word.Text)-1]
+			word := layout.words[len(layout.words)-1]
+			frag := layout.frags[word.end-1]
 
-			assert.Equal(t, tt.expectedAtom, text.Base.Atom)
+			assert.Equal(t, tt.expectedAtom, frag.Base.Atom)
 		})
 	}
 }
@@ -401,7 +408,7 @@ func TesNextLine_Split(t *testing.T) {
 	assert.Equal(t, "go", text.LineToString(got))
 
 	assert.Size(t, 1, remain)
-	assert.Equal(t, "lang", wordsToString(remain[0].Words...))
+	assert.Equal(t, "lang", wordsToString(remain[0].words, remain[0].frags))
 }
 
 func TesNextLine_MultiFragment(t *testing.T) {
@@ -418,7 +425,7 @@ func TesNextLine_MultiFragment(t *testing.T) {
 	assert.Equal(t, "go zig", text.LineToString(got))
 	assert.Size(t, 1, remain)
 
-	assert.Equal(t, " c++", wordsToString(remain[0].Words...))
+	assert.Equal(t, " c++", wordsToString(remain[0].words, remain[0].frags))
 }
 
 func TesNextLine_BreakLongWordSingleFragment(t *testing.T) {
@@ -427,7 +434,7 @@ func TesNextLine_BreakLongWordSingleFragment(t *testing.T) {
 	got, remain := NextLine(6, NormalizeLines(*line))
 	assert.Equal(t, "golang", text.LineToString(got))
 
-	assert.Equal(t, "ziglangrustlang", wordsToString(remain[0].Words...))
+	assert.Equal(t, "ziglangrustlang", wordsToString(remain[0].words, remain[0].frags))
 }
 
 func TesNextLine_BreakLongWordMultipleFragments(t *testing.T) {
@@ -440,7 +447,7 @@ func TesNextLine_BreakLongWordMultipleFragments(t *testing.T) {
 	got, remain := NextLine(10, NormalizeLines(*line))
 	assert.Equal(t, "golang ", text.LineToString(got))
 
-	assert.Equal(t, "zigrust", wordsToString(remain[0].Words...))
+	assert.Equal(t, "zigrust", wordsToString(remain[0].words, remain[0].frags))
 }
 
 func TestSplitLineFeeds(t *testing.T) {
@@ -662,27 +669,31 @@ func BenchmarkWrapOnce(b *testing.B) {
 		)...,
 	)
 
+	words, frags := splitLineWords(line)
+
 	layout := NewLayoutLine(
-		line, splitLineWords(line)...,
+		line, words, frags,
 	)
 
 	b.ReportAllocs()
 
 	for b.Loop() {
-		_, _ = wrapOnce(40, *layout)
+		_, _ = wrapOnce(40, layout)
 	}
 }
 
 func BenchmarkWrapOnce_VeryLong(b *testing.B) {
 	line := benchmarkLine(2000)
 
+	words, frags := splitLineWords(&line)
+
 	layout := NewLayoutLine(
-		&line, splitLineWords(&line)...,
+		&line, words, frags,
 	)
 
 	b.ReportAllocs()
 
 	for b.Loop() {
-		wrapOnce(20, *layout)
+		wrapOnce(20, layout)
 	}
 }

@@ -6,37 +6,38 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
-func wordsToString(words ...word) string {
+func wordsToString(words []word, frags []wordFrag) string {
 	var sb strings.Builder
-
-	for _, w := range words {
-		for _, f := range w.Text {
-			sb.WriteString(f.Base.Text)
-		}
+	for _, words := range words {
+		sb.WriteString(
+			wordToString(words, frags),
+		)
 	}
-
 	return sb.String()
 }
 
-func tokenString(token word) string {
+func wordToString(word word, frags []wordFrag) string {
+	return fragsToString(frags[word.start:word.end])
+}
+
+func wordsToStrings(tokens []word, frags []wordFrag) []string {
+	out := make([]string, len(tokens))
+	for i, word := range tokens {
+		out[i] = wordToString(word, frags)
+	}
+	return out
+}
+
+func fragsToString(frags []wordFrag) string {
 	var b strings.Builder
-	for _, f := range token.Text {
+	for _, f := range frags {
 		b.WriteString(f.Base.Text)
 	}
 	return b.String()
-}
-
-func tokenStrings(tokens []word) []string {
-	out := make([]string, len(tokens))
-	for i, t := range tokens {
-		out[i] = tokenString(t)
-	}
-	return out
 }
 
 func TestSplitLineWords(t *testing.T) {
@@ -121,8 +122,8 @@ func TestSplitLineWords(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tokens := splitLineWords(tt.line)
-			got := tokenStrings(tokens)
+			words, frags := splitLineWords(tt.line)
+			got := wordsToStrings(words, frags)
 
 			assert.Size(t, len(tt.expected), got)
 			for i := range got {
@@ -135,8 +136,10 @@ func TestSplitLineWords(t *testing.T) {
 func TestSplitLineWords_EmptyLine(t *testing.T) {
 	line := text.LineFromFragments()
 
-	tokens := splitLineWords(line)
-	assert.Equal(t, 0, len(tokens))
+	words, frags := splitLineWords(line)
+
+	assert.Size(t, 0, words)
+	assert.Size(t, 0, frags)
 }
 
 func TestSplitLineWords_EmptyFragmentIgnored(t *testing.T) {
@@ -145,10 +148,11 @@ func TestSplitLineWords_EmptyFragmentIgnored(t *testing.T) {
 		*text.NewFragment("Golang"),
 	)
 
-	tokens := splitLineWords(line)
+	words, frags := splitLineWords(line)
 
-	assert.Equal(t, 1, len(tokens))
-	assert.Equal(t, "Golang", tokenString(tokens[0]))
+	assert.Size(t, 1, words)
+	assert.Size(t, 1, frags)
+	assert.Equal(t, "Golang", wordToString(words[0], frags))
 }
 
 func TestSplitLineWords_OnlySpaces(t *testing.T) {
@@ -156,10 +160,11 @@ func TestSplitLineWords_OnlySpaces(t *testing.T) {
 		*text.NewFragment("   "),
 	)
 
-	tokens := splitLineWords(line)
+	words, frags := splitLineWords(line)
 
-	assert.Equal(t, 1, len(tokens))
-	assert.Equal(t, "   ", tokenString(tokens[0]))
+	assert.Size(t, 1, words)
+	assert.Size(t, 1, frags)
+	assert.Equal(t, "   ", wordToString(words[0], frags))
 }
 
 func TestSplitLineWords_StyleChangeRequiresFragmentSplit(t *testing.T) {
@@ -168,13 +173,13 @@ func TestSplitLineWords_StyleChangeRequiresFragmentSplit(t *testing.T) {
 		*text.NewFragment("lang").AddAtom(atom.Bold),
 	)
 
-	tokens := splitLineWords(line)
+	words, frags := splitLineWords(line)
 
-	assert.Equal(t, 1, len(tokens))
-	assert.Equal(t, 2, len(tokens[0].Text))
+	assert.Size(t, 1, words)
+	assert.Size(t, 2, frags)
 
-	assert.True(t, tokens[0].Text[0].Base.Atom.HasAny(atom.Bold))
-	assert.True(t, tokens[0].Text[1].Base.Atom.HasAny(atom.Bold))
+	assert.True(t, frags[0].Base.Atom.HasAny(atom.Bold))
+	assert.True(t, frags[1].Base.Atom.HasAny(atom.Bold))
 }
 
 func TestSplitLineWords_PreservesStylesAcrossFragments(t *testing.T) {
@@ -184,13 +189,14 @@ func TestSplitLineWords_PreservesStylesAcrossFragments(t *testing.T) {
 		*text.NewFragment("up"),
 	)
 
-	tokens := splitLineWords(line)
+	words, frags := splitLineWords(line)
 
-	assert.Equal(t, 1, len(tokens))
+	assert.Size(t, 1, words)
+	assert.Size(t, 3, frags)
 
-	assert.True(t, tokens[0].Text[0].Base.Atom.HasNone(atom.Select))
-	assert.True(t, tokens[0].Text[1].Base.Atom.HasAny(atom.Select))
-	assert.True(t, tokens[0].Text[2].Base.Atom.HasNone(atom.Select))
+	assert.True(t, frags[0].Base.Atom.HasNone(atom.Select))
+	assert.True(t, frags[1].Base.Atom.HasAny(atom.Select))
+	assert.True(t, frags[2].Base.Atom.HasNone(atom.Select))
 }
 
 func TestSplitLineWords_MultipleSpaceFragmentsKeepStyles(t *testing.T) {
@@ -200,21 +206,25 @@ func TestSplitLineWords_MultipleSpaceFragmentsKeepStyles(t *testing.T) {
 		*text.NewFragment("c").AddAtom(atom.Bold),
 	)
 
-	tokens := splitLineWords(line)
+	words, frags := splitLineWords(line)
 
-	assert.Equal(t, 2, len(tokens))
+	assert.Size(t, 2, words)
+	assert.Size(t, 3, frags)
 
-	assert.Equal(t, 2, len(tokens[0].Text))
+	word := words[0]
+	assert.Size(t, 2, word.end-word.start)
 
-	assert.Equal(t, " ", tokens[0].Text[0].Base.Text)
-	assert.True(t, tokens[0].Text[0].Base.Atom.HasAny(atom.Bold))
+	assert.Equal(t, " ", frags[0].Base.Text)
+	assert.True(t, frags[0].Base.Atom.HasAny(atom.Bold))
 
-	assert.Equal(t, " ", tokens[0].Text[1].Base.Text)
-	assert.True(t, tokens[0].Text[1].Base.Atom.HasAny(atom.Select))
+	assert.Equal(t, " ", frags[1].Base.Text)
+	assert.True(t, frags[1].Base.Atom.HasAny(atom.Select))
 
-	assert.Equal(t, 1, len(tokens[1].Text))
-	assert.Equal(t, "c", tokens[1].Text[0].Base.Text)
-	assert.True(t, tokens[1].Text[0].Base.Atom.HasAny(atom.Bold))
+	word = words[1]
+	assert.Size(t, 1, word.end-word.start)
+
+	assert.Equal(t, "c", frags[2].Base.Text)
+	assert.True(t, frags[2].Base.Atom.HasAny(atom.Bold))
 }
 
 func TestSplitLineWords_FinalFlushPreservesStyles(t *testing.T) {
@@ -222,177 +232,12 @@ func TestSplitLineWords_FinalFlushPreservesStyles(t *testing.T) {
 		*text.NewFragment("c++").AddAtom(atom.Bold),
 	)
 
-	tokens := splitLineWords(line)
+	words, frags := splitLineWords(line)
 
-	assert.Equal(t, 1, len(tokens))
+	assert.Size(t, 1, words)
+	assert.Size(t, 1, frags)
 
-	assert.True(t, tokens[0].Text[0].Base.Atom.HasAny(atom.Bold))
-}
-
-func TestSplitLongWord(t *testing.T) {
-	tests := []struct {
-		name            string
-		word            word
-		cols            winsize.Cols
-		remaining       winsize.Cols
-		expectedCurrent string
-		expectedRest    string
-	}{
-		{
-			name: "word fits completely",
-			word: *newWord(
-				*text.NewFragment("golang"),
-			),
-			cols:            20,
-			remaining:       20,
-			expectedCurrent: "golang",
-			expectedRest:    "",
-		},
-		{
-			name: "split single fragment word",
-			word: *newWord(
-				*text.NewFragment("ziglang"),
-			),
-			cols:            4,
-			remaining:       4,
-			expectedCurrent: "zigl",
-			expectedRest:    "ang",
-		},
-		{
-			name: "split fragmented word",
-			word: *newWord(
-				*text.NewFragment("go"),
-				*text.NewFragment("la"),
-				*text.NewFragment("ng"),
-			),
-			cols:            2,
-			remaining:       4,
-			expectedCurrent: "gola",
-			expectedRest:    "ng",
-		},
-		{
-			name: "zero remaining",
-			word: *newWord(
-				*text.NewFragment("rust"),
-			),
-			cols:            5,
-			remaining:       0,
-			expectedCurrent: "",
-			expectedRest:    "rust",
-		},
-		{
-			name: "split inside second fragment",
-			word: *newWord(
-				*text.NewFragment("cl"),
-				*text.NewFragment("oju"),
-				*text.NewFragment("re"),
-			),
-			cols:            3,
-			remaining:       3,
-			expectedCurrent: "clo",
-			expectedRest:    "jure",
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			current, rest := splitLongWord(
-				tt.word,
-				tt.cols,
-				tt.remaining,
-			)
-
-			if tt.expectedCurrent != "" {
-				assert.NotNil(t, current)
-				assert.Equal(t, tt.expectedCurrent, tokenString(*current))
-			}
-
-			if tt.expectedRest != "" {
-				assert.NotNil(t, rest)
-				assert.Equal(t, tt.expectedRest, tokenString(*rest))
-			}
-		})
-	}
-}
-
-func TestWordMeasure_CacheSameCols(t *testing.T) {
-	w := newWord(
-		*text.NewFragment("golang"),
-	)
-
-	calls := uint(0)
-
-	resolver := func(cols winsize.Cols, frags ...wordFrag) winsize.Cols {
-		calls++
-		return 42
-	}
-
-	first := w.measureWith(80, resolver)
-	second := w.measureWith(80, resolver)
-
-	assert.Equal(t, first, second)
-	assert.Equal(t, winsize.Cols(80), w.cols)
-
-	assert.Equal(t, 1, calls)
-}
-
-func TestWordMeasure_RecalculateOnColsChange(t *testing.T) {
-	w := newWord(
-		*text.NewFragment("golang"),
-	)
-
-	calls := uint(0)
-
-	resolver := func(cols winsize.Cols, frags ...wordFrag) winsize.Cols {
-		calls++
-		return 42
-	}
-
-	_ = w.measureWith(80, resolver)
-	m40 := w.measureWith(40, resolver)
-
-	assert.Equal(t, winsize.Cols(40), w.cols)
-	assert.Equal(t, m40, w.measure)
-
-	assert.Equal(t, 2, calls)
-}
-
-func TestWordMeasure_CacheAfterColsChange(t *testing.T) {
-	w := newWord(
-		*text.NewFragment("golang"),
-	)
-
-	calls := uint(0)
-
-	resolver := func(cols winsize.Cols, frags ...wordFrag) winsize.Cols {
-		calls++
-		return 42
-	}
-
-	w.measureWith(80, resolver)
-	w.measureWith(40, resolver)
-	w.measureWith(40, resolver)
-
-	assert.Equal(t, uint(2), calls)
-}
-
-func TestWordMeasure_RecalculateWhenReturningToPreviousCols(t *testing.T) {
-	w := newWord(
-		*text.NewFragment("golang"),
-	)
-
-	calls := uint(0)
-
-	resolver := func(cols winsize.Cols, frags ...wordFrag) winsize.Cols {
-		calls++
-		return 42
-	}
-
-	w.measureWith(80, resolver)
-	w.measureWith(40, resolver)
-	w.measureWith(80, resolver)
-
-	assert.Equal(t, uint(3), calls)
+	assert.True(t, frags[0].Base.Atom.HasAny(atom.Bold))
 }
 
 func BenchmarkSplitLineFeeds_NoLF(b *testing.B) {
@@ -500,105 +345,24 @@ func BenchmarkSplitLineWords_ManyFragments(b *testing.B) {
 func BenchmarkSplitLineWords(b *testing.B) {
 	line := text.LineFromFragments(
 		text.FragmentsFromString(
-			"Lorem ipsum dolor sit amet, consectetur adipiscing elit. "+
+			"Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
 				"Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
 		)...,
 	)
 
 	b.ReportAllocs()
-	
 
 	for b.Loop() {
-		_ = splitLineWords(line)
+		_, _ = splitLineWords(line)
 	}
 }
 
 func BenchmarkSplitLineWords_Long(b *testing.B) {
-    line := benchmarkLine(2000)
+	line := benchmarkLine(2000)
 
-    b.ReportAllocs()
-    
+	b.ReportAllocs()
 
-    for b.Loop() {
-        _ = splitLineWords(&line)
-    }
-}
-
-func BenchmarkSplitLongWord_Fits(b *testing.B) {
-    w := wordFromFrags(
-        toWordFrag(
-            *text.NewFragment("hello"),
-        )...,
-    )
-
-    b.ReportAllocs()
-    
-
-    for b.Loop() {
-        splitLongWord(*w, 80, 80)
-    }
-}
-
-func BenchmarkSplitLongWord_SplitMiddle(b *testing.B) {
-    w := wordFromFrags(
-        toWordFrag(
-            *text.NewFragment(strings.Repeat("a", 200)),
-        )...,
-    )
-
-    b.ReportAllocs()
-    
-
-    for b.Loop() {
-        splitLongWord(*w, 80, 40)
-    }
-}
-
-func BenchmarkSplitLongWord_SplitFirstRune(b *testing.B) {
-    w := wordFromFrags(
-        toWordFrag(
-            *text.NewFragment(strings.Repeat("a", 200)),
-        )...,
-    )
-
-    b.ReportAllocs()
-    b.ResetTimer()
-
-    for i := 0; i < b.N; i++ {
-        splitLongWord(*w, 80, 1)
-    }
-}
-
-func BenchmarkSplitLongWord_ManyFragments(b *testing.B) {
-    frags := make([]text.Fragment, 0, 128)
-
-    for range 128 {
-        frags = append(frags, *text.NewFragment("abcdefghij"))
-    }
-
-    w := wordFromFrags(
-        toWordFrag(frags...)...,
-    )
-
-    b.ReportAllocs()
-    
-
-    for b.Loop() {
-        splitLongWord(*w, 80, 40)
-    }
-}
-
-func BenchmarkSplitLongWord_WorstCase(b *testing.B) {
-    w := wordFromFrags(
-        toWordFrag(
-            *text.NewFragment(strings.Repeat("a", 5000)),
-        )...,
-    )
-
-    b.ReportAllocs()
-    
-
-    for b.Loop() {
-        splitLongWord(*w, 80, 1)
-    }
+	for b.Loop() {
+		_, _ = splitLineWords(&line)
+	}
 }

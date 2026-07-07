@@ -10,60 +10,22 @@ import (
 )
 
 type word struct {
-	Text     []wordFrag
+	start    uint32
+	end      uint32
 	measured bool
 	cols     winsize.Cols
 	measure  winsize.Cols
 }
 
-func newWord(frags ...text.Fragment) *word {
-	return wordFromFrags(
-		toWordFrag(frags...)...,
-	)
-}
-
-func wordFromFrags(frags ...wordFrag) *word {
-	return &word{
-		Text:     frags,
-		measured: false,
-		cols:     0,
-		measure:  0,
-	}
-}
-
-func (w *word) HasAtom(atm atom.Atom) bool {
-	for _, v := range w.Text {
-		if v.Base.Atom.HasAny(atm) {
-			return true
-		}
-	}
-	return false
-}
-
-func (w *word) Measure(cols winsize.Cols) winsize.Cols {
-	return w.measureWith(cols, fragmentMeasure)
-}
-
-func (w *word) measureWith(
-	cols winsize.Cols,
-	resolver measureResolver,
-) winsize.Cols {
-	if !w.measured || w.cols != cols {
-		w.measure = resolver(cols, w.Text...)
-		w.cols = cols
-		w.measured = true
-	}
-
-	return w.measure
-}
-
-func splitLineWords(line *text.Line) []word {
+func splitLineWords(line *text.Line) ([]word, []wordFrag) {
 	words := make([]word, 0, len(line.Text))
-	frags := make([]text.Fragment, 0, 4)
+	frags := make([]wordFrag, 0, len(line.Text))
 
 	var sb strings.Builder
 	var lastSpace bool
 	var hasState bool
+
+	wordStart := 0
 
 	flushFrag := func(frag text.Fragment) {
 		if sb.Len() == 0 {
@@ -73,21 +35,21 @@ func splitLineWords(line *text.Line) []word {
 		f := text.NewFragment(sb.String()).
 			CopyMeta(&frag)
 
-		frags = append(frags, *f)
-
+		frags = append(frags, *newWordFrag(f))
 		sb.Reset()
 	}
 
 	flushWord := func() {
-		if len(frags) == 0 {
+		if wordStart == len(frags) {
 			return
 		}
 
 		words = append(words, word{
-			Text: toWordFrag(frags...),
+			start: uint32(wordStart),
+			end:   uint32(len(frags)),
 		})
 
-		frags = frags[:0]
+		wordStart = len(frags)
 	}
 
 	for _, frag := range line.Text {
@@ -95,11 +57,16 @@ func splitLineWords(line *text.Line) []word {
 			flushFrag(frag)
 			flushWord()
 
+			frags = append(frags, *newWordFrag(&frag))
+
 			words = append(words, word{
-				Text: toWordFrag(frag),
+				start: uint32(wordStart),
+				end:   uint32(wordStart + 1),
 			})
 
+			wordStart = len(frags)
 			hasState = false
+
 			continue
 		}
 
@@ -122,48 +89,5 @@ func splitLineWords(line *text.Line) []word {
 
 	flushWord()
 
-	return words
-}
-
-func splitLongWord(
-	word word,
-	cols winsize.Cols,
-	remaining winsize.Cols,
-) (*word, *word) {
-	if cols == 0 || remaining == 0 {
-		return nil, &word
-	}
-
-	current := newWord()
-	frags := word.Text
-
-	for len(frags) > 0 {
-		frag := &frags[0]
-		size := frag.Measure(cols)
-
-		if size <= remaining {
-			current.Text = append(current.Text, *frag)
-			remaining = remaining.Sub(size)
-			frags = frags[1:]
-
-			continue
-		}
-
-		takenFrag, restFrag := splitFragmentAt(frag, remaining)
-		current.Text = append(current.Text, *takenFrag)
-
-		rest := make([]wordFrag, 0, len(frags))
-		if restFrag != nil {
-			rest = append(rest, *restFrag)
-		}
-
-		rest = append(rest, frags[1:]...)
-		if len(rest) == 0 {
-			return current, nil
-		}
-
-		return current, wordFromFrags(rest...)
-	}
-
-	return current, nil
+	return words, frags
 }

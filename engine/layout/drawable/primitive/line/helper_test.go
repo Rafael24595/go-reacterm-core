@@ -59,11 +59,11 @@ func TestWrapNextLine_IndexShouldBeLesser(t *testing.T) {
 		prefixBody: " ",
 	}
 
-	layout := wrap.NewLayoutLine(
-		text.NewLine("golang").SetOrder(1),
-	)
+	layout := wrap.LayoutLine{
+		Source: text.NewLine("golang").SetOrder(1),
+	}
 
 	assert.Panic(t, func() {
-		NextIndexedLine(4, []wrap.LayoutLine{*layout}, meta)
+		NextIndexedLine(4, []wrap.LayoutLine{layout}, meta)
 	})
 }
