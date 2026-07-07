@@ -242,7 +242,6 @@ func RuneIndexToByteIndex(text string, index offset.Offset) (offset.Offset, bool
 	}
 
 	return 0, false
-
 }
 
 func SanitizeRunes(runes []rune) []rune {

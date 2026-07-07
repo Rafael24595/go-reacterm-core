@@ -25,9 +25,9 @@ func normalizeLines(order bool, lines ...text.Line) []LayoutLine {
 		normalizedLF := splitLineFeeds(&line, order)
 
 		for _, n := range normalizedLF {
-			words := splitLineWords(&n)
-			newLayoutLine := NewLayoutLine(&n, words...)
-			buffer = append(buffer, *newLayoutLine)
+			words, frags := splitLineWords(&n)
+			layout := NewLayoutLine(&n, words, frags)
+			buffer = append(buffer, *layout)
 		}
 	}
 
@@ -53,7 +53,7 @@ func MaterializeEmpty(
 			CopyMeta(&lastFrag)
 
 		lines[i].Source.PushFragments(fragment)
-		lines[i].Words = append(line.Words, *newWord(fragment))
+		lines[i].pushFrags(fragment)
 	}
 
 	return lines
@@ -74,15 +74,15 @@ func Lines(cols winsize.Cols, lines ...text.Line) []text.Line {
 }
 
 func wrapLine(cols winsize.Cols, line text.Line, dst []text.Line) []text.Line {
-	words := splitLineWords(&line)
-	layout := NewLayoutLine(&line, words...)
+	words, frags := splitLineWords(&line)
+	layout := NewLayoutLine(&line, words, frags)
 
 	current := layout
 
 	for current != nil {
-		head, rest := wrapOnce(cols, *current)
-        dst = append(dst, *head)
-        current = rest
+		head, rest := wrapOnce(cols, current)
+		dst = append(dst, *head)
+		current = rest
 	}
 
 	return dst
@@ -96,7 +96,7 @@ func NextLine(cols winsize.Cols, lines []LayoutLine) (*text.Line, []LayoutLine) 
 	current := lines[0]
 	remain := lines[1:]
 
-	result, rest := wrapOnce(cols, current)
+	result, rest := wrapOnce(cols, &current)
 	if rest != nil {
 		remain = append([]LayoutLine{*rest}, remain...)
 	}
@@ -104,62 +104,63 @@ func NextLine(cols winsize.Cols, lines []LayoutLine) (*text.Line, []LayoutLine) 
 	return result, remain
 }
 
-func wrapOnce(cols winsize.Cols, line LayoutLine) (*text.Line, *LayoutLine) {
+func wrapOnce(cols winsize.Cols, line *LayoutLine) (*text.Line, *LayoutLine) {
 	cursor := text.LineFromMeta(line.Source, len(line.Source.Text))
 
 	remaining := cols
 	currentWidth := winsize.Cols(0)
 
-	words := line.Words
+	wordIdx := 0
 
-	for len(words) > 0 {
-		focus := &words[0]
-
-		wordMeasure := focus.Measure(cols)
+	for ; wordIdx < len(line.words); wordIdx++ {
+		wordMeasure := line.measure(wordIdx, cols)
 
 		if wordMeasure <= remaining {
 			cursor.Text = appendFragments(
-				cursor.Text, focus.Text...,
+				cursor.Text,
+				line.findFrags(wordIdx)...,
 			)
 
 			remaining = remaining.Sub(wordMeasure)
 			currentWidth += wordMeasure
-			words = words[1:]
 
 			continue
 		}
 
-		if shouldWrap(*focus, currentWidth) {
+		if shouldWrap(line, wordIdx, currentWidth) {
 			break
 		}
 
-		words = words[1:]
-
-		newWord, restWord := splitLongWord(*focus, cols, remaining)
-		if newWord != nil {
+		if ok := line.splitWord(
+			wordIdx,
+			cols,
+			remaining,
+		); ok {
 			cursor.Text = appendFragments(
-				cursor.Text, newWord.Text...,
+				cursor.Text, line.findFrags(wordIdx)...,
 			)
 		}
 
-		if restWord != nil {
-			words = append([]word{*restWord}, words...)
-		}
+		wordIdx++
 
 		break
 	}
 
-	if len(words) == 0 {
+	if wordIdx >= len(line.words) {
 		return cursor, nil
 	}
 
-	rest := NewLayoutLine(line.Source, words...)
+	rest := &LayoutLine{
+		Source: line.Source,
+		frags:  line.frags,
+		words:  line.words[wordIdx:],
+	}
 
 	return cursor, rest
 }
 
-func shouldWrap(word word, currentWidth winsize.Cols) bool {
-	if word.HasAtom(atom.Break) {
+func shouldWrap(line *LayoutLine, wordIdx int, currentWidth winsize.Cols) bool {
+	if line.hasAtom(wordIdx, atom.Break) {
 		return false
 	}
 
@@ -218,6 +219,7 @@ func splitFragmentAt(frag *wordFrag, cols winsize.Cols) (*wordFrag, *wordFrag) {
 	if cols <= 0 {
 		newFrag := text.EmptyFragment().
 			CopyMeta(frag.Base)
+			
 		return newWordFrag(newFrag), frag
 	}
 
