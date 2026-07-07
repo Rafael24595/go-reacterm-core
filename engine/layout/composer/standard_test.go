@@ -1,7 +1,6 @@
 package composer
 
 import (
-	"strings"
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
@@ -17,6 +16,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestStandard_FixedAndPaged(t *testing.T) {
@@ -63,12 +63,7 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 	inputLine := lines[len(lines)-1]
 	expectedInput := "> INPUT"
 
-	var txt strings.Builder
-	for _, f := range inputLine.Text {
-		txt.WriteString(f.Text)
-	}
-
-	assert.Equal(t, expectedInput, txt.String())
+	assert.Equal(t, expectedInput, text_test.FragsToString(inputLine.Text))
 
 	for i := 1; i < len(lines)-1; i++ {
 		width := winsize.Cols(0)

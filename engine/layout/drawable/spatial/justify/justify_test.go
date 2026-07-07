@@ -15,15 +15,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
-
-func fragsToString(frags []text.Frag) string {
-	var s strings.Builder
-	for _, f := range frags {
-		s.WriteString(f.Text)
-	}
-	return s.String()
-}
 
 func renderFrags(frags []text.Frag) string {
 	var s strings.Builder
@@ -102,7 +95,7 @@ func TestAddGaps_IntercalatedSpaces(t *testing.T) {
 		result := addGaps(10, frags, 6, mode)
 
 		assert.Size(t, 5, result)
-		assert.Equal(t, "aa bb cc", fragsToString(result))
+		assert.Equal(t, "aa bb cc", text_test.FragsToString(result))
 
 		assert.Equal(t, spec.KindNone, result[0].Spec.Kind())
 		assert.Equal(t, spec.KindNone, result[2].Spec.Kind())
@@ -148,7 +141,7 @@ func TestAddGaps_Overflow_Start(t *testing.T) {
 	)
 
 	result := addGaps(5, frags, 8, style.JustifyStart)
-	assert.Equal(t, "aaaa bbbb", fragsToString(result))
+	assert.Equal(t, "aaaa bbbb", text_test.FragsToString(result))
 }
 
 func TestAddGaps_DoesNotMutateOriginal(t *testing.T) {
