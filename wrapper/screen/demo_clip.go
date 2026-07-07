@@ -3,6 +3,7 @@ package wrapper_screen
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior/view"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline/header"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/clip"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/padding/cols"
@@ -12,9 +13,15 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 )
 
 func NewDemoClip() screen.Node {
+	title := []text.Line{
+		*text.NewLine("=", spec.Cover()),
+	}
+
 	clip := clip.New().
 		Name("clip - dolor").
 		EnableWriteMode().
@@ -188,7 +195,7 @@ func NewDemoClip() screen.Node {
 		mapView,
 	)
 
-	return clip
+	return header.Node(clip, title...)
 }
 
 func mapView(vm viewmodel.ViewModel) viewmodel.ViewModel {
