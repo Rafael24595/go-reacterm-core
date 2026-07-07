@@ -11,6 +11,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestArticle_ToNode(t *testing.T) {
@@ -47,7 +48,7 @@ func TestArticle_AddTitleAndArticle(t *testing.T) {
 		AddArticle(*body)
 
 	assert.Size(t, 1, article.article)
-	assert.Equal(t, text.LineToString(body), text.LineToString(&article.article[0]))
+	assert.Equal(t, text_test.LineToString(body), text_test.LineToString(&article.article[0]))
 }
 
 func TestArticle_View(t *testing.T) {
@@ -75,7 +76,7 @@ func TestArticle_View(t *testing.T) {
 	lines, _ := kernel.Drawable.Draw(size)
 
 	assert.Size(t, 1, lines)
-	assert.Equal(t, text.LineToString(body), text.LineToString(&lines[0]))
+	assert.Equal(t, text_test.LineToString(body), text_test.LineToString(&lines[0]))
 }
 
 func TestArticle_Tick(t *testing.T) {

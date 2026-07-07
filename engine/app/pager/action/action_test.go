@@ -7,6 +7,8 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/draw"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestActionPaged(t *testing.T) {
@@ -56,9 +58,9 @@ func TestActionScroll(t *testing.T) {
 
 	result := action.Handler(state)
 
-	assert.Equal(t, "B", text.LineToString(&result.Buffer[0]))
-	assert.Equal(t, "C", text.LineToString(&result.Buffer[1]))
-	assert.Equal(t, "", text.LineToString(&result.Buffer[2]))
+	assert.Equal(t, "B", text_test.LineToString(&result.Buffer[0]))
+	assert.Equal(t, "C", text_test.LineToString(&result.Buffer[1]))
+	assert.Equal(t, "", text_test.LineToString(&result.Buffer[2]))
 	assert.Equal(t, 1, result.Cursor)
 	assert.False(t, result.Focus)
 }

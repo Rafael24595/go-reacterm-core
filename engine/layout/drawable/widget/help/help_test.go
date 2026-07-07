@@ -6,9 +6,9 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestHelp_UnitBasicSuite(t *testing.T) {
@@ -47,7 +47,7 @@ func TestHelpUnit_WithFields(t *testing.T) {
 	assert.Size(t, 3, lines)
 
 	assert.Size(t, 2, lines[0].Text)
-	assert.Equal(t, "--Help---", text.LineToString(&lines[0]))
+	assert.Equal(t, "--Help---", text_test.LineToString(&lines[0]))
 
 	assert.Size(t, 3, lines[1].Text)
 	assert.Equal(t, "[RET] New line/Accept | ", lines[1].Text[0].Text)
@@ -55,5 +55,5 @@ func TestHelpUnit_WithFields(t *testing.T) {
 	assert.Equal(t, "[M-b, Alt-b] Back", lines[1].Text[2].Text)
 
 	assert.Size(t, 1, lines[2].Text)
-	assert.Equal(t, "-", text.LineToString(&lines[2]))
+	assert.Equal(t, "-", text_test.LineToString(&lines[2]))
 }

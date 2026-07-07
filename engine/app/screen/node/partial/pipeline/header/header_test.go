@@ -11,6 +11,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/stack"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestHeader_InsertsBefore(t *testing.T) {
@@ -40,7 +42,7 @@ func TestHeader_InsertsBefore(t *testing.T) {
 		Cols: 10,
 	})
 
-	assert.Equal(t, "line_02", text.LineToString(&lines[0]))
+	assert.Equal(t, "line_02", text_test.LineToString(&lines[0]))
 }
 
 func TestHeader_InsertsAfter(t *testing.T) {
@@ -70,5 +72,5 @@ func TestHeader_InsertsAfter(t *testing.T) {
 		Cols: 10,
 	})
 
-	assert.Equal(t, "line_02", text.LineToString(&lines[0]))
+	assert.Equal(t, "line_02", text_test.LineToString(&lines[0]))
 }

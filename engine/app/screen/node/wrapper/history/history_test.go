@@ -10,9 +10,9 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestHistory_ToNode(t *testing.T) {
@@ -109,5 +109,5 @@ func TestHistory_ViewFooter(t *testing.T) {
 	next := fmt.Sprintf("%s %s", history.meta.NextTag, mock3.Name)
 	want := fmt.Sprintf("%s%s%s", back, history.meta.Separator, next)
 
-	assert.Equal(t, want, text.LineToString(&lines[0]))
+	assert.Equal(t, want, text_test.LineToString(&lines[0]))
 }

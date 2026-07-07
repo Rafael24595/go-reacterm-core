@@ -4,11 +4,12 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestDrawTransformer(t *testing.T) {
@@ -107,7 +108,7 @@ func TestDrawTransformer(t *testing.T) {
 			assert.Equal(t, tt.wantHasNext, hasNext)
 			for i := range lines {
 				assert.Size(t, tt.wantFrags[i], lines[i].Text)
-				assert.Equal(t, tt.wantLines[i], text.LineToString(&lines[i]))
+				assert.Equal(t, tt.wantLines[i], text_test.LineToString(&lines[i]))
 			}
 		})
 	}

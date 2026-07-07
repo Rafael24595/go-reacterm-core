@@ -10,6 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestVStack_UnitBasicSuite(t *testing.T) {
@@ -271,7 +272,7 @@ func TestVStack_BufferConcat(t *testing.T) {
 	})
 
 	assert.Size(t, 2, buffer)
-	assert.Equal(t, "golang", text.LineToString(&buffer[0])+text.LineToString(&buffer[1]))
+	assert.Equal(t, "golang", text_test.LineToString(&buffer[0])+text_test.LineToString(&buffer[1]))
 }
 
 func TestVStack_ShortCircuitStopsPropagation(t *testing.T) {

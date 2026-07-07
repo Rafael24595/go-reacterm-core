@@ -10,6 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestHStack_UnitBasicSuite(t *testing.T) {
@@ -143,7 +144,7 @@ func TestHStack_RenderOutput(t *testing.T) {
 		resultText += frag.Text
 	}
 
-	assert.Equal(t, "go-zig", text.LineToString(&lines[0]))
-	assert.Equal(t, "lanlan", text.LineToString(&lines[1]))
-	assert.Equal(t, "gg", text.LineToString(&lines[2]))
+	assert.Equal(t, "go-zig", text_test.LineToString(&lines[0]))
+	assert.Equal(t, "lanlan", text_test.LineToString(&lines[1]))
+	assert.Equal(t, "gg", text_test.LineToString(&lines[2]))
 }

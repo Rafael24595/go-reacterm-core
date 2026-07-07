@@ -10,6 +10,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestRowPositioners(t *testing.T) {
@@ -62,7 +64,7 @@ func TestRowPositioners(t *testing.T) {
 					wantString = "Golang"
 				}
 
-				assert.Equal(t, wantString, text.LineToString(&gotLines[i]))
+				assert.Equal(t, wantString, text_test.LineToString(&gotLines[i]))
 			}
 		})
 	}

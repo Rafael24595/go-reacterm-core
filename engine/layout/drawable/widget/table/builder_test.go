@@ -11,7 +11,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 var separator = marker.TableSeparatorMeta{
@@ -45,7 +46,7 @@ func TestBuilder_RenderHeaders_Basic(t *testing.T) {
 
 	line := builder{}.renderHeaders(maxCols, headers, separator)
 
-	assert.Equal(t, "|id|name|", text.LineToString(line))
+	assert.Equal(t, "|id|name|", text_test.LineToString(line))
 }
 
 func TestBuilder_RenderHeaders_Structure(t *testing.T) {
@@ -99,8 +100,8 @@ func TestBuilder_RenderBody_Basic(t *testing.T) {
 
 	assert.Size(t, 2, lines)
 
-	assert.Equal(t, "|1|golang|", text.LineToString(&lines[0]))
-	assert.Equal(t, "|2|ziglang|", text.LineToString(&lines[1]))
+	assert.Equal(t, "|1|golang|", text_test.LineToString(&lines[0]))
+	assert.Equal(t, "|2|ziglang|", text_test.LineToString(&lines[1]))
 }
 
 func TestBuilder_EvalMaxCols_NoReductionNeeded(t *testing.T) {

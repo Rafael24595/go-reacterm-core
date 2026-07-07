@@ -9,6 +9,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestRowsTopTransformer(t *testing.T) {
@@ -63,7 +65,7 @@ func TestRowsTopTransformer(t *testing.T) {
 			assert.Size(t, tt.wantLen, result)
 
 			for i, l := range tt.wantLines {
-				assert.Equal(t, l, text.LineToString(&result[i]))
+				assert.Equal(t, l, text_test.LineToString(&result[i]))
 			}
 		})
 	}
@@ -121,7 +123,7 @@ func TestRowsBottomTransformer(t *testing.T) {
 			assert.Size(t, tt.wantLen, result)
 
 			for i, l := range tt.wantLines {
-				assert.Equal(t, l, text.LineToString(&result[i]))
+				assert.Equal(t, l, text_test.LineToString(&result[i]))
 			}
 		})
 	}
@@ -179,7 +181,7 @@ func TestRowsMiddleTransformer(t *testing.T) {
 			assert.Size(t, tt.wantLen, result)
 
 			for i, l := range tt.wantLines {
-				assert.Equal(t, l, text.LineToString(&result[i]))
+				assert.Equal(t, l, text_test.LineToString(&result[i]))
 			}
 		})
 	}

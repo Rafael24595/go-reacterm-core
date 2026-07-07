@@ -11,9 +11,9 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestPagination_ToNode(t *testing.T) {
@@ -73,7 +73,7 @@ func TestPagination_ViewFooter(t *testing.T) {
 	})
 
 	assert.True(t, len(lines) > 0)
-	assert.Inside(t, "page: 3", text.LineToString(&lines[0]))
+	assert.Inside(t, "page: 3", text_test.LineToString(&lines[0]))
 }
 
 func TestPagination_TickDelegates(t *testing.T) {

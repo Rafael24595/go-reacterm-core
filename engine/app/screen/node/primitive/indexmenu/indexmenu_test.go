@@ -14,6 +14,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func voidAction() screen.Node { return screen.Node{} }
@@ -212,6 +213,6 @@ func TestIndexMenu_ViewCursor(t *testing.T) {
 	assert.Equal(t, predicate.KindFocus, vm.Pager.Predicate.Kind)
 	assert.True(t, vm.Pager.Predicate.Handler(uiState.Pager, ctx))
 
-	assert.Equal(t, "- A", text.LineToString(&lines[0]))
-	assert.Equal(t, "> B", text.LineToString(&lines[1]))
+	assert.Equal(t, "- A", text_test.LineToString(&lines[0]))
+	assert.Equal(t, "> B", text_test.LineToString(&lines[1]))
 }

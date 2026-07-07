@@ -14,6 +14,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func Test_PagerRenderer_StaticLayerDoesNotScroll(t *testing.T) {
@@ -62,12 +63,12 @@ func Test_PagerRenderer_StaticLayerDoesNotScroll(t *testing.T) {
 	last1 := page1[len(page1)-1]
 
 	assert.True(t, hasNext1)
-	assert.Equal(t, "stc", text.LineToString(&last1))
+	assert.Equal(t, "stc", text_test.LineToString(&last1))
 
 	page2, _ := unit.Drawable.Draw(size)
 	last2 := page2[len(page2)-1]
 
-	assert.Equal(t, text.LineToString(&last1), text.LineToString(&last2))
+	assert.Equal(t, text_test.LineToString(&last1), text_test.LineToString(&last2))
 }
 
 func Test_PagerRenderer_PropagatesMaxPage(t *testing.T) {

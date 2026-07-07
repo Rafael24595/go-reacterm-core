@@ -7,6 +7,8 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
+	
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestWrapNextLine_FitWithMeta(t *testing.T) {
@@ -23,7 +25,7 @@ func TestWrapNextLine_FitWithMeta(t *testing.T) {
 
 	got, remain := NextIndexedLine(10, layout, meta)
 
-	assert.Equal(t, "1 | golang", text.LineToString(got))
+	assert.Equal(t, "1 | golang", text_test.LineToString(got))
 
 	assert.Size(t, 0, remain)
 }
@@ -42,12 +44,12 @@ func TestWrapNextLine_SplitWithMeta(t *testing.T) {
 
 	got, remain := NextIndexedLine(10, layout, meta)
 
-	assert.Equal(t, "1 | golang", text.LineToString(got))
+	assert.Equal(t, "1 | golang", text_test.LineToString(got))
 	assert.Size(t, 1, remain)
 
 	got, remain = NextIndexedLine(10, remain, meta)
 
-	assert.Equal(t, "  |  rust", text.LineToString(got))
+	assert.Equal(t, "  |  rust", text_test.LineToString(got))
 	assert.Size(t, 0, remain)
 }
 

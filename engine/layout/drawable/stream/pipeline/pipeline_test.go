@@ -10,6 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func mockInitStep(s winsize.Winsize, d drawable.Unit) drawable.Unit {
@@ -89,7 +90,7 @@ func TestPipeline_BootStepTransformation(t *testing.T) {
 
 	assert.Size(t, 2, lines)
 	assert.True(t, status)
-	assert.Equal(t, text.LineToString(&mock2.Lines[0]), text.LineToString(&lines[0]))
+	assert.Equal(t, text_test.LineToString(&mock2.Lines[0]), text_test.LineToString(&lines[0]))
 }
 
 func TestPipeline_DrawStepTransformation(t *testing.T) {
@@ -115,7 +116,7 @@ func TestPipeline_DrawStepTransformation(t *testing.T) {
 
 	assert.Size(t, 1, lines)
 	assert.False(t, status)
-	assert.Equal(t, text.LineToString(mockLine), text.LineToString(&lines[0]))
+	assert.Equal(t, text_test.LineToString(mockLine), text_test.LineToString(&lines[0]))
 }
 
 func TestPipeline_DataStepsChain(t *testing.T) {
@@ -147,7 +148,7 @@ func TestPipeline_DataStepsChain(t *testing.T) {
 	assert.Size(t, 3, lines)
 	assert.False(t, status)
 
-	assert.Equal(t, text.LineToString(baseLine), text.LineToString(&lines[0]))
-	assert.Equal(t, text.LineToString(mockLine1), text.LineToString(&lines[1]))
-	assert.Equal(t, text.LineToString(mockLine2), text.LineToString(&lines[2]))
+	assert.Equal(t, text_test.LineToString(baseLine), text_test.LineToString(&lines[0]))
+	assert.Equal(t, text_test.LineToString(mockLine1), text_test.LineToString(&lines[1]))
+	assert.Equal(t, text_test.LineToString(mockLine2), text_test.LineToString(&lines[2]))
 }

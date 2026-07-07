@@ -1,8 +1,6 @@
 package text
 
 import (
-	"strings"
-
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 )
@@ -94,12 +92,4 @@ func LineMeasure(line *Line, cols winsize.Cols) winsize.Cols {
 		SizeCols: cols,
 		TextSize: FragsMeasure(cols, line.Text...),
 	})
-}
-
-func LineToString(line *Line) string {
-	buffer := make([]string, 0)
-	for _, v := range line.Text {
-		buffer = append(buffer, v.Text)
-	}
-	return strings.Join(buffer, "")
 }

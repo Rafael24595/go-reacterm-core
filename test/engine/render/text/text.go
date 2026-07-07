@@ -13,3 +13,11 @@ func FragsToString(frags []text.Frag) string {
 	}
 	return s.String()
 }
+
+func LineToString(line *text.Line) string {
+	buffer := make([]string, 0)
+	for _, v := range line.Text {
+		buffer = append(buffer, v.Text)
+	}
+	return strings.Join(buffer, "")
+}

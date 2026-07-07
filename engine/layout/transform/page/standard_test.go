@@ -13,6 +13,7 @@ import (
 
 	pager_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/pager"
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestNewPageRenderer_NoEngineCall(t *testing.T) {
@@ -138,6 +139,6 @@ func TestNewPageRenderer_WithLineOverflow(t *testing.T) {
 
 	assert.Size(t, 2, status.Buffer)
 
-	expected := text.LineToString(&status.Buffer[0]) + text.LineToString(&status.Buffer[1])
+	expected := text_test.LineToString(&status.Buffer[0]) + text_test.LineToString(&status.Buffer[1])
 	assert.Equal(t, "grus", expected)
 }
