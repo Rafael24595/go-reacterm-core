@@ -48,7 +48,7 @@ func toWordFrag(frags ...text.Fragment) []wordFrag {
 	return result
 }
 
-func appendFragments(dst []text.Fragment, src ...wordFrag) []text.Fragment {
+func appendFragments(dst []text.Fragment, src []wordFrag) []text.Fragment {
     for _, f := range src {
         dst = append(dst, *f.Base)
     }

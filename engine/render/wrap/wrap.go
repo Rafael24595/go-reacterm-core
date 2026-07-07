@@ -118,7 +118,7 @@ func wrapOnce(cols winsize.Cols, line *LayoutLine) (*text.Line, *LayoutLine) {
 		if wordMeasure <= remaining {
 			cursor.Text = appendFragments(
 				cursor.Text,
-				line.findFrags(wordIdx)...,
+				line.findFrags(wordIdx),
 			)
 
 			remaining = remaining.Sub(wordMeasure)
@@ -137,7 +137,7 @@ func wrapOnce(cols winsize.Cols, line *LayoutLine) (*text.Line, *LayoutLine) {
 			remaining,
 		); ok {
 			cursor.Text = appendFragments(
-				cursor.Text, line.findFrags(wordIdx)...,
+				cursor.Text, line.findFrags(wordIdx),
 			)
 		}
 
