@@ -390,6 +390,75 @@ func TestLayoutClone(t *testing.T) {
 	assert.Equal(t, "rust", clone.frags[0].Base.Text)
 }
 
+func BenchmarkLayoutMeasure_Cached(b *testing.B) {
+	layout := emptyLayout().pushFrags(
+		*text.NewFragment("hello world"),
+	)
+
+	layout.measure(0, 80)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		layout.measure(0, 80)
+	}
+}
+
+func BenchmarkLayoutMeasure_Recalculate(b *testing.B) {
+	layout := emptyLayout().pushFrags(
+		*text.NewFragment(strings.Repeat("a", 200)),
+	)
+
+	cols := winsize.Cols(1)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		layout.measure(0, cols)
+		cols++
+	}
+}
+
+func BenchmarkLayoutFindFrags(b *testing.B) {
+	layout := emptyLayout().
+		pushFrags(
+			*text.NewFragment("a"),
+			*text.NewFragment("b"),
+			*text.NewFragment("c"),
+			*text.NewFragment("d"),
+		)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_ = layout.findFrags(0)
+	}
+}
+
+func BenchmarkLayoutHasAtom(b *testing.B) {
+	layout := emptyLayout()
+
+	for range 128 {
+		layout.pushFrags(*text.NewFragment("abc"))
+	}
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		layout.hasAtom(0, atom.Break)
+	}
+}
+
+func BenchmarkLayoutSplitFrag(b *testing.B) {
+	frag := newWordFrag(
+		text.NewFragment(strings.Repeat("a", 200)),
+	)
+
+	for b.Loop() {
+		splitFragmentAt(frag, 40)
+	}
+}
+
 func BenchmarkSplitLongWord_Fits(b *testing.B) {
 	layout := emptyLayout().pushFrags(
 		*text.NewFragment("hello"),
@@ -420,7 +489,6 @@ func BenchmarkSplitLongWord_SplitFirstRune(b *testing.B) {
 	)
 
 	b.ReportAllocs()
-	
 
 	for b.Loop() {
 		layout.splitWord(0, 80, 1)
