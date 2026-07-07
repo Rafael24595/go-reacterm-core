@@ -15,9 +15,5 @@ func FragsToString(frags []text.Frag) string {
 }
 
 func LineToString(line *text.Line) string {
-	buffer := make([]string, 0)
-	for _, v := range line.Text {
-		buffer = append(buffer, v.Text)
-	}
-	return strings.Join(buffer, "")
+	return FragsToString(line.Text)
 }
