@@ -75,11 +75,6 @@ func (l *Line) SetSpec(styles ...spec.Spec) *Line {
 	return l
 }
 
-func (l *Line) CutSpec(styles spec.Kind) *Line {
-	l.Spec, _ = spec.Erase(l.Spec, styles)
-	return l
-}
-
 func (l *Line) Clone() *Line {
 	newLine := EmptyLine().CopyMeta(l)
 	newLine.Text = make([]Frag, len(l.Text))
