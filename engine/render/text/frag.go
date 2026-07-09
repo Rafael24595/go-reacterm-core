@@ -45,19 +45,9 @@ func (f *Frag) AddAtom(styles ...atom.Atom) *Frag {
 	return f
 }
 
-func (f *Frag) CutAtom(styles atom.Atom) *Frag {
-	f.Atom = atom.Erase(f.Atom, styles)
-	return f
-}
-
 func (f *Frag) AddSpec(styles ...spec.Spec) *Frag {
 	newSpec := spec.Merge(styles...)
 	f.Spec = spec.Merge(f.Spec, newSpec)
-	return f
-}
-
-func (f *Frag) CutSpec(styles spec.Kind) *Frag {
-	f.Spec, _ = spec.Erase(f.Spec, styles)
 	return f
 }
 
