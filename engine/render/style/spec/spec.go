@@ -5,18 +5,19 @@ type Spec struct {
 	args args
 }
 
-func Empty() Spec {
+func New(kind Kind, args args) Spec {
 	return Spec{
-		kind: KindNone,
-		args: args{},
+		kind: kind,
+		args: args,
 	}
 }
 
+func Empty() Spec {
+	return New(KindNone, args{})
+}
+
 func fromKind(kind Kind) Spec {
-	return Spec{
-		kind: kind,
-		args: args{},
-	}
+	return New(kind, args{})
 }
 
 func Merge(styles ...Spec) Spec {
@@ -28,10 +29,7 @@ func Merge(styles ...Spec) Spec {
 		args.Copy(style.args)
 	}
 
-	return Spec{
-		kind: kind,
-		args: args,
-	}
+	return New(kind, args)
 }
 
 func Erase(target Spec, styles Kind) (Spec, Spec) {

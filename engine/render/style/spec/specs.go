@@ -130,10 +130,7 @@ func specFromSize(
 		)
 	}
 
-	return Spec{
-		kind: kind,
-		args: args,
-	}
+	return New(kind, args)
 }
 
 func specFromTextAndSize(
@@ -158,8 +155,5 @@ func specFromTextAndSize(
 		)
 	}
 
-	return Spec{
-		kind: kind,
-		args: args,
-	}
+	return New(kind, args)
 }
