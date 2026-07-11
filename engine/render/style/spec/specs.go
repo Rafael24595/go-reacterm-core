@@ -3,7 +3,7 @@ package spec
 import (
 	"strings"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/commons"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/argument"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 )
 
@@ -81,7 +81,7 @@ func TruncateLeft(size winsize.Cols, ellipsis ...string) Spec {
 	if len(ellipsis) > 0 {
 		spec.args.Set(
 			KeyTruncateEllipsisText,
-			commons.ArgumentFrom(ellipsis[0]),
+			argument.From(ellipsis[0]),
 		)
 	}
 
@@ -98,7 +98,7 @@ func TruncateRight(size winsize.Cols, ellipsis ...string) Spec {
 	if len(ellipsis) > 0 {
 		spec.args.Set(
 			KeyTruncateEllipsisText,
-			commons.ArgumentFrom(ellipsis[0]),
+			argument.From(ellipsis[0]),
 		)
 	}
 
@@ -126,7 +126,7 @@ func specFromSize(
 
 	if size != WinSize {
 		args.Set(
-			sizeKey, commons.ArgumentFrom(size),
+			sizeKey, argument.From(size),
 		)
 	}
 
@@ -144,14 +144,14 @@ func specFromTextAndSize(
 
 	if size != WinSize {
 		args.Set(
-			sizeKey, commons.ArgumentFrom(size),
+			sizeKey, argument.From(size),
 		)
 	}
 
 	if len(text) > 0 {
 		args.Set(
 			textKey,
-			commons.ArgumentFrom(strings.Join(text, "")),
+			argument.From(strings.Join(text, "")),
 		)
 	}
 

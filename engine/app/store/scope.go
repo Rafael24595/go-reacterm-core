@@ -3,7 +3,7 @@ package store
 import (
 	"sync"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/commons"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/argument"
 	"github.com/Rafael24595/go-reacterm-core/engine/platform/clock"
 )
 
@@ -20,7 +20,7 @@ func newScope(clock clock.Clock) *Scope {
 	}
 }
 
-func (n *Scope) Find(key string) (*commons.Argument, bool) {
+func (n *Scope) Find(key string) (*argument.Argument, bool) {
 	n.mu.RLock()
 	defer n.mu.RUnlock()
 
@@ -41,7 +41,7 @@ func (n *Scope) Push(key string, arg Argument) *Scope {
 	return n
 }
 
-func (n *Scope) Remove(key string) (*commons.Argument, bool) {
+func (n *Scope) Remove(key string) (*argument.Argument, bool) {
 	n.mu.Lock()
 	defer n.mu.Unlock()
 

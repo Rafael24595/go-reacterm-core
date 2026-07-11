@@ -1,4 +1,4 @@
-package commons
+package argument
 
 import (
 	"encoding/json"
@@ -38,7 +38,7 @@ func TestArgumentNumericConversions(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, ok := ArgumentFrom(tt.from).Int64()
+			got, ok := From(tt.from).Int64()
 			assert.True(t, ok)
 			assert.Equal(t, tt.want, got)
 		})
@@ -66,7 +66,7 @@ func TestArgumentUnsignedConversions(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, ok := ArgumentFrom(tt.from).Uint64()
+			got, ok := From(tt.from).Uint64()
 			assert.True(t, ok)
 			assert.Equal(t, tt.want, got)
 		})
@@ -93,7 +93,7 @@ func TestArgumentFloatConversions(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, ok := ArgumentFrom(tt.from).Float64()
+			got, ok := From(tt.from).Float64()
 			assert.True(t, ok)
 			assert.Equal(t, tt.want, got)
 		})
@@ -121,7 +121,7 @@ func TestArgumentBoolConversions(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, ok := ArgumentFrom(tt.from).Bool()
+			got, ok := From(tt.from).Bool()
 			assert.True(t, ok)
 			assert.Equal(t, tt.want, got)
 		})
@@ -149,7 +149,7 @@ func TestArgumentStringConversions(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := ArgumentFrom(tt.from).Stringf()
+			got := From(tt.from).Stringf()
 			assert.Equal(t, tt.want, got)
 		})
 	}
@@ -185,7 +185,7 @@ func TestArgumentDefaults(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			arg := ArgumentFrom(tt.from)
+			arg := From(tt.from)
 			got := tt.fn(arg)
 			assert.Equal(t, tt.want, got)
 		})
@@ -208,7 +208,7 @@ func TestMap(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			arg := ArgumentFrom(tt.from)
+			arg := From(tt.from)
 
 			switch v := tt.wantData.(type) {
 			case string:
@@ -233,7 +233,7 @@ func TestMap(t *testing.T) {
 }
 
 func TestParse_IntSuccess(t *testing.T) {
-	arg := ArgumentFrom("123")
+	arg := From("123")
 
 	got, ok := Parse(arg, strconv.Atoi)
 
@@ -242,7 +242,7 @@ func TestParse_IntSuccess(t *testing.T) {
 }
 
 func TestParse_IntFailure(t *testing.T) {
-	arg := ArgumentFrom("abc")
+	arg := From("abc")
 
 	_, ok := Parse(arg, strconv.Atoi)
 
@@ -254,7 +254,7 @@ func TestParse_Json(t *testing.T) {
 		Lang string `json:"lang"`
 	}
 
-	arg := ArgumentFrom(`{ "lang": "golang" }`)
+	arg := From(`{ "lang": "golang" }`)
 
 	parseJson := func(s string) (lang, error) {
 		var l lang

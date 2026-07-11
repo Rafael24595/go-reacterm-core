@@ -1,7 +1,7 @@
 package sink
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/commons"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/argument"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/dict"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
@@ -50,7 +50,7 @@ func sinkLinePaddingCenter(style spec.Kind, line *text.Line, cols winsize.Cols) 
 
 	line.Spec = resSpec
 
-	size := commons.Mapd(delSpec.Args()[spec.KeyJustifyCenterSize], cols)
+	size := argument.Mapd(delSpec.Args()[spec.KeyJustifyCenterSize], cols)
 	txt := delSpec.Args()[spec.KeyJustifyCenterText].Stringf()
 
 	fragSize := text.FragsMeasure(cols, line.Text...)

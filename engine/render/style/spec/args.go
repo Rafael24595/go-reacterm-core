@@ -3,27 +3,27 @@ package spec
 import (
 	"maps"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/commons"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/argument"
 )
 
-type argMap = map[ArgKey]commons.Argument
+type argMap = map[ArgKey]argument.Argument
 
 type args struct {
 	items argMap
 }
 
-func (a *args) Get(key ArgKey) commons.Argument {
+func (a *args) Get(key ArgKey) argument.Argument {
 	if a.items == nil {
-		var zero commons.Argument
+		var zero argument.Argument
 		return zero
 	}
 
 	return a.items[key]
 }
 
-func (a *args) TryGet(key ArgKey) (commons.Argument, bool) {
+func (a *args) TryGet(key ArgKey) (argument.Argument, bool) {
 	if a.items == nil {
-		var zero commons.Argument
+		var zero argument.Argument
 		return zero, false
 	}
 
@@ -31,16 +31,16 @@ func (a *args) TryGet(key ArgKey) (commons.Argument, bool) {
 	return v, ok
 }
 
-func (a *args) Set(key ArgKey, value commons.Argument) {
+func (a *args) Set(key ArgKey, value argument.Argument) {
 	if a.items == nil {
 		a.items = make(argMap)
 	}
 	a.items[key] = value
 }
 
-func (a *args) Delete(key ArgKey) (commons.Argument, bool) {
+func (a *args) Delete(key ArgKey) (argument.Argument, bool) {
 	if a.items == nil {
-		var zero commons.Argument
+		var zero argument.Argument
 		return zero, false
 	}
 

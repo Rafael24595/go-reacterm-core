@@ -1,7 +1,7 @@
 package spec
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/commons"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/argument"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 )
 
@@ -39,41 +39,41 @@ var measurePipeline = [...]measureRule{
 }
 
 func measureFill(spec Spec, ctx LayoutContext) winsize.Cols {
-	return commons.Mapd(spec.args.Get(KeyFillSize), ctx.SizeCols)
+	return argument.Mapd(spec.args.Get(KeyFillSize), ctx.SizeCols)
 }
 
 func measureTruncateLeft(spec Spec, ctx LayoutContext) winsize.Cols {
-	arg := commons.Mapd(spec.args.Get(KeyTruncateLeftSize), ctx.TextSize)
+	arg := argument.Mapd(spec.args.Get(KeyTruncateLeftSize), ctx.TextSize)
 	return min(ctx.TextSize, arg)
 }
 
 func measureTruncateRight(spec Spec, ctx LayoutContext) winsize.Cols {
-	arg := commons.Mapd(spec.args.Get(KeyTruncateRightSize), ctx.TextSize)
+	arg := argument.Mapd(spec.args.Get(KeyTruncateRightSize), ctx.TextSize)
 	return min(ctx.TextSize, arg)
 }
 
 func measureJustifyCenter(spec Spec, ctx LayoutContext) winsize.Cols {
-	arg := commons.Mapd(spec.args.Get(KeyJustifyCenterSize), ctx.SizeCols)
+	arg := argument.Mapd(spec.args.Get(KeyJustifyCenterSize), ctx.SizeCols)
 	return min(ctx.SizeCols, arg)
 }
 
 func measureJustifyRight(spec Spec, ctx LayoutContext) winsize.Cols {
-	arg := commons.Mapd(spec.args.Get(KeyJustifyRightSize), ctx.TextSize)
+	arg := argument.Mapd(spec.args.Get(KeyJustifyRightSize), ctx.TextSize)
 	return max(ctx.TextSize, arg)
 }
 
 func measureJustifyLeft(spec Spec, ctx LayoutContext) winsize.Cols {
-	arg := commons.Mapd(spec.args.Get(KeyJustifyLeftSize), ctx.TextSize)
+	arg := argument.Mapd(spec.args.Get(KeyJustifyLeftSize), ctx.TextSize)
 	return max(ctx.TextSize, arg)
 }
 
 func measureExtendLeft(spec Spec, ctx LayoutContext) winsize.Cols {
-	arg := commons.Mapd(spec.args.Get(KeyExtendLeftSize), ctx.TextSize)
+	arg := argument.Mapd(spec.args.Get(KeyExtendLeftSize), ctx.TextSize)
 	return max(ctx.TextSize, arg)
 }
 
 func measureExtendRight(spec Spec, ctx LayoutContext) winsize.Cols {
-	arg := commons.Mapd(spec.args.Get(KeyExtendRightSize), ctx.TextSize)
+	arg := argument.Mapd(spec.args.Get(KeyExtendRightSize), ctx.TextSize)
 	return max(ctx.TextSize, arg)
 }
 

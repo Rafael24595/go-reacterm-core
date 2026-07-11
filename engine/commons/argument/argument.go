@@ -1,4 +1,4 @@
-package commons
+package argument
 
 import (
 	"fmt"
@@ -10,7 +10,7 @@ type Argument struct {
 	item any
 }
 
-func ArgumentFrom(item any) Argument {
+func From(item any) Argument {
 	return Argument{
 		item: item,
 	}

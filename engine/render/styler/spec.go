@@ -1,7 +1,7 @@
 package styler
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/commons"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/argument"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/dict"
 	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
@@ -108,7 +108,7 @@ func fill(style spec.Spec, cols winsize.Cols, text format.Text) string {
 		text = format.TextFromString(marker.DefaultPaddingText)
 	}
 
-	size := commons.Mapd(args[spec.KeyFillSize], cols)
+	size := argument.Mapd(args[spec.KeyFillSize], cols)
 	size = min(cols, size)
 
 	return format.PatternRight(size, text)
@@ -121,7 +121,7 @@ func truncateLeft(style spec.Spec, text format.Text) string {
 
 	args := style.Args()
 
-	size := commons.Mapd[winsize.Cols](args[spec.KeyTruncateLeftSize], 0)
+	size := argument.Mapd[winsize.Cols](args[spec.KeyTruncateLeftSize], 0)
 	size = max(1, size)
 
 	ellipsis := format.NewEllipsis(
@@ -139,7 +139,7 @@ func truncateRight(style spec.Spec, text format.Text) string {
 
 	args := style.Args()
 
-	size := commons.Mapd[winsize.Cols](args[spec.KeyTruncateRightSize], 0)
+	size := argument.Mapd[winsize.Cols](args[spec.KeyTruncateRightSize], 0)
 	size = max(1, size)
 
 	ellipsis := format.NewEllipsis(
@@ -153,7 +153,7 @@ func truncateRight(style spec.Spec, text format.Text) string {
 func justifyCenter(style spec.Spec, cols winsize.Cols, text format.Text) string {
 	args := style.Args()
 
-	size := commons.Mapd(args[spec.KeyJustifyCenterSize], cols)
+	size := argument.Mapd(args[spec.KeyJustifyCenterSize], cols)
 	size = min(cols, size)
 
 	filler := args[spec.KeyJustifyCenterText].
@@ -165,7 +165,7 @@ func justifyCenter(style spec.Spec, cols winsize.Cols, text format.Text) string 
 func justifyLeft(style spec.Spec, cols winsize.Cols, text format.Text) string {
 	args := style.Args()
 
-	size := commons.Mapd(args[spec.KeyJustifyLeftSize], cols)
+	size := argument.Mapd(args[spec.KeyJustifyLeftSize], cols)
 	size = min(cols, size)
 
 	filler := args[spec.KeyJustifyLeftText].
@@ -177,7 +177,7 @@ func justifyLeft(style spec.Spec, cols winsize.Cols, text format.Text) string {
 func justifyRight(style spec.Spec, cols winsize.Cols, text format.Text) string {
 	args := style.Args()
 
-	size := commons.Mapd(args[spec.KeyJustifyRightSize], cols)
+	size := argument.Mapd(args[spec.KeyJustifyRightSize], cols)
 	size = min(cols, size)
 
 	filler := args[spec.KeyJustifyRightText].
@@ -189,7 +189,7 @@ func justifyRight(style spec.Spec, cols winsize.Cols, text format.Text) string {
 func extendLeft(style spec.Spec, cols winsize.Cols, text format.Text) string {
 	args := style.Args()
 
-	size := commons.Mapd[winsize.Cols](args[spec.KeyExtendLeftSize], 0)
+	size := argument.Mapd[winsize.Cols](args[spec.KeyExtendLeftSize], 0)
 	filler := args[spec.KeyExtendLeftText].Stringf()
 
 	if filler == "" {
@@ -203,7 +203,7 @@ func extendLeft(style spec.Spec, cols winsize.Cols, text format.Text) string {
 func extendRight(style spec.Spec, cols winsize.Cols, text format.Text) string {
 	args := style.Args()
 
-	size := commons.Mapd[winsize.Cols](args[spec.KeyExtendRightSize], 0)
+	size := argument.Mapd[winsize.Cols](args[spec.KeyExtendRightSize], 0)
 	filler := args[spec.KeyExtendRightText].Stringf()
 
 	if filler == "" {

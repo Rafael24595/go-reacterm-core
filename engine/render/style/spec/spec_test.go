@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
-	"github.com/Rafael24595/go-reacterm-core/engine/commons"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/argument"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 )
 
@@ -15,7 +15,7 @@ func TestEraseSpec_DeleteExists(t *testing.T) {
 	)
 
 	modified, removed := Erase(scp, KindJustifyRight)
-	size := commons.Mapd[winsize.Cols](removed.args.Get(KeyJustifyRightSize), 0)
+	size := argument.Mapd[winsize.Cols](removed.args.Get(KeyJustifyRightSize), 0)
 
 	assert.Equal(t, KindFill, modified.kind)
 	assert.NotInside(t, KeyJustifyRightSize, modified.args.items)
@@ -58,16 +58,15 @@ func TestEraseSpec_DeleteMultiple(t *testing.T) {
 }
 
 func BenchmarkMeasure(b *testing.B) {
-    spec := AlignCenter()
-    ctx := LayoutContext{
-        SizeCols: 80,
-        TextSize: 20,
-    }
+	spec := AlignCenter()
+	ctx := LayoutContext{
+		SizeCols: 80,
+		TextSize: 20,
+	}
 
-    b.ReportAllocs()
-    
+	b.ReportAllocs()
 
-    for b.Loop() {
-        Measure(spec, ctx)
-    }
+	for b.Loop() {
+		Measure(spec, ctx)
+	}
 }
