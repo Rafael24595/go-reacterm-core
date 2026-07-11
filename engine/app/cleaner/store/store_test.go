@@ -38,7 +38,7 @@ func TestStore__PreservesActiveState(t *testing.T) {
 	value, exists := uiState.Store.Find(nodeBase.Name, "lang-1")
 
 	assert.True(t, exists)
-	assert.Equal(t, "golang", value.Stringf())
+	assert.Equal(t, "golang", value.Text())
 }
 
 func TestStore__RemovesInactiveState(t *testing.T) {
@@ -65,7 +65,7 @@ func TestStore__RemovesInactiveState(t *testing.T) {
 
 	value, exists := uiState.Store.Find(nodeNext.Name, "lang-2")
 	assert.True(t, exists)
-	assert.Equal(t, "ziglang", value.Stringf())
+	assert.Equal(t, "ziglang", value.Text())
 }
 
 func TestStore__TransitionBetweenScreens(t *testing.T) {

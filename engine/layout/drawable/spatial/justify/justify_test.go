@@ -6,7 +6,7 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/commons/argument"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/dynamic"
 	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
@@ -27,12 +27,12 @@ func renderFrags(frags []text.Frag) string {
 		ok := false
 		if args, ex := f.Spec.Args()[spec.KeyExtendRightSize]; ex {
 			ok = true
-			count = argument.Mapd[winsize.Cols](args, 0)
+			count = dynamic.MapOr[winsize.Cols](args, 0)
 		}
 
 		if args, ex := f.Spec.Args()[spec.KeyJustifyLeftSize]; ex {
 			ok = true
-			count = argument.Mapd[winsize.Cols](args, 0)
+			count = dynamic.MapOr[winsize.Cols](args, 0)
 		}
 
 		if ok {
@@ -112,8 +112,8 @@ func TestAddGaps_Between(t *testing.T) {
 
 	assert.Size(t, 5, result)
 
-	assert.Equal(t, 2, argument.Mapd[winsize.Cols](result[1].Spec.Args()[spec.KeyJustifyLeftSize], 0))
-	assert.Equal(t, 2, argument.Mapd[winsize.Cols](result[3].Spec.Args()[spec.KeyJustifyLeftSize], 0))
+	assert.Equal(t, 2, dynamic.MapOr[winsize.Cols](result[1].Spec.Args()[spec.KeyJustifyLeftSize], 0))
+	assert.Equal(t, 2, dynamic.MapOr[winsize.Cols](result[3].Spec.Args()[spec.KeyJustifyLeftSize], 0))
 	assert.Equal(t, spec.KindNone, result[2].Spec.Kind())
 
 	assert.Equal(t, "aa  bb  cc", renderFrags(result))
@@ -128,8 +128,8 @@ func TestAddGaps_Around(t *testing.T) {
 
 	assert.Size(t, 5, result)
 
-	assert.Equal(t, 2, argument.Mapd[winsize.Cols](result[1].Spec.Args()[spec.KeyJustifyLeftSize], 0))
-	assert.Equal(t, 1, argument.Mapd[winsize.Cols](result[3].Spec.Args()[spec.KeyJustifyLeftSize], 0))
+	assert.Equal(t, 2, dynamic.MapOr[winsize.Cols](result[1].Spec.Args()[spec.KeyJustifyLeftSize], 0))
+	assert.Equal(t, 1, dynamic.MapOr[winsize.Cols](result[3].Spec.Args()[spec.KeyJustifyLeftSize], 0))
 	assert.Equal(t, spec.KindNone, result[2].Spec.Kind())
 
 	assert.Equal(t, "aa  bb cc", renderFrags(result))

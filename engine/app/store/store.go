@@ -3,7 +3,7 @@ package store
 import (
 	"sync"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/commons/argument"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/dynamic"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/platform/clock"
 )
@@ -23,7 +23,7 @@ func New() *Store {
 	}
 }
 
-func (s *Store) Find(scope string, key string) (*argument.Argument, bool) {
+func (s *Store) Find(scope string, key string) (*dynamic.Value, bool) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
@@ -65,7 +65,7 @@ func (s *Store) RemoveScope(scope string) bool {
 	return true
 }
 
-func (s *Store) RemoveArgument(scope, key string) (*argument.Argument, bool) {
+func (s *Store) RemoveArgument(scope, key string) (*dynamic.Value, bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -103,7 +103,7 @@ func Find[T any](
 ) (T, bool) {
 	arg, ok := store.Find(scope, key.Code())
 	if ok {
-		return argument.Map[T](*arg)
+		return dynamic.Map[T](*arg)
 	}
 
 	var zero T
@@ -131,7 +131,7 @@ func Update[T any](
 		return zero, false
 	}
 
-	value, ok := argument.Map[T](*arg)
+	value, ok := dynamic.Map[T](*arg)
 	if !ok {
 		var zero T
 		return zero, false
@@ -164,7 +164,7 @@ func Remove[T any](
 ) (T, bool) {
 	arg, ok := store.RemoveArgument(scope, key.Code())
 	if ok {
-		return argument.Map[T](*arg)
+		return dynamic.Map[T](*arg)
 	}
 
 	var zero T

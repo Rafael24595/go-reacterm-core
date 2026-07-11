@@ -3,27 +3,27 @@ package spec
 import (
 	"maps"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/commons/argument"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/dynamic"
 )
 
-type argMap = map[ArgKey]argument.Argument
+type argMap = map[ArgKey]dynamic.Value
 
 type args struct {
 	items argMap
 }
 
-func (a *args) Get(key ArgKey) argument.Argument {
+func (a *args) Get(key ArgKey) dynamic.Value {
 	if a.items == nil {
-		var zero argument.Argument
+		var zero dynamic.Value
 		return zero
 	}
 
 	return a.items[key]
 }
 
-func (a *args) TryGet(key ArgKey) (argument.Argument, bool) {
+func (a *args) TryGet(key ArgKey) (dynamic.Value, bool) {
 	if a.items == nil {
-		var zero argument.Argument
+		var zero dynamic.Value
 		return zero, false
 	}
 
@@ -31,16 +31,16 @@ func (a *args) TryGet(key ArgKey) (argument.Argument, bool) {
 	return v, ok
 }
 
-func (a *args) Set(key ArgKey, value argument.Argument) {
+func (a *args) Set(key ArgKey, value dynamic.Value) {
 	if a.items == nil {
 		a.items = make(argMap)
 	}
 	a.items[key] = value
 }
 
-func (a *args) Delete(key ArgKey) (argument.Argument, bool) {
+func (a *args) Delete(key ArgKey) (dynamic.Value, bool) {
 	if a.items == nil {
-		var zero argument.Argument
+		var zero dynamic.Value
 		return zero, false
 	}
 

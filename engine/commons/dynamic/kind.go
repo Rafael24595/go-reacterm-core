@@ -1,4 +1,4 @@
-package argument
+package dynamic
 
 type kind uint8
 

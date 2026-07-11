@@ -60,5 +60,5 @@ func TestWithFillFrag(t *testing.T) {
 
 	assert.Equal(t, ".", frag.Text)
 	assert.True(t, frag.Spec.Kind().HasAny(spec.KindExtendRight))
-	assert.Equal(t, "6", frag.Spec.Args()[spec.KeyExtendRightSize].Stringf())
+	assert.Equal(t, "6", frag.Spec.Args()[spec.KeyExtendRightSize].Text())
 }

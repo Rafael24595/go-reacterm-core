@@ -1,4 +1,4 @@
-package argument
+package dynamic
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/app/hash"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/test"
@@ -153,7 +153,7 @@ func TestArgumentStringConversions(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := From(tt.from).Stringf()
+			got := From(tt.from).Text()
 			assert.Equal(t, tt.want, got)
 		})
 	}
@@ -165,26 +165,26 @@ func TestArgumentDefaults(t *testing.T) {
 		from any
 		def  any
 		want any
-		fn   func(Argument) any
+		fn   func(Value) any
 	}{
-		{"Intd valid int", 42, 100, 42, func(a Argument) any { return a.Intd(100) }},
-		{"Intd invalid string", "abc", 100, 100, func(a Argument) any { return a.Intd(100) }},
+		{"Intd valid int", 42, 100, 42, func(a Value) any { return a.IntOr(100) }},
+		{"Intd invalid string", "abc", 100, 100, func(a Value) any { return a.IntOr(100) }},
 
-		{"Int64d valid int64", int64(99), 100, int64(99), func(a Argument) any { return a.Int64d(100) }},
-		{"Int64d invalid string", "xyz", 100, int64(100), func(a Argument) any { return a.Int64d(100) }},
+		{"Int64d valid int64", int64(99), 100, int64(99), func(a Value) any { return a.Int64Or(100) }},
+		{"Int64d invalid string", "xyz", 100, int64(100), func(a Value) any { return a.Int64Or(100) }},
 
-		{"Uint64d valid uint64", uint64(77), 100, uint64(77), func(a Argument) any { return a.Uint64d(100) }},
-		{"Uint64d invalid string", "xyz", 100, uint64(100), func(a Argument) any { return a.Uint64d(100) }},
+		{"Uint64d valid uint64", uint64(77), 100, uint64(77), func(a Value) any { return a.Uint64Or(100) }},
+		{"Uint64d invalid string", "xyz", 100, uint64(100), func(a Value) any { return a.Uint64Or(100) }},
 
-		{"Float32d valid float", float32(3.14), 2.71, float32(3.14), func(a Argument) any { return a.Float32d(2.71) }},
-		{"Float32d invalid string", "abc", 2.71, float32(2.71), func(a Argument) any { return a.Float32d(2.71) }},
+		{"Float32d valid float", float32(3.14), 2.71, float32(3.14), func(a Value) any { return a.Float32Or(2.71) }},
+		{"Float32d invalid string", "abc", 2.71, float32(2.71), func(a Value) any { return a.Float32Or(2.71) }},
 
-		{"Float64d valid float", float64(1.618), 3.14, float64(1.618), func(a Argument) any { return a.Float64d(3.14) }},
-		{"Float64d invalid string", "abc", 3.14, float64(3.14), func(a Argument) any { return a.Float64d(3.14) }},
+		{"Float64d valid float", float64(1.618), 3.14, float64(1.618), func(a Value) any { return a.Float64Or(3.14) }},
+		{"Float64d invalid string", "abc", 3.14, float64(3.14), func(a Value) any { return a.Float64Or(3.14) }},
 
-		{"Boold valid true", true, false, true, func(a Argument) any { return a.Boold(false) }},
-		{"Boold valid false", false, true, false, func(a Argument) any { return a.Boold(true) }},
-		{"Boold invalid string", "notbool", true, true, func(a Argument) any { return a.Boold(true) }},
+		{"Boold valid true", true, false, true, func(a Value) any { return a.BoolOr(false) }},
+		{"Boold valid false", false, true, false, func(a Value) any { return a.BoolOr(true) }},
+		{"Boold invalid string", "notbool", true, true, func(a Value) any { return a.BoolOr(true) }},
 	}
 
 	for _, tt := range tests {
@@ -312,7 +312,7 @@ func TestArgumentHash_Types(t *testing.T) {
 }
 
 func TestArgumentHash_DifferentTypes(t *testing.T) {
-	cases := []Argument{
+	cases := []Value{
 		From(int(1)),
 		From(int64(1)),
 		From(uint(1)),

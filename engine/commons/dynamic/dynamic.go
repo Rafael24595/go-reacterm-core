@@ -1,4 +1,4 @@
-package argument
+package dynamic
 
 import (
 	"fmt"
@@ -9,26 +9,26 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/hash"
 )
 
-type Argument struct {
+type Value struct {
 	item any
 }
 
-func From(item any) Argument {
-	return Argument{
+func From(item any) Value {
+	return Value{
 		item: item,
 	}
 }
 
-func (a Argument) Bool() (bool, bool) {
+func (a Value) Bool() (bool, bool) {
 	switch v := a.item.(type) {
 	case bool:
 		return v, true
 	case int, int8, int16, int32, int64:
-		return a.Int64d(0) != 0, true
+		return a.Int64Or(0) != 0, true
 	case uint, uint8, uint16, uint32, uint64:
-		return a.Int64d(0) != 0, true
+		return a.Int64Or(0) != 0, true
 	case float32, float64:
-		return a.Float64d(0) != 0, true
+		return a.Float64Or(0) != 0, true
 	case string:
 		val, err := strconv.ParseBool(strings.ToLower(v))
 		if err == nil {
@@ -38,14 +38,14 @@ func (a Argument) Bool() (bool, bool) {
 	return false, false
 }
 
-func (a Argument) Boold(def bool) bool {
+func (a Value) BoolOr(def bool) bool {
 	if v, ok := a.Bool(); ok {
 		return v
 	}
 	return def
 }
 
-func (a Argument) String() (string, bool) {
+func (a Value) String() (string, bool) {
 	switch v := a.item.(type) {
 	case nil:
 		return "", false
@@ -65,90 +65,70 @@ func (a Argument) String() (string, bool) {
 	return fmt.Sprintf("%v", a.item), false
 }
 
-func (a Argument) Stringd(def string) string {
+func (a Value) StringOr(def string) string {
 	if v, ok := a.String(); ok {
 		return v
 	}
 	return def
 }
 
-func (a Argument) Stringf() string {
-	switch v := a.item.(type) {
-	case nil:
-		return ""
-	case string:
-		return v
-	case bool:
-		return strconv.FormatBool(v)
-	case int, int8, int16, int32, int64:
-		return fmt.Sprintf("%d", v)
-	case uint, uint8, uint16, uint32, uint64:
-		return fmt.Sprintf("%d", v)
-	case float32:
-		return strconv.FormatFloat(float64(v), 'f', -1, 32)
-	case float64:
-		return strconv.FormatFloat(v, 'f', -1, 64)
-	}
-	return fmt.Sprintf("%v", a.item)
-}
-
-func (a Argument) Int() (int, bool) {
+func (a Value) Int() (int, bool) {
 	if v, ok := a.Int64(); ok {
 		return int(v), true
 	}
 	return 0, false
 }
 
-func (a Argument) Intd(def int) int {
+func (a Value) IntOr(def int) int {
 	if v, ok := a.Int64(); ok {
 		return int(v)
 	}
 	return def
 }
 
-func (a Argument) Int8() (int8, bool) {
+func (a Value) Int8() (int8, bool) {
 	if v, ok := a.Int64(); ok {
 		return int8(v), true
 	}
 	return 0, false
 }
 
-func (a Argument) Int8d(def int8) int8 {
+func (a Value) Int8Or(def int8) int8 {
 	if v, ok := a.Int8(); ok {
 		return v
 	}
 	return def
 }
 
-func (a Argument) Int16() (int16, bool) {
+func (a Value) Int16() (int16, bool) {
 	if v, ok := a.Int64(); ok {
 		return int16(v), true
 	}
 	return 0, false
 }
 
-func (a Argument) Int16d(def int16) int16 {
+func (a Value) Int16Or(def int16) int16 {
 	if v, ok := a.Int16(); ok {
 		return v
 	}
 	return def
 }
 
-func (a Argument) Int32() (int32, bool) {
+func (a Value) Int32() (int32, bool) {
 	if v, ok := a.Int64(); ok {
 		return int32(v), true
 	}
 	return 0, false
 }
 
-func (a Argument) Int32d(def int32) int32 {
+func (a Value) Int32Or(def int32) int32 {
 	if v, ok := a.Int32(); ok {
 		return v
 	}
 	return def
 }
 
-func (a Argument) Int64() (int64, bool) {
+func (a Value) Int64() (int64, bool) {
 	switch v := a.item.(type) {
 	case int:
 		return int64(v), true
@@ -188,98 +168,98 @@ func (a Argument) Int64() (int64, bool) {
 	return 0, false
 }
 
-func (a Argument) Int64d(def int64) int64 {
+func (a Value) Int64Or(def int64) int64 {
 	if v, ok := a.Int64(); ok {
 		return v
 	}
 	return def
 }
 
-func (a Argument) Uint() (uint, bool) {
+func (a Value) Uint() (uint, bool) {
 	if v, ok := a.Int64(); ok && v >= 0 {
 		return uint(v), true
 	}
 	return 0, false
 }
 
-func (a Argument) Uintd(def uint) uint {
+func (a Value) UintOr(def uint) uint {
 	if v, ok := a.Uint(); ok {
 		return v
 	}
 	return def
 }
 
-func (a Argument) Uint8() (uint8, bool) {
+func (a Value) Uint8() (uint8, bool) {
 	if v, ok := a.Int64(); ok && v >= 0 {
 		return uint8(v), true
 	}
 	return 0, false
 }
 
-func (a Argument) Uint8d(def uint8) uint8 {
+func (a Value) Uint8Or(def uint8) uint8 {
 	if v, ok := a.Uint8(); ok {
 		return v
 	}
 	return def
 }
 
-func (a Argument) Uint16() (uint16, bool) {
+func (a Value) Uint16() (uint16, bool) {
 	if v, ok := a.Int64(); ok && v >= 0 {
 		return uint16(v), true
 	}
 	return 0, false
 }
 
-func (a Argument) Uint16d(def uint16) uint16 {
+func (a Value) Uint16Or(def uint16) uint16 {
 	if v, ok := a.Uint16(); ok {
 		return v
 	}
 	return def
 }
 
-func (a Argument) Uint32() (uint32, bool) {
+func (a Value) Uint32() (uint32, bool) {
 	if v, ok := a.Int64(); ok && v >= 0 {
 		return uint32(v), true
 	}
 	return 0, false
 }
 
-func (a Argument) Uint32d(def uint32) uint32 {
+func (a Value) Uint32Or(def uint32) uint32 {
 	if v, ok := a.Uint32(); ok {
 		return v
 	}
 	return def
 }
 
-func (a Argument) Uint64() (uint64, bool) {
+func (a Value) Uint64() (uint64, bool) {
 	if v, ok := a.Int64(); ok && v >= 0 {
 		return uint64(v), true
 	}
 	return 0, false
 }
 
-func (a Argument) Uint64d(def uint64) uint64 {
+func (a Value) Uint64Or(def uint64) uint64 {
 	if v, ok := a.Uint64(); ok {
 		return v
 	}
 	return def
 }
 
-func (a Argument) Float32() (float32, bool) {
+func (a Value) Float32() (float32, bool) {
 	if v, ok := a.Float64(); ok {
 		return float32(v), true
 	}
 	return 0, false
 }
 
-func (a Argument) Float32d(def float32) float32 {
+func (a Value) Float32Or(def float32) float32 {
 	if v, ok := a.Float64(); ok {
 		return float32(v)
 	}
 	return def
 }
 
-func (a Argument) Float64() (float64, bool) {
+func (a Value) Float64() (float64, bool) {
 	switch v := a.item.(type) {
 	case int:
 		return float64(v), true
@@ -319,14 +299,34 @@ func (a Argument) Float64() (float64, bool) {
 	return 0, false
 }
 
-func (a Argument) Float64d(def float64) float64 {
+func (a Value) Float64Or(def float64) float64 {
 	if v, ok := a.Float64(); ok {
 		return v
 	}
 	return def
 }
 
-func (a Argument) Hash(h hash.Hasher) hash.Hasher {
+func (a Value) Text() string {
+	switch v := a.item.(type) {
+	case nil:
+		return ""
+	case string:
+		return v
+	case bool:
+		return strconv.FormatBool(v)
+	case int, int8, int16, int32, int64:
+		return fmt.Sprintf("%d", v)
+	case uint, uint8, uint16, uint32, uint64:
+		return fmt.Sprintf("%d", v)
+	case float32:
+		return strconv.FormatFloat(float64(v), 'f', -1, 32)
+	case float64:
+		return strconv.FormatFloat(v, 'f', -1, 64)
+	}
+	return fmt.Sprintf("%v", a.item)
+}
+
+func (a Value) Hash(h hash.Hasher) hash.Hasher {
 	switch v := a.item.(type) {
 	case nil:
 		return h.Uint8(Nil.Uint8()).
@@ -390,25 +390,25 @@ func (a Argument) Hash(h hash.Hasher) hash.Hasher {
 	}
 
 	return h.Uint8(Fallback.Uint8()).
-		String(a.Stringf())
+		String(a.Text())
 }
 
-func Map[T any](a Argument) (T, bool) {
+func Map[T any](a Value) (T, bool) {
 	val, ok := a.item.(T)
 	return val, ok
 }
 
-func Mapd[T any](a Argument, def T) T {
+func MapOr[T any](a Value, def T) T {
 	if v, ok := Map[T](a); ok {
 		return v
 	}
 	return def
 }
 
-func Parse[T any](a Argument, parse func(string) (T, error)) (T, bool) {
+func Parse[T any](a Value, parse func(string) (T, error)) (T, bool) {
 	var zero T
 
-	v, err := parse(a.Stringf())
+	v, err := parse(a.Text())
 	if err != nil {
 		return zero, false
 	}
@@ -416,7 +416,7 @@ func Parse[T any](a Argument, parse func(string) (T, error)) (T, bool) {
 	return v, true
 }
 
-func Parsed[T any](a Argument, parse func(string) (T, error), def T) T {
+func Parsed[T any](a Value, parse func(string) (T, error), def T) T {
 	if v, ok := Parse(a, parse); ok {
 		return v
 	}

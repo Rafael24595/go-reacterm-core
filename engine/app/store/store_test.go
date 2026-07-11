@@ -21,7 +21,7 @@ func TestStore_CRUD(t *testing.T) {
 	arg, found := store.Find(scope, key)
 
 	assert.True(t, found)
-	assert.Equal(t, value, arg.Stringf())
+	assert.Equal(t, value, arg.Text())
 
 	store.RemoveArgument(scope, key)
 	_, found = store.Find(scope, key)
@@ -69,7 +69,7 @@ func TestStore_Push_Overwrite(t *testing.T) {
 
 	v, ok := store.Find("S", "k")
 	assert.True(t, ok)
-	assert.Equal(t, 2, v.Intd(0))
+	assert.Equal(t, 2, v.IntOr(0))
 }
 
 func TestUpdate_ExistingValue(t *testing.T) {
@@ -369,7 +369,7 @@ func TestStore_LastWriteWins(t *testing.T) {
 
 	v, _ := store.Find("S", "k")
 
-	assert.Equal(t, "c", v.Stringf())
+	assert.Equal(t, "c", v.Text())
 }
 
 func TestStore_Concurrency(t *testing.T) {

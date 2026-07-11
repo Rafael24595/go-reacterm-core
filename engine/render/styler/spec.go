@@ -1,7 +1,7 @@
 package styler
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/commons/argument"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/dynamic"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/dict"
 	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
@@ -108,7 +108,7 @@ func fill(style spec.Spec, cols winsize.Cols, text format.Text) string {
 		text = format.TextFromString(marker.DefaultPaddingText)
 	}
 
-	size := argument.Mapd(args[spec.KeyFillSize], cols)
+	size := dynamic.MapOr(args[spec.KeyFillSize], cols)
 	size = min(cols, size)
 
 	return format.PatternRight(size, text)
@@ -121,11 +121,11 @@ func truncateLeft(style spec.Spec, text format.Text) string {
 
 	args := style.Args()
 
-	size := argument.Mapd[winsize.Cols](args[spec.KeyTruncateLeftSize], 0)
+	size := dynamic.MapOr[winsize.Cols](args[spec.KeyTruncateLeftSize], 0)
 	size = max(1, size)
 
 	ellipsis := format.NewEllipsis(
-		args[spec.KeyTruncateEllipsisText].Stringf(),
+		args[spec.KeyTruncateEllipsisText].Text(),
 		marker.DefaultElipsisSize,
 	)
 
@@ -139,11 +139,11 @@ func truncateRight(style spec.Spec, text format.Text) string {
 
 	args := style.Args()
 
-	size := argument.Mapd[winsize.Cols](args[spec.KeyTruncateRightSize], 0)
+	size := dynamic.MapOr[winsize.Cols](args[spec.KeyTruncateRightSize], 0)
 	size = max(1, size)
 
 	ellipsis := format.NewEllipsis(
-		args[spec.KeyTruncateEllipsisText].Stringf(),
+		args[spec.KeyTruncateEllipsisText].Text(),
 		marker.DefaultElipsisSize,
 	)
 
@@ -153,11 +153,11 @@ func truncateRight(style spec.Spec, text format.Text) string {
 func justifyCenter(style spec.Spec, cols winsize.Cols, text format.Text) string {
 	args := style.Args()
 
-	size := argument.Mapd(args[spec.KeyJustifyCenterSize], cols)
+	size := dynamic.MapOr(args[spec.KeyJustifyCenterSize], cols)
 	size = min(cols, size)
 
 	filler := args[spec.KeyJustifyCenterText].
-		Stringd(marker.DefaultPaddingText)
+		StringOr(marker.DefaultPaddingText)
 
 	return format.JustifyCenter(size, text, filler)
 }
@@ -165,11 +165,11 @@ func justifyCenter(style spec.Spec, cols winsize.Cols, text format.Text) string 
 func justifyLeft(style spec.Spec, cols winsize.Cols, text format.Text) string {
 	args := style.Args()
 
-	size := argument.Mapd(args[spec.KeyJustifyLeftSize], cols)
+	size := dynamic.MapOr(args[spec.KeyJustifyLeftSize], cols)
 	size = min(cols, size)
 
 	filler := args[spec.KeyJustifyLeftText].
-		Stringd(marker.DefaultPaddingText)
+		StringOr(marker.DefaultPaddingText)
 
 	return format.JustifyLeft(size, text, filler)
 }
@@ -177,11 +177,11 @@ func justifyLeft(style spec.Spec, cols winsize.Cols, text format.Text) string {
 func justifyRight(style spec.Spec, cols winsize.Cols, text format.Text) string {
 	args := style.Args()
 
-	size := argument.Mapd(args[spec.KeyJustifyRightSize], cols)
+	size := dynamic.MapOr(args[spec.KeyJustifyRightSize], cols)
 	size = min(cols, size)
 
 	filler := args[spec.KeyJustifyRightText].
-		Stringd(marker.DefaultPaddingText)
+		StringOr(marker.DefaultPaddingText)
 
 	return format.JustifyRight(size, text, filler)
 }
@@ -189,8 +189,8 @@ func justifyRight(style spec.Spec, cols winsize.Cols, text format.Text) string {
 func extendLeft(style spec.Spec, cols winsize.Cols, text format.Text) string {
 	args := style.Args()
 
-	size := argument.Mapd[winsize.Cols](args[spec.KeyExtendLeftSize], 0)
-	filler := args[spec.KeyExtendLeftText].Stringf()
+	size := dynamic.MapOr[winsize.Cols](args[spec.KeyExtendLeftSize], 0)
+	filler := args[spec.KeyExtendLeftText].Text()
 
 	if filler == "" {
 		filler = text.Data
@@ -203,8 +203,8 @@ func extendLeft(style spec.Spec, cols winsize.Cols, text format.Text) string {
 func extendRight(style spec.Spec, cols winsize.Cols, text format.Text) string {
 	args := style.Args()
 
-	size := argument.Mapd[winsize.Cols](args[spec.KeyExtendRightSize], 0)
-	filler := args[spec.KeyExtendRightText].Stringf()
+	size := dynamic.MapOr[winsize.Cols](args[spec.KeyExtendRightSize], 0)
+	filler := args[spec.KeyExtendRightText].Text()
 
 	if filler == "" {
 		filler = text.Data
