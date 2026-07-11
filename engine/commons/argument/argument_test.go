@@ -6,6 +6,10 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
+	
+	"github.com/Rafael24595/go-reacterm-core/engine/app/hash"
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
+	"github.com/Rafael24595/go-reacterm-core/test"
 )
 
 func TestArgumentNumericConversions(t *testing.T) {
@@ -266,4 +270,88 @@ func TestParse_Json(t *testing.T) {
 
 	assert.True(t, ok)
 	assert.Equal(t, "golang", got.Lang)
+}
+
+func TestArgumentHash_Types(t *testing.T) {
+	tests := []struct {
+		name string
+		from any
+	}{
+		{"nil", nil},
+
+		{"bool true", true},
+		{"bool false", false},
+
+		{"string", "hello"},
+
+		{"int", int(42)},
+		{"int8", int8(42)},
+		{"int16", int16(42)},
+		{"int32", int32(42)},
+		{"int64", int64(42)},
+
+		{"uint", uint(42)},
+		{"uint8", uint8(42)},
+		{"uint16", uint16(42)},
+		{"uint32", uint32(42)},
+		{"uint64", uint64(42)},
+
+		{"float32", float32(3.14)},
+		{"float64", float64(3.14)},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			h1 := From(tt.from).Hash(hash.New()).Sum64()
+			h2 := From(tt.from).Hash(hash.New()).Sum64()
+
+			assert.GreaterThan(t, 0, h1)
+			assert.Equal(t, h1, h2)
+		})
+	}
+}
+
+func TestArgumentHash_DifferentTypes(t *testing.T) {
+	cases := []Argument{
+		From(int(1)),
+		From(int64(1)),
+		From(uint(1)),
+		From(float64(1)),
+		From("1"),
+		From(true),
+	}
+
+	seen := set.New[uint64]()
+
+	for _, c := range cases {
+		h := c.Hash(hash.New()).Sum64()
+		assert.False(t, seen.Has(h))
+		seen.Add(h)
+	}
+}
+
+func TestArgumentHash_Fallback(t *testing.T) {
+	a := From(test.Lang{
+		Name:    "Golang",
+		Version: "1.25.5",
+	})
+
+	h1 := a.Hash(hash.New()).Sum64()
+	h2 := a.Hash(hash.New()).Sum64()
+
+	assert.Equal(t, h1, h2)
+}
+
+func TestArgumentHash_IsComposable(t *testing.T) {
+	h1 := hash.New().
+		Uint8(7)
+
+	h1 = From("abc").Hash(h1)
+
+	h2 := hash.New().
+		Uint8(7)
+
+	h2 = From("abc").Hash(h2)
+
+	assert.Equal(t, h1.Sum64(), h2.Sum64())
 }

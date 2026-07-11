@@ -2,8 +2,11 @@ package argument
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
+
+	"github.com/Rafael24595/go-reacterm-core/engine/app/hash"
 )
 
 type Argument struct {
@@ -321,6 +324,73 @@ func (a Argument) Float64d(def float64) float64 {
 		return v
 	}
 	return def
+}
+
+func (a Argument) Hash(h hash.Hasher) hash.Hasher {
+	switch v := a.item.(type) {
+	case nil:
+		return h.Uint8(Nil.Uint8()).
+			Uint8(0)
+
+	case bool:
+		return h.Uint8(Bool.Uint8()).
+			Bool(v)
+
+	case string:
+		return h.Uint8(String.Uint8()).
+			String(v)
+
+	case int:
+		return h.Uint8(Int.Uint8()).
+			Uint64(uint64(v))
+
+	case int8:
+		return h.Uint8(Int8.Uint8()).
+			Uint8(uint8(v))
+
+	case int16:
+		return h.Uint8(Int16.Uint8()).
+			Uint16(uint16(v))
+
+	case int32:
+		return h.Uint8(Int32.Uint8()).
+			Uint32(uint32(v))
+
+	case int64:
+		return h.Uint8(Int64.Uint8()).
+			Uint64(uint64(v))
+
+	case uint:
+		return h.Uint8(Uint.Uint8()).
+			Uint64(uint64(v))
+
+	case uint8:
+		return h.Uint8(Uint8.Uint8()).
+			Uint8(v)
+
+	case uint16:
+		return h.Uint8(Uint16.Uint8()).
+			Uint16(v)
+
+	case uint32:
+		return h.Uint8(Uint16.Uint8()).
+			Uint32(v)
+
+	case uint64:
+		return h.Uint8(Uint64.Uint8()).
+			Uint64(v)
+
+	case float32:
+		return h.Uint8(Float32.Uint8()).
+			Uint32(math.Float32bits(v))
+
+	case float64:
+		return h.Uint8(Float64.Uint8()).
+			Uint64(math.Float64bits(v))
+	}
+
+	return h.Uint8(Fallback.Uint8()).
+		String(a.Stringf())
 }
 
 func Map[T any](a Argument) (T, bool) {
