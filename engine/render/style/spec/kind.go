@@ -89,6 +89,10 @@ const (
 	KindFill
 )
 
+func (s Kind) Uint64() uint64 {
+	return uint64(s)
+}
+
 func (s Kind) HasAny(styles ...Kind) bool {
 	for _, style := range styles {
 		if s&style != 0 {
@@ -126,4 +130,8 @@ const (
 
 	KeyFillSize
 )
+
+func (s ArgKey) Uint8() uint8 {
+	return uint8(s)
+}
 
