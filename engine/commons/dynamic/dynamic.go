@@ -47,22 +47,12 @@ func (a Value) BoolOr(def bool) bool {
 
 func (a Value) String() (string, bool) {
 	switch v := a.item.(type) {
-	case nil:
-		return "", false
 	case string:
 		return v, true
-	case bool:
-		return strconv.FormatBool(v), false
-	case int, int8, int16, int32, int64:
-		return fmt.Sprintf("%d", v), false
-	case uint, uint8, uint16, uint32, uint64:
-		return fmt.Sprintf("%d", v), false
-	case float32:
-		return strconv.FormatFloat(float64(v), 'f', -1, 32), false
-	case float64:
-		return strconv.FormatFloat(v, 'f', -1, 64), false
+	case []rune:
+		return string(v), true
 	}
-	return fmt.Sprintf("%v", a.item), false
+	return "", false
 }
 
 func (a Value) StringOr(def string) string {
