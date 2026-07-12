@@ -1,5 +1,76 @@
 package spec
 
+type KindDescriptor struct {
+	Kind Kind
+	Args []ArgKey
+}
+
+func init() {
+	kindLookup = make(map[Kind]KindDescriptor, len(kindRegistry))
+
+	for _, d := range kindRegistry {
+		kindLookup[d.Kind] = d
+	}
+}
+
+var kindLookup map[Kind]KindDescriptor
+
+var kindRegistry = [...]KindDescriptor{
+	{
+		Kind: KindJustifyRight,
+		Args: []ArgKey{
+			KeyJustifyRightSize,
+			KeyJustifyRightText,
+		},
+	},
+	{
+		Kind: KindJustifyLeft,
+		Args: []ArgKey{
+			KeyJustifyLeftSize,
+			KeyJustifyLeftText,
+		},
+	},
+	{
+		Kind: KindJustifyCenter,
+		Args: []ArgKey{
+			KeyJustifyCenterSize,
+			KeyJustifyCenterText,
+		},
+	},
+	{
+		Kind: KindExtendLeft,
+		Args: []ArgKey{
+			KeyExtendLeftSize,
+			KeyExtendLeftText,
+		},
+	},
+	{
+		Kind: KindExtendRight,
+		Args: []ArgKey{
+			KeyExtendRightSize,
+			KeyExtendRightText,
+		},
+	},
+	{
+		Kind: KindTruncateLeft,
+		Args: []ArgKey{
+			KeyTruncateLeftSize,
+		},
+	},
+	{
+		Kind: KindTruncateRight,
+		Args: []ArgKey{
+			KeyTruncateRightSize,
+		},
+	},
+	{
+		Kind: KindFill,
+		Args: []ArgKey{
+			KeyFillSize,
+		},
+	},
+}
+
 type Kind uint64
 
 const (
@@ -56,29 +127,3 @@ const (
 	KeyFillSize
 )
 
-var argsTable = map[Kind][]ArgKey{
-	KindJustifyRight: {
-		KeyJustifyRightSize, KeyJustifyRightText,
-	},
-	KindJustifyLeft: {
-		KeyJustifyLeftSize, KeyJustifyLeftText,
-	},
-	KindJustifyCenter: {
-		KeyJustifyCenterSize, KeyJustifyCenterText,
-	},
-	KindExtendLeft: {
-		KeyExtendLeftSize, KeyExtendLeftText,
-	},
-	KindExtendRight: {
-		KeyExtendRightSize, KeyExtendLeftText,
-	},
-	KindTruncateLeft: {
-		KeyTruncateLeftSize,
-	},
-	KindTruncateRight: {
-		KeyTruncateRightSize,
-	},
-	KindFill: {
-		KeyFillSize,
-	},
-}

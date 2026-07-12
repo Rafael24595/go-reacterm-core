@@ -40,12 +40,12 @@ func Erase(target Spec, styles Kind) (Spec, Spec) {
 		return target, removedSpec
 	}
 
-	for kind, keys := range argsTable {
-		if removedKind&kind == 0 {
+	for _, desc := range kindRegistry {
+		if removedKind&desc.Kind == 0 {
 			continue
 		}
 
-		for _, key := range keys {
+		for _, key := range desc.Args {
 			val, ok := target.args.TryGet(key)
 			if !ok {
 				continue
