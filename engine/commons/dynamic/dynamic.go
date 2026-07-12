@@ -373,7 +373,7 @@ func (a Value) Hash(h hash.Hasher) hash.Hasher {
 			Uint16(v)
 
 	case uint32:
-		return h.Uint8(Uint16.Uint8()).
+		return h.Uint8(Uint32.Uint8()).
 			Uint32(v)
 
 	case uint64:
