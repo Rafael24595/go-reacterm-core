@@ -6,19 +6,20 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 func NewDemoHeader() pipeline.Transformer {
 	lines := text.ApplyLineSpec(
 		spec.AlignCenter(),
 		*text.LineFromFrags(
-			*text.NewFrag("Lorem ipsum dolor sit amet").AddAtom(atom.Upper),
+			*frag.New("Lorem ipsum dolor sit amet").AddAtom(atom.Upper),
 		),
 		*text.LineFromFrags(
-			*text.NewFrag("consectetur adipiscing").AddAtom(atom.Upper),
+			*frag.New("consectetur adipiscing").AddAtom(atom.Upper),
 		),
 		*text.LineFromFrags(
-			*text.NewFrag("-Server 00-").AddAtom(atom.Upper),
+			*frag.New("-Server 00-").AddAtom(atom.Upper),
 		),
 	)
 

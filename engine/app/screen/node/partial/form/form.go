@@ -17,7 +17,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 const Name = "form"
@@ -304,7 +304,7 @@ func (n *Form) view(uiState state.UIState) viewmodel.ViewModel {
 
 	focus, ok := n.focusItem()
 	if ok && pointer.HasAny(form.PointerPrompt) {
-		label := text.NewFrag(focus.Node.Name).
+		label := frag.New(focus.Node.Name).
 			AddAtom(atom.Select)
 
 		vm.Footer.Push(

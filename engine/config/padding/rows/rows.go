@@ -6,9 +6,10 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
-type FragProvider func(winsize.Winsize, ...text.Line) text.Frag
+type FragProvider func(winsize.Winsize, ...text.Line) frag.Frag
 
 type Option func(*Config)
 
@@ -28,8 +29,8 @@ func ResolveConfig(opts ...Option) Config {
 func defaultConfig() Config {
 	return Config{
 		Position: style.Top,
-		Provider: func(_ winsize.Winsize, _ ...text.Line) text.Frag {
-			return *text.EmptyFrag()
+		Provider: func(_ winsize.Winsize, _ ...text.Line) frag.Frag {
+			return *frag.Empty()
 		},
 	}
 }
@@ -40,24 +41,24 @@ func WithPosition(position style.VerticalPosition) Option {
 	}
 }
 
-func WithFrag(frag text.Frag) Option {
+func WithFrag(frg frag.Frag) Option {
 	return func(cfg *Config) {
-		cfg.Provider = func(_ winsize.Winsize, _ ...text.Line) text.Frag {
-			return frag
+		cfg.Provider = func(_ winsize.Winsize, _ ...text.Line) frag.Frag {
+			return frg
 		}
 	}
 }
 
-func WithFillFrag(frag ...string) Option {
+func WithFillFrag(txt ...string) Option {
 	data := marker.DefaultPaddingText
-	if len(frag) > 0 {
-		data = frag[0]
+	if len(txt) > 0 {
+		data = txt[0]
 	}
 
 	return func(cfg *Config) {
-		cfg.Provider = func(size winsize.Winsize, lines ...text.Line) text.Frag {
+		cfg.Provider = func(size winsize.Winsize, lines ...text.Line) frag.Frag {
 			measure := text.MaxLineMeasure(size.Cols, lines...)
-			return *text.NewFrag(data).
+			return *frag.New(data).
 				AddSpec(spec.ExtendRight(measure))
 		}
 	}

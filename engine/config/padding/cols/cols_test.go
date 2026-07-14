@@ -4,9 +4,10 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
+	
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 func TestResolveConfigDefaults(t *testing.T) {
@@ -26,7 +27,7 @@ func TestWithPosition(t *testing.T) {
 }
 
 func TestWithFrag(t *testing.T) {
-	expected := *text.NewFrag(".")
+	expected := *frag.New(".")
 
 	cfg := ResolveConfig(
 		WithFrag(expected),

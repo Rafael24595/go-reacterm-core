@@ -8,6 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 
 	drawable_drain "github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 )
@@ -40,9 +41,9 @@ func FromString(text string) drawable.Unit {
 	)
 }
 
-func FromFrag(frag text.Frag) drawable.Unit {
+func FromFrag(frg frag.Frag) drawable.Unit {
 	return Wrap(
-		drawable_drain.UnitFromFrags(frag),
+		drawable_drain.UnitFromFrags(frg),
 	)
 }
 
@@ -74,7 +75,7 @@ func (u *InputLineUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 		return []text.Line{*line}, false
 	}
 
-	prompt := text.FragsFromString(u.prompt + marker.DefaultPaddingText)
+	prompt := frag.FromStrings(u.prompt + marker.DefaultPaddingText)
 	lines[0].Text = append(prompt, lines[0].Text...)
 
 	return lines, false

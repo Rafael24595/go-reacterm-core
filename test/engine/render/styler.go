@@ -6,10 +6,10 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/styler"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
-func Frags(styler *styler.Spec, size winsize.Winsize, frags []text.Frag) string {
+func Frags(styler *styler.Spec, size winsize.Winsize, frags []frag.Frag) string {
 	var buffer strings.Builder
 
 	lineSize := winsize.New(
@@ -24,7 +24,7 @@ func Frags(styler *styler.Spec, size winsize.Winsize, frags []text.Frag) string 
 		)
 		spec := styler.Apply(f.Spec, lineSize, txt)
 
-		fragSize := text.FragsMeasure(size.Cols, f)
+		fragSize := frag.Measure(size.Cols, f)
 		lineSize.Cols = lineSize.Cols.Sub(fragSize)
 
 		buffer.WriteString(spec)

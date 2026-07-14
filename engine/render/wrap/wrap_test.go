@@ -11,7 +11,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
-	
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
@@ -45,7 +46,7 @@ func benchmarkLine(words int) text.Line {
 
 	line := text.NewLine("")
 	line.PushFrags(
-		*text.NewFrag(builder.String()),
+		*frag.New(builder.String()),
 	)
 
 	return *line
@@ -63,7 +64,7 @@ func TestWrapOnce(t *testing.T) {
 			name: "line fits",
 			cols: 20,
 			line: text.LineFromFrags(
-				*text.NewFrag("hello world"),
+				*frag.New("hello world"),
 			),
 			expectedHead: "hello world",
 			expectedRest: "",
@@ -72,7 +73,7 @@ func TestWrapOnce(t *testing.T) {
 			name: "wrap by words",
 			cols: 10,
 			line: text.LineFromFrags(
-				*text.NewFrag("hello world"),
+				*frag.New("hello world"),
 			),
 			expectedHead: "hello ",
 			expectedRest: "world",
@@ -81,7 +82,7 @@ func TestWrapOnce(t *testing.T) {
 			name: "split long word",
 			cols: 5,
 			line: text.LineFromFrags(
-				*text.NewFrag("abcdefghij"),
+				*frag.New("abcdefghij"),
 			),
 			expectedHead: "abcde",
 			expectedRest: "fghij",
@@ -90,9 +91,9 @@ func TestWrapOnce(t *testing.T) {
 			name: "split fragmented long word",
 			cols: 5,
 			line: text.LineFromFrags(
-				*text.NewFrag("abc"),
-				*text.NewFrag("def"),
-				*text.NewFrag("ghi"),
+				*frag.New("abc"),
+				*frag.New("def"),
+				*frag.New("ghi"),
 			),
 			expectedHead: "abcde",
 			expectedRest: "fghi",
@@ -101,7 +102,7 @@ func TestWrapOnce(t *testing.T) {
 			name: "do not split normal word if line already has content",
 			cols: 8,
 			line: text.LineFromFrags(
-				*text.NewFrag("hello world"),
+				*frag.New("hello world"),
 			),
 			expectedHead: "hello ",
 			expectedRest: "world",
@@ -110,7 +111,7 @@ func TestWrapOnce(t *testing.T) {
 			name: "multiple words",
 			cols: 11,
 			line: text.LineFromFrags(
-				*text.NewFrag("hello world foo"),
+				*frag.New("hello world foo"),
 			),
 			expectedHead: "hello world",
 			expectedRest: " foo",
@@ -119,9 +120,9 @@ func TestWrapOnce(t *testing.T) {
 			name: "caret split should not affect wrapping",
 			cols: 20,
 			line: text.LineFromFrags(
-				*text.NewFrag("supercalifra"),
-				*text.NewFrag("gilisticexp"),
-				*text.NewFrag("ialidocious"),
+				*frag.New("supercalifra"),
+				*frag.New("gilisticexp"),
+				*frag.New("ialidocious"),
 			),
 			expectedHead: "supercalifragilistic",
 			expectedRest: "expialidocious",
@@ -130,11 +131,11 @@ func TestWrapOnce(t *testing.T) {
 			name: "split long word preserves trailing words",
 			cols: 5,
 			line: text.LineFromFrags(
-				*text.NewFrag("golang"),
-				*text.NewFrag(" "),
-				*text.NewFrag("zig"),
-				*text.NewFrag(" "),
-				*text.NewFrag("rust"),
+				*frag.New("golang"),
+				*frag.New(" "),
+				*frag.New("zig"),
+				*frag.New(" "),
+				*frag.New("rust"),
 			),
 			expectedHead: "golan",
 			expectedRest: "g zig rust",
@@ -143,11 +144,11 @@ func TestWrapOnce(t *testing.T) {
 			name: "word triggers break preserves all trailing words",
 			cols: 6,
 			line: text.LineFromFrags(
-				*text.NewFrag("rust"),
-				*text.NewFrag(" "),
-				*text.NewFrag("java"),
-				*text.NewFrag(" "),
-				*text.NewFrag("golang"),
+				*frag.New("rust"),
+				*frag.New(" "),
+				*frag.New("java"),
+				*frag.New(" "),
+				*frag.New("golang"),
 			),
 			expectedHead: "rust ",
 			expectedRest: "java golang",
@@ -156,9 +157,9 @@ func TestWrapOnce(t *testing.T) {
 			name: "split long word that fits exactly in next lines",
 			cols: 3,
 			line: text.LineFromFrags(
-				*text.NewFrag("ziglang"),
-				*text.NewFrag(" "),
-				*text.NewFrag("rust"),
+				*frag.New("ziglang"),
+				*frag.New(" "),
+				*frag.New("rust"),
 			),
 			expectedHead: "zig",
 			expectedRest: "lang rust",
@@ -167,8 +168,8 @@ func TestWrapOnce(t *testing.T) {
 			name: "Without AtmBreak: moves whole word to next line if it doesn't fit",
 			cols: 6,
 			line: text.LineFromFrags(
-				*text.NewFrag("zig "),
-				*text.NewFrag("golang"),
+				*frag.New("zig "),
+				*frag.New("golang"),
 			),
 			expectedHead: "zig ",
 			expectedRest: "golang",
@@ -177,8 +178,8 @@ func TestWrapOnce(t *testing.T) {
 			name: "With AtmBreak: splits word inline to fill remaining space",
 			cols: 6,
 			line: text.LineFromFrags(
-				*text.NewFrag("zig "),
-				*text.NewFrag("golang").
+				*frag.New("zig "),
+				*frag.New("golang").
 					AddAtom(atom.Break),
 			),
 			expectedHead: "zig go",
@@ -244,9 +245,9 @@ func TestMaterializeEmpty(t *testing.T) {
 			name: "ShouldNotMaterializeLineWithContent",
 			input: []LayoutLine{
 				*sourceLayout(
-					text.LineFromFrags(*text.NewFrag("Content")),
+					text.LineFromFrags(*frag.New("Content")),
 				).pushFrags(
-					*text.NewFrag("Content"),
+					*frag.New("Content"),
 				),
 			},
 			expectedCount: 1,
@@ -259,7 +260,7 @@ func TestMaterializeEmpty(t *testing.T) {
 				*sourceLayout(
 					text.NewLine(""),
 				).pushFrags(
-					*text.NewFrag(""),
+					*frag.New(""),
 				),
 			},
 			expectedCount: 2,
@@ -271,10 +272,10 @@ func TestMaterializeEmpty(t *testing.T) {
 			input: []LayoutLine{
 				*sourceLayout(
 					text.LineFromFrags(
-						*text.NewFrag("").AddAtom(atom.Bold),
+						*frag.New("").AddAtom(atom.Bold),
 					),
 				).pushFrags(
-					*text.NewFrag("").AddAtom(atom.Bold),
+					*frag.New("").AddAtom(atom.Bold),
 				),
 			},
 			expectedCount: 2,
@@ -324,9 +325,9 @@ func TestWrapLine_Simple(t *testing.T) {
 
 func TestWrapLine_Styles(t *testing.T) {
 	line := text.LineFromFrags(
-		*text.NewFrag("HELLO").AddAtom(atom.Bold),
-		*text.NewFrag(" "),
-		*text.NewFrag("WORLD"),
+		*frag.New("HELLO").AddAtom(atom.Bold),
+		*frag.New(" "),
+		*frag.New("WORLD"),
 	).SetSpec(spec.AlignRight())
 
 	lines := Line(7, line)
@@ -374,9 +375,9 @@ func TestWrapLine_LongWord(t *testing.T) {
 
 func TestWrapLine_MultipleFrags(t *testing.T) {
 	line := text.LineFromFrags(
-		*text.NewFrag("HELLO").AddAtom(atom.Bold),
-		*text.NewFrag("WORLD").AddAtom(atom.Bold),
-		*text.NewFrag("GO"),
+		*frag.New("HELLO").AddAtom(atom.Bold),
+		*frag.New("WORLD").AddAtom(atom.Bold),
+		*frag.New("GO"),
 	).SetSpec(spec.AlignRight())
 
 	maxWidth := winsize.Cols(8)
@@ -415,11 +416,11 @@ func TesNextLine_Split(t *testing.T) {
 
 func TesNextLine_MultiFrag(t *testing.T) {
 	line := text.LineFromFrags(
-		*text.NewFrag("go"),
-		*text.NewFrag(" "),
-		*text.NewFrag("zig"),
-		*text.NewFrag(" "),
-		*text.NewFrag("c++"),
+		*frag.New("go"),
+		*frag.New(" "),
+		*frag.New("zig"),
+		*frag.New(" "),
+		*frag.New("c++"),
 	)
 
 	got, remain := NextLine(6, NormalizeLines(*line))
@@ -441,9 +442,9 @@ func TesNextLine_BreakLongWordSingleFrag(t *testing.T) {
 
 func TesNextLine_BreakLongWordMultipleFrags(t *testing.T) {
 	line := text.LineFromFrags(
-		*text.NewFrag("golang"),
-		*text.NewFrag(" "),
-		*text.NewFrag("zigrust"),
+		*frag.New("golang"),
+		*frag.New(" "),
+		*frag.New("zigrust"),
 	)
 
 	got, remain := NextLine(10, NormalizeLines(*line))
@@ -463,7 +464,7 @@ func TestSplitLineFeeds(t *testing.T) {
 		{
 			name: "WithoutLineFeed",
 			input: text.EmptyLine().PushFrags(
-				*text.NewFrag("Hello Golang"),
+				*frag.New("Hello Golang"),
 			),
 			expectedSize: 1,
 			expectedText: "Hello Golang",
@@ -472,7 +473,7 @@ func TestSplitLineFeeds(t *testing.T) {
 		{
 			name: "SingleLineFeed",
 			input: text.EmptyLine().PushFrags(
-				*text.NewFrag("Golang\nZiglang"),
+				*frag.New("Golang\nZiglang"),
 			),
 			expectedSize: 2,
 			expectedText: "Golang\nZiglang",
@@ -481,8 +482,8 @@ func TestSplitLineFeeds(t *testing.T) {
 		{
 			name: "LineFeedBetweenFrags",
 			input: text.EmptyLine().PushFrags(
-				*text.NewFrag("Rust"),
-				*text.NewFrag("\nZig"),
+				*frag.New("Rust"),
+				*frag.New("\nZig"),
 			),
 			expectedSize: 2,
 			expectedText: "Rust\nZig",
@@ -491,7 +492,7 @@ func TestSplitLineFeeds(t *testing.T) {
 		{
 			name: "MultipleLineFeedWithEmptyLine",
 			input: text.EmptyLine().PushFrags(
-				*text.NewFrag("Go\n\nC++"),
+				*frag.New("Go\n\nC++"),
 			),
 			expectedSize: 3,
 			expectedText: "Go\n\nC++",
@@ -500,7 +501,7 @@ func TestSplitLineFeeds(t *testing.T) {
 		{
 			name: "LineFeedAtEnd",
 			input: text.EmptyLine().PushFrags(
-				*text.NewFrag("Rust\n"),
+				*frag.New("Rust\n"),
 			),
 			expectedSize: 2,
 			expectedText: "Rust\n",
@@ -509,7 +510,7 @@ func TestSplitLineFeeds(t *testing.T) {
 		{
 			name: "LineFeedWithCarriageReturn",
 			input: text.EmptyLine().PushFrags(
-				*text.NewFrag("Zig\r\nGolang"),
+				*frag.New("Zig\r\nGolang"),
 			),
 			expectedSize: 2,
 			expectedText: "Zig\nGolang",
@@ -518,7 +519,7 @@ func TestSplitLineFeeds(t *testing.T) {
 		{
 			name: "CarriageReturn",
 			input: text.EmptyLine().PushFrags(
-				*text.NewFrag("Java\rElixir"),
+				*frag.New("Java\rElixir"),
 			),
 			expectedSize: 2,
 			expectedText: "Java\nElixir",
@@ -569,9 +570,9 @@ func TestSplitLineFeeds_Ordering(t *testing.T) {
 		{
 			name: "ShouldHandleMultipleFragsWithOrder",
 			input: text.LineFromFrags(
-				*text.NewFrag("A"),
-				*text.NewFrag("\nB\n"),
-				*text.NewFrag("C"),
+				*frag.New("A"),
+				*frag.New("\nB\n"),
+				*frag.New("C"),
 			),
 			orderFlag:      true,
 			expectedOrders: []uint16{1, 2, 3},
@@ -579,9 +580,9 @@ func TestSplitLineFeeds_Ordering(t *testing.T) {
 		{
 			name: "ShouldHandleMultipleFragsWithOrder",
 			input: text.LineFromFrags(
-				*text.NewFrag("A"),
-				*text.NewFrag("\nB\n"),
-				*text.NewFrag("C"),
+				*frag.New("A"),
+				*frag.New("\nB\n"),
+				*frag.New("C"),
 			),
 			orderFlag:      true,
 			expectedOrders: []uint16{1, 2, 3},
@@ -603,7 +604,7 @@ func TestSplitLineFeeds_Ordering(t *testing.T) {
 
 func TestSplitFragAt_EndOfFrag(t *testing.T) {
 	frag := newWordFrag(
-		text.NewFrag("abcdef"),
+		frag.New("abcdef"),
 	)
 
 	left, right := splitFragAt(frag, 6)
@@ -616,7 +617,7 @@ func TestSplitFragAt_EndOfFrag(t *testing.T) {
 
 func TestSplitFragAt_EmptyRestNeverCreated(t *testing.T) {
 	frag := newWordFrag(
-		text.NewFrag("abc"),
+		frag.New("abc"),
 	)
 
 	_, right := splitFragAt(frag, 3)
@@ -666,7 +667,7 @@ func BenchmarkWrapLine_VeryLong(b *testing.B) {
 
 func BenchmarkWrapOnce(b *testing.B) {
 	line := text.LineFromFrags(
-		text.FragsFromString(
+		frag.FromStrings(
 			"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
 		)...,
 	)

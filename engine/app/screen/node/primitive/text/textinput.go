@@ -21,6 +21,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 const NameInput = "text_input"
@@ -30,7 +31,7 @@ const input_max_limit = 30
 
 type TextInput struct {
 	limit    winsize.Cols
-	label    []text.Frag
+	label    []frag.Frag
 	textarea *TextArea
 }
 
@@ -79,7 +80,7 @@ func (n *TextInput) SetProcessor(limit winsize.Cols, process processor.Processor
 	return n
 }
 
-func (n *TextInput) SetLabel(label []text.Frag) *TextInput {
+func (n *TextInput) SetLabel(label []frag.Frag) *TextInput {
 	n.label = label
 	return n
 }
@@ -140,7 +141,7 @@ func (n *TextInput) view(uiState state.UIState) viewmodel.ViewModel {
 		ToUnit()
 
 	if len(n.label) != 0 {
-		frags := append(n.label, *text.NewFrag(": "))
+		frags := append(n.label, *frag.New(": "))
 		vm.Kernel.Push(
 			drain.UnitFromFrags(frags...),
 		)

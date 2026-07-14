@@ -3,18 +3,19 @@ package text
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 type Line struct {
 	Order uint16
-	Text  []Frag
+	Text  []frag.Frag
 	Spec  spec.Spec
 }
 
 func NewLine(text string, styles ...spec.Spec) *Line {
 	return &Line{
-		Text: []Frag{
-			*NewFrag(text),
+		Text: []frag.Frag{
+			*frag.New(text),
 		},
 		Spec: spec.Merge(styles...),
 	}
@@ -27,7 +28,7 @@ func EmptyLine(size ...int) *Line {
 	}
 
 	return LineFromFrags(
-		make([]Frag, 0, bufferSize)...,
+		make([]frag.Frag, 0, bufferSize)...,
 	)
 }
 
@@ -36,7 +37,7 @@ func LineFromMeta(other *Line, size ...int) *Line {
 		CopyMeta(other)
 }
 
-func LineFromFrags(frags ...Frag) *Line {
+func LineFromFrags(frags ...frag.Frag) *Line {
 	return &Line{
 		Text: frags,
 		Spec: spec.Empty(),
@@ -54,12 +55,12 @@ func (l *Line) SetOrder(order uint16) *Line {
 	return l
 }
 
-func (l *Line) UnshiftFrags(frags ...Frag) *Line {
+func (l *Line) UnshiftFrags(frags ...frag.Frag) *Line {
 	l.Text = append(frags, l.Text...)
 	return l
 }
 
-func (l *Line) PushFrags(frags ...Frag) *Line {
+func (l *Line) PushFrags(frags ...frag.Frag) *Line {
 	l.Text = append(l.Text, frags...)
 	return l
 }
@@ -77,7 +78,7 @@ func (l *Line) SetSpec(styles ...spec.Spec) *Line {
 
 func (l *Line) Clone() *Line {
 	newLine := EmptyLine().CopyMeta(l)
-	newLine.Text = make([]Frag, len(l.Text))
+	newLine.Text = make([]frag.Frag, len(l.Text))
 	copy(newLine.Text, l.Text)
 	return newLine
 }
@@ -85,6 +86,6 @@ func (l *Line) Clone() *Line {
 func LineMeasure(line *Line, cols winsize.Cols) winsize.Cols {
 	return spec.Measure(line.Spec, spec.LayoutContext{
 		SizeCols: cols,
-		TextSize: FragsMeasure(cols, line.Text...),
+		TextSize: frag.Measure(cols, line.Text...),
 	})
 }

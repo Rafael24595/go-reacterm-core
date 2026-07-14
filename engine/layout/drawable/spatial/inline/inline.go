@@ -6,6 +6,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 const Name = "inline_unit"
@@ -97,10 +98,9 @@ func (u *InlineUnit) joinChildren(lines []text.Line) []text.Line {
 
 	merged := text.EmptyLine()
 
-	var separator *text.Frag
+	var separator *frag.Frag
 	if u.separator != "" {
-		frag := text.NewFrag(u.separator)
-		separator = frag
+		separator = frag.New(u.separator)
 	}
 
 	for i, line := range lines {

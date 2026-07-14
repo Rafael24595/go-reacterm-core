@@ -13,6 +13,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 const Name = "help_unit"
@@ -70,7 +71,7 @@ func makeUnit(fields []key.Descriptor) drawable.Unit {
 		return drain.UnitFromLines()
 	}
 
-	frags := make([]text.Frag, fieldsLen)
+	frags := make([]frag.Frag, fieldsLen)
 
 	for i, field := range fields {
 		code := strings.Join(field.Code, ", ")
@@ -80,16 +81,16 @@ func makeUnit(fields []key.Descriptor) drawable.Unit {
 			separator = " | "
 		}
 
-		frag := fmt.Sprintf("[%s] %s%s", code, field.Detail, separator)
-		frags[i] = *text.NewFrag(frag).
+		data := fmt.Sprintf("[%s] %s%s", code, field.Detail, separator)
+		frags[i] = *frag.New(data).
 			AddAtom(atom.Wrap)
 
 	}
 
 	return drain.UnitFromLines(
 		*text.LineFromFrags(
-			*text.NewFrag("--Help--"),
-			*text.NewFrag("-").
+			*frag.New("--Help--"),
+			*frag.New("-").
 				AddSpec(spec.Cover()),
 		),
 		*text.LineFromFrags(frags...),

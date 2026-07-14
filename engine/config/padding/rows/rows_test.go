@@ -9,6 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 func TestResolveConfigDefaults(t *testing.T) {
@@ -34,7 +35,7 @@ func TestWithFrag(t *testing.T) {
 	cfg := defaultConfig()
 
 	WithFrag(
-		*text.NewFrag("golang"),
+		*frag.New("golang"),
 	)(&cfg)
 
 	frag := cfg.Provider(

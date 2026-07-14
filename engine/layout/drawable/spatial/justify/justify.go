@@ -10,6 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 const (
@@ -25,11 +26,11 @@ type JustifyUnit struct {
 	maxOpts uint16
 	maxCols winsize.Cols
 	justify style.Justify
-	frags   []text.Frag
+	frags   []frag.Frag
 	cursor  uint16
 }
 
-func New(frags []text.Frag) *JustifyUnit {
+func New(frags []frag.Frag) *JustifyUnit {
 	return &JustifyUnit{
 		loaded:  false,
 		maxOpts: style.DefaultMaxOpts,
@@ -39,7 +40,7 @@ func New(frags []text.Frag) *JustifyUnit {
 	}
 }
 
-func UnitFromFrags(frags []text.Frag) drawable.Unit {
+func UnitFromFrags(frags []frag.Frag) drawable.Unit {
 	return New(frags).ToUnit()
 }
 
@@ -58,7 +59,7 @@ func (u *JustifyUnit) Justify(justify style.Justify) *JustifyUnit {
 	return u
 }
 
-func (u *JustifyUnit) AddFrags(frags []text.Frag) *JustifyUnit {
+func (u *JustifyUnit) AddFrags(frags []frag.Frag) *JustifyUnit {
 	u.frags = append(u.frags, frags...)
 	return u
 }
@@ -93,13 +94,13 @@ func (u *JustifyUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 	maxCols := math.MinNotZero(size.Cols, u.maxCols)
 
 	remaining := winsize.Cols(0)
-	frags := make([]text.Frag, 0)
+	frags := make([]frag.Frag, 0)
 
 	for i := u.cursor; i < uint16(len(u.frags)); i++ {
-		frag := u.frags[i]
+		frg := u.frags[i]
 
 		fragsLen := len(frags)
-		fragSize := text.FragsMeasure(size.Cols, frag)
+		fragSize := frag.Measure(size.Cols, frg)
 
 		spacing := winsize.Cols(0)
 		if fragsLen > 0 {
@@ -113,7 +114,7 @@ func (u *JustifyUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 		}
 
 		remaining = newRemaining
-		frags = append(frags, frag)
+		frags = append(frags, frg)
 
 		u.cursor += 1
 	}
@@ -122,7 +123,7 @@ func (u *JustifyUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 	return []text.Line{*line}, u.cursor < uint16(len(u.frags))
 }
 
-func justifyLine(cols winsize.Cols, frags []text.Frag, size winsize.Cols, mode style.Justify) *text.Line {
+func justifyLine(cols winsize.Cols, frags []frag.Frag, size winsize.Cols, mode style.Justify) *text.Line {
 	line := text.LineFromFrags(
 		addGaps(cols, frags, size, mode)...,
 	)
@@ -147,15 +148,15 @@ func justifyLine(cols winsize.Cols, frags []text.Frag, size winsize.Cols, mode s
 
 func addGaps(
 	cols winsize.Cols,
-	frags []text.Frag,
+	frags []frag.Frag,
 	size winsize.Cols,
 	mode style.Justify,
-) []text.Frag {
+) []frag.Frag {
 	if len(frags) == 0 {
 		return frags
 	}
 
-	out := make([]text.Frag, len(frags))
+	out := make([]frag.Frag, len(frags))
 	copy(out, frags)
 
 	free := cols.Sub(size)
@@ -180,7 +181,7 @@ func addGaps(
 	return addSpaceBetween(out)
 }
 
-func distributeSpace(free winsize.Cols, frags []text.Frag, extraSlots winsize.Cols) []text.Frag {
+func distributeSpace(free winsize.Cols, frags []frag.Frag, extraSlots winsize.Cols) []frag.Frag {
 	gaps := winsize.Cols(
 		max(0, len(frags)-1),
 	)
@@ -189,7 +190,7 @@ func distributeSpace(free winsize.Cols, frags []text.Frag, extraSlots winsize.Co
 	base := free / slots
 	remainder := free % slots
 
-	out := make([]text.Frag, len(frags))
+	out := make([]frag.Frag, len(frags))
 	copy(out, frags)
 
 	fix := winsize.Cols(0)
@@ -204,13 +205,13 @@ func distributeSpace(free winsize.Cols, frags []text.Frag, extraSlots winsize.Co
 			continue
 		}
 
-		space := text.EmptyFrag().AddSpec(
+		space := frag.Empty().AddSpec(
 			spec.JustifyLeft(gap, marker.DefaultPaddingText),
 		)
 
 		at := i + fix + 1
 
-		next := make([]text.Frag, 0, len(out)+1)
+		next := make([]frag.Frag, 0, len(out)+1)
 
 		next = append(next, out[:at]...)
 		next = append(next, *space)
@@ -224,13 +225,13 @@ func distributeSpace(free winsize.Cols, frags []text.Frag, extraSlots winsize.Co
 	return out
 }
 
-func addSpaceBetween(frags []text.Frag) []text.Frag {
-	spaced := make([]text.Frag, 0, (len(frags)*2)-1)
+func addSpaceBetween(frags []frag.Frag) []frag.Frag {
+	spaced := make([]frag.Frag, 0, (len(frags)*2)-1)
 	for i, f := range frags {
 		spaced = append(spaced, f)
 		if i < len(frags)-1 {
 			spaced = append(spaced,
-				*text.NewFrag(marker.DefaultPaddingText),
+				*frag.New(marker.DefaultPaddingText),
 			)
 		}
 	}

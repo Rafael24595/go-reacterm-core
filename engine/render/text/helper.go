@@ -4,21 +4,22 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 func MaxLineMeasure(cols winsize.Cols, lines ...Line) winsize.Cols {
 	size := winsize.Cols(0)
 	for _, l := range lines {
-		measure := FragsMeasure(cols, l.Text...)
+		measure := frag.Measure(cols, l.Text...)
 		size = max(size, measure)
 	}
 	return size
 }
 
-func FragsFromString(text ...string) []Frag {
-	frags := make([]Frag, len(text))
+func FragsFromString(text ...string) []frag.Frag {
+	frags := make([]frag.Frag, len(text))
 	for i, v := range text {
-		frags[i] = *NewFrag(v)
+		frags[i] = *frag.New(v)
 	}
 	return frags
 }
@@ -46,7 +47,7 @@ func LinesHasAtom(atm atom.Atom, lines ...Line) bool {
 	return false
 }
 
-func FragsHasAtom(atm atom.Atom, frags ...Frag) bool {
+func FragsHasAtom(atm atom.Atom, frags ...frag.Frag) bool {
 	for _, v := range frags {
 		if v.Atom.HasAny(atm) {
 			return true

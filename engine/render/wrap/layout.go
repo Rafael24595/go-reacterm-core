@@ -4,9 +4,11 @@ import (
 	"slices"
 
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
+	
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 type LayoutLine struct {
@@ -35,7 +37,7 @@ func (l *LayoutLine) findFrags(idx int) []wordFrag {
 	return l.frags[word.start:word.end]
 }
 
-func (l *LayoutLine) pushFrags(frags ...text.Frag) *LayoutLine {
+func (l *LayoutLine) pushFrags(frags ...frag.Frag) *LayoutLine {
 	lenFrags := len(l.frags)
 	word := word{
 		start: uint32(lenFrags),

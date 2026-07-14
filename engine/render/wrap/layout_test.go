@@ -9,6 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 func sourceLayout(source *text.Line) *LayoutLine {
@@ -26,11 +27,11 @@ func emptyLayout() *LayoutLine {
 func TestLayoutFindFrags(t *testing.T) {
 	layout := emptyLayout().
 		pushFrags(
-			*text.NewFrag("foo"),
-			*text.NewFrag("bar"),
+			*frag.New("foo"),
+			*frag.New("bar"),
 		).
 		pushFrags(
-			*text.NewFrag("baz"),
+			*frag.New("baz"),
 		)
 
 	frags := layout.findFrags(0)
@@ -49,10 +50,10 @@ func TestLayoutPushFrags(t *testing.T) {
 	layout := emptyLayout()
 
 	layout.
-		pushFrags(*text.NewFrag("a")).
+		pushFrags(*frag.New("a")).
 		pushFrags(
-			*text.NewFrag("b"),
-			*text.NewFrag("c"),
+			*frag.New("b"),
+			*frag.New("c"),
 		)
 
 	assert.Equal(t, 2, len(layout.words))
@@ -66,11 +67,11 @@ func TestLayoutPushFrags(t *testing.T) {
 }
 
 func TestLayoutHasAtom(t *testing.T) {
-	frag := text.NewFrag("foo")
-	frag.Atom = atom.Wrap
+	frg := frag.New("foo")
+	frg.Atom = atom.Wrap
 
 	layout := emptyLayout().
-		pushFrags(*frag)
+		pushFrags(*frg)
 
 	assert.True(t, layout.hasAtom(0, atom.Wrap))
 	assert.False(t, layout.hasAtom(0, atom.Focus))
@@ -88,7 +89,7 @@ func TestSplitWord(t *testing.T) {
 		{
 			name: "word fits completely",
 			layout: emptyLayout().pushFrags(
-				*text.NewFrag("golang"),
+				*frag.New("golang"),
 			),
 			cols:            20,
 			remaining:       20,
@@ -98,7 +99,7 @@ func TestSplitWord(t *testing.T) {
 		{
 			name: "split single frag word",
 			layout: emptyLayout().pushFrags(
-				*text.NewFrag("ziglang"),
+				*frag.New("ziglang"),
 			),
 			cols:            4,
 			remaining:       4,
@@ -108,9 +109,9 @@ func TestSplitWord(t *testing.T) {
 		{
 			name: "split fragmented word",
 			layout: emptyLayout().pushFrags(
-				*text.NewFrag("go"),
-				*text.NewFrag("la"),
-				*text.NewFrag("ng"),
+				*frag.New("go"),
+				*frag.New("la"),
+				*frag.New("ng"),
 			),
 			cols:            2,
 			remaining:       4,
@@ -120,7 +121,7 @@ func TestSplitWord(t *testing.T) {
 		{
 			name: "zero remaining",
 			layout: emptyLayout().pushFrags(
-				*text.NewFrag("rust"),
+				*frag.New("rust"),
 			),
 			cols:            5,
 			remaining:       0,
@@ -130,9 +131,9 @@ func TestSplitWord(t *testing.T) {
 		{
 			name: "split inside second frag",
 			layout: emptyLayout().pushFrags(
-				*text.NewFrag("cl"),
-				*text.NewFrag("oju"),
-				*text.NewFrag("re"),
+				*frag.New("cl"),
+				*frag.New("oju"),
+				*frag.New("re"),
 			),
 			cols:            3,
 			remaining:       3,
@@ -160,7 +161,7 @@ func TestSplitWord(t *testing.T) {
 func TestSplitWord_FitsWithoutMutatingLayout(t *testing.T) {
 	layout := emptyLayout().
 		pushFrags(
-			*text.NewFrag("golang"),
+			*frag.New("golang"),
 		)
 
 	ok := layout.splitWord(0, 80, 80)
@@ -179,9 +180,9 @@ func TestSplitWord_FitsWithoutMutatingLayout(t *testing.T) {
 func TestSplitWord_SplitLastFrag(t *testing.T) {
 	layout := emptyLayout().
 		pushFrags(
-			*text.NewFrag("go"),
-			*text.NewFrag("la"),
-			*text.NewFrag("ng"),
+			*frag.New("go"),
+			*frag.New("la"),
+			*frag.New("ng"),
 		)
 
 	ok := layout.splitWord(0, 80, 5)
@@ -199,7 +200,7 @@ func TestSplitWord_SplitLastFrag(t *testing.T) {
 func TestLayoutSplitFrag(t *testing.T) {
 	layout := emptyLayout().
 		pushFrags(
-			*text.NewFrag("abcdef"),
+			*frag.New("abcdef"),
 		)
 
 	layout.splitFrag(0, 0, 3)
@@ -220,7 +221,7 @@ func TestLayoutSplitFrag(t *testing.T) {
 func TestLayoutSplitFrag_InvalidatesMeasureCache(t *testing.T) {
 	layout := emptyLayout().
 		pushFrags(
-			*text.NewFrag("abcdef"),
+			*frag.New("abcdef"),
 		)
 
 	calls := uint(0)
@@ -243,13 +244,13 @@ func TestLayoutSplitFrag_InvalidatesMeasureCache(t *testing.T) {
 func TestLayoutSplitFrag_ShiftsFollowingWords(t *testing.T) {
 	layout := emptyLayout().
 		pushFrags(
-			*text.NewFrag("abcdef"),
+			*frag.New("abcdef"),
 		).
 		pushFrags(
-			*text.NewFrag("foo"),
+			*frag.New("foo"),
 		).
 		pushFrags(
-			*text.NewFrag("bar"),
+			*frag.New("bar"),
 		)
 
 	layout.splitFrag(0, 0, 3)
@@ -278,7 +279,7 @@ func TestLayoutSplitFrag_ShiftsFollowingWords(t *testing.T) {
 func TestLayoutSplitFrag_NoSplit(t *testing.T) {
 	layout := emptyLayout().
 		pushFrags(
-			*text.NewFrag("abc"),
+			*frag.New("abc"),
 		)
 
 	layout.splitFrag(0, 0, 3)
@@ -291,7 +292,7 @@ func TestLayoutSplitFrag_NoSplit(t *testing.T) {
 
 func TestLayoutWordMeasure_CacheSameCols(t *testing.T) {
 	layout := emptyLayout().pushFrags(
-		*text.NewFrag("golang"),
+		*frag.New("golang"),
 	)
 
 	calls := uint(0)
@@ -312,7 +313,7 @@ func TestLayoutWordMeasure_CacheSameCols(t *testing.T) {
 
 func TestLayoutWordMeasure_RecalculateOnColsChange(t *testing.T) {
 	layout := emptyLayout().pushFrags(
-		*text.NewFrag("golang"),
+		*frag.New("golang"),
 	)
 
 	calls := uint(0)
@@ -333,7 +334,7 @@ func TestLayoutWordMeasure_RecalculateOnColsChange(t *testing.T) {
 
 func TestLayoutWordMeasure_CacheAfterColsChange(t *testing.T) {
 	layout := emptyLayout().pushFrags(
-		*text.NewFrag("golang"),
+		*frag.New("golang"),
 	)
 
 	calls := uint(0)
@@ -352,7 +353,7 @@ func TestLayoutWordMeasure_CacheAfterColsChange(t *testing.T) {
 
 func TestLayoutWordMeasure_RecalculateWhenReturningToPreviousCols(t *testing.T) {
 	layout := emptyLayout().pushFrags(
-		*text.NewFrag("golang"),
+		*frag.New("golang"),
 	)
 
 	calls := uint(0)
@@ -372,7 +373,7 @@ func TestLayoutWordMeasure_RecalculateWhenReturningToPreviousCols(t *testing.T) 
 func TestLayoutClone(t *testing.T) {
 	layout := emptyLayout().
 		pushFrags(
-			*text.NewFrag("golang"),
+			*frag.New("golang"),
 		)
 
 	layout.words[0].measured = true
@@ -392,7 +393,7 @@ func TestLayoutClone(t *testing.T) {
 
 func BenchmarkLayoutMeasure_Cached(b *testing.B) {
 	layout := emptyLayout().pushFrags(
-		*text.NewFrag("hello world"),
+		*frag.New("hello world"),
 	)
 
 	layout.measure(0, 80)
@@ -406,7 +407,7 @@ func BenchmarkLayoutMeasure_Cached(b *testing.B) {
 
 func BenchmarkLayoutMeasure_Recalculate(b *testing.B) {
 	layout := emptyLayout().pushFrags(
-		*text.NewFrag(strings.Repeat("a", 200)),
+		*frag.New(strings.Repeat("a", 200)),
 	)
 
 	cols := winsize.Cols(1)
@@ -422,10 +423,10 @@ func BenchmarkLayoutMeasure_Recalculate(b *testing.B) {
 func BenchmarkLayoutFindFrags(b *testing.B) {
 	layout := emptyLayout().
 		pushFrags(
-			*text.NewFrag("a"),
-			*text.NewFrag("b"),
-			*text.NewFrag("c"),
-			*text.NewFrag("d"),
+			*frag.New("a"),
+			*frag.New("b"),
+			*frag.New("c"),
+			*frag.New("d"),
 		)
 
 	b.ReportAllocs()
@@ -439,7 +440,7 @@ func BenchmarkLayoutHasAtom(b *testing.B) {
 	layout := emptyLayout()
 
 	for range 128 {
-		layout.pushFrags(*text.NewFrag("abc"))
+		layout.pushFrags(*frag.New("abc"))
 	}
 
 	b.ReportAllocs()
@@ -451,7 +452,7 @@ func BenchmarkLayoutHasAtom(b *testing.B) {
 
 func BenchmarkLayoutSplitFrag(b *testing.B) {
 	frag := newWordFrag(
-		text.NewFrag(strings.Repeat("a", 200)),
+		frag.New(strings.Repeat("a", 200)),
 	)
 
 	for b.Loop() {
@@ -461,7 +462,7 @@ func BenchmarkLayoutSplitFrag(b *testing.B) {
 
 func BenchmarkSplitLongWord_Fits(b *testing.B) {
 	layout := emptyLayout().pushFrags(
-		*text.NewFrag("hello"),
+		*frag.New("hello"),
 	)
 
 	b.ReportAllocs()
@@ -473,7 +474,7 @@ func BenchmarkSplitLongWord_Fits(b *testing.B) {
 
 func BenchmarkSplitLongWord_SplitMiddle(b *testing.B) {
 	layout := emptyLayout().pushFrags(
-		*text.NewFrag(strings.Repeat("a", 200)),
+		*frag.New(strings.Repeat("a", 200)),
 	)
 
 	b.ReportAllocs()
@@ -485,7 +486,7 @@ func BenchmarkSplitLongWord_SplitMiddle(b *testing.B) {
 
 func BenchmarkSplitLongWord_SplitFirstRune(b *testing.B) {
 	layout := emptyLayout().pushFrags(
-		*text.NewFrag(strings.Repeat("a", 200)),
+		*frag.New(strings.Repeat("a", 200)),
 	)
 
 	b.ReportAllocs()
@@ -496,10 +497,10 @@ func BenchmarkSplitLongWord_SplitFirstRune(b *testing.B) {
 }
 
 func BenchmarkSplitLongWord_ManyFrags(b *testing.B) {
-	frags := make([]text.Frag, 0, 128)
+	frags := make([]frag.Frag, 0, 128)
 
 	for range 128 {
-		frags = append(frags, *text.NewFrag("abcdefghij"))
+		frags = append(frags, *frag.New("abcdefghij"))
 	}
 
 	layout := emptyLayout().pushFrags(
@@ -515,7 +516,7 @@ func BenchmarkSplitLongWord_ManyFrags(b *testing.B) {
 
 func BenchmarkSplitLongWord_WorstCase(b *testing.B) {
 	layout := emptyLayout().pushFrags(
-		*text.NewFrag(strings.Repeat("a", 5000)),
+		*frag.New(strings.Repeat("a", 5000)),
 	)
 
 	b.ReportAllocs()

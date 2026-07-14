@@ -6,6 +6,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 var specStylesTable = dict.NewInmutableLinkedMap(
@@ -22,7 +23,7 @@ func sinkLinePaddingLeft(style spec.Kind, line *text.Line, _ winsize.Cols) *text
 
 	line.Spec = resSpec
 	line.UnshiftFrags(
-		*text.EmptyFrag().AddSpec(delSpec),
+		*frag.Empty().AddSpec(delSpec),
 	)
 
 	return line
@@ -36,7 +37,7 @@ func sinkLinePaddingRight(style spec.Kind, line *text.Line, _ winsize.Cols) *tex
 
 	line.Spec = resSpec
 	line.PushFrags(
-		*text.EmptyFrag().AddSpec(delSpec),
+		*frag.Empty().AddSpec(delSpec),
 	)
 
 	return line
@@ -53,7 +54,7 @@ func sinkLinePaddingCenter(style spec.Kind, line *text.Line, cols winsize.Cols) 
 	size := dynamic.MapOr(delSpec.Args()[spec.KeyJustifyCenterSize], cols)
 	txt := delSpec.Args()[spec.KeyJustifyCenterText].Text()
 
-	fragSize := text.FragsMeasure(cols, line.Text...)
+	fragSize := frag.Measure(cols, line.Text...)
 
 	available := size.Sub(fragSize)
 	available = max(0, available)
@@ -62,7 +63,7 @@ func sinkLinePaddingCenter(style spec.Kind, line *text.Line, cols winsize.Cols) 
 	if left > 0 {
 		paddLeft := spec.JustifyRight(left, txt)
 		line.UnshiftFrags(
-			*text.EmptyFrag().AddSpec(paddLeft),
+			*frag.Empty().AddSpec(paddLeft),
 		)
 	}
 
@@ -70,7 +71,7 @@ func sinkLinePaddingCenter(style spec.Kind, line *text.Line, cols winsize.Cols) 
 	if right > 0 {
 		paddRight := spec.JustifyLeft(right, txt)
 		line.PushFrags(
-			*text.EmptyFrag().AddSpec(paddRight),
+			*frag.Empty().AddSpec(paddRight),
 		)
 	}
 

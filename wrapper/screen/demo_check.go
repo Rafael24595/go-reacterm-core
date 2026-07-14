@@ -8,6 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 func NewDemoCheck() screen.Node {
@@ -20,10 +21,10 @@ func NewDemoCheck() screen.Node {
 	}
 
 	options := []input.CheckOption{
-		input.NewCheckOption("1", *text.NewFrag("Check 1")),
-		input.NewCheckOption("2", *text.NewFrag("Check 2")),
-		input.NewCheckOption("3", *text.NewFrag("Check 3")),
-		input.NewCheckOption("4", *text.NewFrag("Check 4")),
+		input.NewCheckOption("1", *frag.New("Check 1")),
+		input.NewCheckOption("2", *frag.New("Check 2")),
+		input.NewCheckOption("3", *frag.New("Check 3")),
+		input.NewCheckOption("4", *frag.New("Check 4")),
 	}
 
 	node := checkmenu.New().

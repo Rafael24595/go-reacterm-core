@@ -1,4 +1,4 @@
-package text
+package frag
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
@@ -13,7 +13,7 @@ type Frag struct {
 	Spec spec.Spec
 }
 
-func NewFrag(text string) *Frag {
+func New(text string) *Frag {
 	return &Frag{
 		Text: text,
 		Atom: atom.None,
@@ -21,16 +21,16 @@ func NewFrag(text string) *Frag {
 	}
 }
 
-func EmptyFrag() *Frag {
-	return NewFrag("")
+func Empty() *Frag {
+	return New("")
 }
 
-func FragFromRunes(runes []rune) *Frag {
-	return NewFrag(string(runes))
+func FromRunes(runes []rune) *Frag {
+	return New(string(runes))
 }
 
-func FragFromMeta(other *Frag) *Frag {
-	return EmptyFrag().CopyMeta(other)
+func FromMeta(other *Frag) *Frag {
+	return Empty().CopyMeta(other)
 }
 
 func (f *Frag) CopyMeta(other *Frag) *Frag {
@@ -56,12 +56,12 @@ func (f *Frag) Size() winsize.Cols {
 }
 
 func (f *Frag) Clone() *Frag {
-	clone := FragFromMeta(f)
+	clone := FromMeta(f)
 	clone.Text = f.Text
 	return clone
 }
 
-func FragsMeasure(cols winsize.Cols, frags ...Frag) winsize.Cols {
+func Measure(cols winsize.Cols, frags ...Frag) winsize.Cols {
 	measure := winsize.Cols(0)
 	for _, f := range frags {
 		ctx := spec.LayoutContext{
@@ -73,13 +73,13 @@ func FragsMeasure(cols winsize.Cols, frags ...Frag) winsize.Cols {
 	return measure
 }
 
-func IsZeroFrag(frag Frag) bool {
+func IsZero(frag Frag) bool {
 	return frag.Text == "" &&
 		frag.Atom == atom.None &&
 		frag.Spec.Kind() == spec.KindNone
 }
 
-func IsStructuralFrag(frag Frag) bool {
+func IsStructural(frag Frag) bool {
 	hasStyles := frag.Atom != atom.None || frag.Spec.Kind() != spec.KindNone
 	return frag.Text == "" && hasStyles
 }

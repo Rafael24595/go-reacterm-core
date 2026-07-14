@@ -7,6 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 const Name = "drain_pipeline"
@@ -32,7 +33,7 @@ func UnitFromLines(lines ...text.Line) drawable.Unit {
 	)
 }
 
-func UnitFromFrags(frags ...text.Frag) drawable.Unit {
+func UnitFromFrags(frags ...frag.Frag) drawable.Unit {
 	return UnitFromLines(
 		*text.LineFromFrags(frags...),
 	)
@@ -41,7 +42,7 @@ func UnitFromFrags(frags ...text.Frag) drawable.Unit {
 func UnitFromString(txt ...string) drawable.Unit {
 	return UnitFromLines(
 		*text.LineFromFrags(
-			text.FragsFromString(txt...)...,
+			frag.FromStrings(txt...)...,
 		),
 	)
 }

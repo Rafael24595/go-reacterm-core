@@ -16,6 +16,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 const Name = "modal_unit"
@@ -24,7 +25,7 @@ type ModalUnit struct {
 	loaded     bool
 	lazyLoaded bool
 	text       []text.Line
-	options    []text.Frag
+	options    []frag.Frag
 	limit      uint
 	cursor     uint16
 	unit       drawable.Unit
@@ -35,7 +36,7 @@ func New() *ModalUnit {
 		loaded:     false,
 		lazyLoaded: false,
 		text:       make([]text.Line, 0),
-		options:    make([]text.Frag, 0),
+		options:    make([]frag.Frag, 0),
 		limit:      style.DefaultMaxOpts,
 		cursor:     0,
 		unit:       drawable.Unit{},
@@ -47,7 +48,7 @@ func (u *ModalUnit) AddText(text ...text.Line) *ModalUnit {
 	return u
 }
 
-func (u *ModalUnit) AddOptions(options ...text.Frag) *ModalUnit {
+func (u *ModalUnit) AddOptions(options ...frag.Frag) *ModalUnit {
 	u.options = append(u.options, options...)
 	return u
 }
@@ -83,10 +84,10 @@ func (u *ModalUnit) lazyBoot(size winsize.Winsize) {
 
 	u.lazyLoaded = true
 
-	opts := make([]text.Frag, len(u.options))
+	opts := make([]frag.Frag, len(u.options))
 	for i := range u.options {
 		old := u.options[i]
-		opts[i] = *text.NewFrag(old.Text).
+		opts[i] = *frag.New(old.Text).
 			AddAtom(old.Atom).
 			AddSpec(old.Spec)
 

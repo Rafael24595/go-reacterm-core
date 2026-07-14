@@ -13,12 +13,13 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
-func renderFrags(frags []text.Frag) string {
+func renderFrags(frags []frag.Frag) string {
 	var s strings.Builder
 	for _, f := range frags {
 		s.WriteString(f.Text)
@@ -65,12 +66,12 @@ func renderLine(cols winsize.Cols, mode style.Justify, line text.Line) string {
 }
 
 func TestJustify_UnitBasicSuite(t *testing.T) {
-	unit := UnitFromFrags([]text.Frag{})
+	unit := UnitFromFrags([]frag.Frag{})
 	drawable_test.Test_UnitBasicSuite(t, unit)
 }
 
 func TestAddGaps_SingleFrag(t *testing.T) {
-	frags := text.FragsFromString(
+	frags := frag.FromStrings(
 		"abc",
 	)
 
@@ -87,7 +88,7 @@ func TestAddGaps_SingleFrag(t *testing.T) {
 }
 
 func TestAddGaps_IntercalatedSpaces(t *testing.T) {
-	frags := text.FragsFromString(
+	frags := frag.FromStrings(
 		"aa", "bb", "cc",
 	)
 
@@ -104,7 +105,7 @@ func TestAddGaps_IntercalatedSpaces(t *testing.T) {
 }
 
 func TestAddGaps_Between(t *testing.T) {
-	frags := text.FragsFromString(
+	frags := frag.FromStrings(
 		"aa", "bb", "cc",
 	)
 
@@ -120,7 +121,7 @@ func TestAddGaps_Between(t *testing.T) {
 }
 
 func TestAddGaps_Around(t *testing.T) {
-	frags := text.FragsFromString(
+	frags := frag.FromStrings(
 		"aa", "bb", "cc",
 	)
 
@@ -136,7 +137,7 @@ func TestAddGaps_Around(t *testing.T) {
 }
 
 func TestAddGaps_Overflow_Start(t *testing.T) {
-	frags := text.FragsFromString(
+	frags := frag.FromStrings(
 		"aaaa", "bbbb",
 	)
 
@@ -145,7 +146,7 @@ func TestAddGaps_Overflow_Start(t *testing.T) {
 }
 
 func TestAddGaps_DoesNotMutateOriginal(t *testing.T) {
-	frags := text.FragsFromString(
+	frags := frag.FromStrings(
 		"aa", "bb",
 	)
 
@@ -157,7 +158,7 @@ func TestAddGaps_DoesNotMutateOriginal(t *testing.T) {
 }
 
 func TestJustifyLine_Start(t *testing.T) {
-	frags := text.FragsFromString("aa", "bb", "cc")
+	frags := frag.FromStrings("aa", "bb", "cc")
 	line := justifyLine(10, frags, 6, style.JustifyStart)
 
 	assert.Size(t, 5, line.Text)
@@ -167,7 +168,7 @@ func TestJustifyLine_Start(t *testing.T) {
 }
 
 func TestJustifyLine_End(t *testing.T) {
-	frags := text.FragsFromString("aa", "bb", "cc")
+	frags := frag.FromStrings("aa", "bb", "cc")
 	line := justifyLine(10, frags, 6, style.JustifyEnd)
 
 	assert.Size(t, 5, line.Text)
@@ -177,7 +178,7 @@ func TestJustifyLine_End(t *testing.T) {
 }
 
 func TestJustifyLine_Center(t *testing.T) {
-	frags := text.FragsFromString("aa", "bb", "cc")
+	frags := frag.FromStrings("aa", "bb", "cc")
 	line := justifyLine(10, frags, 6, style.JustifyCenter)
 
 	assert.Size(t, 5, line.Text)
@@ -187,7 +188,7 @@ func TestJustifyLine_Center(t *testing.T) {
 }
 
 func TestJustifyLine_Between(t *testing.T) {
-	frags := text.FragsFromString("aa", "bb", "cc")
+	frags := frag.FromStrings("aa", "bb", "cc")
 	line := justifyLine(10, frags, 6, style.JustifyBetween)
 
 	assert.Size(t, 5, line.Text)
@@ -197,7 +198,7 @@ func TestJustifyLine_Between(t *testing.T) {
 }
 
 func TestJustifyLine_Around(t *testing.T) {
-	frags := text.FragsFromString("aa", "bb", "cc")
+	frags := frag.FromStrings("aa", "bb", "cc")
 	line := justifyLine(18, frags, 6, style.JustifyAround)
 
 	assert.Size(t, 5, line.Text)
@@ -207,7 +208,7 @@ func TestJustifyLine_Around(t *testing.T) {
 }
 
 func TestJustifyLine_Evenly(t *testing.T) {
-	frags := text.FragsFromString("aa", "bb", "cc")
+	frags := frag.FromStrings("aa", "bb", "cc")
 	line := justifyLine(18, frags, 6, style.JustifyEvenly)
 
 	assert.Size(t, 5, line.Text)

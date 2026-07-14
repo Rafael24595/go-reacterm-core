@@ -5,9 +5,10 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
-type FragProvider func(winsize.Cols, ...text.Line) text.Frag
+type FragProvider func(winsize.Cols, ...text.Line) frag.Frag
 
 type Option func(*Config)
 
@@ -27,8 +28,8 @@ func ResolveConfig(opts ...Option) Config {
 func defaultColsConfig() Config {
 	return Config{
 		Position: style.Left,
-		Provider: func(_ winsize.Cols, _ ...text.Line) text.Frag {
-			return *text.NewFrag(marker.DefaultPaddingText)
+		Provider: func(_ winsize.Cols, _ ...text.Line) frag.Frag {
+			return *frag.New(marker.DefaultPaddingText)
 		},
 	}
 }
@@ -39,16 +40,16 @@ func WithPosition(position style.HorizontalPosition) Option {
 	}
 }
 
-func WithText(frag string) Option {
+func WithText(txt string) Option {
 	return WithFrag(
-		*text.NewFrag(frag),
+		*frag.New(txt),
 	)
 }
 
-func WithFrag(frag text.Frag) Option {
+func WithFrag(frg frag.Frag) Option {
 	return func(cfg *Config) {
-		cfg.Provider = func(_ winsize.Cols, _ ...text.Line) text.Frag {
-			return frag
+		cfg.Provider = func(_ winsize.Cols, _ ...text.Line) frag.Frag {
+			return frg
 		}
 	}
 }

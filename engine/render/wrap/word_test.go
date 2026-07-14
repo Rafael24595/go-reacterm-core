@@ -8,6 +8,7 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 func wordsToString(words []word, frags []wordFrag) string {
@@ -49,70 +50,70 @@ func TestSplitLineWords(t *testing.T) {
 		{
 			name: "single word",
 			line: text.LineFromFrags(
-				text.FragsFromString("Golang")...,
+				frag.FromStrings("Golang")...,
 			),
 			expected: []string{"Golang"},
 		},
 		{
 			name: "word split across frags",
 			line: text.LineFromFrags(
-				text.FragsFromString("Z", "ig", "lang")...,
+				frag.FromStrings("Z", "ig", "lang")...,
 			),
 			expected: []string{"Ziglang"},
 		},
 		{
 			name: "two words with space",
 			line: text.LineFromFrags(
-				text.FragsFromString("hello cargo")...,
+				frag.FromStrings("hello cargo")...,
 			),
 			expected: []string{"hello", " ", "cargo"},
 		},
 		{
 			name: "multiple spaces preserved",
 			line: text.LineFromFrags(
-				text.FragsFromString("hello   golangci")...,
+				frag.FromStrings("hello   golangci")...,
 			),
 			expected: []string{"hello", "   ", "golangci"},
 		},
 		{
 			name: "spaces across frags",
 			line: text.LineFromFrags(
-				text.FragsFromString("hello", "  ", "zig")...,
+				frag.FromStrings("hello", "  ", "zig")...,
 			),
 			expected: []string{"hello", "  ", "zig"},
 		},
 		{
 			name: "styled per character",
 			line: text.LineFromFrags(
-				text.FragsFromString("r", "u", "s", "t", "c")...,
+				frag.FromStrings("r", "u", "s", "t", "c")...,
 			),
 			expected: []string{"rustc"},
 		},
 		{
 			name: "leading and trailing spaces",
 			line: text.LineFromFrags(
-				text.FragsFromString("  Golang  ")...,
+				frag.FromStrings("  Golang  ")...,
 			),
 			expected: []string{"  ", "Golang", "  "},
 		},
 		{
 			name: "single word across frags",
 			line: text.LineFromFrags(
-				*text.NewFrag("Go"),
-				*text.NewFrag("lang "),
-				*text.NewFrag("Zig"),
-				*text.NewFrag("la"),
-				*text.NewFrag("ng"),
+				*frag.New("Go"),
+				*frag.New("lang "),
+				*frag.New("Zig"),
+				*frag.New("la"),
+				*frag.New("ng"),
 			),
 			expected: []string{"Golang", " ", "Ziglang"},
 		},
 		{
 			name: "single long word across frags",
 			line: text.LineFromFrags(
-				*text.NewFrag("supercali"),
-				*text.NewFrag("fragilis"),
-				*text.NewFrag("ticexpia"),
-				*text.NewFrag("lidocious"),
+				*frag.New("supercali"),
+				*frag.New("fragilis"),
+				*frag.New("ticexpia"),
+				*frag.New("lidocious"),
 			),
 			expected: []string{
 				"supercalifragilisticexpialidocious",
@@ -144,8 +145,8 @@ func TestSplitLineWords_EmptyLine(t *testing.T) {
 
 func TestSplitLineWords_EmptyFragIgnored(t *testing.T) {
 	line := text.LineFromFrags(
-		*text.NewFrag(""),
-		*text.NewFrag("Golang"),
+		*frag.New(""),
+		*frag.New("Golang"),
 	)
 
 	words, frags := splitLineWords(line)
@@ -157,7 +158,7 @@ func TestSplitLineWords_EmptyFragIgnored(t *testing.T) {
 
 func TestSplitLineWords_OnlySpaces(t *testing.T) {
 	line := text.LineFromFrags(
-		*text.NewFrag("   "),
+		*frag.New("   "),
 	)
 
 	words, frags := splitLineWords(line)
@@ -169,8 +170,8 @@ func TestSplitLineWords_OnlySpaces(t *testing.T) {
 
 func TestSplitLineWords_StyleChangeRequiresFragSplit(t *testing.T) {
 	line := text.LineFromFrags(
-		*text.NewFrag("Zig").AddAtom(atom.Bold),
-		*text.NewFrag("lang").AddAtom(atom.Bold),
+		*frag.New("Zig").AddAtom(atom.Bold),
+		*frag.New("lang").AddAtom(atom.Bold),
 	)
 
 	words, frags := splitLineWords(line)
@@ -184,9 +185,9 @@ func TestSplitLineWords_StyleChangeRequiresFragSplit(t *testing.T) {
 
 func TestSplitLineWords_PreservesStylesAcrossFrags(t *testing.T) {
 	line := text.LineFromFrags(
-		*text.NewFrag("ru"),
-		*text.NewFrag("st").AddAtom(atom.Select),
-		*text.NewFrag("up"),
+		*frag.New("ru"),
+		*frag.New("st").AddAtom(atom.Select),
+		*frag.New("up"),
 	)
 
 	words, frags := splitLineWords(line)
@@ -201,9 +202,9 @@ func TestSplitLineWords_PreservesStylesAcrossFrags(t *testing.T) {
 
 func TestSplitLineWords_MultipleSpaceFragsKeepStyles(t *testing.T) {
 	line := text.LineFromFrags(
-		*text.NewFrag(" ").AddAtom(atom.Bold),
-		*text.NewFrag(" ").AddAtom(atom.Select),
-		*text.NewFrag("c").AddAtom(atom.Bold),
+		*frag.New(" ").AddAtom(atom.Bold),
+		*frag.New(" ").AddAtom(atom.Select),
+		*frag.New("c").AddAtom(atom.Bold),
 	)
 
 	words, frags := splitLineWords(line)
@@ -229,7 +230,7 @@ func TestSplitLineWords_MultipleSpaceFragsKeepStyles(t *testing.T) {
 
 func TestSplitLineWords_FinalFlushPreservesStyles(t *testing.T) {
 	line := text.LineFromFrags(
-		*text.NewFrag("c++").AddAtom(atom.Bold),
+		*frag.New("c++").AddAtom(atom.Bold),
 	)
 
 	words, frags := splitLineWords(line)
@@ -325,10 +326,10 @@ func BenchmarkSplitLineWords_ManySpaces(b *testing.B) {
 }
 
 func BenchmarkSplitLineWords_ManyFrags(b *testing.B) {
-	frags := make([]text.Frag, 1000)
+	frags := make([]frag.Frag, 1000)
 
 	for i := range frags {
-		frags[i] = *text.NewFrag("hello ")
+		frags[i] = *frag.New("hello ")
 	}
 
 	line := text.Line{
@@ -344,7 +345,7 @@ func BenchmarkSplitLineWords_ManyFrags(b *testing.B) {
 
 func BenchmarkSplitLineWords(b *testing.B) {
 	line := text.LineFromFrags(
-		text.FragsFromString(
+		frag.FromStrings(
 			"Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
 				"Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
 		)...,

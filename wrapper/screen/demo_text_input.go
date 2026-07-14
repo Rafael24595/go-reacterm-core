@@ -2,13 +2,13 @@ package wrapper_screen
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 
 	text_screen "github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/text"
 )
 
 func NewDemoTextInput() screen.Node {
-	label := text.FragsFromString("Ipsum")
+	label := frag.FromStrings("Ipsum")
 	return text_screen.NewInput().
 		SetName("textinput - amet").
 		EnableBlinking().

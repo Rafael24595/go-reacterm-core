@@ -9,6 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
@@ -19,10 +20,10 @@ func TestFocusInitTransformer_FocusAtStart(t *testing.T) {
 		Lines: []text.Line{
 			*text.NewLine("base_01"),
 			*text.LineFromFrags(
-				*text.NewFrag("base").
+				*frag.New("base").
 					AddAtom(atom.Focus),
-				*text.NewFrag("_"),
-				*text.NewFrag("02"),
+				*frag.New("_"),
+				*frag.New("02"),
 			),
 			*text.NewLine("base_03"),
 		},
@@ -51,10 +52,10 @@ func TestFocusInitTransformer_FocusAtEnd(t *testing.T) {
 			*text.NewLine("base_01"),
 			*text.NewLine("base_02"),
 			*text.LineFromFrags(
-				*text.NewFrag("base"),
-				*text.NewFrag("_").
+				*frag.New("base"),
+				*frag.New("_").
 					AddAtom(atom.Focus),
-				*text.NewFrag("03"),
+				*frag.New("03"),
 			),
 		},
 		Batch: 1,

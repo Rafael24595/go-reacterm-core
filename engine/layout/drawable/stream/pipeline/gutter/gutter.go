@@ -6,6 +6,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 const Name = "gutter_pipeline"
@@ -17,8 +18,8 @@ func DrawTransformer(opts ...Option) pipeline.DrawTransformer {
 	rightMeasure := runes.Measure(meta.right)
 	measure := leftMeasure + rightMeasure
 
-	leftFrag := text.NewFrag(meta.left)
-	rightFrag := text.NewFrag(meta.right)
+	leftFrg := frag.New(meta.left)
+	rightFrg := frag.New(meta.right)
 
 	return func(size winsize.Winsize, unit drawable.Unit) ([]text.Line, bool) {
 		if measure >= size.Cols {
@@ -33,10 +34,10 @@ func DrawTransformer(opts ...Option) pipeline.DrawTransformer {
 		lines, hasNext := unit.Drawable.Draw(fixedSize)
 		for i := range lines {
 			if leftMeasure > 0 {
-				lines[i].UnshiftFrags(*leftFrag)
+				lines[i].UnshiftFrags(*leftFrg)
 			}
 			if rightMeasure > 0 {
-				lines[i].PushFrags(*rightFrag)
+				lines[i].PushFrags(*rightFrg)
 			}
 		}
 

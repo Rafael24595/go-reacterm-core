@@ -16,6 +16,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
@@ -113,7 +114,7 @@ func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...text.Line) []text.Li
 
 	specCover := spec.ExtendLeft(measure)
 	cover := text.LineFromFrags(
-		*text.NewFrag(u.separator.Top).AddSpec(specCover),
+		*frag.New(u.separator.Top).AddSpec(specCover),
 	)
 
 	result := make([]text.Line, 0)
@@ -141,11 +142,11 @@ func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...text.Line) []text.Li
 }
 
 func (u *BoxUnit) wrapLine(line text.Line) text.Line {
-	frags := make([]text.Frag, 0)
+	frags := make([]frag.Frag, 0)
 
-	frags = append(frags, *text.NewFrag(u.separator.Left))
+	frags = append(frags, *frag.New(u.separator.Left))
 	frags = append(frags, line.Text...)
-	frags = append(frags, *text.NewFrag(u.separator.Right))
+	frags = append(frags, *frag.New(u.separator.Right))
 
 	line.Text = frags
 

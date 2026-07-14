@@ -9,9 +9,10 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
-type rowPositioner func([]text.Line, text.Frag, winsize.Rows) []text.Line
+type rowPositioner func([]text.Line, frag.Frag, winsize.Rows) []text.Line
 
 var rowPositionerMap = map[style.VerticalPosition]rowPositioner{
 	style.Top:    rowsToTop,
@@ -40,40 +41,40 @@ func Rows(hint hint.Size[winsize.Rows], opts ...rows.Option) transform.Transform
 	}
 }
 
-func rowsToTop(lines []text.Line, frag text.Frag, padding winsize.Rows) []text.Line {
-	newLines := paddingLines(padding, frag)
+func rowsToTop(lines []text.Line, frg frag.Frag, padding winsize.Rows) []text.Line {
+	newLines := paddingLines(padding, frg)
 	copy(newLines, lines)
 	return newLines
 }
 
-func rowsToBottom(lines []text.Line, frag text.Frag, padding winsize.Rows) []text.Line {
+func rowsToBottom(lines []text.Line, frg frag.Frag, padding winsize.Rows) []text.Line {
 	rest := padding.Sub(
 		winsize.Rows(len(lines)),
 	)
 
-	newLines := paddingLines(rest, frag)
+	newLines := paddingLines(rest, frg)
 	return append(newLines, lines...)
 }
 
-func rowsToMiddle(lines []text.Line, frag text.Frag, padding winsize.Rows) []text.Line {
+func rowsToMiddle(lines []text.Line, frg frag.Frag, padding winsize.Rows) []text.Line {
 	rest := padding.Sub(
 		winsize.Rows(len(lines)),
 	)
 
 	half := rest / 2
 
-	top := paddingLines(half, frag)
-	bottom := paddingLines(rest.Sub(half), frag)
+	top := paddingLines(half, frg)
+	bottom := paddingLines(rest.Sub(half), frg)
 
 	newLines := append(top, lines...)
 	return append(newLines, bottom...)
 }
 
-func paddingLines(rows winsize.Rows, frag text.Frag) []text.Line {
+func paddingLines(rows winsize.Rows, frg frag.Frag) []text.Line {
 	result := make([]text.Line, rows)
 
 	for i := range result {
-		result[i].Text = append(result[i].Text, frag)
+		result[i].Text = append(result[i].Text, frg)
 	}
 
 	return result

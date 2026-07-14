@@ -9,6 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
@@ -39,7 +40,7 @@ func NextIndexedLine(
 	cursor, rest := wrap.NextLine(fixedCols, lines)
 	if cursor != nil {
 		cursor.UnshiftFrags(
-			*text.NewFrag(prefix),
+			*frag.New(prefix),
 		)
 	}
 

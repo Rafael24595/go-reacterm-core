@@ -8,7 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/test/support/mock"
 
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
@@ -64,9 +64,9 @@ func TestCheckMenu_SwitchState_WithLimit(t *testing.T) {
 	menu := New().
 		Limit(2).
 		AddOptions(
-			input.NewCheckOption("1", *text.NewFrag("option 1")),
-			input.NewCheckOption("2", *text.NewFrag("option 2")),
-			input.NewCheckOption("3", *text.NewFrag("option 3")),
+			input.NewCheckOption("1", *frag.New("option 1")),
+			input.NewCheckOption("2", *frag.New("option 2")),
+			input.NewCheckOption("3", *frag.New("option 3")),
 		)
 
 	menu.clock = clock.Now

@@ -8,6 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/styler"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 type Standard struct {
@@ -28,7 +29,7 @@ func (r Standard) Render(lines []text.Line, size winsize.Winsize) []string {
 	for i, line := range lines {
 		text := format.NewText(
 			r.renderLineFrags(line, size),
-			text.FragsMeasure(size.Cols, line.Text...),
+			frag.Measure(size.Cols, line.Text...),
 		)
 
 		buffer[i] = r.spec.Apply(line.Spec, size, text)
@@ -56,7 +57,7 @@ func (r Standard) renderLineFrags(line text.Line, size winsize.Winsize) string {
 
 		spec := r.spec.Apply(f.Spec, lineSize, txt)
 
-		fragSize := text.FragsMeasure(size.Cols, f)
+		fragSize := frag.Measure(size.Cols, f)
 		lineSize.Cols = lineSize.Cols.Sub(fragSize)
 
 		if atoms != f.Atom && len(frags) != 0 {

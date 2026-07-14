@@ -7,6 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 type word struct {
@@ -27,13 +28,13 @@ func splitLineWords(line *text.Line) ([]word, []wordFrag) {
 
 	wordStart := 0
 
-	flushFrag := func(frag text.Frag) {
+	flushFrag := func(frg frag.Frag) {
 		if sb.Len() == 0 {
 			return
 		}
 
-		f := text.NewFrag(sb.String()).
-			CopyMeta(&frag)
+		f := frag.New(sb.String()).
+			CopyMeta(&frg)
 
 		frags = append(frags, *newWordFrag(f))
 		sb.Reset()
@@ -52,12 +53,12 @@ func splitLineWords(line *text.Line) ([]word, []wordFrag) {
 		wordStart = len(frags)
 	}
 
-	for _, frag := range line.Text {
-		if frag.Atom.HasAny(atom.Wrap) || text.IsStructuralFrag(frag) {
-			flushFrag(frag)
+	for _, frg := range line.Text {
+		if frg.Atom.HasAny(atom.Wrap) || frag.IsStructural(frg) {
+			flushFrag(frg)
 			flushWord()
 
-			frags = append(frags, *newWordFrag(&frag))
+			frags = append(frags, *newWordFrag(&frg))
 
 			words = append(words, word{
 				start: uint32(wordStart),
@@ -70,11 +71,11 @@ func splitLineWords(line *text.Line) ([]word, []wordFrag) {
 			continue
 		}
 
-		for _, r := range frag.Text {
+		for _, r := range frg.Text {
 			isSpace := unicode.IsSpace(r)
 
 			if hasState && isSpace != lastSpace {
-				flushFrag(frag)
+				flushFrag(frg)
 				flushWord()
 			}
 
@@ -84,7 +85,7 @@ func splitLineWords(line *text.Line) ([]word, []wordFrag) {
 			sb.WriteRune(r)
 		}
 
-		flushFrag(frag)
+		flushFrag(frg)
 	}
 
 	flushWord()

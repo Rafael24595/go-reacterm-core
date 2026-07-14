@@ -9,6 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/sink"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
@@ -268,7 +269,7 @@ func (u *HStackUnit) inheritCols(
 	}
 
 	line := block.lines[lineIndex]
-	if text.FragsMeasure(size.Cols, line.Text...) != 0 {
+	if frag.Measure(size.Cols, line.Text...) != 0 {
 		return 0
 	}
 

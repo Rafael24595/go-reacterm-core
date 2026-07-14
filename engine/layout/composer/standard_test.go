@@ -14,6 +14,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
@@ -39,11 +40,11 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 		),
 	)
 
-	frag := text.FragsFromString("INPUT")
+	frg := frag.FromStrings("INPUT")
 	mock := &drawable_test.MockUnit{
 		Status: false,
 		Lines: []text.Line{
-			*text.LineFromFrags(frag...),
+			*text.LineFromFrags(frg...),
 		},
 	}
 
@@ -68,7 +69,7 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 	for i := 1; i < len(lines)-1; i++ {
 		width := winsize.Cols(0)
 		for _, f := range lines[i].Text {
-			width += text.FragsMeasure(size.Cols, f)
+			width += frag.Measure(size.Cols, f)
 		}
 
 		assert.LessOrEqual(t, size.Cols, width)
@@ -101,7 +102,7 @@ func TestStandard_InitializeLayers(t *testing.T) {
 		layer.Fixed[winsize.Rows](1),
 	)
 
-	frag := text.FragsFromString("X")
+	frag := frag.FromStrings("X")
 	mock := &drawable_test.MockUnit{
 		Status: false,
 		Lines: []text.Line{

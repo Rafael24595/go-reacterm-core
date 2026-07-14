@@ -12,6 +12,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 const Name = "check_menu_unit"
@@ -99,7 +100,7 @@ func (u *CheckMenuUnit) wipe() {
 	u.unit.Drawable.Wipe()
 }
 
-func (u *CheckMenuUnit) makeVertical(opts []text.Frag) drawable.Unit {
+func (u *CheckMenuUnit) makeVertical(opts []frag.Frag) drawable.Unit {
 	lines := make([]text.Line, len(opts))
 	for i := range opts {
 		lines[i] = *text.LineFromFrags(opts[i])
@@ -107,15 +108,15 @@ func (u *CheckMenuUnit) makeVertical(opts []text.Frag) drawable.Unit {
 	return line.UnitFromLines(lines...)
 }
 
-func (u *CheckMenuUnit) makeHorizontal(opts []text.Frag) drawable.Unit {
+func (u *CheckMenuUnit) makeHorizontal(opts []frag.Frag) drawable.Unit {
 	return justify.New(opts).
 		Justify(u.distribution.Justify).
 		MaxOpts(u.distribution.Limit).
 		ToUnit()
 }
 
-func (u *CheckMenuUnit) addStyles() []text.Frag {
-	frags := make([]text.Frag, len(u.options))
+func (u *CheckMenuUnit) addStyles() []frag.Frag {
+	frags := make([]frag.Frag, len(u.options))
 
 	for i := range frags {
 		status := u.meta.Unchecked
@@ -128,7 +129,7 @@ func (u *CheckMenuUnit) addStyles() []text.Frag {
 			label = marker.DefaultPaddingText + label
 		}
 
-		frags[i] = *text.NewFrag(u.meta.Open + status + u.meta.Close + label).
+		frags[i] = *frag.New(u.meta.Open + status + u.meta.Close + label).
 			CopyMeta(&u.options[i].Label)
 
 		if u.writeMode && i == int(u.cursor) {

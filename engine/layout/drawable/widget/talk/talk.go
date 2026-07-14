@@ -9,6 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
@@ -121,8 +122,8 @@ func (u *TalkUnit) makeLines(
 	ownerLines := wrap.Lines(
 		size.Cols.Sub(3),
 		*text.LineFromFrags(
-			*text.NewFrag(message.Owner),
-			*text.NewFrag(":"),
+			*frag.New(message.Owner),
+			*frag.New(":"),
 		),
 	)
 
@@ -137,7 +138,7 @@ func (u *TalkUnit) makeLines(
 	messageLines := wrap.Lines(
 		size.Cols.Sub(5),
 		*text.LineFromFrags(
-			*text.NewFrag(message.Message),
+			*frag.New(message.Message),
 		),
 	)
 
@@ -181,7 +182,7 @@ func (u *TalkUnit) addFocus(
 
 	if len(targetLines[focusRow].Text) == 0 {
 		targetLines[focusRow].Text = append(
-			targetLines[focusRow].Text, *text.EmptyFrag(),
+			targetLines[focusRow].Text, *frag.Empty(),
 		)
 	}
 

@@ -5,12 +5,12 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 func TestWordFragMeasure_CacheSameCols(t *testing.T) {
 	w := newWordFrag(
-		text.NewFrag("golang"),
+		frag.New("golang"),
 	)
 
 	calls := uint(0)
@@ -31,7 +31,7 @@ func TestWordFragMeasure_CacheSameCols(t *testing.T) {
 
 func TestWordFragMeasure_RecalculateOnColsChange(t *testing.T) {
 	w := newWordFrag(
-		text.NewFrag("golang"),
+		frag.New("golang"),
 	)
 
 	calls := uint(0)
@@ -52,7 +52,7 @@ func TestWordFragMeasure_RecalculateOnColsChange(t *testing.T) {
 
 func TestWordFragMeasure_CacheAfterColsChange(t *testing.T) {
 	w := newWordFrag(
-		text.NewFrag("golang"),
+		frag.New("golang"),
 	)
 
 	calls := uint(0)
@@ -71,7 +71,7 @@ func TestWordFragMeasure_CacheAfterColsChange(t *testing.T) {
 
 func TestWordFragMeasure_RecalculateWhenReturningToPreviousCols(t *testing.T) {
 	w := newWordFrag(
-		text.NewFrag("golang"),
+		frag.New("golang"),
 	)
 
 	calls := uint(0)

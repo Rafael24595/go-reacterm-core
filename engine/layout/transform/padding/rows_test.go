@@ -10,7 +10,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
-	
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
@@ -19,7 +20,7 @@ func TestRowPositioners(t *testing.T) {
 		*text.NewLine("Golang"),
 	}
 
-	frag := *text.EmptyFrag()
+	frg := *frag.Empty()
 
 	tests := []struct {
 		name         string
@@ -54,7 +55,7 @@ func TestRowPositioners(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			positioner := rowPositionerMap[tt.position]
-			gotLines := positioner(inputLines, frag, tt.paddingTotal)
+			gotLines := positioner(inputLines, frg, tt.paddingTotal)
 
 			assert.Size(t, tt.wantLength, gotLines)
 

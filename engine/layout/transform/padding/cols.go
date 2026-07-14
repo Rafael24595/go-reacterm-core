@@ -10,6 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 type colPositioner func(winsize.Cols) (winsize.Cols, winsize.Cols)
@@ -27,7 +28,7 @@ func Cols(hint hint.Size[winsize.Cols], opts ...cols.Option) transform.Transform
 
 		for i := range lines {
 			remaining := fixedMin.Sub(
-				text.FragsMeasure(size.Cols, lines[i].Text...),
+				frag.Measure(size.Cols, lines[i].Text...),
 			)
 
 			if remaining == 0 {
@@ -63,7 +64,7 @@ func AddColsPadding(
 ) text.Line {
 	cfg := cols.ResolveConfig(opts...)
 
-	frag := cfg.Provider(size, line)
+	frg := cfg.Provider(size, line)
 
 	positioner, ok := colPositionerMap[cfg.Position]
 	if !ok {
@@ -73,10 +74,10 @@ func AddColsPadding(
 
 	paddingL, paddingR := positioner(size)
 
-	frags := make([]text.Frag, 0, 3)
+	frags := make([]frag.Frag, 0, 3)
 
 	if paddingL > 0 {
-		frag := frag.Clone().
+		frag := frg.Clone().
 			AddSpec(spec.ExtendRight(paddingL))
 		frags = append(frags, *frag)
 	}
@@ -84,7 +85,7 @@ func AddColsPadding(
 	frags = append(frags, line.Text...)
 
 	if paddingR > 0 {
-		frag := frag.Clone().
+		frag := frg.Clone().
 			AddSpec(spec.ExtendRight(paddingR))
 		frags = append(frags, *frag)
 	}

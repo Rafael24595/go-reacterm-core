@@ -11,7 +11,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
@@ -25,7 +25,7 @@ func TestIndexMenu_ToNode(t *testing.T) {
 		AddOptions(
 			input.NewMenuOption(
 				"opt_1",
-				*text.NewFrag("Option 1"),
+				*frag.New("Option 1"),
 				voidAction,
 			),
 		).
@@ -81,12 +81,12 @@ func TestIndexMenu_AddTitleAndOptions(t *testing.T) {
 		AddOptions(
 			input.NewMenuOption(
 				"opt_1",
-				*text.NewFrag("Option 1"),
+				*frag.New("Option 1"),
 				voidAction,
 			),
 			input.NewMenuOption(
 				"opt_2",
-				*text.NewFrag("Option 2"),
+				*frag.New("Option 2"),
 				voidAction,
 			),
 		)
@@ -99,12 +99,12 @@ func TestIndexMenu_SetCursor_Clamp(t *testing.T) {
 		AddOptions(
 			input.NewMenuOption(
 				"opt_a",
-				*text.NewFrag("A"),
+				*frag.New("A"),
 				voidAction,
 			),
 			input.NewMenuOption(
 				"opt_b",
-				*text.NewFrag("B"),
+				*frag.New("B"),
 				voidAction,
 			),
 		)
@@ -128,12 +128,12 @@ func TestIndexMenu_CursorNavigation(t *testing.T) {
 		AddOptions(
 			input.NewMenuOption(
 				"opt_a",
-				*text.NewFrag("A"),
+				*frag.New("A"),
 				voidAction,
 			),
 			input.NewMenuOption(
 				"opt_b",
-				*text.NewFrag("B"),
+				*frag.New("B"),
 				voidAction,
 			),
 		)
@@ -165,7 +165,7 @@ func TestIndexMenu_Action(t *testing.T) {
 		AddOptions(
 			input.NewMenuOption(
 				"opt_go",
-				*text.NewFrag("Go"),
+				*frag.New("Go"),
 				func() screen.Node { return expected },
 			),
 		)
@@ -185,12 +185,12 @@ func TestIndexMenu_ViewCursor(t *testing.T) {
 		AddOptions(
 			input.NewMenuOption(
 				"opt_a",
-				*text.NewFrag("A"),
+				*frag.New("A"),
 				voidAction,
 			),
 			input.NewMenuOption(
 				"opt_b",
-				*text.NewFrag("B"),
+				*frag.New("B"),
 				voidAction,
 			),
 		)

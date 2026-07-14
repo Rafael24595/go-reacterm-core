@@ -2,21 +2,21 @@ package wrap
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 type measureResolver func(winsize.Cols, ...wordFrag) winsize.Cols
 
 type wordFrag struct {
-	Base     *text.Frag
+	Base     *frag.Frag
 	measured bool
 	cols     winsize.Cols
 	measure  winsize.Cols
 }
 
-func newWordFrag(frag *text.Frag) *wordFrag {
+func newWordFrag(frg *frag.Frag) *wordFrag {
 	return &wordFrag{
-		Base:     frag,
+		Base:     frg,
 		measured: false,
 		cols:     0,
 		measure:  0,
@@ -40,7 +40,7 @@ func (w *wordFrag) measureWith(
 	return w.measure
 }
 
-func toWordFrag(frags ...text.Frag) []wordFrag {
+func toWordFrag(frags ...frag.Frag) []wordFrag {
 	result := make([]wordFrag, len(frags))
 	for i, f := range frags {
 		result[i] = *newWordFrag(&f)
@@ -48,7 +48,7 @@ func toWordFrag(frags ...text.Frag) []wordFrag {
 	return result
 }
 
-func appendFrags(dst []text.Frag, src []wordFrag) []text.Frag {
+func appendFrags(dst []frag.Frag, src []wordFrag) []frag.Frag {
 	for _, f := range src {
 		dst = append(dst, *f.Base)
 	}
@@ -58,7 +58,7 @@ func appendFrags(dst []text.Frag, src []wordFrag) []text.Frag {
 func fragMeasure(cols winsize.Cols, frags ...wordFrag) winsize.Cols {
 	measure := winsize.Cols(0)
 	for _, f := range frags {
-		measure += text.FragsMeasure(cols, *f.Base)
+		measure += frag.Measure(cols, *f.Base)
 	}
 	return measure
 }

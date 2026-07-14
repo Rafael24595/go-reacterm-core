@@ -8,6 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 func NormalizeLines(lines ...text.Line) []LayoutLine {
@@ -40,16 +41,16 @@ func MaterializeEmpty(
 	lines ...LayoutLine,
 ) []LayoutLine {
 	for i, line := range lines {
-		if text.FragsMeasure(size.Cols, line.Source.Text...) != 0 {
+		if frag.Measure(size.Cols, line.Source.Text...) != 0 {
 			continue
 		}
 
-		lastFrag := text.Frag{}
+		lastFrag := frag.Frag{}
 		if len(line.Source.Text) > 0 {
 			lastFrag = line.Source.Text[len(line.Source.Text)-1]
 		}
 
-		frag := *text.NewFrag(placeholder).
+		frag := *frag.New(placeholder).
 			CopyMeta(&lastFrag)
 
 		lines[i].Source.PushFrags(frag)
@@ -180,19 +181,19 @@ func splitLineFeeds(line *text.Line, order bool) []text.Line {
 		current.SetOrder(index)
 	}
 
-	for _, frag := range line.Text {
-		if !strings.ContainsAny(frag.Text, "\n\r") {
-			current.PushFrags(frag)
+	for _, frg := range line.Text {
+		if !strings.ContainsAny(frg.Text, "\n\r") {
+			current.PushFrags(frg)
 			continue
 		}
 
-		normalizedText := runes.NormalizeLineFeed(frag.Text)
+		normalizedText := runes.NormalizeLineFeed(frg.Text)
 
 		parts := strings.Split(normalizedText, "\n")
 		for i, part := range parts {
 			if part != "" {
 				current.PushFrags(
-					*text.NewFrag(part).CopyMeta(&frag),
+					*frag.New(part).CopyMeta(&frg),
 				)
 			}
 
@@ -215,24 +216,24 @@ func splitLineFeeds(line *text.Line, order bool) []text.Line {
 	return result
 }
 
-func splitFragAt(frag *wordFrag, cols winsize.Cols) (*wordFrag, *wordFrag) {
+func splitFragAt(frg *wordFrag, cols winsize.Cols) (*wordFrag, *wordFrag) {
 	if cols <= 0 {
-		newFrag := text.EmptyFrag().
-			CopyMeta(frag.Base)
+		newFrag := frag.Empty().
+			CopyMeta(frg.Base)
 
-		return newWordFrag(newFrag), frag
+		return newWordFrag(newFrag), frg
 	}
 
-	byteIndex, canBreak := runes.RuneIndexToByteIndex(frag.Base.Text, offset.Offset(cols))
-	if !canBreak || int(byteIndex) >= len(frag.Base.Text) {
-		return frag, nil
+	byteIndex, canBreak := runes.RuneIndexToByteIndex(frg.Base.Text, offset.Offset(cols))
+	if !canBreak || int(byteIndex) >= len(frg.Base.Text) {
+		return frg, nil
 	}
 
-	taken := text.NewFrag(frag.Base.Text[:byteIndex]).
-		CopyMeta(frag.Base)
+	taken := frag.New(frg.Base.Text[:byteIndex]).
+		CopyMeta(frg.Base)
 
-	rest := text.NewFrag(frag.Base.Text[byteIndex:]).
-		CopyMeta(frag.Base)
+	rest := frag.New(frg.Base.Text[byteIndex:]).
+		CopyMeta(frg.Base)
 
 	return newWordFrag(taken), newWordFrag(rest)
 }

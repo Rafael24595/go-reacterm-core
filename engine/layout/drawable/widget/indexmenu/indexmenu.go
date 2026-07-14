@@ -12,6 +12,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 const Name = "index_menu_unit"
@@ -20,13 +21,13 @@ type IndexMenuUnit struct {
 	loaded  bool
 	pointer Pointer
 	meta    marker.IndexMeta
-	options []text.Frag
+	options []frag.Frag
 	cursor  uint16
 	unit    drawable.Unit
 }
 
-func New(options []text.Frag) *IndexMenuUnit {
-	clone := make([]text.Frag, len(options))
+func New(options []frag.Frag) *IndexMenuUnit {
+	clone := make([]frag.Frag, len(options))
 	copy(clone, options)
 
 	return &IndexMenuUnit{
@@ -39,7 +40,7 @@ func New(options []text.Frag) *IndexMenuUnit {
 	}
 }
 
-func UnitFromOptions(options []text.Frag) drawable.Unit {
+func UnitFromOptions(options []frag.Frag) drawable.Unit {
 	return New(options).ToUnit()
 }
 
@@ -84,16 +85,16 @@ func (u *IndexMenuUnit) boot() {
 			}
 		}
 
-		alignFrag := text.EmptyFrag().
+		alignFrag := frag.Empty().
 			AddSpec(spec.JustifyRight(2))
 
 		indexFrag := u.makeIndex(i, winsize.Cols(digits)).
 			AddAtom(selectAtom)
 
-		spacerFrag := text.NewFrag(marker.DefaultPaddingText).
+		spacerFrag := frag.New(marker.DefaultPaddingText).
 			AddAtom(selectAtom)
 
-		titleFrag := text.NewFrag(o.Text).
+		titleFrag := frag.New(o.Text).
 			AddAtom(focusAtom, selectAtom)
 
 		lines = append(lines,
@@ -112,7 +113,7 @@ func (u *IndexMenuUnit) boot() {
 	u.unit = unit
 }
 
-func (u *IndexMenuUnit) makeIndex(cursor int, digits winsize.Cols) *text.Frag {
+func (u *IndexMenuUnit) makeIndex(cursor int, digits winsize.Cols) *frag.Frag {
 	if u.meta.Kind == marker.Numeric {
 		return u.makeNumericIndex(cursor, digits)
 	}
@@ -124,35 +125,35 @@ func (u *IndexMenuUnit) makeIndex(cursor int, digits winsize.Cols) *text.Frag {
 	return u.makeCustomIndex(cursor)
 }
 
-func (u *IndexMenuUnit) makeCustomIndex(cursor int) *text.Frag {
+func (u *IndexMenuUnit) makeCustomIndex(cursor int) *frag.Frag {
 	data := u.meta.Index
 	if cursor == int(u.cursor) {
 		data = u.meta.Cursor
 	}
 
-	return text.NewFrag(data)
+	return frag.New(data)
 }
 
-func (u *IndexMenuUnit) makeNumericIndex(cursor int, digits winsize.Cols) *text.Frag {
+func (u *IndexMenuUnit) makeNumericIndex(cursor int, digits winsize.Cols) *frag.Frag {
 	text := format.TextFromAny(cursor + 1)
 	return u.makeTextIndex(cursor, digits, text)
 }
 
-func (u *IndexMenuUnit) makeAlphabeticIndex(cursor int, digits winsize.Cols) *text.Frag {
+func (u *IndexMenuUnit) makeAlphabeticIndex(cursor int, digits winsize.Cols) *frag.Frag {
 	text := format.TextFromAny(
 		format.NumberToAlpha(cursor),
 	)
 	return u.makeTextIndex(cursor, digits, text)
 }
 
-func (u *IndexMenuUnit) makeTextIndex(cursor int, digits winsize.Cols, text format.Text) *text.Frag {
+func (u *IndexMenuUnit) makeTextIndex(cursor int, digits winsize.Cols, text format.Text) *frag.Frag {
 	filler := marker.DefaultPaddingText
 	data := format.JustifyLeft(digits, text, filler)
 	return u.makeCommonIndex(cursor, data)
 }
 
-func (u *IndexMenuUnit) makeCommonIndex(cursor int, txt string) *text.Frag {
-	index := text.NewFrag(txt + ".- ")
+func (u *IndexMenuUnit) makeCommonIndex(cursor int, txt string) *frag.Frag {
+	index := frag.New(txt + ".- ")
 	if u.pointer == pointerBold && cursor == int(u.cursor) {
 		index.Atom |= atom.Bold
 	}

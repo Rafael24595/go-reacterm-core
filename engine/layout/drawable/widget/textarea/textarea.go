@@ -12,6 +12,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
@@ -126,8 +127,8 @@ func (u *TextAreaUnit) wipe() {
 func (u *TextAreaUnit) resolveFrags(
 	renderBuffer []rune,
 	start, end offset.Offset,
-) []text.Frag {
-	frags := make([]text.Frag, 0, 6)
+) []frag.Frag {
+	frags := make([]frag.Frag, 0, 6)
 
 	bufferLen := offset.Offset(len(renderBuffer))
 
@@ -136,7 +137,7 @@ func (u *TextAreaUnit) resolveFrags(
 
 	if start > 0 {
 		frags = append(frags,
-			*text.NewFrag(string(renderBuffer[:start])),
+			*frag.New(string(renderBuffer[:start])),
 		)
 	}
 
@@ -151,7 +152,7 @@ func (u *TextAreaUnit) resolveFrags(
 
 	if int(end) < len(renderBuffer) {
 		frags = append(frags,
-			*text.NewFrag(string(renderBuffer[end:])),
+			*frag.New(string(renderBuffer[end:])),
 		)
 	}
 

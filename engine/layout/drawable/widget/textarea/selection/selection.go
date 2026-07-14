@@ -8,11 +8,11 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
 type Result struct {
-	Frags []text.Frag
+	Frags []frag.Frag
 	End   offset.Offset
 }
 
@@ -54,7 +54,7 @@ func (r Renderer) Resolve(caret *input.TextCursor) Result {
 }
 
 func (r Renderer) resolveBackward() Result {
-	frags := make([]text.Frag, 0, 2)
+	frags := make([]frag.Frag, 0, 2)
 	focusAtom := atom.Focus
 
 	selection := r.selection()
@@ -62,12 +62,14 @@ func (r Renderer) resolveBackward() Result {
 		focusAtom = atom.None
 
 		frags = append(frags,
-			frag(marker.PrintableCaretRunes, r.blink, atom.Focus),
+			*frag.FromRunes(marker.PrintableCaretRunes).
+				AddAtom(r.blink, atom.Focus),
 		)
 	}
 
 	frags = append(frags,
-		frag(selection, r.blink, focusAtom),
+		*frag.FromRunes(selection).
+			AddAtom(r.blink, focusAtom),
 	)
 
 	return Result{
@@ -86,17 +88,19 @@ func (r Renderer) resolveForward() Result {
 }
 
 func (r Renderer) resolveForwardNonEnter() Result {
-	frags := make([]text.Frag, 0, 3)
+	frags := make([]frag.Frag, 0, 3)
 
 	selection := r.selection()
 	if len(selection) > 1 {
 		frags = append(frags,
-			frag(selection[:len(selection)-1], r.blink),
+			*frag.FromRunes(selection[:len(selection)-1]).
+				AddAtom(r.blink),
 		)
 	}
 
 	frags = append(frags,
-		frag(selection[len(selection)-1:], r.blink, atom.Focus),
+		*frag.FromRunes(selection[len(selection)-1:]).
+			AddAtom(r.blink, atom.Focus),
 	)
 
 	return Result{
@@ -106,20 +110,23 @@ func (r Renderer) resolveForwardNonEnter() Result {
 }
 
 func (r Renderer) resolveForwardEnter() Result {
-	frags := make([]text.Frag, 0, 3)
+	frags := make([]frag.Frag, 0, 3)
 
 	selection := r.selection()
 	if len(selection) == 1 {
 		frags = append(frags,
-			frag(marker.PrintableCaretRunes, r.blink),
+			*frag.FromRunes(marker.PrintableCaretRunes).
+				AddAtom(r.blink),
 		)
 	}
 
 	footer, nextEnd := r.resolveEnterFooter()
 
 	frags = append(frags,
-		frag(selection, r.blink),
-		frag(footer, r.blink, atom.Focus),
+		*frag.FromRunes(selection).
+			AddAtom(r.blink),
+		*frag.FromRunes(footer).
+			AddAtom(r.blink, atom.Focus),
 	)
 
 	return Result{
@@ -143,17 +150,12 @@ func (r Renderer) resolveEnterFooter() ([]rune, offset.Offset) {
 func (r Renderer) resolveEmpty() Result {
 	assert.Unreachable("selection should have at least one character")
 
-	frags := []text.Frag{
-		*text.EmptyFrag().AddAtom(atom.Focus),
+	frags := []frag.Frag{
+		*frag.Empty().AddAtom(atom.Focus),
 	}
 
 	return Result{
 		Frags: frags,
 		End:   r.end,
 	}
-}
-
-func frag(runes []rune, atoms ...atom.Atom) text.Frag {
-	return *text.FragFromRunes(runes).
-		AddAtom(atoms...)
 }
