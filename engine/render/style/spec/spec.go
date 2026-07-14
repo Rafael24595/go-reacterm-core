@@ -34,6 +34,10 @@ func (s Spec) Args() argMap {
 	return s.args.Items()
 }
 
+func (s Spec) Hash() uint64 {
+	return s.hash
+}
+
 func calcHash(hasher hash.Hasher, kinds Kind, args args) hash.Hasher {
 	for _, desc := range kindRegistry {
 		if kinds&desc.Kind == 0 {
