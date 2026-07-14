@@ -1,6 +1,7 @@
 package frag
 
 import (
+	"github.com/Rafael24595/go-reacterm-core/engine/app/hash"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
@@ -11,26 +12,63 @@ type Frag struct {
 	Text string
 	Atom atom.Atom
 	Spec spec.Spec
+	hash uint64
 }
 
 func New(text string) *Frag {
+	return newFrag(
+		text,
+		atom.None,
+		spec.Empty(),
+	)
+}
+
+func newFrag(
+	text string,
+	atom atom.Atom,
+	spec spec.Spec,
+) *Frag {
+	hash := calcHash(
+		hash.New(),
+		text,
+		atom,
+		spec,
+	)
+
 	return &Frag{
 		Text: text,
-		Atom: atom.None,
-		Spec: spec.Empty(),
+		Atom: atom,
+		Spec: spec,
+		hash: hash.Sum64(),
 	}
 }
 
 func Empty() *Frag {
-	return New("")
+	return FromString("")
+}
+
+func FromString(runes string) *Frag {
+	return newFrag(runes, atom.None, spec.Empty())
 }
 
 func FromRunes(runes []rune) *Frag {
-	return New(string(runes))
+	return FromString(string(runes))
 }
 
 func FromMeta(other *Frag) *Frag {
 	return Empty().CopyMeta(other)
+}
+
+func calcHash(
+	hasher hash.Hasher,
+	text string,
+	atom atom.Atom,
+	spec spec.Spec,
+) hash.Hasher {
+	hasher = hasher.String(text)
+	hasher = hasher.Uint8(atom.Uint8())
+	hasher = hasher.Uint64(spec.Hash())
+	return hasher
 }
 
 func (f *Frag) CopyMeta(other *Frag) *Frag {
