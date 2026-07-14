@@ -13,6 +13,10 @@ const (
 	Break
 )
 
+func (s Atom) Uint8() uint8 {
+	return uint8(s)
+}
+
 func Merge(styles ...Atom) Atom {
 	var merged Atom
 	for _, style := range styles {
