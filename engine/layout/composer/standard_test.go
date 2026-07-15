@@ -9,7 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/layer"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/inputline"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/line"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/lines"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
@@ -32,7 +32,7 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 	)
 
 	vm.Kernel.Push(
-		line.UnitFromLines(
+		lines.UnitFromLines(
 			*text.NewLine("=", spec.Cover()),
 			*text.NewLine("LINE TWO", spec.AlignRight()),
 			*text.NewLine("LINE THREE IS LONG", spec.AlignRight()),
@@ -90,7 +90,7 @@ func TestStandard_InitializeLayers(t *testing.T) {
 		layer.Fixed[winsize.Rows](1),
 	)
 	vm.Kernel.PushWithOpts(
-		line.UnitFromLines(
+		lines.UnitFromLines(
 			*text.NewLine("rust", spec.AlignRight()),
 		),
 		layer.Fixed[winsize.Rows](1),

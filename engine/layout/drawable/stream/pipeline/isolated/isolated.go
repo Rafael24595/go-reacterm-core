@@ -2,7 +2,7 @@ package isolated
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/line"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/lines"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/wipe"
@@ -21,8 +21,8 @@ func Unit(unit drawable.Unit) drawable.Unit {
 	return unt
 }
 
-func UnitFromLines(lines ...text.Line) drawable.Unit {
+func UnitFromLines(lns ...text.Line) drawable.Unit {
 	return Unit(
-		line.FromLines(lines...).ToUnit(),
+		lines.FromLines(lns...).ToUnit(),
 	)
 }

@@ -1,4 +1,4 @@
-package line
+package lines
 
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"

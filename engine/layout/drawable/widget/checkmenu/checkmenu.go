@@ -4,7 +4,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/line"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/lines"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/justify"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
@@ -101,11 +101,11 @@ func (u *CheckMenuUnit) wipe() {
 }
 
 func (u *CheckMenuUnit) makeVertical(opts []frag.Frag) drawable.Unit {
-	lines := make([]text.Line, len(opts))
+	lns := make([]text.Line, len(opts))
 	for i := range opts {
-		lines[i] = *text.LineFromFrags(opts[i])
+		lns[i] = *text.LineFromFrags(opts[i])
 	}
-	return line.UnitFromLines(lines...)
+	return lines.UnitFromLines(lns...)
 }
 
 func (u *CheckMenuUnit) makeHorizontal(opts []frag.Frag) drawable.Unit {

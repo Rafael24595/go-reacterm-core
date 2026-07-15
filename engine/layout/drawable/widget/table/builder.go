@@ -4,6 +4,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/heap"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/lines"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/isolated"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/table"
@@ -13,8 +14,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
-
-	drawable_line "github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/line"
 )
 
 type cellRenderer func(col int, header string) frag.Frag
@@ -82,7 +81,7 @@ func (b builder) render(size winsize.Winsize) []section {
 			header: isolated.UnitFromLines(
 				*topCover, *headerRow, *topCover,
 			),
-			rows: drawable_line.UnitFromLines(bodyRows...),
+			rows: lines.UnitFromLines(bodyRows...),
 			footer: isolated.UnitFromLines(
 				*bottomCover,
 			),

@@ -1,4 +1,4 @@
-package line
+package lines
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/format"

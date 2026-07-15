@@ -4,7 +4,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/line"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/lines"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/textarea/selection"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
@@ -97,10 +97,10 @@ func (u *TextAreaUnit) lazyBoot(size winsize.Winsize) {
 
 	base := text.LineFromFrags(frags...)
 
-	lines := u.makeLines(base)
-	lines = wrap.MaterializeEmpty(size, marker.DefaultPaddingText, lines...)
+	result := u.makeLines(base)
+	result = wrap.MaterializeEmpty(size, marker.DefaultPaddingText, result...)
 
-	unit := line.UnitFromLayout(lines...)
+	unit := lines.UnitFromLayout(result...)
 	unit.Drawable.Boot()
 
 	u.unit = unit

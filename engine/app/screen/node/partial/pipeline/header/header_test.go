@@ -7,18 +7,18 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
-	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/line"
+	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/lines"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/stack"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
-	
+
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestHeader_InsertsBefore(t *testing.T) {
 	vm := viewmodel.ViewModel{
 		Header: stack.NewVStack(
-			line.UnitFromLines(
+			lines.UnitFromLines(
 				*text.NewLine("line_01"),
 			),
 		),
@@ -48,7 +48,7 @@ func TestHeader_InsertsBefore(t *testing.T) {
 func TestHeader_InsertsAfter(t *testing.T) {
 	vm := viewmodel.ViewModel{
 		Header: stack.NewVStack(
-			line.UnitFromLines(
+			lines.UnitFromLines(
 				*text.NewLine("line_01"),
 			),
 		),
