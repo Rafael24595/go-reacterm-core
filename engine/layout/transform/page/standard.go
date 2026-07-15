@@ -53,7 +53,7 @@ func NewPageRenderer(strategy pager.PagerStrategy) Renderer {
 					status.Work.Advance()
 
 					status.MarkFocus(
-						line.LinesHasAtom(atom.Focus, fix),
+						line.HasAtom(atom.Focus, fix),
 					)
 
 					if !status.IsFull() {

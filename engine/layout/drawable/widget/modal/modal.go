@@ -96,7 +96,7 @@ func (u *ModalUnit) lazyBoot(size winsize.Winsize) {
 		}
 	}
 
-	measure := line.MaxLineMeasure(size.Cols, u.text...) + 1
+	measure := line.MaxMeasure(size.Cols, u.text...) + 1
 	text := formatLines(u.text...)
 
 	title := drain.UnitFromLines(text...)

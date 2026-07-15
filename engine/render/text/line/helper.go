@@ -7,7 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
-func MaxLineMeasure(cols winsize.Cols, lines ...Line) winsize.Cols {
+func MaxMeasure(cols winsize.Cols, lines ...Line) winsize.Cols {
 	size := winsize.Cols(0)
 	for _, l := range lines {
 		measure := frag.Measure(cols, l.Text...)
@@ -38,7 +38,7 @@ func ApplyLineSpec(style spec.Spec, lines ...Line) []Line {
 	return lines
 }
 
-func LinesHasAtom(atm atom.Atom, lines ...Line) bool {
+func HasAtom(atm atom.Atom, lines ...Line) bool {
 	for _, line := range lines {
 		if FragsHasAtom(atm, line.Text...) {
 			return true

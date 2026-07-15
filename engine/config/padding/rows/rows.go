@@ -57,7 +57,7 @@ func WithFillFrag(txt ...string) Option {
 
 	return func(cfg *Config) {
 		cfg.Provider = func(size winsize.Winsize, lines ...line.Line) frag.Frag {
-			measure := line.MaxLineMeasure(size.Cols, lines...)
+			measure := line.MaxMeasure(size.Cols, lines...)
 			return *frag.New(data).
 				AddSpec(spec.ExtendRight(measure))
 		}

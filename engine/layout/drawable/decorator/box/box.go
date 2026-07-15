@@ -109,7 +109,7 @@ func (u *BoxUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...line.Line) []line.Line {
 	vertical := horizontalStaticSize(u.separator)
 
-	maxLine := line.MaxLineMeasure(size.Cols, lines...)
+	maxLine := line.MaxMeasure(size.Cols, lines...)
 	measure := min(maxLine+vertical, size.Cols)
 
 	specCover := spec.ExtendLeft(measure)
