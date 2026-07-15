@@ -10,18 +10,22 @@ import (
 )
 
 func NewDemoHeader() pipeline.Transformer {
-	lines := line.ApplyLineSpec(
-		spec.AlignCenter(),
+	return header.Transformer(
+		pipeline.Before,
 		*line.FromFrags(
-			*frag.New("Lorem ipsum dolor sit amet").AddAtom(atom.Upper),
+			*frag.New("Lorem ipsum dolor sit amet").
+				AddSpec(spec.AlignCenter()).
+				AddAtom(atom.Upper),
 		),
 		*line.FromFrags(
-			*frag.New("consectetur adipiscing").AddAtom(atom.Upper),
+			*frag.New("consectetur adipiscing").
+				AddSpec(spec.AlignCenter()).
+				AddAtom(atom.Upper),
 		),
 		*line.FromFrags(
-			*frag.New("-Server 00-").AddAtom(atom.Upper),
+			*frag.New("-Server 00-").
+				AddSpec(spec.AlignCenter()).
+				AddAtom(atom.Upper),
 		),
 	)
-
-	return header.Transformer(pipeline.Before, lines...)
 }
