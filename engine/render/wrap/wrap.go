@@ -7,19 +7,19 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-func NormalizeLines(lines ...text.Line) []LayoutLine {
+func NormalizeLines(lines ...line.Line) []LayoutLine {
 	return normalizeLines(false, lines...)
 }
 
-func NormalizeLinesWithOrder(lines ...text.Line) []LayoutLine {
+func NormalizeLinesWithOrder(lines ...line.Line) []LayoutLine {
 	return normalizeLines(true, lines...)
 }
 
-func normalizeLines(order bool, lines ...text.Line) []LayoutLine {
+func normalizeLines(order bool, lines ...line.Line) []LayoutLine {
 	buffer := make([]LayoutLine, 0, len(lines))
 
 	for _, line := range lines {
@@ -60,12 +60,12 @@ func MaterializeEmpty(
 	return lines
 }
 
-func Line(cols winsize.Cols, line *text.Line) []text.Line {
-	return wrapLine(cols, *line, make([]text.Line, 0))
+func Line(cols winsize.Cols, lne *line.Line) []line.Line {
+	return wrapLine(cols, *lne, make([]line.Line, 0))
 }
 
-func Lines(cols winsize.Cols, lines ...text.Line) []text.Line {
-	result := make([]text.Line, 0)
+func Lines(cols winsize.Cols, lines ...line.Line) []line.Line {
+	result := make([]line.Line, 0)
 
 	for _, line := range lines {
 		result = wrapLine(cols, line, result)
@@ -74,7 +74,7 @@ func Lines(cols winsize.Cols, lines ...text.Line) []text.Line {
 	return result
 }
 
-func wrapLine(cols winsize.Cols, line text.Line, dst []text.Line) []text.Line {
+func wrapLine(cols winsize.Cols, line line.Line, dst []line.Line) []line.Line {
 	words, frags := splitLineWords(&line)
 	layout := NewLayoutLine(&line, words, frags)
 
@@ -89,7 +89,7 @@ func wrapLine(cols winsize.Cols, line text.Line, dst []text.Line) []text.Line {
 	return dst
 }
 
-func NextLine(cols winsize.Cols, lines []LayoutLine) (*text.Line, []LayoutLine) {
+func NextLine(cols winsize.Cols, lines []LayoutLine) (*line.Line, []LayoutLine) {
 	if cols == 0 || len(lines) == 0 {
 		return nil, make([]LayoutLine, 0)
 	}
@@ -105,21 +105,21 @@ func NextLine(cols winsize.Cols, lines []LayoutLine) (*text.Line, []LayoutLine) 
 	return result, remain
 }
 
-func wrapOnce(cols winsize.Cols, line *LayoutLine) (*text.Line, *LayoutLine) {
-	cursor := text.LineFromMeta(line.Source, len(line.Source.Text))
+func wrapOnce(cols winsize.Cols, lne *LayoutLine) (*line.Line, *LayoutLine) {
+	cursor := line.FromMeta(lne.Source, len(lne.Source.Text))
 
 	remaining := cols
 	currentWidth := winsize.Cols(0)
 
 	wordIdx := 0
 
-	for ; wordIdx < len(line.words); wordIdx++ {
-		wordMeasure := line.measure(wordIdx, cols)
+	for ; wordIdx < len(lne.words); wordIdx++ {
+		wordMeasure := lne.measure(wordIdx, cols)
 
 		if wordMeasure <= remaining {
 			cursor.Text = appendFrags(
 				cursor.Text,
-				line.findFrags(wordIdx),
+				lne.findFrags(wordIdx),
 			)
 
 			remaining = remaining.Sub(wordMeasure)
@@ -128,17 +128,17 @@ func wrapOnce(cols winsize.Cols, line *LayoutLine) (*text.Line, *LayoutLine) {
 			continue
 		}
 
-		if shouldWrap(line, wordIdx, currentWidth) {
+		if shouldWrap(lne, wordIdx, currentWidth) {
 			break
 		}
 
-		if ok := line.splitWord(
+		if ok := lne.splitWord(
 			wordIdx,
 			cols,
 			remaining,
 		); ok {
 			cursor.Text = appendFrags(
-				cursor.Text, line.findFrags(wordIdx),
+				cursor.Text, lne.findFrags(wordIdx),
 			)
 		}
 
@@ -147,14 +147,14 @@ func wrapOnce(cols winsize.Cols, line *LayoutLine) (*text.Line, *LayoutLine) {
 		break
 	}
 
-	if wordIdx >= len(line.words) {
+	if wordIdx >= len(lne.words) {
 		return cursor, nil
 	}
 
 	rest := &LayoutLine{
-		Source: line.Source,
-		frags:  line.frags,
-		words:  line.words[wordIdx:],
+		Source: lne.Source,
+		frags:  lne.frags,
+		words:  lne.words[wordIdx:],
 	}
 
 	return cursor, rest
@@ -168,20 +168,20 @@ func shouldWrap(line *LayoutLine, wordIdx int, currentWidth winsize.Cols) bool {
 	return currentWidth > 0
 }
 
-func splitLineFeeds(line *text.Line, order bool) []text.Line {
-	result := make([]text.Line, 0)
+func splitLineFeeds(lne *line.Line, order bool) []line.Line {
+	result := make([]line.Line, 0)
 
 	index := uint16(1)
-	if line.Order != 0 {
-		index = line.Order
+	if lne.Order != 0 {
+		index = lne.Order
 	}
 
-	current := text.LineFromMeta(line)
+	current := line.FromMeta(lne)
 	if order {
 		current.SetOrder(index)
 	}
 
-	for _, frg := range line.Text {
+	for _, frg := range lne.Text {
 		if !strings.ContainsAny(frg.Text, "\n\r") {
 			current.PushFrags(frg)
 			continue
@@ -204,7 +204,7 @@ func splitLineFeeds(line *text.Line, order bool) []text.Line {
 			result = append(result, *current)
 			index += 1
 
-			current = text.LineFromMeta(line)
+			current = line.FromMeta(lne)
 			if order {
 				current.SetOrder(index)
 			}

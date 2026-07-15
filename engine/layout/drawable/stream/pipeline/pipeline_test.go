@@ -7,7 +7,7 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
@@ -17,11 +17,11 @@ func mockInitStep(s winsize.Winsize, d drawable.Unit) drawable.Unit {
 	return d
 }
 
-func mockDrawStep(s winsize.Winsize, d drawable.Unit) ([]text.Line, bool) {
+func mockDrawStep(s winsize.Winsize, d drawable.Unit) ([]line.Line, bool) {
 	return d.Drawable.Draw(s)
 }
 
-func mockDataStep(_ winsize.Winsize, _ drawable.Unit, l []text.Line, s bool) ([]text.Line, bool) {
+func mockDataStep(_ winsize.Winsize, _ drawable.Unit, l []line.Line, s bool) ([]line.Line, bool) {
 	return l, s
 }
 
@@ -71,9 +71,9 @@ func TestPipeline_BootStepTransformation(t *testing.T) {
 	mock1 := &drawable_test.MockUnit{}
 
 	mock2 := &drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("base_01"),
-			*text.NewLine("base_02"),
+		Lines: []line.Line{
+			*line.New("base_01"),
+			*line.New("base_02"),
 		},
 		Status: true,
 	}
@@ -95,18 +95,18 @@ func TestPipeline_BootStepTransformation(t *testing.T) {
 
 func TestPipeline_DrawStepTransformation(t *testing.T) {
 	mock := &drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("base_01"),
-			*text.NewLine("base_02"),
-			*text.NewLine("base_03"),
+		Lines: []line.Line{
+			*line.New("base_01"),
+			*line.New("base_02"),
+			*line.New("base_03"),
 		},
 		Status: true,
 	}
 
-	mockLine := text.NewLine("mock_line_01")
+	mockLine := line.New("mock_line_01")
 	unit := New(mock.ToUnit()).
-		SetDrawStep(func(_ winsize.Winsize, _ drawable.Unit) ([]text.Line, bool) {
-			return []text.Line{*mockLine}, false
+		SetDrawStep(func(_ winsize.Winsize, _ drawable.Unit) ([]line.Line, bool) {
+			return []line.Line{*mockLine}, false
 		}).
 		ToUnit()
 
@@ -120,23 +120,23 @@ func TestPipeline_DrawStepTransformation(t *testing.T) {
 }
 
 func TestPipeline_DataStepsChain(t *testing.T) {
-	baseLine := text.NewLine("base_01")
+	baseLine := line.New("base_01")
 	mock := &drawable_test.MockUnit{
-		Lines: []text.Line{
+		Lines: []line.Line{
 			*baseLine,
 		},
 		Status: true,
 	}
 
-	mockLine1 := text.NewLine("mock_line_01")
-	mockLine2 := text.NewLine("mock_line_02")
+	mockLine1 := line.New("mock_line_01")
+	mockLine2 := line.New("mock_line_02")
 
 	unit := New(mock.ToUnit()).
 		PushDataSteps(
-			func(_ winsize.Winsize, _ drawable.Unit, l []text.Line, s bool) ([]text.Line, bool) {
+			func(_ winsize.Winsize, _ drawable.Unit, l []line.Line, s bool) ([]line.Line, bool) {
 				return append(l, *mockLine1), s
 			},
-			func(_ winsize.Winsize, _ drawable.Unit, l []text.Line, s bool) ([]text.Line, bool) {
+			func(_ winsize.Winsize, _ drawable.Unit, l []line.Line, s bool) ([]line.Line, bool) {
 				return append(l, *mockLine2), !s
 			},
 		).ToUnit()

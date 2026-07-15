@@ -8,19 +8,19 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform/padding"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 func Rows(rows hint.Size[winsize.Rows], opts ...rows.Option) pipeline.DataTransformer {
 	transformer := padding.Rows(rows, opts...)
-	return func(size winsize.Winsize, _ drawable.Unit, lines []text.Line, hasNext bool) ([]text.Line, bool) {
+	return func(size winsize.Winsize, _ drawable.Unit, lines []line.Line, hasNext bool) ([]line.Line, bool) {
 		return transformer(size, lines), hasNext
 	}
 }
 
 func Cols(cols hint.Size[winsize.Cols], opts ...cols.Option) pipeline.DataTransformer {
 	transformer := padding.Cols(cols, opts...)
-	return func(size winsize.Winsize, _ drawable.Unit, lines []text.Line, hasNext bool) ([]text.Line, bool) {
+	return func(size winsize.Winsize, _ drawable.Unit, lines []line.Line, hasNext bool) ([]line.Line, bool) {
 		return transformer(size, lines), hasNext
 	}
 }

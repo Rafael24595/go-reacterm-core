@@ -1,7 +1,7 @@
 package lines
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
@@ -13,7 +13,7 @@ func eagerNormalizer(lines ...wrap.LayoutLine) linesNormalizer {
 	}
 }
 
-func lazyNormalizer(lines ...text.Line) linesNormalizer {
+func lazyNormalizer(lines ...line.Line) linesNormalizer {
 	return func() []wrap.LayoutLine {
 		return wrap.NormalizeLines(lines...)
 	}

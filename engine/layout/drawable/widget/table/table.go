@@ -8,7 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/table"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const Name = "table_unit"
@@ -80,11 +80,11 @@ func (u *TableUnit) lazyBoot(size winsize.Winsize) {
 	}
 }
 
-func (u *TableUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *TableUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
 	if size.Rows == 0 {
-		return make([]text.Line, 0), false
+		return make([]line.Line, 0), false
 	}
 
 	u.lazyBoot(size)
@@ -92,7 +92,7 @@ func (u *TableUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 	headers, footers, remaining := u.drawStatic(size)
 	bodies, hasNext := u.drawDynamic(size, remaining)
 
-	result := make([]text.Line, size.Rows)
+	result := make([]line.Line, size.Rows)
 	cursor := 0
 
 	for i, body := range bodies {
@@ -108,9 +108,9 @@ func (u *TableUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 	return result, hasNext
 }
 
-func (u *TableUnit) drawStatic(size winsize.Winsize) ([][]text.Line, [][]text.Line, int) {
-	headers := make([][]text.Line, len(u.sections))
-	footers := make([][]text.Line, len(u.sections))
+func (u *TableUnit) drawStatic(size winsize.Winsize) ([][]line.Line, [][]line.Line, int) {
+	headers := make([][]line.Line, len(u.sections))
+	footers := make([][]line.Line, len(u.sections))
 
 	remaining := int(size.Rows)
 	for i, s := range u.sections {
@@ -126,17 +126,17 @@ func (u *TableUnit) drawStatic(size winsize.Winsize) ([][]text.Line, [][]text.Li
 	return headers, footers, remaining
 }
 
-func (u *TableUnit) drawDynamic(size winsize.Winsize, remaining int) ([][]text.Line, bool) {
+func (u *TableUnit) drawDynamic(size winsize.Winsize, remaining int) ([][]line.Line, bool) {
 	empty := make(map[int]int)
 
 	sections := len(u.sections)
 	if sections == 0 {
-		return make([][]text.Line, 0), false
+		return make([][]line.Line, 0), false
 	}
 
 	fixRemaining := remaining - (remaining % sections)
 
-	bodies := make([][]text.Line, sections)
+	bodies := make([][]line.Line, sections)
 	for fixRemaining > 0 && len(empty) != sections {
 		for i, s := range u.sections {
 			if fixRemaining <= 0 {

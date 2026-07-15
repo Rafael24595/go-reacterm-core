@@ -9,7 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	pager_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/pager"
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
@@ -30,7 +30,7 @@ func TestNewPageRenderer_NoEngineCall(t *testing.T) {
 	strategy := mockStrategy.ToStrategy()
 
 	mock := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 1),
+		Lines: make([]line.Line, 1),
 	}
 
 	renderer := NewPageRenderer(strategy)
@@ -60,7 +60,7 @@ func TestNewPageRenderer_EngineCall(t *testing.T) {
 	strategy := mockStrategy.ToStrategy()
 
 	mock := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 7),
+		Lines: make([]line.Line, 7),
 		Batch: 5,
 	}
 
@@ -87,7 +87,7 @@ func TestNewPageRenderer_EarlyPredicate(t *testing.T) {
 	strategy := mockStrategy.ToStrategy()
 
 	mock := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 10),
+		Lines: make([]line.Line, 10),
 		Batch: 5,
 	}
 
@@ -121,10 +121,10 @@ func TestNewPageRenderer_WithLineOverflow(t *testing.T) {
 	strategy := mockStrategy.ToStrategy()
 
 	mock := &drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("golang"),
-			*text.NewLine("ziglang"),
-			*text.NewLine("rust"),
+		Lines: []line.Line{
+			*line.New("golang"),
+			*line.New("ziglang"),
+			*line.New("rust"),
 		},
 		Batch: 1,
 	}

@@ -5,8 +5,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/dict"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 var specStylesTable = dict.NewInmutableLinkedMap(
@@ -15,7 +15,7 @@ var specStylesTable = dict.NewInmutableLinkedMap(
 	dict.P(spec.KindJustifyCenter, sinkLinePaddingCenter),
 )
 
-func sinkLinePaddingLeft(style spec.Kind, line *text.Line, _ winsize.Cols) *text.Line {
+func sinkLinePaddingLeft(style spec.Kind, line *line.Line, _ winsize.Cols) *line.Line {
 	resSpec, delSpec := spec.Erase(line.Spec, style)
 	if delSpec.Kind() == spec.KindNone {
 		return line
@@ -29,7 +29,7 @@ func sinkLinePaddingLeft(style spec.Kind, line *text.Line, _ winsize.Cols) *text
 	return line
 }
 
-func sinkLinePaddingRight(style spec.Kind, line *text.Line, _ winsize.Cols) *text.Line {
+func sinkLinePaddingRight(style spec.Kind, line *line.Line, _ winsize.Cols) *line.Line {
 	resSpec, delSpec := spec.Erase(line.Spec, style)
 	if delSpec.Kind() == spec.KindNone {
 		return line
@@ -43,7 +43,7 @@ func sinkLinePaddingRight(style spec.Kind, line *text.Line, _ winsize.Cols) *tex
 	return line
 }
 
-func sinkLinePaddingCenter(style spec.Kind, line *text.Line, cols winsize.Cols) *text.Line {
+func sinkLinePaddingCenter(style spec.Kind, line *line.Line, cols winsize.Cols) *line.Line {
 	resSpec, delSpec := spec.Erase(line.Spec, style)
 	if delSpec.Kind() == spec.KindNone {
 		return line
@@ -78,7 +78,7 @@ func sinkLinePaddingCenter(style spec.Kind, line *text.Line, cols winsize.Cols) 
 	return line
 }
 
-func ApplySinks(line *text.Line, cols winsize.Cols) *text.Line {
+func ApplySinks(line *line.Line, cols winsize.Cols) *line.Line {
 	for k, t := range specStylesTable.All() {
 		if !line.Spec.Kind().HasAny(k) {
 			continue

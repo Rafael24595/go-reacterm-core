@@ -6,15 +6,15 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform/padding"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 func Cols(hintSize hint.Size[winsize.Cols], opts ...cols.Option) transform.Transformer {
 	cfg := cols.ResolveConfig(opts...)
 
-	return func(size winsize.Winsize, lines []text.Line) []text.Line {
-		newLines := make([]text.Line, len(lines))
+	return func(size winsize.Winsize, lines []line.Line) []line.Line {
+		newLines := make([]line.Line, len(lines))
 
 		margin := hintSize.Min(size.Cols) * HorizontalFactor(cfg.Position)
 

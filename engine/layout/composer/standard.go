@@ -5,14 +5,14 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 func Standard(
 	uiState *state.UIState,
 	vm viewmodel.ViewModel,
 	size winsize.Winsize,
-) (*state.UIState, []text.Line) {
+) (*state.UIState, []line.Line) {
 	header := vm.Header.ToUnit()
 	header.Drawable.Boot()
 	headerLines := drain.UnitEager(size, header)
@@ -26,8 +26,8 @@ func Standard(
 	)
 
 	if staticRows > size.Rows {
-		return uiState, []text.Line{
-			*text.NewLine("Too low resolution"),
+		return uiState, []line.Line{
+			*line.New("Too low resolution"),
 		}
 	}
 
@@ -46,7 +46,7 @@ func Standard(
 		size.Cols,
 	)
 
-	kernelLines := make([]text.Line, dynamicSize.Rows)
+	kernelLines := make([]line.Line, dynamicSize.Rows)
 
 	renderedLines, _ := kernel.Drawable.Draw(dynamicSize)
 	copy(kernelLines, renderedLines)

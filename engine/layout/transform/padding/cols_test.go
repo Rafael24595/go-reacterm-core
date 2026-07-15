@@ -10,8 +10,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/styler"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	render_test "github.com/Rafael24595/go-reacterm-core/test/engine/render"
 )
@@ -68,8 +68,8 @@ func TestColPositioners(t *testing.T) {
 func TestColsTransformer(t *testing.T) {
 	styler := styler.NewDefaultSpec()
 
-	mockLines := []text.Line{
-		*text.NewLine("Golang"),
+	mockLines := []line.Line{
+		*line.New("Golang"),
 	}
 
 	tests := []struct {

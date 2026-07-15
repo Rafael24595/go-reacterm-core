@@ -6,7 +6,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/wipe"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const Name = "isolated_pipeline"
@@ -21,7 +21,7 @@ func Unit(unit drawable.Unit) drawable.Unit {
 	return unt
 }
 
-func UnitFromLines(lns ...text.Line) drawable.Unit {
+func UnitFromLines(lns ...line.Line) drawable.Unit {
 	return Unit(
 		lines.FromLines(lns...).ToUnit(),
 	)

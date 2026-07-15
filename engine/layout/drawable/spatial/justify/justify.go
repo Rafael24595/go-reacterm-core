@@ -9,8 +9,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const (
@@ -83,11 +83,11 @@ func (u *JustifyUnit) wipe() {
 	u.cursor = 0
 }
 
-func (u *JustifyUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *JustifyUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
 	if u.cursor >= uint16(len(u.frags)) {
-		return make([]text.Line, 0), false
+		return make([]line.Line, 0), false
 	}
 
 	maxOpts := int(u.maxOpts)
@@ -109,8 +109,8 @@ func (u *JustifyUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 
 		newRemaining := remaining + spacing + fragSize
 		if fragsLen > 0 && fragsLen >= maxOpts || newRemaining > maxCols {
-			line := justifyLine(maxCols, frags, remaining, u.justify)
-			return []text.Line{*line}, true
+			justify := justifyLine(maxCols, frags, remaining, u.justify)
+			return []line.Line{*justify}, true
 		}
 
 		remaining = newRemaining
@@ -119,12 +119,12 @@ func (u *JustifyUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 		u.cursor += 1
 	}
 
-	line := justifyLine(maxCols, frags, remaining, u.justify)
-	return []text.Line{*line}, u.cursor < uint16(len(u.frags))
+	justify := justifyLine(maxCols, frags, remaining, u.justify)
+	return []line.Line{*justify}, u.cursor < uint16(len(u.frags))
 }
 
-func justifyLine(cols winsize.Cols, frags []frag.Frag, size winsize.Cols, mode style.Justify) *text.Line {
-	line := text.LineFromFrags(
+func justifyLine(cols winsize.Cols, frags []frag.Frag, size winsize.Cols, mode style.Justify) *line.Line {
+	line := line.FromFrags(
 		addGaps(cols, frags, size, mode)...,
 	)
 

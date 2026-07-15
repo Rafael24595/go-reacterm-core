@@ -4,20 +4,20 @@ import (
 	"slices"
 
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 type LayoutLine struct {
-	Source *text.Line
+	Source *line.Line
 	words  []word
 	frags  []wordFrag
 }
 
-func NewLayoutLine(source *text.Line, words []word, frags []wordFrag) *LayoutLine {
+func NewLayoutLine(source *line.Line, words []word, frags []wordFrag) *LayoutLine {
 	return &LayoutLine{
 		Source: source,
 		words:  words,

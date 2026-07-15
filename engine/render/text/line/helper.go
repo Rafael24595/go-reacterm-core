@@ -1,4 +1,4 @@
-package text
+package line
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"

@@ -6,7 +6,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 func TestBuilder_BasicUnit(t *testing.T) {
@@ -16,8 +16,8 @@ func TestBuilder_BasicUnit(t *testing.T) {
 		Name(name).
 		Boot(func() {}).
 		Wipe(func() {}).
-		Draw(func(size winsize.Winsize) ([]text.Line, bool) {
-			return []text.Line{}, false
+		Draw(func(size winsize.Winsize) ([]line.Line, bool) {
+			return []line.Line{}, false
 		}).
 		ToUnit()
 

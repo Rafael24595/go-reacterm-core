@@ -7,17 +7,17 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 func NewDemoCheck() screen.Node {
 	textTitle := "Sed facilisis, leo sit amet molestie congue, justo risus bibendum tortor"
 	sizeTitle := runes.Measure(textTitle)
 
-	title := []text.Line{
-		*text.NewLine(textTitle, spec.AlignLeft()),
-		*text.NewLine("-", spec.Fill(sizeTitle)),
+	title := []line.Line{
+		*line.New(textTitle, spec.AlignLeft()),
+		*line.New("-", spec.Fill(sizeTitle)),
 	}
 
 	options := []input.CheckOption{

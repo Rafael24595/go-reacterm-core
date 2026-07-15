@@ -8,7 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const NameMockUnit = "mock_unit"
@@ -24,8 +24,8 @@ type MockUnit struct {
 	Draw       drawable.DrawFunc
 	DrawCalls  uint
 
-	Lines  []text.Line
-	queue  []text.Line
+	Lines  []line.Line
+	queue  []line.Line
 	Batch  uint
 	Status bool
 }
@@ -58,7 +58,7 @@ func (m *MockUnit) ToUnit() drawable.Unit {
 			},
 		).
 		Draw(
-			func(size winsize.Winsize) ([]text.Line, bool) {
+			func(size winsize.Winsize) ([]line.Line, bool) {
 				m.DrawCalls += 1
 
 				if m.Draw != nil {

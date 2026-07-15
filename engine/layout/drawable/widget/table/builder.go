@@ -12,8 +12,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 type cellRenderer func(col int, header string) frag.Frag
@@ -62,11 +62,11 @@ func (b builder) render(size winsize.Winsize) []section {
 			b.calcRowCapacity(chunk),
 		)
 
-		topCover := text.LineFromFrags(
+		topCover := line.FromFrags(
 			*frag.New(separator.Top).AddSpec(specCover),
 		)
 
-		bottomCover := text.LineFromFrags(
+		bottomCover := line.FromFrags(
 			*frag.New(separator.Bottom).AddSpec(specCover),
 		)
 
@@ -243,7 +243,7 @@ func (b builder) renderHeaders(
 	maxCols table.MaxCols,
 	headers []string,
 	separator marker.TableSeparatorMeta,
-) *text.Line {
+) *line.Line {
 	renderer := func(col int, header string) frag.Frag {
 		maxCol := maxCols[header]
 
@@ -263,12 +263,12 @@ func (b builder) renderBody(
 	headers []string,
 	separator marker.TableSeparatorMeta,
 	cursor *input.MatrixCursor,
-) []text.Line {
+) []line.Line {
 	rows := table.RowCount(
 		headers, b.table.GetColumns(),
 	)
 
-	lines := make([]text.Line, rows)
+	lines := make([]line.Line, rows)
 
 	for row := range rows {
 		renderer := func(col int, header string) frag.Frag {
@@ -288,7 +288,7 @@ func (b builder) renderRow(
 	headers []string,
 	separator marker.TableSeparatorMeta,
 	cellRenderer cellRenderer,
-) *text.Line {
+) *line.Line {
 	headersLen := len(headers)
 	capacity := 2*headersLen + 1
 
@@ -317,7 +317,7 @@ func (b builder) renderRow(
 			AddAtom(atom.Wrap),
 	)
 
-	return text.LineFromFrags(frags...)
+	return line.FromFrags(frags...)
 }
 
 func (b builder) renderCell(

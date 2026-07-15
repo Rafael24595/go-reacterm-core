@@ -6,7 +6,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
@@ -20,13 +20,13 @@ func TestInline_UnitBasicSuite(t *testing.T) {
 
 func TestInline_JoinsChildren(t *testing.T) {
 	mock1 := &drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("go"),
+		Lines: []line.Line{
+			*line.New("go"),
 		},
 	}
 	mock2 := &drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("lang"),
+		Lines: []line.Line{
+			*line.New("lang"),
 		},
 	}
 
@@ -48,13 +48,13 @@ func TestInline_JoinsChildren(t *testing.T) {
 
 func TestInline_JoinsChildrenWithSeparator(t *testing.T) {
 	mock1 := &drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("golang"),
+		Lines: []line.Line{
+			*line.New("golang"),
 		},
 	}
 	mock2 := &drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("ziglang"),
+		Lines: []line.Line{
+			*line.New("ziglang"),
 		},
 	}
 
@@ -76,9 +76,9 @@ func TestInline_JoinsChildrenWithSeparator(t *testing.T) {
 
 func TestInline_MultipleLines(t *testing.T) {
 	mock := &drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("go"),
-			*text.NewLine("lang"),
+		Lines: []line.Line{
+			*line.New("go"),
+			*line.New("lang"),
 		},
 	}
 

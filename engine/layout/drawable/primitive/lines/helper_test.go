@@ -5,9 +5,9 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
-	
+
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
@@ -20,7 +20,7 @@ func TestWrapNextLine_FitWithMeta(t *testing.T) {
 	}
 
 	layout := wrap.NormalizeLines(
-		*text.NewLine("golang").SetOrder(1),
+		*line.New("golang").SetOrder(1),
 	)
 
 	got, remain := NextIndexedLine(10, layout, meta)
@@ -39,7 +39,7 @@ func TestWrapNextLine_SplitWithMeta(t *testing.T) {
 	}
 
 	layout := wrap.NormalizeLines(
-		*text.NewLine("golang rust").SetOrder(1),
+		*line.New("golang rust").SetOrder(1),
 	)
 
 	got, remain := NextIndexedLine(10, layout, meta)
@@ -62,7 +62,7 @@ func TestWrapNextLine_IndexShouldBeLesser(t *testing.T) {
 	}
 
 	layout := wrap.LayoutLine{
-		Source: text.NewLine("golang").SetOrder(1),
+		Source: line.New("golang").SetOrder(1),
 	}
 
 	assert.Panic(t, func() {

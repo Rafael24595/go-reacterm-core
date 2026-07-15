@@ -10,7 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/styler"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	render_test "github.com/Rafael24595/go-reacterm-core/test/engine/render"
 )
@@ -59,9 +59,9 @@ func TestColsLeftTransformer(t *testing.T) {
 				cols.WithPosition(style.Right),
 			)
 
-			lines := make([]text.Line, len(tt.lines))
+			lines := make([]line.Line, len(tt.lines))
 			for i, l := range tt.lines {
-				lines[i] = *text.NewLine(l)
+				lines[i] = *line.New(l)
 			}
 
 			result := transformer(tt.size, lines)
@@ -119,9 +119,9 @@ func TestColsRightTransformer(t *testing.T) {
 				cols.WithPosition(style.Left),
 			)
 
-			lines := make([]text.Line, len(tt.lines))
+			lines := make([]line.Line, len(tt.lines))
 			for i, l := range tt.lines {
-				lines[i] = *text.NewLine(l)
+				lines[i] = *line.New(l)
 			}
 
 			result := transformer(tt.size, lines)
@@ -179,9 +179,9 @@ func TestColsCenterTransformer(t *testing.T) {
 				cols.WithPosition(style.Center),
 			)
 
-			lines := make([]text.Line, len(tt.lines))
+			lines := make([]line.Line, len(tt.lines))
 			for i, l := range tt.lines {
-				lines[i] = *text.NewLine(l)
+				lines[i] = *line.New(l)
 			}
 
 			result := transformer(tt.size, lines)

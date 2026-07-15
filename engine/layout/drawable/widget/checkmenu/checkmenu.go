@@ -11,8 +11,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const Name = "check_menu_unit"
@@ -101,9 +101,9 @@ func (u *CheckMenuUnit) wipe() {
 }
 
 func (u *CheckMenuUnit) makeVertical(opts []frag.Frag) drawable.Unit {
-	lns := make([]text.Line, len(opts))
+	lns := make([]line.Line, len(opts))
 	for i := range opts {
-		lns[i] = *text.LineFromFrags(opts[i])
+		lns[i] = *line.FromFrags(opts[i])
 	}
 	return lines.UnitFromLines(lns...)
 }
@@ -140,7 +140,7 @@ func (u *CheckMenuUnit) addStyles() []frag.Frag {
 	return frags
 }
 
-func (u *CheckMenuUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *CheckMenuUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.initialized, drawable.MessageInitialized)
 
 	return u.unit.Drawable.Draw(size)

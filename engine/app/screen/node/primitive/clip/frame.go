@@ -1,8 +1,8 @@
 package clip
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 type row []frag.Frag
@@ -37,10 +37,10 @@ func TextFrags(texts ...string) row {
 	return frags
 }
 
-func frameToLines(frame Frame) []text.Line {
-	lines := make([]text.Line, len(frame.frags))
+func frameToLines(frame Frame) []line.Line {
+	lines := make([]line.Line, len(frame.frags))
 	for i := range frame.frags {
-		lines[i] = *text.LineFromFrags(
+		lines[i] = *line.FromFrags(
 			frame.frags[i]...,
 		)
 	}

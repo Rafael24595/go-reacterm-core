@@ -14,12 +14,12 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 func NewDemoClip() screen.Node {
-	title := []text.Line{
-		*text.NewLine("=", spec.Cover()),
+	title := []line.Line{
+		*line.New("=", spec.Cover()),
 	}
 
 	clip := clip.New().

@@ -7,7 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/config/layer"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const NameVStack = "vstack_unit"
@@ -171,7 +171,7 @@ func (u *VStackUnit) wipe() {
 	}
 }
 
-func (u *VStackUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *VStackUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
 	u.lazyBoot(size)
@@ -190,8 +190,8 @@ func (u *VStackUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 	return lines, len(u.fixed) > 0
 }
 
-func (u *VStackUnit) makeLines(size winsize.Winsize) ([]text.Line, bool) {
-	buffer := make([]text.Line, 0, size.Rows)
+func (u *VStackUnit) makeLines(size winsize.Winsize) ([]line.Line, bool) {
+	buffer := make([]line.Line, 0, size.Rows)
 	recalcule := false
 
 	for i := range u.fixed {
@@ -220,7 +220,7 @@ func (u *VStackUnit) makeLines(size winsize.Winsize) ([]text.Line, bool) {
 
 		linesLen := winsize.Rows(len(lines))
 		if linesLen < rows && u.fixed[i].Chunk().Sized {
-			padded := make([]text.Line, rows)
+			padded := make([]line.Line, rows)
 			copy(padded, lines)
 			lines = padded
 			linesLen = rows

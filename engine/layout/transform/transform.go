@@ -2,7 +2,7 @@ package transform
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-type Transformer func(size winsize.Winsize, lines []text.Line) []text.Line
+type Transformer func(size winsize.Winsize, lines []line.Line) []line.Line

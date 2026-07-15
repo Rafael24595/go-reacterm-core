@@ -5,20 +5,20 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline/header"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 func NewDemoHeader() pipeline.Transformer {
-	lines := text.ApplyLineSpec(
+	lines := line.ApplyLineSpec(
 		spec.AlignCenter(),
-		*text.LineFromFrags(
+		*line.FromFrags(
 			*frag.New("Lorem ipsum dolor sit amet").AddAtom(atom.Upper),
 		),
-		*text.LineFromFrags(
+		*line.FromFrags(
 			*frag.New("consectetur adipiscing").AddAtom(atom.Upper),
 		),
-		*text.LineFromFrags(
+		*line.FromFrags(
 			*frag.New("-Server 00-").AddAtom(atom.Upper),
 		),
 	)

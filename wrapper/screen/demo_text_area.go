@@ -8,7 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/buffer/processor"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/buffer/rule"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	text_screen "github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/text"
 )
@@ -17,9 +17,9 @@ func NewDemoTextArea() screen.Node {
 	textTitle := "Suspendisse sem arcu"
 	sizeTitle := runes.Measure(textTitle)
 
-	title := []text.Line{
-		*text.NewLine("Suspendisse sem arcu"),
-		*text.NewLine("=", spec.Fill(sizeTitle)),
+	title := []line.Line{
+		*line.New("Suspendisse sem arcu"),
+		*line.New("=", spec.Fill(sizeTitle)),
 	}
 
 	node := text_screen.NewArea().

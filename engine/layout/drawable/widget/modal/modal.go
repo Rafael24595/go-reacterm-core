@@ -15,8 +15,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const Name = "modal_unit"
@@ -24,7 +24,7 @@ const Name = "modal_unit"
 type ModalUnit struct {
 	loaded     bool
 	lazyLoaded bool
-	text       []text.Line
+	text       []line.Line
 	options    []frag.Frag
 	limit      uint
 	cursor     uint16
@@ -35,7 +35,7 @@ func New() *ModalUnit {
 	return &ModalUnit{
 		loaded:     false,
 		lazyLoaded: false,
-		text:       make([]text.Line, 0),
+		text:       make([]line.Line, 0),
 		options:    make([]frag.Frag, 0),
 		limit:      style.DefaultMaxOpts,
 		cursor:     0,
@@ -43,7 +43,7 @@ func New() *ModalUnit {
 	}
 }
 
-func (u *ModalUnit) AddText(text ...text.Line) *ModalUnit {
+func (u *ModalUnit) AddText(text ...line.Line) *ModalUnit {
 	u.text = append(u.text, text...)
 	return u
 }
@@ -96,7 +96,7 @@ func (u *ModalUnit) lazyBoot(size winsize.Winsize) {
 		}
 	}
 
-	measure := text.MaxLineMeasure(size.Cols, u.text...) + 1
+	measure := line.MaxLineMeasure(size.Cols, u.text...) + 1
 	text := formatLines(u.text...)
 
 	title := drain.UnitFromLines(text...)
@@ -150,7 +150,7 @@ func (u *ModalUnit) wipe() {
 	u.unit.Drawable.Wipe()
 }
 
-func (u *ModalUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *ModalUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
 	u.lazyBoot(size)
@@ -158,11 +158,11 @@ func (u *ModalUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 	return u.unit.Drawable.Draw(size)
 }
 
-func formatLines(lines ...text.Line) []text.Line {
-	out := make([]text.Line, len(lines))
+func formatLines(lines ...line.Line) []line.Line {
+	out := make([]line.Line, len(lines))
 	copy(out, lines)
 
-	out = append(out, *text.EmptyLine())
+	out = append(out, *line.Empty())
 
 	return out
 }

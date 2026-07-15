@@ -6,8 +6,8 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/draw"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
-	
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
+
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
@@ -15,7 +15,7 @@ func TestActionPaged(t *testing.T) {
 	action := Paged()
 
 	state := &draw.State{
-		Buffer: []text.Line{{}, {}, {}},
+		Buffer: []line.Line{{}, {}, {}},
 		Cursor: 2,
 		Page:   1,
 		Focus:  true,
@@ -33,7 +33,7 @@ func TestActionPaged_AlwaysResetsBuffer(t *testing.T) {
 	action := Paged()
 
 	state := &draw.State{
-		Buffer: []text.Line{{}, {}},
+		Buffer: []line.Line{{}, {}},
 	}
 
 	action.Handler(state)
@@ -46,10 +46,10 @@ func TestActionScroll(t *testing.T) {
 	action := Scroll()
 
 	state := &draw.State{
-		Buffer: []text.Line{
-			*text.NewLine("A"),
-			*text.NewLine("B"),
-			*text.NewLine("C"),
+		Buffer: []line.Line{
+			*line.New("A"),
+			*line.New("B"),
+			*line.New("C"),
 		},
 		Cursor: 2,
 		Page:   1,

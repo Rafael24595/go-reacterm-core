@@ -5,8 +5,8 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const Name = "inline_unit"
@@ -49,7 +49,7 @@ func (u *InlineUnit) boot() {
 
 func (u *InlineUnit) wipe() {}
 
-func (u *InlineUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *InlineUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
 	lines := u.drawChildren(size)
@@ -57,8 +57,8 @@ func (u *InlineUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 	return u.joinChildren(lines), false
 }
 
-func (u *InlineUnit) drawChildren(size winsize.Winsize) []text.Line {
-	lines := make([]text.Line, 0)
+func (u *InlineUnit) drawChildren(size winsize.Winsize) []line.Line {
+	lines := make([]line.Line, 0)
 
 	if len(u.units) == 0 {
 		return lines
@@ -91,12 +91,12 @@ func (u *InlineUnit) drawChildren(size winsize.Winsize) []text.Line {
 	return lines
 }
 
-func (u *InlineUnit) joinChildren(lines []text.Line) []text.Line {
+func (u *InlineUnit) joinChildren(lines []line.Line) []line.Line {
 	if len(lines) == 0 {
-		return []text.Line{}
+		return []line.Line{}
 	}
 
-	merged := text.EmptyLine()
+	merged := line.Empty()
 
 	var separator *frag.Frag
 	if u.separator != "" {
@@ -113,5 +113,5 @@ func (u *InlineUnit) joinChildren(lines []text.Line) []text.Line {
 			CopyMeta(&line)
 	}
 
-	return []text.Line{*merged}
+	return []line.Line{*merged}
 }

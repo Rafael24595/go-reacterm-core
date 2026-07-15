@@ -2,12 +2,12 @@ package drawable
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 type BootFunc func()
 type WipeFunc func()
-type DrawFunc func(size winsize.Winsize) ([]text.Line, bool)
+type DrawFunc func(size winsize.Winsize) ([]line.Line, bool)
 
 type Drawable struct {
 	Boot BootFunc

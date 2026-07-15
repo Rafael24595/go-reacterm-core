@@ -5,20 +5,20 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/lines"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const Name = "article"
 
 type Article struct {
 	reference string
-	article   []text.Line
+	article   []line.Line
 }
 
 func New() *Article {
 	return &Article{
 		reference: Name,
-		article:   make([]text.Line, 0),
+		article:   make([]line.Line, 0),
 	}
 }
 
@@ -27,7 +27,7 @@ func (n *Article) Name(name string) *Article {
 	return n
 }
 
-func (n *Article) AddArticle(article ...text.Line) *Article {
+func (n *Article) AddArticle(article ...line.Line) *Article {
 	n.article = append(n.article, article...)
 	return n
 }

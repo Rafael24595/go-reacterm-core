@@ -6,7 +6,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
@@ -17,7 +17,7 @@ func TestDrawTransformer(t *testing.T) {
 		name        string
 		opts        []Option
 		size        winsize.Winsize
-		lines       []text.Line
+		lines       []line.Line
 		wantLines   []string
 		wantFrags   []int
 		wantHasNext bool
@@ -28,8 +28,8 @@ func TestDrawTransformer(t *testing.T) {
 				WithLeftGutter("▌"),
 			},
 			size: winsize.New(10, 40),
-			lines: []text.Line{
-				*text.NewLine("golang"),
+			lines: []line.Line{
+				*line.New("golang"),
 			},
 			wantLines: []string{
 				"▌golang",
@@ -45,8 +45,8 @@ func TestDrawTransformer(t *testing.T) {
 				WithRightGutter("▐"),
 			},
 			size: winsize.New(10, 40),
-			lines: []text.Line{
-				*text.NewLine("golang"),
+			lines: []line.Line{
+				*line.New("golang"),
 			},
 			wantLines: []string{
 				"golang▐",
@@ -62,9 +62,9 @@ func TestDrawTransformer(t *testing.T) {
 				WithGutter(">", "<"),
 			},
 			size: winsize.New(10, 50),
-			lines: []text.Line{
-				*text.NewLine("golang"),
-				*text.NewLine("ziglang"),
+			lines: []line.Line{
+				*line.New("golang"),
+				*line.New("ziglang"),
 			},
 			wantLines: []string{
 				">golang<",
@@ -81,8 +81,8 @@ func TestDrawTransformer(t *testing.T) {
 				WithLeftGutter("▌ "),
 			},
 			size: winsize.New(10, 2),
-			lines: []text.Line{
-				*text.NewLine("golang"),
+			lines: []line.Line{
+				*line.New("golang"),
 			},
 			wantLines: []string{
 				"golang",

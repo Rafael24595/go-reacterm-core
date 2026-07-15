@@ -10,7 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/modal"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const Name = "modal_menu"
@@ -20,7 +20,7 @@ type ModalMenu struct {
 	loaded     bool
 	bindings   *keymap.Bindings[Command]
 	definition screen.Definition
-	text       []text.Line
+	text       []line.Line
 	options    []input.MenuOption
 	cursor     uint16
 }
@@ -31,7 +31,7 @@ func New() *ModalMenu {
 		loaded:     false,
 		bindings:   defaultBindings,
 		definition: screen.EmptyDefinition(),
-		text:       make([]text.Line, 0),
+		text:       make([]line.Line, 0),
 		options:    make([]input.MenuOption, 0),
 		cursor:     0,
 	}
@@ -52,7 +52,7 @@ func (n *ModalMenu) WithBindings(overrides *keymap.Bindings[Command]) *ModalMenu
 	return n
 }
 
-func (n *ModalMenu) AddText(text ...text.Line) *ModalMenu {
+func (n *ModalMenu) AddText(text ...line.Line) *ModalMenu {
 	if n.loaded {
 		assert.Unreachable(screen.MessageModified)
 		return n

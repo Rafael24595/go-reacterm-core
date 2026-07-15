@@ -8,11 +8,11 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-type rowPositioner func([]text.Line, frag.Frag, winsize.Rows) []text.Line
+type rowPositioner func([]line.Line, frag.Frag, winsize.Rows) []line.Line
 
 var rowPositionerMap = map[style.VerticalPosition]rowPositioner{
 	style.Top:    rowsToTop,
@@ -23,7 +23,7 @@ var rowPositionerMap = map[style.VerticalPosition]rowPositioner{
 func Rows(hint hint.Size[winsize.Rows], opts ...rows.Option) transform.Transformer {
 	cfg := rows.ResolveConfig(opts...)
 
-	return func(size winsize.Winsize, lines []text.Line) []text.Line {
+	return func(size winsize.Winsize, lines []line.Line) []line.Line {
 		frag := cfg.Provider(size, lines...)
 
 		padding := hint.Min(size.Rows)
@@ -41,13 +41,13 @@ func Rows(hint hint.Size[winsize.Rows], opts ...rows.Option) transform.Transform
 	}
 }
 
-func rowsToTop(lines []text.Line, frg frag.Frag, padding winsize.Rows) []text.Line {
+func rowsToTop(lines []line.Line, frg frag.Frag, padding winsize.Rows) []line.Line {
 	newLines := paddingLines(padding, frg)
 	copy(newLines, lines)
 	return newLines
 }
 
-func rowsToBottom(lines []text.Line, frg frag.Frag, padding winsize.Rows) []text.Line {
+func rowsToBottom(lines []line.Line, frg frag.Frag, padding winsize.Rows) []line.Line {
 	rest := padding.Sub(
 		winsize.Rows(len(lines)),
 	)
@@ -56,7 +56,7 @@ func rowsToBottom(lines []text.Line, frg frag.Frag, padding winsize.Rows) []text
 	return append(newLines, lines...)
 }
 
-func rowsToMiddle(lines []text.Line, frg frag.Frag, padding winsize.Rows) []text.Line {
+func rowsToMiddle(lines []line.Line, frg frag.Frag, padding winsize.Rows) []line.Line {
 	rest := padding.Sub(
 		winsize.Rows(len(lines)),
 	)
@@ -70,8 +70,8 @@ func rowsToMiddle(lines []text.Line, frg frag.Frag, padding winsize.Rows) []text
 	return append(newLines, bottom...)
 }
 
-func paddingLines(rows winsize.Rows, frg frag.Frag) []text.Line {
-	result := make([]text.Line, rows)
+func paddingLines(rows winsize.Rows, frg frag.Frag) []line.Line {
+	result := make([]line.Line, rows)
 
 	for i := range result {
 		result[i].Text = append(result[i].Text, frg)

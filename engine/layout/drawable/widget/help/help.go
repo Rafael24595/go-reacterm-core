@@ -12,8 +12,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const Name = "help_unit"
@@ -59,7 +59,7 @@ func (u *HelpUnit) wipe() {
 	u.unit.Drawable.Wipe()
 }
 
-func (u *HelpUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *HelpUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
 	return u.unit.Drawable.Draw(size)
@@ -88,12 +88,12 @@ func makeUnit(fields []key.Descriptor) drawable.Unit {
 	}
 
 	return drain.UnitFromLines(
-		*text.LineFromFrags(
+		*line.FromFrags(
 			*frag.New("--Help--"),
 			*frag.New("-").
 				AddSpec(spec.Cover()),
 		),
-		*text.LineFromFrags(frags...),
-		*text.NewLine("-", spec.Cover()),
+		*line.FromFrags(frags...),
+		*line.New("-", spec.Cover()),
 	)
 }

@@ -8,8 +8,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
@@ -17,15 +17,15 @@ import (
 
 func TestFocusInitTransformer_FocusAtStart(t *testing.T) {
 	mock := &drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("base_01"),
-			*text.LineFromFrags(
+		Lines: []line.Line{
+			*line.New("base_01"),
+			*line.FromFrags(
 				*frag.New("base").
 					AddAtom(atom.Focus),
 				*frag.New("_"),
 				*frag.New("02"),
 			),
-			*text.NewLine("base_03"),
+			*line.New("base_03"),
 		},
 		Status: true,
 	}
@@ -48,10 +48,10 @@ func TestFocusInitTransformer_FocusAtStart(t *testing.T) {
 
 func TestFocusInitTransformer_FocusAtEnd(t *testing.T) {
 	mock := &drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("base_01"),
-			*text.NewLine("base_02"),
-			*text.LineFromFrags(
+		Lines: []line.Line{
+			*line.New("base_01"),
+			*line.New("base_02"),
+			*line.FromFrags(
 				*frag.New("base"),
 				*frag.New("_").
 					AddAtom(atom.Focus),

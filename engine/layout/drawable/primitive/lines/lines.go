@@ -5,7 +5,7 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
@@ -23,7 +23,7 @@ func New(lines ...wrap.LayoutLine) *LineUnit {
 	return new(eagerNormalizer(lines...))
 }
 
-func FromLines(lines ...text.Line) *LineUnit {
+func FromLines(lines ...line.Line) *LineUnit {
 	return new(lazyNormalizer(lines...))
 }
 
@@ -39,7 +39,7 @@ func UnitFromLayout(lines ...wrap.LayoutLine) drawable.Unit {
 	return New(lines...).ToUnit()
 }
 
-func UnitFromLines(lines ...text.Line) drawable.Unit {
+func UnitFromLines(lines ...line.Line) drawable.Unit {
 	return FromLines(lines...).ToUnit()
 }
 
@@ -65,17 +65,17 @@ func (u *LineUnit) wipe() {
 	u.source = u.lines
 }
 
-func (u *LineUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *LineUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
 	if len(u.source) == 0 {
-		return make([]text.Line, 0), false
+		return make([]line.Line, 0), false
 	}
 
 	cursor, remain := u.nextIndexedWrappedLine(size)
 	u.source = remain
 
-	result := make([]text.Line, 0)
+	result := make([]line.Line, 0)
 	if cursor != nil {
 		result = append(result, *cursor)
 	}
@@ -83,7 +83,7 @@ func (u *LineUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 	return result, len(u.source) > 0
 }
 
-func (u *LineUnit) nextIndexedWrappedLine(size winsize.Winsize) (*text.Line, []wrap.LayoutLine) {
+func (u *LineUnit) nextIndexedWrappedLine(size winsize.Winsize) (*line.Line, []wrap.LayoutLine) {
 	if u.indexMeta == nil {
 		return wrap.NextLine(size.Cols, u.source)
 	}

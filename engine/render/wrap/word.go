@@ -6,8 +6,8 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 type word struct {
@@ -18,7 +18,7 @@ type word struct {
 	measure  winsize.Cols
 }
 
-func splitLineWords(line *text.Line) ([]word, []wordFrag) {
+func splitLineWords(line *line.Line) ([]word, []wordFrag) {
 	words := make([]word, 0, len(line.Text))
 	frags := make([]wordFrag, 0, len(line.Text))
 

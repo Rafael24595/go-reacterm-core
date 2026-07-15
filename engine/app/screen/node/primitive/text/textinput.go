@@ -20,8 +20,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const NameInput = "text_input"
@@ -177,7 +177,7 @@ func limitRows(size winsize.Winsize) winsize.Winsize {
 
 func pageTransformer() pipeline.DrawTransformer {
 	action := action.Scroll()
-	return func(winsize winsize.Winsize, unit drawable.Unit) ([]text.Line, bool) {
+	return func(winsize winsize.Winsize, unit drawable.Unit) ([]line.Line, bool) {
 		transformer := focus.DrawTransformer(action)
 		return transformer(
 			limitRows(winsize),

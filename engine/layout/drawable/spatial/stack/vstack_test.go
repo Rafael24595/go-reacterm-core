@@ -7,7 +7,7 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/config/layer"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
@@ -141,16 +141,16 @@ func TestVStack_Shift_Order(t *testing.T) {
 	unit1 := mock1.ToUnit()
 	unit2 := mock2.ToUnit()
 
-	unit1.Drawable.Draw = func(_ winsize.Winsize) ([]text.Line, bool) {
+	unit1.Drawable.Draw = func(_ winsize.Winsize) ([]line.Line, bool) {
 		mock1.DrawCalls = count
 		count++
-		return make([]text.Line, 0), false
+		return make([]line.Line, 0), false
 	}
 
-	unit2.Drawable.Draw = func(_ winsize.Winsize) ([]text.Line, bool) {
+	unit2.Drawable.Draw = func(_ winsize.Winsize) ([]line.Line, bool) {
 		mock2.DrawCalls = count
 		count++
-		return make([]text.Line, 0), false
+		return make([]line.Line, 0), false
 	}
 
 	stack.Push(unit1)
@@ -178,16 +178,16 @@ func TestVStack_Unshift_Order(t *testing.T) {
 	unit1 := mock1.ToUnit()
 	unit2 := mock2.ToUnit()
 
-	unit1.Drawable.Draw = func(_ winsize.Winsize) ([]text.Line, bool) {
+	unit1.Drawable.Draw = func(_ winsize.Winsize) ([]line.Line, bool) {
 		mock1.DrawCalls = count
 		count++
-		return make([]text.Line, 0), false
+		return make([]line.Line, 0), false
 	}
 
-	unit2.Drawable.Draw = func(_ winsize.Winsize) ([]text.Line, bool) {
+	unit2.Drawable.Draw = func(_ winsize.Winsize) ([]line.Line, bool) {
 		mock2.DrawCalls = count
 		count++
-		return make([]text.Line, 0), false
+		return make([]line.Line, 0), false
 	}
 
 	stack.Push(unit1)
@@ -247,15 +247,15 @@ func TestVStack_DisablesLayer(t *testing.T) {
 func TestVStack_BufferConcat(t *testing.T) {
 	stack := &VStackUnit{}
 
-	line1 := text.NewLine("go")
-	line2 := text.NewLine("lang")
+	line1 := line.New("go")
+	line2 := line.New("lang")
 
 	mock1 := &drawable_test.MockUnit{
-		Lines:  []text.Line{*line1},
+		Lines:  []line.Line{*line1},
 		Status: false,
 	}
 	mock2 := &drawable_test.MockUnit{
-		Lines:  []text.Line{*line2},
+		Lines:  []line.Line{*line2},
 		Status: false,
 	}
 
@@ -279,13 +279,13 @@ func TestVStack_ShortCircuitStopsPropagation(t *testing.T) {
 	stack := &VStackUnit{}
 
 	mock1 := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 1),
+		Lines: make([]line.Line, 1),
 	}
 	mock2 := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 2),
+		Lines: make([]line.Line, 2),
 	}
 	mock3 := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 1),
+		Lines: make([]line.Line, 1),
 	}
 
 	stack.Push(
@@ -308,7 +308,7 @@ func TestVStack_ShortCircuitStopsPropagation(t *testing.T) {
 
 func TestVStack_FixedChunk_PadsWhenChildIsSmaller(t *testing.T) {
 	mock := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 10),
+		Lines: make([]line.Line, 10),
 	}
 
 	stack := NewVStack().
@@ -327,7 +327,7 @@ func TestVStack_FixedChunk_PadsWhenChildIsSmaller(t *testing.T) {
 
 func TestVStack_FixedChunk_TruncatesWhenChildIsBigger(t *testing.T) {
 	mock := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 15),
+		Lines: make([]line.Line, 15),
 	}
 
 	stack := NewVStack().
@@ -346,13 +346,13 @@ func TestVStack_FixedChunk_TruncatesWhenChildIsBigger(t *testing.T) {
 
 func TestVStack_DynamicChunk_FillsRemainingSpace(t *testing.T) {
 	mock1 := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 10),
+		Lines: make([]line.Line, 10),
 	}
 	mock2 := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 10),
+		Lines: make([]line.Line, 10),
 	}
 	mock3 := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 5),
+		Lines: make([]line.Line, 5),
 	}
 
 	stack := NewVStack().
@@ -373,10 +373,10 @@ func TestVStack_DynamicChunk_FillsRemainingSpace(t *testing.T) {
 
 func TestVStack_FixedOverflow_ShouldNotExceedContainer(t *testing.T) {
 	mock1 := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 10),
+		Lines: make([]line.Line, 10),
 	}
 	mock2 := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 10),
+		Lines: make([]line.Line, 10),
 	}
 
 	stack := NewVStack().
@@ -399,13 +399,13 @@ func TestVStack_FixedOverflow_ShouldNotExceedContainer(t *testing.T) {
 
 func TestVStack_ExactFit_NoExtraNoMissing(t *testing.T) {
 	mock1 := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 5),
+		Lines: make([]line.Line, 5),
 	}
 	mock2 := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 5),
+		Lines: make([]line.Line, 5),
 	}
 	mock3 := &drawable_test.MockUnit{
-		Lines: make([]text.Line, 5),
+		Lines: make([]line.Line, 5),
 	}
 
 	stack := NewVStack().

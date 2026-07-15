@@ -7,8 +7,8 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 func wordsToString(words []word, frags []wordFrag) string {
@@ -44,61 +44,61 @@ func fragsToString(frags []wordFrag) string {
 func TestSplitLineWords(t *testing.T) {
 	tests := []struct {
 		name     string
-		line     *text.Line
+		line     *line.Line
 		expected []string
 	}{
 		{
 			name: "single word",
-			line: text.LineFromFrags(
+			line: line.FromFrags(
 				frag.FromStrings("Golang")...,
 			),
 			expected: []string{"Golang"},
 		},
 		{
 			name: "word split across frags",
-			line: text.LineFromFrags(
+			line: line.FromFrags(
 				frag.FromStrings("Z", "ig", "lang")...,
 			),
 			expected: []string{"Ziglang"},
 		},
 		{
 			name: "two words with space",
-			line: text.LineFromFrags(
+			line: line.FromFrags(
 				frag.FromStrings("hello cargo")...,
 			),
 			expected: []string{"hello", " ", "cargo"},
 		},
 		{
 			name: "multiple spaces preserved",
-			line: text.LineFromFrags(
+			line: line.FromFrags(
 				frag.FromStrings("hello   golangci")...,
 			),
 			expected: []string{"hello", "   ", "golangci"},
 		},
 		{
 			name: "spaces across frags",
-			line: text.LineFromFrags(
+			line: line.FromFrags(
 				frag.FromStrings("hello", "  ", "zig")...,
 			),
 			expected: []string{"hello", "  ", "zig"},
 		},
 		{
 			name: "styled per character",
-			line: text.LineFromFrags(
+			line: line.FromFrags(
 				frag.FromStrings("r", "u", "s", "t", "c")...,
 			),
 			expected: []string{"rustc"},
 		},
 		{
 			name: "leading and trailing spaces",
-			line: text.LineFromFrags(
+			line: line.FromFrags(
 				frag.FromStrings("  Golang  ")...,
 			),
 			expected: []string{"  ", "Golang", "  "},
 		},
 		{
 			name: "single word across frags",
-			line: text.LineFromFrags(
+			line: line.FromFrags(
 				*frag.New("Go"),
 				*frag.New("lang "),
 				*frag.New("Zig"),
@@ -109,7 +109,7 @@ func TestSplitLineWords(t *testing.T) {
 		},
 		{
 			name: "single long word across frags",
-			line: text.LineFromFrags(
+			line: line.FromFrags(
 				*frag.New("supercali"),
 				*frag.New("fragilis"),
 				*frag.New("ticexpia"),
@@ -135,7 +135,7 @@ func TestSplitLineWords(t *testing.T) {
 }
 
 func TestSplitLineWords_EmptyLine(t *testing.T) {
-	line := text.LineFromFrags()
+	line := line.FromFrags()
 
 	words, frags := splitLineWords(line)
 
@@ -144,7 +144,7 @@ func TestSplitLineWords_EmptyLine(t *testing.T) {
 }
 
 func TestSplitLineWords_EmptyFragIgnored(t *testing.T) {
-	line := text.LineFromFrags(
+	line := line.FromFrags(
 		*frag.New(""),
 		*frag.New("Golang"),
 	)
@@ -157,7 +157,7 @@ func TestSplitLineWords_EmptyFragIgnored(t *testing.T) {
 }
 
 func TestSplitLineWords_OnlySpaces(t *testing.T) {
-	line := text.LineFromFrags(
+	line := line.FromFrags(
 		*frag.New("   "),
 	)
 
@@ -169,7 +169,7 @@ func TestSplitLineWords_OnlySpaces(t *testing.T) {
 }
 
 func TestSplitLineWords_StyleChangeRequiresFragSplit(t *testing.T) {
-	line := text.LineFromFrags(
+	line := line.FromFrags(
 		*frag.New("Zig").AddAtom(atom.Bold),
 		*frag.New("lang").AddAtom(atom.Bold),
 	)
@@ -184,7 +184,7 @@ func TestSplitLineWords_StyleChangeRequiresFragSplit(t *testing.T) {
 }
 
 func TestSplitLineWords_PreservesStylesAcrossFrags(t *testing.T) {
-	line := text.LineFromFrags(
+	line := line.FromFrags(
 		*frag.New("ru"),
 		*frag.New("st").AddAtom(atom.Select),
 		*frag.New("up"),
@@ -201,7 +201,7 @@ func TestSplitLineWords_PreservesStylesAcrossFrags(t *testing.T) {
 }
 
 func TestSplitLineWords_MultipleSpaceFragsKeepStyles(t *testing.T) {
-	line := text.LineFromFrags(
+	line := line.FromFrags(
 		*frag.New(" ").AddAtom(atom.Bold),
 		*frag.New(" ").AddAtom(atom.Select),
 		*frag.New("c").AddAtom(atom.Bold),
@@ -229,7 +229,7 @@ func TestSplitLineWords_MultipleSpaceFragsKeepStyles(t *testing.T) {
 }
 
 func TestSplitLineWords_FinalFlushPreservesStyles(t *testing.T) {
-	line := text.LineFromFrags(
+	line := line.FromFrags(
 		*frag.New("c++").AddAtom(atom.Bold),
 	)
 
@@ -242,7 +242,7 @@ func TestSplitLineWords_FinalFlushPreservesStyles(t *testing.T) {
 }
 
 func BenchmarkSplitLineFeeds_NoLF(b *testing.B) {
-	line := *text.NewLine(
+	line := *line.New(
 		strings.Repeat("Hello World ", 100),
 	)
 
@@ -254,7 +254,7 @@ func BenchmarkSplitLineFeeds_NoLF(b *testing.B) {
 }
 
 func BenchmarkSplitLineFeeds_SomeLF(b *testing.B) {
-	line := *text.NewLine(
+	line := *line.New(
 		strings.Repeat("Hello\nWorld\n", 100),
 	)
 
@@ -266,7 +266,7 @@ func BenchmarkSplitLineFeeds_SomeLF(b *testing.B) {
 }
 
 func BenchmarkSplitLineFeeds_ManyLF(b *testing.B) {
-	line := *text.NewLine(
+	line := *line.New(
 		strings.Repeat("\n", 1000),
 	)
 
@@ -278,7 +278,7 @@ func BenchmarkSplitLineFeeds_ManyLF(b *testing.B) {
 }
 
 func BenchmarkSplitLineWords_ASCII(b *testing.B) {
-	line := *text.NewLine(
+	line := *line.New(
 		strings.Repeat("hello world ", 300),
 	)
 
@@ -290,7 +290,7 @@ func BenchmarkSplitLineWords_ASCII(b *testing.B) {
 }
 
 func BenchmarkSplitLineWords_Unicode(b *testing.B) {
-	line := *text.NewLine(
+	line := *line.New(
 		strings.Repeat("áéíóú 世界 😀 ", 300),
 	)
 
@@ -302,7 +302,7 @@ func BenchmarkSplitLineWords_Unicode(b *testing.B) {
 }
 
 func BenchmarkSplitLineWords_LongWord(b *testing.B) {
-	line := *text.NewLine(
+	line := *line.New(
 		strings.Repeat("abcdefgh", 1000),
 	)
 
@@ -314,7 +314,7 @@ func BenchmarkSplitLineWords_LongWord(b *testing.B) {
 }
 
 func BenchmarkSplitLineWords_ManySpaces(b *testing.B) {
-	line := *text.NewLine(
+	line := *line.New(
 		strings.Repeat("word     ", 500),
 	)
 
@@ -332,7 +332,7 @@ func BenchmarkSplitLineWords_ManyFrags(b *testing.B) {
 		frags[i] = *frag.New("hello ")
 	}
 
-	line := text.Line{
+	line := line.Line{
 		Text: frags,
 	}
 
@@ -344,7 +344,7 @@ func BenchmarkSplitLineWords_ManyFrags(b *testing.B) {
 }
 
 func BenchmarkSplitLineWords(b *testing.B) {
-	line := text.LineFromFrags(
+	line := line.FromFrags(
 		frag.FromStrings(
 			"Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
 				"Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",

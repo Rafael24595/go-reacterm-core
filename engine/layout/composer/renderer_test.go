@@ -11,7 +11,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/config/layer"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/stack"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
@@ -26,20 +26,20 @@ func Test_PagerRenderer_StaticLayerDoesNotScroll(t *testing.T) {
 	renderer := pagerRenderer(uiState, *strategy, ctx)
 
 	dynamic := drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("dyn-1"),
-			*text.NewLine("dyn-2"),
-			*text.NewLine("dyn-3"),
-			*text.NewLine("dyn-4"),
-			*text.NewLine("dyn-5"),
-			*text.NewLine("dyn-6"),
+		Lines: []line.Line{
+			*line.New("dyn-1"),
+			*line.New("dyn-2"),
+			*line.New("dyn-3"),
+			*line.New("dyn-4"),
+			*line.New("dyn-5"),
+			*line.New("dyn-6"),
 		},
 		Batch: 2,
 	}
 
 	static := &drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("stc"),
+		Lines: []line.Line{
+			*line.New("stc"),
 		},
 		Status: true,
 	}
@@ -82,13 +82,13 @@ func Test_PagerRenderer_PropagatesMaxPage(t *testing.T) {
 	renderer := pagerRenderer(uiState, *strategy, ctx)
 
 	mock := drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("1"),
-			*text.NewLine("2"),
-			*text.NewLine("3"),
-			*text.NewLine("4"),
-			*text.NewLine("5"),
-			*text.NewLine("6"),
+		Lines: []line.Line{
+			*line.New("1"),
+			*line.New("2"),
+			*line.New("3"),
+			*line.New("4"),
+			*line.New("5"),
+			*line.New("6"),
 		},
 		Batch: 2,
 	}
@@ -110,9 +110,9 @@ func Test_PagerRenderer_SetsHasMore(t *testing.T) {
 	renderer := pagerRenderer(uiState, *strategy, ctx)
 
 	mock := &drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("1"),
-			*text.NewLine("2"),
+		Lines: []line.Line{
+			*line.New("1"),
+			*line.New("2"),
 		},
 		Batch: 1,
 	}
@@ -136,10 +136,10 @@ func Test_Pager_ConfirmPage_UsesMaxPage(t *testing.T) {
 	renderer := pagerRenderer(uiState, *strategy, ctx)
 
 	unit := (&drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("1"),
-			*text.NewLine("2"),
-			*text.NewLine("3"),
+		Lines: []line.Line{
+			*line.New("1"),
+			*line.New("2"),
+			*line.New("3"),
 		},
 		Batch: 1,
 	}).ToUnit()

@@ -10,7 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/primitive/lines"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/stack"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
@@ -19,7 +19,7 @@ func TestHeader_InsertsBefore(t *testing.T) {
 	vm := viewmodel.ViewModel{
 		Header: stack.NewVStack(
 			lines.UnitFromLines(
-				*text.NewLine("line_01"),
+				*line.New("line_01"),
 			),
 		),
 	}
@@ -27,7 +27,7 @@ func TestHeader_InsertsBefore(t *testing.T) {
 	units := vm.Header.Units()
 	assert.Size(t, 1, units)
 
-	line := text.NewLine("line_02")
+	line := line.New("line_02")
 	transformer := Transformer(pipeline.Before, *line)
 	vm = transformer(vm)
 
@@ -49,7 +49,7 @@ func TestHeader_InsertsAfter(t *testing.T) {
 	vm := viewmodel.ViewModel{
 		Header: stack.NewVStack(
 			lines.UnitFromLines(
-				*text.NewLine("line_01"),
+				*line.New("line_01"),
 			),
 		),
 	}
@@ -57,7 +57,7 @@ func TestHeader_InsertsAfter(t *testing.T) {
 	units := vm.Header.Units()
 	assert.Size(t, 1, units)
 
-	line := text.NewLine("line_02")
+	line := line.New("line_02")
 	transformer := Transformer(pipeline.After, *line)
 	vm = transformer(vm)
 

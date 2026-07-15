@@ -3,7 +3,7 @@ package action
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/draw"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 type Kind uint8
@@ -40,7 +40,7 @@ func Scroll() Action {
 			}
 
 			copy(stt.Buffer, stt.Buffer[1:])
-			stt.Buffer[len(stt.Buffer)-1] = text.Line{}
+			stt.Buffer[len(stt.Buffer)-1] = line.Line{}
 			stt.Cursor = math.SubClampZero(stt.Cursor, 1)
 
 			stt.Focus = false

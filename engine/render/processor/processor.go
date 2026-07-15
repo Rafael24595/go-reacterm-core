@@ -7,7 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 func WithPadding(
@@ -16,7 +16,7 @@ func WithPadding(
 ) render.Processor {
 	filler := marker.DefaultPaddingText
 
-	return func(lines []text.Line, size winsize.Winsize) string {
+	return func(lines []line.Line, size winsize.Winsize) string {
 		r := transform(size)
 
 		rows := min(r.Rows, size.Rows)

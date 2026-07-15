@@ -5,12 +5,12 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const Name = "header_transformer"
 
-func Transformer(placement pipeline.Placement, lines ...text.Line) pipeline.Transformer {
+func Transformer(placement pipeline.Placement, lines ...line.Line) pipeline.Transformer {
 	unit := drain.UnitFromLines(lines...)
 	unit.Name = Name
 
@@ -25,7 +25,7 @@ func Transformer(placement pipeline.Placement, lines ...text.Line) pipeline.Tran
 	}
 }
 
-func Node(node screen.Node, lines ...text.Line) screen.Node {
+func Node(node screen.Node, lines ...line.Line) screen.Node {
 	transformer := Transformer(pipeline.After, lines...)
 	return pipeline.New(node, transformer).ExpireOnNode().ToNode()
 }

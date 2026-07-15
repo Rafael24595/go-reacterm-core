@@ -5,16 +5,16 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
-func UnitEager(size winsize.Winsize, unit drawable.Unit) []text.Line {
+func UnitEager(size winsize.Winsize, unit drawable.Unit) []line.Line {
 	result, _ := Unit(size, unit, false)
 	return result
 }
 
-func UnitLazy(size winsize.Winsize, unit drawable.Unit) ([]text.Line, bool) {
+func UnitLazy(size winsize.Winsize, unit drawable.Unit) ([]line.Line, bool) {
 	return Unit(size, unit, true)
 }
 
@@ -22,8 +22,8 @@ func Unit(
 	size winsize.Winsize,
 	unit drawable.Unit,
 	lazy bool,
-) ([]text.Line, bool) {
-	result := make([]text.Line, 0, size.Rows)
+) ([]line.Line, bool) {
+	result := make([]line.Line, 0, size.Rows)
 	if size.Rows == 0 {
 		return result, false
 	}

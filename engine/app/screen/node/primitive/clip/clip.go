@@ -13,7 +13,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/platform/clock"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const Name = "clip"
@@ -230,13 +230,13 @@ func (n *Clip) view(uiState state.UIState) viewmodel.ViewModel {
 	frame, ok := n.findFrame()
 	vm.Behavior.NeedsPulse = ok
 
-	line := frameToLines(frame)
+	lines := frameToLines(frame)
 	vm.Kernel.Push(
-		drain.UnitFromLines(line...),
+		drain.UnitFromLines(lines...),
 	)
 
 	if n.bindings.Size() > 0 {
-		line := text.NewLine(
+		line := line.New(
 			fmt.Sprintf("Speed: %d", n.pause),
 		)
 

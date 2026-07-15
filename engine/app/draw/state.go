@@ -5,11 +5,11 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/work"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 type State struct {
-	Buffer []text.Line
+	Buffer []line.Line
 	Work   *work.Tracker
 	Cursor uint16
 	Page   uint
@@ -23,7 +23,7 @@ func NewState(size ...winsize.Rows) *State {
 	}
 
 	return &State{
-		Buffer: make([]text.Line, buffSize),
+		Buffer: make([]line.Line, buffSize),
 		Work:   work.NewTracker(),
 		Cursor: 0,
 		Page:   0,
@@ -40,7 +40,7 @@ func (s *State) MarkFocus(focus bool) *State {
 	return s
 }
 
-func (s *State) SetAndNext(line text.Line) *State {
+func (s *State) SetAndNext(line line.Line) *State {
 	if s.IsFull() {
 		assert.Unreachable("buffer overflow")
 		return s
@@ -55,13 +55,13 @@ func (s *State) IsFull() bool {
 	return s.Cursor == uint16(len(s.Buffer))
 }
 
-func (s *State) Written() []text.Line {
+func (s *State) Written() []line.Line {
 	return s.Buffer[:s.Cursor]
 }
 
 func (s *State) Reset() {
 	for i := range s.Buffer {
-		s.Buffer[i] = text.Line{}
+		s.Buffer[i] = line.Line{}
 	}
 
 	s.Cursor = 0

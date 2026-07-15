@@ -8,11 +8,11 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/dynamic"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 func TestApplySinks_PaddingLeft(t *testing.T) {
-	line := text.EmptyLine().
+	line := line.Empty().
 		AddSpec(spec.JustifyRight(5, "-"))
 
 	assert.Size(t, 0, line.Text)

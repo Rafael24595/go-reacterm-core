@@ -1,40 +1,40 @@
-package text
+package line
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
-type BuilderLine struct {
+type Builder struct {
 	Order uint16
 	Text  []frag.Frag
 	Spec  spec.Spec
 }
 
-func (f *BuilderLine) SetOrder(order uint16) *BuilderLine {
+func (f *Builder) SetOrder(order uint16) *Builder {
 	f.Order = order
 	return f
 }
 
-func (f *BuilderLine) AddFrags(text ...frag.Frag) *BuilderLine {
+func (f *Builder) AddFrags(text ...frag.Frag) *Builder {
 	f.Text = append(f.Text, text...)
 	return f
 }
 
-func (f *BuilderLine) AddBuilder(builder ...*frag.Builder) *BuilderLine {
+func (f *Builder) AddBuilder(builder ...*frag.Builder) *Builder {
 	for _, b := range builder {
 		f.Text = append(f.Text, b.Frag())
 	}
 	return f
 }
 
-func (f *BuilderLine) AddSpec(styles ...spec.Spec) *BuilderLine {
+func (f *Builder) AddSpec(styles ...spec.Spec) *Builder {
 	newSpec := spec.Merge(styles...)
 	f.Spec = spec.Merge(f.Spec, newSpec)
 	return f
 }
 
-func (f *BuilderLine) Frag() Line {
+func (f *Builder) Line() Line {
 	return Line{
 		Order: f.Order,
 		Text:  f.Text,

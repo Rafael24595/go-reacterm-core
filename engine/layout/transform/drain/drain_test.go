@@ -6,7 +6,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 )
@@ -80,7 +80,7 @@ func TestDrainUnit_WithMock(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			m := &drawable_test.MockUnit{
-				Lines: make([]text.Line, tt.lines),
+				Lines: make([]line.Line, tt.lines),
 				Batch: tt.batch,
 			}
 

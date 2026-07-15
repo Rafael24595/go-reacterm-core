@@ -7,8 +7,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/styler"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 type Standard struct {
@@ -23,7 +23,7 @@ func New(atom styler.Atom, spec styler.Spec) Standard {
 	}
 }
 
-func (r Standard) Render(lines []text.Line, size winsize.Winsize) []string {
+func (r Standard) Render(lines []line.Line, size winsize.Winsize) []string {
 	buffer := make([]string, len(lines))
 
 	for i, line := range lines {
@@ -38,7 +38,7 @@ func (r Standard) Render(lines []text.Line, size winsize.Winsize) []string {
 	return buffer
 }
 
-func (r Standard) renderLineFrags(line text.Line, size winsize.Winsize) string {
+func (r Standard) renderLineFrags(line line.Line, size winsize.Winsize) string {
 	var buffer strings.Builder
 
 	frags := ""

@@ -1,4 +1,4 @@
-package text
+package line
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
@@ -12,7 +12,7 @@ type Line struct {
 	Spec  spec.Spec
 }
 
-func NewLine(text string, styles ...spec.Spec) *Line {
+func New(text string, styles ...spec.Spec) *Line {
 	return &Line{
 		Text: []frag.Frag{
 			*frag.New(text),
@@ -21,23 +21,23 @@ func NewLine(text string, styles ...spec.Spec) *Line {
 	}
 }
 
-func EmptyLine(size ...int) *Line {
+func Empty(size ...int) *Line {
 	bufferSize := 0
 	if len(size) > 0 {
 		bufferSize = size[0]
 	}
 
-	return LineFromFrags(
+	return FromFrags(
 		make([]frag.Frag, 0, bufferSize)...,
 	)
 }
 
-func LineFromMeta(other *Line, size ...int) *Line {
-	return EmptyLine(size...).
+func FromMeta(other *Line, size ...int) *Line {
+	return Empty(size...).
 		CopyMeta(other)
 }
 
-func LineFromFrags(frags ...frag.Frag) *Line {
+func FromFrags(frags ...frag.Frag) *Line {
 	return &Line{
 		Text: frags,
 		Spec: spec.Empty(),
@@ -77,13 +77,13 @@ func (l *Line) SetSpec(styles ...spec.Spec) *Line {
 }
 
 func (l *Line) Clone() *Line {
-	newLine := EmptyLine().CopyMeta(l)
+	newLine := Empty().CopyMeta(l)
 	newLine.Text = make([]frag.Frag, len(l.Text))
 	copy(newLine.Text, l.Text)
 	return newLine
 }
 
-func LineMeasure(line *Line, cols winsize.Cols) winsize.Cols {
+func Measure(line *Line, cols winsize.Cols) winsize.Cols {
 	return spec.Measure(line.Spec, spec.LayoutContext{
 		SizeCols: cols,
 		TextSize: frag.Measure(cols, line.Text...),

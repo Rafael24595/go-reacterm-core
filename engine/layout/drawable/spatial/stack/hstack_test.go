@@ -7,7 +7,7 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/config/layer"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
@@ -113,13 +113,13 @@ func TestHStack_RenderOutput(t *testing.T) {
 	size := winsize.Winsize{Rows: 1, Cols: 6}
 
 	mock1 := &drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("go-lang"),
+		Lines: []line.Line{
+			*line.New("go-lang"),
 		},
 	}
 	mock2 := &drawable_test.MockUnit{
-		Lines: []text.Line{
-			*text.NewLine("ziglang"),
+		Lines: []line.Line{
+			*line.New("ziglang"),
 		},
 	}
 

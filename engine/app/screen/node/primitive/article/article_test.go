@@ -8,7 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
@@ -42,7 +42,7 @@ func TestArticle_SetName(t *testing.T) {
 }
 
 func TestArticle_AddTitleAndArticle(t *testing.T) {
-	body := text.NewLine("Body")
+	body := line.New("Body")
 
 	article := New().
 		AddArticle(*body)
@@ -52,7 +52,7 @@ func TestArticle_AddTitleAndArticle(t *testing.T) {
 }
 
 func TestArticle_View(t *testing.T) {
-	body := text.NewLine("Body")
+	body := line.New("Body")
 
 	article := New().
 		AddArticle(*body)

@@ -8,7 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform/margin"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 type Builder struct {
@@ -40,7 +40,7 @@ func (b *Builder) Cols(hint *hint.Size[winsize.Cols], opts ...cols.Option) *Buil
 }
 
 func (b *Builder) Steps() (pipeline.DrawTransformer, []pipeline.DataTransformer) {
-	draw := func(size winsize.Winsize, unit drawable.Unit) ([]text.Line, bool) {
+	draw := func(size winsize.Winsize, unit drawable.Unit) ([]line.Line, bool) {
 		cfgY := rows.ResolveConfig(b.optionsRows...)
 		cfgX := cols.ResolveConfig(b.optionsCols...)
 

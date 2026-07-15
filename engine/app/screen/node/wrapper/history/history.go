@@ -14,7 +14,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/trail"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 type History struct {
@@ -177,7 +177,7 @@ func (n *History) view(uiState state.UIState) viewmodel.ViewModel {
 		return vm
 	}
 
-	line := text.NewLine(
+	line := line.New(
 		strings.Join(footers, n.meta.Separator),
 		spec.AlignLeft(),
 	)

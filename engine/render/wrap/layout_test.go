@@ -8,11 +8,11 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-func sourceLayout(source *text.Line) *LayoutLine {
+func sourceLayout(source *line.Line) *LayoutLine {
 	return &LayoutLine{
 		Source: source,
 		words:  make([]word, 0),
@@ -21,7 +21,7 @@ func sourceLayout(source *text.Line) *LayoutLine {
 }
 
 func emptyLayout() *LayoutLine {
-	return sourceLayout(&text.Line{})
+	return sourceLayout(&line.Line{})
 }
 
 func TestLayoutFindFrags(t *testing.T) {

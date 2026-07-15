@@ -15,8 +15,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
@@ -94,7 +94,7 @@ func (u *BoxUnit) makeUnit() drawable.Unit {
 		ToUnit(u.unit)
 }
 
-func (u *BoxUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *BoxUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
 	innerSize := u.computeInnerSize(size)
@@ -106,18 +106,18 @@ func (u *BoxUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 }
 
 // TODO: investigate spec overflow.
-func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...text.Line) []text.Line {
+func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...line.Line) []line.Line {
 	vertical := horizontalStaticSize(u.separator)
 
-	maxLine := text.MaxLineMeasure(size.Cols, lines...)
+	maxLine := line.MaxLineMeasure(size.Cols, lines...)
 	measure := min(maxLine+vertical, size.Cols)
 
 	specCover := spec.ExtendLeft(measure)
-	cover := text.LineFromFrags(
+	cover := line.FromFrags(
 		*frag.New(u.separator.Top).AddSpec(specCover),
 	)
 
-	result := make([]text.Line, 0)
+	result := make([]line.Line, 0)
 
 	result = append(result, *cover)
 
@@ -141,7 +141,7 @@ func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...text.Line) []text.Li
 	return result
 }
 
-func (u *BoxUnit) wrapLine(line text.Line) text.Line {
+func (u *BoxUnit) wrapLine(line line.Line) line.Line {
 	frags := make([]frag.Frag, 0)
 
 	frags = append(frags, *frag.New(u.separator.Left))

@@ -11,8 +11,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
@@ -95,7 +95,7 @@ func (u *TextAreaUnit) lazyBoot(size winsize.Winsize) {
 		frags = step(frags)
 	}
 
-	base := text.LineFromFrags(frags...)
+	base := line.FromFrags(frags...)
 
 	result := u.makeLines(base)
 	result = wrap.MaterializeEmpty(size, marker.DefaultPaddingText, result...)
@@ -106,7 +106,7 @@ func (u *TextAreaUnit) lazyBoot(size winsize.Winsize) {
 	u.unit = unit
 }
 
-func (u *TextAreaUnit) makeLines(base *text.Line) []wrap.LayoutLine {
+func (u *TextAreaUnit) makeLines(base *line.Line) []wrap.LayoutLine {
 	if u.indexMode {
 		return wrap.NormalizeLinesWithOrder(*base)
 	}
@@ -167,7 +167,7 @@ func (u *TextAreaUnit) blinkStyle() atom.Atom {
 	return u.caret.BlinkStyle()
 }
 
-func (u *TextAreaUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *TextAreaUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
 	u.lazyBoot(size)

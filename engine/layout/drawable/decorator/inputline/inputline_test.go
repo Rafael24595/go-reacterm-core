@@ -7,8 +7,8 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
@@ -30,7 +30,7 @@ func TestNewInputLine_DefaultPrompt(t *testing.T) {
 func TestNewInputLine_NoContent_ReturnsPromptOnly(t *testing.T) {
 	mock := &drawable_test.MockUnit{
 		Status: false,
-		Lines:  make([]text.Line, 0),
+		Lines:  make([]line.Line, 0),
 	}
 
 	unit := New(mock.ToUnit()).ToUnit()
@@ -50,8 +50,8 @@ func TestNewInputLine_WithSingleLine_AddsPrompt(t *testing.T) {
 
 	mock := &drawable_test.MockUnit{
 		Status: false,
-		Lines: []text.Line{
-			*text.LineFromFrags(frg...),
+		Lines: []line.Line{
+			*line.FromFrags(frg...),
 		},
 	}
 
@@ -73,9 +73,9 @@ func TestNewInputLine_MultipleDrawCalls_AccumulatesLines(t *testing.T) {
 
 	mock := &drawable_test.MockUnit{
 		Status: false,
-		Lines: []text.Line{
-			*text.LineFromFrags(frg1...),
-			*text.LineFromFrags(frg2...),
+		Lines: []line.Line{
+			*line.FromFrags(frg1...),
+			*line.FromFrags(frg2...),
 		},
 	}
 

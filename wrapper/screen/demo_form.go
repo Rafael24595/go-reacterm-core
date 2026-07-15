@@ -38,7 +38,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 type eventKind int
@@ -459,7 +459,7 @@ func wrapStep(vm viewmodel.ViewModel) viewmodel.ViewModel {
 
 func pageTransformer() drawable_pipeline.DrawTransformer {
 	action := action.Scroll()
-	return func(winsize winsize.Winsize, unit drawable.Unit) ([]text.Line, bool) {
+	return func(winsize winsize.Winsize, unit drawable.Unit) ([]line.Line, bool) {
 		transformer := focus.DrawTransformer(action)
 		return transformer(winsize, unit)
 	}
@@ -511,7 +511,7 @@ func makeClip(service *mockTalkService) screen.Node {
 
 func onClipView(service *mockTalkService) view.Middleware {
 	isShowing := false
-	
+
 	return func(uiState state.UIState, context behavior.Context[screen.ViewFunc]) viewmodel.ViewModel {
 		show := service.event == eventTypingStarted
 

@@ -8,8 +8,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
-	
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
+
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
@@ -55,9 +55,9 @@ func TestRowsTopTransformer(t *testing.T) {
 				rows.WithPosition(style.Top),
 			)
 
-			lines := make([]text.Line, len(tt.lines))
+			lines := make([]line.Line, len(tt.lines))
 			for i, l := range tt.lines {
-				lines[i] = *text.NewLine(l)
+				lines[i] = *line.New(l)
 			}
 
 			result := transformer(tt.size, lines)
@@ -113,9 +113,9 @@ func TestRowsBottomTransformer(t *testing.T) {
 				rows.WithPosition(style.Bottom),
 			)
 
-			lines := make([]text.Line, len(tt.lines))
+			lines := make([]line.Line, len(tt.lines))
 			for i, l := range tt.lines {
-				lines[i] = *text.NewLine(l)
+				lines[i] = *line.New(l)
 			}
 
 			result := transformer(tt.size, lines)
@@ -171,9 +171,9 @@ func TestRowsMiddleTransformer(t *testing.T) {
 				rows.WithPosition(style.Middle),
 			)
 
-			lines := make([]text.Line, len(tt.lines))
+			lines := make([]line.Line, len(tt.lines))
 			for i, l := range tt.lines {
-				lines[i] = *text.NewLine(l)
+				lines[i] = *line.New(l)
 			}
 
 			result := transformer(tt.size, lines)

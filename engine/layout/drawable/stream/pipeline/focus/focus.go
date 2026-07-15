@@ -9,7 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform/page"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 // TODO: Add flag to manage non focus unit?
@@ -19,7 +19,7 @@ func DrawTransformer(action action.Action) pipeline.DrawTransformer {
 		SetPredicate(predicate).
 		SetAction(action)
 
-	return func(size winsize.Winsize, unit drawable.Unit) ([]text.Line, bool) {
+	return func(size winsize.Winsize, unit drawable.Unit) ([]line.Line, bool) {
 		uiState := state.NewUIState()
 		renderer := page.NewPageRenderer(strategy)
 		status := renderer(uiState, size, unit)

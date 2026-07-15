@@ -8,7 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/stack"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/isolated"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const Name = "spacer_transformer"
@@ -87,10 +87,10 @@ func appendSpacer(
 	return newVStack
 }
 
-func makeLines(size uint8) []text.Line {
-	spaces := make([]text.Line, size)
+func makeLines(size uint8) []line.Line {
+	spaces := make([]line.Line, size)
 	for i := range spaces {
-		spaces[i] = *text.LineJump()
+		spaces[i] = *line.LineJump()
 	}
 	return spaces
 }

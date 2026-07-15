@@ -4,16 +4,16 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/modalmenu"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 func NewDemoModal() screen.Node {
 	return modalmenu.New().
 		SetName("modal - dolor").
 		AddText(
-			*text.NewLine("AD Lorem ipsum dolor sit amet"),
-			*text.EmptyLine(),
+			*line.New("AD Lorem ipsum dolor sit amet"),
+			*line.Empty(),
 		).
 		AddOptions([]input.MenuOption{
 			input.NewMenuOption("1", *frag.New("Option_1"), NewDemoSelect),

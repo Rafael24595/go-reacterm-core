@@ -7,8 +7,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	drawable_drain "github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 )
@@ -62,17 +62,17 @@ func (u *InputLineUnit) boot() {
 	u.unit.Drawable.Boot()
 }
 
-func (u *InputLineUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *InputLineUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
 	if size.Rows == 0 {
-		return make([]text.Line, 0), false
+		return make([]line.Line, 0), false
 	}
 
 	lines, _ := drain.UnitLazy(size, u.unit)
 	if len(lines) == 0 {
-		line := text.NewLine(u.prompt)
-		return []text.Line{*line}, false
+		prompt := line.New(u.prompt)
+		return []line.Line{*prompt}, false
 	}
 
 	prompt := frag.FromStrings(u.prompt + marker.DefaultPaddingText)

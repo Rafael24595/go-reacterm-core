@@ -8,8 +8,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/sink"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
@@ -17,7 +17,7 @@ const NameHStack = "hstack_unit"
 
 type block struct {
 	size  winsize.Winsize
-	lines []text.Line
+	lines []line.Line
 }
 
 type HStackUnit struct {
@@ -158,7 +158,7 @@ func (u *HStackUnit) wipe() {
 	}
 }
 
-func (u *HStackUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *HStackUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
 	u.lazyBoot(size)
@@ -215,7 +215,7 @@ func (u *HStackUnit) makeBlocks(size winsize.Winsize) ([]block, bool) {
 				continue
 			}
 
-			wrapped := make([]text.Line, 0)
+			wrapped := make([]line.Line, 0)
 			for _, v := range lines {
 				wrapped = append(wrapped,
 					wrap.Line(fixedSize.Cols, &v)...,
@@ -276,10 +276,10 @@ func (u *HStackUnit) inheritCols(
 	return u.fixed[bufferIndex-1].Value
 }
 
-func (u *HStackUnit) makeLines(blocks []block) []text.Line {
-	buffer := make([]text.Line, 0)
+func (u *HStackUnit) makeLines(blocks []block) []line.Line {
+	buffer := make([]line.Line, 0)
 	for i := range maxLines(blocks) {
-		line := text.EmptyLine()
+		line := line.Empty()
 		for _, b := range blocks {
 			if i >= len(b.lines) {
 				continue

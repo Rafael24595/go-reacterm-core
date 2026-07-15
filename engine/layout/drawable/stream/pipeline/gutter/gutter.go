@@ -5,8 +5,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const Name = "gutter_pipeline"
@@ -21,7 +21,7 @@ func DrawTransformer(opts ...Option) pipeline.DrawTransformer {
 	leftFrg := frag.New(meta.left)
 	rightFrg := frag.New(meta.right)
 
-	return func(size winsize.Winsize, unit drawable.Unit) ([]text.Line, bool) {
+	return func(size winsize.Winsize, unit drawable.Unit) ([]line.Line, bool) {
 		if measure >= size.Cols {
 			return unit.Drawable.Draw(size)
 		}

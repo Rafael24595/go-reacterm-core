@@ -8,8 +8,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/chat"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
@@ -86,13 +86,13 @@ func (u *TalkUnit) lazyBoot(size winsize.Winsize) {
 
 	messagesLen := len(u.messages)
 
-	lines := make([]text.Line, 0, messagesLen*2)
+	lines := make([]line.Line, 0, messagesLen*2)
 
 	for i, m := range u.messages {
 		ownerLines, messageLines := u.makeLines(size, m, uint16(i))
 		if len(ownerLines) >= int(size.Rows) {
 			lines = append(lines,
-				*text.NewLine("..."),
+				*line.New("..."),
 			)
 			break
 		}
@@ -102,7 +102,7 @@ func (u *TalkUnit) lazyBoot(size winsize.Winsize) {
 
 		if i < messagesLen-1 {
 			lines = append(lines,
-				*text.EmptyLine(),
+				*line.Empty(),
 			)
 		}
 	}
@@ -116,12 +116,12 @@ func (u *TalkUnit) makeLines(
 	size winsize.Winsize,
 	message chat.Message,
 	index uint16,
-) ([]text.Line, []text.Line) {
+) ([]line.Line, []line.Line) {
 	ownerSelector, messageSelector := u.pointer(u.cursor, index)
 
 	ownerLines := wrap.Lines(
 		size.Cols.Sub(3),
-		*text.LineFromFrags(
+		*line.FromFrags(
 			*frag.New(message.Owner),
 			*frag.New(":"),
 		),
@@ -137,7 +137,7 @@ func (u *TalkUnit) makeLines(
 
 	messageLines := wrap.Lines(
 		size.Cols.Sub(5),
-		*text.LineFromFrags(
+		*line.FromFrags(
 			*frag.New(message.Message),
 		),
 	)
@@ -152,8 +152,8 @@ func (u *TalkUnit) makeLines(
 func (u *TalkUnit) addFocus(
 	size winsize.Winsize,
 	index uint16,
-	ownerLines, messageLines []text.Line,
-) ([]text.Line, []text.Line) {
+	ownerLines, messageLines []line.Line,
+) ([]line.Line, []line.Line) {
 	if !u.navigation || index != u.cursor {
 		return ownerLines, messageLines
 	}
@@ -201,7 +201,7 @@ func (u *TalkUnit) wipe() {
 	u.unit.Drawable.Wipe()
 }
 
-func (u *TalkUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *TalkUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
 	u.lazyBoot(size)

@@ -9,8 +9,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 type colPositioner func(winsize.Cols) (winsize.Cols, winsize.Cols)
@@ -22,8 +22,8 @@ var colPositionerMap = map[style.HorizontalPosition]colPositioner{
 }
 
 func Cols(hint hint.Size[winsize.Cols], opts ...cols.Option) transform.Transformer {
-	return func(size winsize.Winsize, lines []text.Line) []text.Line {
-		newLines := make([]text.Line, len(lines))
+	return func(size winsize.Winsize, lines []line.Line) []line.Line {
+		newLines := make([]line.Line, len(lines))
 		fixedMin := hint.Min(size.Cols)
 
 		for i := range lines {
@@ -59,12 +59,12 @@ func colToCenter(remaining winsize.Cols) (winsize.Cols, winsize.Cols) {
 
 func AddColsPadding(
 	size winsize.Cols,
-	line text.Line,
+	lne line.Line,
 	opts ...cols.Option,
-) text.Line {
+) line.Line {
 	cfg := cols.ResolveConfig(opts...)
 
-	frg := cfg.Provider(size, line)
+	frg := cfg.Provider(size, lne)
 
 	positioner, ok := colPositionerMap[cfg.Position]
 	if !ok {
@@ -82,7 +82,7 @@ func AddColsPadding(
 		frags = append(frags, *frag)
 	}
 
-	frags = append(frags, line.Text...)
+	frags = append(frags, lne.Text...)
 
 	if paddingR > 0 {
 		frag := frg.Clone().
@@ -90,6 +90,6 @@ func AddColsPadding(
 		frags = append(frags, *frag)
 	}
 
-	return *text.LineFromMeta(&line).
+	return *line.FromMeta(&lne).
 		PushFrags(frags...)
 }

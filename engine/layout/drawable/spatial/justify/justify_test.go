@@ -12,8 +12,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
@@ -46,7 +46,7 @@ func renderFrags(frags []frag.Frag) string {
 	return s.String()
 }
 
-func renderLine(cols winsize.Cols, mode style.Justify, line text.Line) string {
+func renderLine(cols winsize.Cols, mode style.Justify, line line.Line) string {
 	filler := marker.DefaultPaddingText
 
 	text := format.TextFromString(

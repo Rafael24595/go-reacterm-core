@@ -4,11 +4,11 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-type FragProvider func(winsize.Cols, ...text.Line) frag.Frag
+type FragProvider func(winsize.Cols, ...line.Line) frag.Frag
 
 type Option func(*Config)
 
@@ -28,7 +28,7 @@ func ResolveConfig(opts ...Option) Config {
 func defaultColsConfig() Config {
 	return Config{
 		Position: style.Left,
-		Provider: func(_ winsize.Cols, _ ...text.Line) frag.Frag {
+		Provider: func(_ winsize.Cols, _ ...line.Line) frag.Frag {
 			return *frag.New(marker.DefaultPaddingText)
 		},
 	}
@@ -48,7 +48,7 @@ func WithText(txt string) Option {
 
 func WithFrag(frg frag.Frag) Option {
 	return func(cfg *Config) {
-		cfg.Provider = func(_ winsize.Cols, _ ...text.Line) frag.Frag {
+		cfg.Provider = func(_ winsize.Cols, _ ...line.Line) frag.Frag {
 			return frg
 		}
 	}

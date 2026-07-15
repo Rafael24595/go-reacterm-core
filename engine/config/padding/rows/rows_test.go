@@ -8,8 +8,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 func TestResolveConfigDefaults(t *testing.T) {
@@ -50,8 +50,8 @@ func TestWithFillFrag(t *testing.T) {
 
 	WithFillFrag(".")(&cfg)
 
-	lines := []text.Line{
-		*text.NewLine("Golang"),
+	lines := []line.Line{
+		*line.New("Golang"),
 	}
 
 	frag := cfg.Provider(

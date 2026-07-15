@@ -9,15 +9,15 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
 func TestRowPositioners(t *testing.T) {
-	inputLines := []text.Line{
-		*text.NewLine("Golang"),
+	inputLines := []line.Line{
+		*line.New("Golang"),
 	}
 
 	frg := *frag.Empty()
@@ -72,8 +72,8 @@ func TestRowPositioners(t *testing.T) {
 }
 
 func TestRowsTransformer(t *testing.T) {
-	mockLines := []text.Line{
-		*text.NewLine("Golang"),
+	mockLines := []line.Line{
+		*line.New("Golang"),
 	}
 
 	tests := []struct {

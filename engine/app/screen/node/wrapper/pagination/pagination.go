@@ -13,7 +13,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const errf_unhandled = "unhandled pager type '%d'"
@@ -167,8 +167,8 @@ func (n *Pagination) view(uiState state.UIState) viewmodel.ViewModel {
 
 	assert.True(ok, errf_unhandled, n.actionKind)
 
-	footer := []text.Line{
-		*text.NewLine(
+	footer := []line.Line{
+		*line.New(
 			fmt.Sprintf("%s: %d", label, uiState.Pager.ActualPage),
 			spec.AlignLeft(),
 		),

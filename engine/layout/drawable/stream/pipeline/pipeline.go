@@ -5,14 +5,14 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const Name = "pipeline_unit"
 
 type BootTransformer func(winsize.Winsize, drawable.Unit) drawable.Unit
-type DrawTransformer func(winsize.Winsize, drawable.Unit) ([]text.Line, bool)
-type DataTransformer func(winsize.Winsize, drawable.Unit, []text.Line, bool) ([]text.Line, bool)
+type DrawTransformer func(winsize.Winsize, drawable.Unit) ([]line.Line, bool)
+type DataTransformer func(winsize.Winsize, drawable.Unit, []line.Line, bool) ([]line.Line, bool)
 
 type PipelineUnit struct {
 	loaded    bool
@@ -107,7 +107,7 @@ func (u *PipelineUnit) wipe() {
 	u.unit.Drawable.Wipe()
 }
 
-func (u *PipelineUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *PipelineUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
 	for _, s := range u.bootSteps {
@@ -116,7 +116,7 @@ func (u *PipelineUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
 
 	draw := u.unit.Drawable.Draw
 	if u.drawStep != nil {
-		draw = func(size winsize.Winsize) ([]text.Line, bool) {
+		draw = func(size winsize.Winsize) ([]line.Line, bool) {
 			return u.drawStep(size, u.unit)
 		}
 	}

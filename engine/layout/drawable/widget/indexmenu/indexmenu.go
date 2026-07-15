@@ -11,8 +11,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 const Name = "index_menu_unit"
@@ -71,7 +71,7 @@ func (u *IndexMenuUnit) ToUnit() drawable.Unit {
 func (u *IndexMenuUnit) boot() {
 	u.loaded = true
 
-	lines := make([]text.Line, 0)
+	lines := make([]line.Line, 0)
 
 	digits := math.Digits(len(u.options))
 
@@ -98,7 +98,7 @@ func (u *IndexMenuUnit) boot() {
 			AddAtom(focusAtom, selectAtom)
 
 		lines = append(lines,
-			*text.LineFromFrags(
+			*line.FromFrags(
 				*alignFrag,
 				*indexFrag,
 				*spacerFrag,
@@ -167,7 +167,7 @@ func (u *IndexMenuUnit) wipe() {
 	u.unit.Drawable.Wipe()
 }
 
-func (u *IndexMenuUnit) draw(size winsize.Winsize) ([]text.Line, bool) {
+func (u *IndexMenuUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
 
 	return u.unit.Drawable.Draw(size)

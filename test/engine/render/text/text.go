@@ -3,8 +3,8 @@ package text_test
 import (
 	"strings"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 func FragsToString(frags []frag.Frag) string {
@@ -15,6 +15,6 @@ func FragsToString(frags []frag.Frag) string {
 	return s.String()
 }
 
-func LineToString(line *text.Line) string {
+func LineToString(line *line.Line) string {
 	return FragsToString(line.Text)
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
@@ -53,7 +53,7 @@ func NewPageRenderer(strategy pager.PagerStrategy) Renderer {
 					status.Work.Advance()
 
 					status.MarkFocus(
-						text.LinesHasAtom(atom.Focus, fix),
+						line.LinesHasAtom(atom.Focus, fix),
 					)
 
 					if !status.IsFull() {

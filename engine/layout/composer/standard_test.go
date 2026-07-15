@@ -13,8 +13,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
@@ -27,24 +27,24 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 
 	vm.Header.Push(
 		drain.UnitFromLines(
-			*text.NewLine("HEADER", spec.AlignRight()),
+			*line.New("HEADER", spec.AlignRight()),
 		),
 	)
 
 	vm.Kernel.Push(
 		lines.UnitFromLines(
-			*text.NewLine("=", spec.Cover()),
-			*text.NewLine("LINE TWO", spec.AlignRight()),
-			*text.NewLine("LINE THREE IS LONG", spec.AlignRight()),
-			*text.NewLine("LINE FOUR", spec.AlignRight()),
+			*line.New("=", spec.Cover()),
+			*line.New("LINE TWO", spec.AlignRight()),
+			*line.New("LINE THREE IS LONG", spec.AlignRight()),
+			*line.New("LINE FOUR", spec.AlignRight()),
 		),
 	)
 
 	frg := frag.FromStrings("INPUT")
 	mock := &drawable_test.MockUnit{
 		Status: false,
-		Lines: []text.Line{
-			*text.LineFromFrags(frg...),
+		Lines: []line.Line{
+			*line.FromFrags(frg...),
 		},
 	}
 
@@ -85,19 +85,19 @@ func TestStandard_InitializeLayers(t *testing.T) {
 
 	vm.Header.PushWithOpts(
 		drain.UnitFromLines(
-			*text.NewLine("golang", spec.AlignRight()),
+			*line.New("golang", spec.AlignRight()),
 		),
 		layer.Fixed[winsize.Rows](1),
 	)
 	vm.Kernel.PushWithOpts(
 		lines.UnitFromLines(
-			*text.NewLine("rust", spec.AlignRight()),
+			*line.New("rust", spec.AlignRight()),
 		),
 		layer.Fixed[winsize.Rows](1),
 	)
 	vm.Footer.PushWithOpts(
 		drain.UnitFromLines(
-			*text.NewLine("Ziglang", spec.AlignRight()),
+			*line.New("Ziglang", spec.AlignRight()),
 		),
 		layer.Fixed[winsize.Rows](1),
 	)
@@ -105,8 +105,8 @@ func TestStandard_InitializeLayers(t *testing.T) {
 	frag := frag.FromStrings("X")
 	mock := &drawable_test.MockUnit{
 		Status: false,
-		Lines: []text.Line{
-			*text.LineFromFrags(frag...),
+		Lines: []line.Line{
+			*line.FromFrags(frag...),
 		},
 	}
 
