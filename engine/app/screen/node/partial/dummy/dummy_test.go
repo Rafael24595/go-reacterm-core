@@ -25,7 +25,7 @@ func TestDummy_Defaults(t *testing.T) {
 	assert.Size(t, 1, node.Tags)
 	assert.True(t, node.Tags.Has(Tag))
 
-	assert.Size(t, 0, node.Children())
+	assert.Empty(t, node.Children())
 
 	definition := node.Screen.Keys()
 	assert.Equal(t, 0, definition.Descriptor.Size())

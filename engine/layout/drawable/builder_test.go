@@ -22,7 +22,7 @@ func TestBuilder_BasicUnit(t *testing.T) {
 		ToUnit()
 
 	assert.Equal(t, name, unit.Name)
-	assert.Size(t, 0, unit.Tags)
+	assert.Empty(t, unit.Tags)
 
 	assert.NotNil(t, unit.Drawable.Boot)
 	assert.NotNil(t, unit.Drawable.Wipe)

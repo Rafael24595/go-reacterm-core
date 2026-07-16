@@ -15,7 +15,7 @@ func TestDefaultEntry(t *testing.T) {
 
 	assert.False(t, cfg.Selectable)
 	assert.NotNil(t, cfg.Opts)
-	assert.Size(t, 0, cfg.Opts)
+	assert.Empty(t, cfg.Opts)
 }
 
 func TestSelectableOption(t *testing.T) {

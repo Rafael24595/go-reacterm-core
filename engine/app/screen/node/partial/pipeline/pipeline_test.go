@@ -144,5 +144,5 @@ func TestPipeline_ActionSingleFocus(t *testing.T) {
 	assert.Equal(t, "mock_03", kernel[1].Name)
 	assert.Equal(t, "mock_02", kernel[2].Name)
 
-	assert.Size(t, 0, vm.Footer.Units())
+	assert.Empty(t, vm.Footer.Units())
 }

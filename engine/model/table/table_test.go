@@ -51,7 +51,7 @@ func TestField_WithInvalidHeader_ShouldDoNothing(t *testing.T) {
 
 	tbl.SetCell("Invalid", 0, "X")
 
-	assert.Size(t, 0, tbl.GetColumns()["ID"])
+	assert.Empty(t, tbl.GetColumns()["ID"])
 }
 
 func TestSize_ShouldCalculateMaxWidth(t *testing.T) {

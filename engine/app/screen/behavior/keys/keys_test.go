@@ -65,7 +65,7 @@ func TestWrap_DoesNotMutateOriginalNode(t *testing.T) {
 		return next
 	})(mock.ToNode())
 
-	assert.Size(t, 0, tags)
+	assert.Empty(t, tags)
 }
 
 func TestWrap_TargetIsCorrect(t *testing.T) {

@@ -45,7 +45,7 @@ func TestNewBuilder_Empty(t *testing.T) {
 	b := newBuilder()
 
 	assert.Equal(t, KindNone, b.kind)
-	assert.Size(t, 0, b.args.items)
+	assert.Empty(t, b.args.items)
 }
 
 func TestBuilderApply_AddsKinds(t *testing.T) {

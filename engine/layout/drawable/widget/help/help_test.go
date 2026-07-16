@@ -26,7 +26,7 @@ func TestHelpUnit_EmptyFields(t *testing.T) {
 	)
 
 	assert.False(t, hasNext)
-	assert.Size(t, 0, lines)
+	assert.Empty(t, lines)
 }
 
 func TestHelpUnit_WithFields(t *testing.T) {

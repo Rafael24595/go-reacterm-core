@@ -82,5 +82,5 @@ func TestStructFieds_Nil_ShouldReturnEmpty(t *testing.T) {
 func TestStructFieds_NonStruct_ShouldReturnNil(t *testing.T) {
 	fields := table.StructFieds(123)
 
-	assert.Size(t, 0, fields)
+	assert.Empty(t, fields)
 }

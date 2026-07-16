@@ -104,5 +104,5 @@ func TestInline_Empty(t *testing.T) {
 
 	lines, _ := unit.Drawable.Draw(winsize.Winsize{})
 
-	assert.Size(t, 0, lines)
+	assert.Empty(t, lines)
 }

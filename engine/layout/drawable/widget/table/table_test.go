@@ -28,7 +28,7 @@ func TestTable_LazyBoot(t *testing.T) {
 		*input.NewMatrixCursor(0, 0, false),
 	)
 
-	assert.Size(t, 0, unit.sections)
+	assert.Empty(t, unit.sections)
 
 	unit.boot()
 	unit.draw(winsize.Winsize{

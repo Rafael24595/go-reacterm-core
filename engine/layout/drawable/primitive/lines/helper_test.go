@@ -27,7 +27,7 @@ func TestWrapNextLine_FitWithMeta(t *testing.T) {
 
 	assert.Equal(t, "1 | golang", text_test.LineToString(got))
 
-	assert.Size(t, 0, remain)
+	assert.Empty(t, remain)
 }
 
 func TestWrapNextLine_SplitWithMeta(t *testing.T) {
@@ -50,7 +50,7 @@ func TestWrapNextLine_SplitWithMeta(t *testing.T) {
 	got, remain = NextIndexedLine(10, remain, meta)
 
 	assert.Equal(t, "  |  rust", text_test.LineToString(got))
-	assert.Size(t, 0, remain)
+	assert.Empty(t, remain)
 }
 
 func TestWrapNextLine_IndexShouldBeLesser(t *testing.T) {

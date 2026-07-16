@@ -89,7 +89,7 @@ func TestHistory_ViewFooter(t *testing.T) {
 
 	lines, _ := footer.Drawable.Draw(winsize.Winsize{})
 
-	assert.Size(t, 0, lines)
+	assert.Empty(t, lines)
 
 	history.trail.GoTo(mock2)
 	history.trail.GoTo(mock3)

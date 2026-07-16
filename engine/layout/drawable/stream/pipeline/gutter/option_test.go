@@ -10,7 +10,7 @@ func TestDefaultMeta(t *testing.T) {
 	cfg := defaultMeta()
 
 	assert.Equal(t, DefaultLeft, cfg.left)
-	assert.Size(t, 0, cfg.right)
+	assert.Empty(t, cfg.right)
 }
 
 func TestWithGutter(t *testing.T) {
@@ -28,7 +28,7 @@ func TestWithLeftGutter(t *testing.T) {
 	)
 
 	assert.Equal(t, ">", cfg.left)
-	assert.Size(t, 0, cfg.right)
+	assert.Empty(t, cfg.right)
 }
 
 func TestWithRightGutter(t *testing.T) {
@@ -36,6 +36,6 @@ func TestWithRightGutter(t *testing.T) {
 		WithRightGutter("<"),
 	)
 
-	assert.Size(t, 0, cfg.left)
+	assert.Empty(t, cfg.left)
 	assert.Equal(t, "<", cfg.right)
 }

@@ -37,7 +37,7 @@ func TestSpacer_AddsHeaderLinesWhenEmpty(t *testing.T) {
 		acc := findAccesor(t, v)
 		units := acc.Get(vm).Units()
 
-		assert.Size(t, 0, units)
+		assert.Empty(t, units)
 	}
 }
 

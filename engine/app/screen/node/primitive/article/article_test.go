@@ -30,7 +30,7 @@ func TestNewArticle_DefaultValues(t *testing.T) {
 	article := New()
 
 	assert.Equal(t, Name, article.ToNode().Name)
-	assert.Size(t, 0, article.article)
+	assert.Empty(t, article.article)
 }
 
 func TestArticle_SetName(t *testing.T) {

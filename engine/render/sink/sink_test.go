@@ -15,7 +15,7 @@ func TestApplySinks_PaddingLeft(t *testing.T) {
 	line := line.Empty().
 		AddSpec(spec.JustifyRight(5, "-"))
 
-	assert.Size(t, 0, line.Text)
+	assert.Empty(t, line.Text)
 
 	ApplySinks(line, 80)
 

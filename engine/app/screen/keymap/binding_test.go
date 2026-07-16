@@ -93,7 +93,7 @@ func TestCommandsEmpty(t *testing.T) {
 
 	commands := kb.Commands()
 
-	assert.Size(t, 0, commands)
+	assert.Empty(t, commands)
 }
 
 func TestCommands(t *testing.T) {
