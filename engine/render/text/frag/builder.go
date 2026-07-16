@@ -37,9 +37,9 @@ func (b *Builder) WithMeta(other *Frag) *Builder {
 }
 
 func (b *Builder) WithFrag(frg Frag) *Builder {
-	b.Text = frg.Text
-	b.Atom = frg.Atom
-	b.Spec = frg.Spec
+	b.Text += frg.Text
+	b.Atom = atom.Merge(b.Atom, frg.Atom)
+	b.Spec = spec.Merge(b.Spec, frg.Spec)
 	return b
 }
 
