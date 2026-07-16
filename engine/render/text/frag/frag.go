@@ -43,22 +43,6 @@ func newFrag(
 	}
 }
 
-func Empty() *Frag {
-	return FromString("")
-}
-
-func FromString(runes string) *Frag {
-	return newFrag(runes, atom.None, spec.Empty())
-}
-
-func FromRunes(runes []rune) *Frag {
-	return FromString(string(runes))
-}
-
-func FromMeta(other *Frag) *Frag {
-	return Empty().CopyMeta(other)
-}
-
 func calcHash(
 	hasher hash.Hasher,
 	text string,
