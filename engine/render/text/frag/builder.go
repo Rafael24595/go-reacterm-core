@@ -19,39 +19,39 @@ func NewBuilder() *Builder {
 	}
 }
 
-func (f *Builder) AddRunes(runes []rune) *Builder {
-	return f.AddText(
+func (b *Builder) AddRunes(runes []rune) *Builder {
+	return b.AddText(
 		string(runes),
 	)
 }
 
-func (f *Builder) AddText(text string) *Builder {
-	f.Text += text
-	return f
+func (b *Builder) AddText(text string) *Builder {
+	b.Text += text
+	return b
 }
 
-func (f *Builder) WithMeta(other *Frag) *Builder {
-	f.Atom = other.Atom
-	f.Spec = other.Spec
-	return f
+func (b *Builder) WithMeta(other *Frag) *Builder {
+	b.Atom = other.Atom
+	b.Spec = other.Spec
+	return b
 }
 
-func (f *Builder) AddAtom(styles ...atom.Atom) *Builder {
+func (b *Builder) AddAtom(styles ...atom.Atom) *Builder {
 	newAtom := atom.Merge(styles...)
-	f.Atom = atom.Merge(f.Atom, newAtom)
-	return f
+	b.Atom = atom.Merge(b.Atom, newAtom)
+	return b
 }
 
-func (f *Builder) AddSpec(styles ...spec.Spec) *Builder {
+func (b *Builder) AddSpec(styles ...spec.Spec) *Builder {
 	newSpec := spec.Merge(styles...)
-	f.Spec = spec.Merge(f.Spec, newSpec)
-	return f
+	b.Spec = spec.Merge(b.Spec, newSpec)
+	return b
 }
 
-func (f *Builder) Frag() Frag {
+func (b *Builder) Frag() Frag {
 	return Frag{
-		Text: f.Text,
-		Atom: f.Atom,
-		Spec: f.Spec,
+		Text: b.Text,
+		Atom: b.Atom,
+		Spec: b.Spec,
 	}
 }
