@@ -56,9 +56,5 @@ func (b *Builder) AddSpec(styles ...spec.Spec) *Builder {
 }
 
 func (b *Builder) Frag() Frag {
-	return Frag{
-		Text: b.Text,
-		Atom: b.Atom,
-		Spec: b.Spec,
-	}
+	return New(b.Text, b.Atom, b.Spec)
 }
