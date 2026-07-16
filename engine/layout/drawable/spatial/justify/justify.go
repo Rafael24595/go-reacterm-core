@@ -205,7 +205,7 @@ func distributeSpace(free winsize.Cols, frags []frag.Frag, extraSlots winsize.Co
 			continue
 		}
 
-		space := frag.Empty().AddSpec(
+		space := frag.FromSpec(
 			spec.JustifyLeft(gap, marker.DefaultPaddingText),
 		)
 
@@ -214,7 +214,7 @@ func distributeSpace(free winsize.Cols, frags []frag.Frag, extraSlots winsize.Co
 		next := make([]frag.Frag, 0, len(out)+1)
 
 		next = append(next, out[:at]...)
-		next = append(next, *space)
+		next = append(next, space)
 		next = append(next, out[at:]...)
 
 		out = next
@@ -231,7 +231,7 @@ func addSpaceBetween(frags []frag.Frag) []frag.Frag {
 		spaced = append(spaced, f)
 		if i < len(frags)-1 {
 			spaced = append(spaced,
-				*frag.New(marker.DefaultPaddingText),
+				frag.FromString(marker.DefaultPaddingText),
 			)
 		}
 	}

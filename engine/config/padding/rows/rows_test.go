@@ -35,7 +35,7 @@ func TestWithFrag(t *testing.T) {
 	cfg := defaultConfig()
 
 	WithFrag(
-		*frag.New("golang"),
+		frag.FromString("golang"),
 	)(&cfg)
 
 	frag := cfg.Provider(

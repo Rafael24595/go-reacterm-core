@@ -20,10 +20,9 @@ func TestFocusInitTransformer_FocusAtStart(t *testing.T) {
 		Lines: []line.Line{
 			*line.New("base_01"),
 			*line.FromFrags(
-				*frag.New("base").
-					AddAtom(atom.Focus),
-				*frag.New("_"),
-				*frag.New("02"),
+				frag.TextAtom("base", atom.Focus),
+				frag.FromString("_"),
+				frag.FromString("02"),
 			),
 			*line.New("base_03"),
 		},
@@ -52,10 +51,9 @@ func TestFocusInitTransformer_FocusAtEnd(t *testing.T) {
 			*line.New("base_01"),
 			*line.New("base_02"),
 			*line.FromFrags(
-				*frag.New("base"),
-				*frag.New("_").
-					AddAtom(atom.Focus),
-				*frag.New("03"),
+				frag.FromString("base"),
+				frag.TextAtom("_", atom.Focus),
+				frag.FromString("03"),
 			),
 		},
 		Batch: 1,

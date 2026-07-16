@@ -64,9 +64,9 @@ func TestCheckMenu_SwitchState_WithLimit(t *testing.T) {
 	menu := New().
 		Limit(2).
 		AddOptions(
-			input.NewCheckOption("1", *frag.New("option 1")),
-			input.NewCheckOption("2", *frag.New("option 2")),
-			input.NewCheckOption("3", *frag.New("option 3")),
+			input.NewCheckOption("1", frag.FromString("option 1")),
+			input.NewCheckOption("2", frag.FromString("option 2")),
+			input.NewCheckOption("3", frag.FromString("option 3")),
 		)
 
 	menu.clock = clock.Now

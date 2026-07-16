@@ -77,17 +77,23 @@ func AddColsPadding(
 	frags := make([]frag.Frag, 0, 3)
 
 	if paddingL > 0 {
-		frag := frg.Clone().
-			AddSpec(spec.ExtendRight(paddingL))
-		frags = append(frags, *frag)
+		frag := frag.NewBuilder().
+			WithFrag(frg).
+			AddSpec(spec.ExtendRight(paddingL)).
+			Frag()
+
+		frags = append(frags, frag)
 	}
 
 	frags = append(frags, lne.Text...)
 
 	if paddingR > 0 {
-		frag := frg.Clone().
-			AddSpec(spec.ExtendRight(paddingR))
-		frags = append(frags, *frag)
+		frag := frag.NewBuilder().
+			WithFrag(frg).
+			AddSpec(spec.ExtendRight(paddingR)).
+			Frag()
+
+		frags = append(frags, frag)
 	}
 
 	return *line.FromMeta(&lne).

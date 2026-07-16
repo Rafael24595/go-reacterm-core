@@ -34,19 +34,21 @@ func arrowProvider(arrow ...rune) PointerProvider {
 	}
 
 	defaultOwner := []frag.Frag{
-		*frag.New(marker.DefaultPaddingText).
-			AddSpec(spec.ExtendRight(3)),
+		frag.TextSpec(
+			marker.DefaultPaddingText, spec.ExtendRight(3),
+		),
 	}
 
 	selectedOwner := []frag.Frag{
-		*frag.New(
+		frag.FromString(
 			marker.DefaultPaddingText + pointer + marker.DefaultPaddingText,
 		),
 	}
 
 	defaultMessage := []frag.Frag{
-		*frag.New(marker.DefaultPaddingText).
-			AddSpec(spec.ExtendRight(5)),
+		frag.TextSpec(
+			marker.DefaultPaddingText, spec.ExtendRight(5),
+		),
 	}
 
 	return func(cursor, index uint16) ([]frag.Frag, []frag.Frag) {
@@ -60,25 +62,29 @@ func arrowProvider(arrow ...rune) PointerProvider {
 
 func gutterProvider() PointerProvider {
 	defaultOwner := []frag.Frag{
-		*frag.New(marker.DefaultPaddingText).
-			AddSpec(spec.ExtendRight(3)),
+		frag.TextSpec(
+			marker.DefaultPaddingText, spec.ExtendRight(3),
+		),
 	}
 
 	selectedOwner := []frag.Frag{
-		*frag.New(marker.U2503_Text),
-		*frag.New(marker.DefaultPaddingText).
-			AddSpec(spec.ExtendRight(2)),
+		frag.FromString(marker.U2503_Text),
+		frag.TextSpec(
+			marker.DefaultPaddingText, spec.ExtendRight(2),
+		),
 	}
 
 	defaultMessage := []frag.Frag{
-		*frag.New(marker.DefaultPaddingText).
-			AddSpec(spec.ExtendRight(5)),
+		frag.TextSpec(
+			marker.DefaultPaddingText, spec.ExtendRight(5),
+		),
 	}
 
 	selectedMessage := []frag.Frag{
-		*frag.New(marker.U2503_Text),
-		*frag.New(marker.DefaultPaddingText).
-			AddSpec(spec.ExtendRight(4)),
+		frag.FromString(marker.U2503_Text),
+		frag.TextSpec(
+			marker.DefaultPaddingText, spec.ExtendRight(4),
+		),
 	}
 
 	return func(cursor, index uint16) ([]frag.Frag, []frag.Frag) {

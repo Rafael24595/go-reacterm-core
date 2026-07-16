@@ -63,11 +63,15 @@ func (b builder) render(size winsize.Winsize) []section {
 		)
 
 		topCover := line.FromFrags(
-			*frag.New(separator.Top).AddSpec(specCover),
+			frag.TextSpec(
+				separator.Top, specCover,
+			),
 		)
 
 		bottomCover := line.FromFrags(
-			*frag.New(separator.Bottom).AddSpec(specCover),
+			frag.TextSpec(
+				separator.Bottom, specCover,
+			),
 		)
 
 		bodyRows := b.renderBody(chunk, headers, separator, fixedCursor)
@@ -252,7 +256,9 @@ func (b builder) renderHeaders(
 			spec.TruncateRight(maxCol, marker.DefaultElipsisText),
 		)
 
-		return *frag.New(header).AddSpec(spec)
+		return frag.TextSpec(
+			header, spec,
+		)
 	}
 
 	return b.renderRow(headers, separator, renderer)
@@ -273,7 +279,7 @@ func (b builder) renderBody(
 	for row := range rows {
 		renderer := func(col int, header string) frag.Frag {
 			maxCol := maxCols[header]
-			return *b.renderCell(
+			return b.renderCell(
 				maxCol, cursor, header, row, uint16(col),
 			)
 		}
@@ -295,8 +301,9 @@ func (b builder) renderRow(
 	frags := make([]frag.Frag, 0, capacity)
 
 	frags = append(frags,
-		*frag.New(separator.Left).
-			AddAtom(atom.Wrap),
+		frag.TextAtom(
+			separator.Left, atom.Wrap,
+		),
 	)
 
 	for col, header := range headers {
@@ -306,15 +313,17 @@ func (b builder) renderRow(
 
 		if col < headersLen-1 {
 			frags = append(frags,
-				*frag.New(separator.Center).
-					AddAtom(atom.Wrap),
+				frag.TextAtom(
+					separator.Center, atom.Wrap,
+				),
 			)
 		}
 	}
 
 	frags = append(frags,
-		*frag.New(separator.Right).
-			AddAtom(atom.Wrap),
+		frag.TextAtom(
+			separator.Right, atom.Wrap,
+		),
 	)
 
 	return line.FromFrags(frags...)
@@ -326,7 +335,7 @@ func (b builder) renderCell(
 	header string,
 	row uint16,
 	col uint16,
-) *frag.Frag {
+) frag.Frag {
 	atm := atom.Wrap
 	if cursor != nil && cursor.IsAt(row, col) {
 		atm = atom.Merge(atm, atom.Select, atom.Focus)
@@ -335,10 +344,7 @@ func (b builder) renderCell(
 	cell, ok := b.table.FindCell(header, row)
 	if !ok {
 		scp := spec.ExtendRight(maxCol)
-
-		return frag.New("").
-			AddSpec(scp).
-			AddAtom(atm)
+		return frag.FromMeta(atm, scp)
 	}
 
 	scp := spec.Merge(
@@ -346,7 +352,5 @@ func (b builder) renderCell(
 		spec.TruncateRight(maxCol, marker.DefaultElipsisText),
 	)
 
-	return frag.New(cell).
-		AddSpec(scp).
-		AddAtom(atm)
+	return frag.New(cell, atm, scp)
 }

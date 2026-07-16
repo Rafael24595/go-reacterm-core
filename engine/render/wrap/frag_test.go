@@ -9,9 +9,8 @@ import (
 )
 
 func TestWordFragMeasure_CacheSameCols(t *testing.T) {
-	w := newWordFrag(
-		frag.New("golang"),
-	)
+	frg := frag.FromString("golang")
+	wrd := newWordFrag(&frg)
 
 	calls := uint(0)
 
@@ -20,19 +19,18 @@ func TestWordFragMeasure_CacheSameCols(t *testing.T) {
 		return 42
 	}
 
-	first := w.measureWith(80, resolver)
-	second := w.measureWith(80, resolver)
+	first := wrd.measureWith(80, resolver)
+	second := wrd.measureWith(80, resolver)
 
 	assert.Equal(t, first, second)
-	assert.Equal(t, winsize.Cols(80), w.cols)
+	assert.Equal(t, winsize.Cols(80), wrd.cols)
 
 	assert.Equal(t, 1, calls)
 }
 
 func TestWordFragMeasure_RecalculateOnColsChange(t *testing.T) {
-	w := newWordFrag(
-		frag.New("golang"),
-	)
+	frg := frag.FromString("golang")
+	wrd := newWordFrag(&frg)
 
 	calls := uint(0)
 
@@ -41,19 +39,18 @@ func TestWordFragMeasure_RecalculateOnColsChange(t *testing.T) {
 		return 42
 	}
 
-	_ = w.measureWith(80, resolver)
-	m40 := w.measureWith(40, resolver)
+	_ = wrd.measureWith(80, resolver)
+	m40 := wrd.measureWith(40, resolver)
 
-	assert.Equal(t, winsize.Cols(40), w.cols)
-	assert.Equal(t, m40, w.measure)
+	assert.Equal(t, winsize.Cols(40), wrd.cols)
+	assert.Equal(t, m40, wrd.measure)
 
 	assert.Equal(t, 2, calls)
 }
 
 func TestWordFragMeasure_CacheAfterColsChange(t *testing.T) {
-	w := newWordFrag(
-		frag.New("golang"),
-	)
+	frg := frag.FromString("golang")
+	wrd := newWordFrag(&frg)
 
 	calls := uint(0)
 
@@ -62,17 +59,16 @@ func TestWordFragMeasure_CacheAfterColsChange(t *testing.T) {
 		return 42
 	}
 
-	w.measureWith(80, resolver)
-	w.measureWith(40, resolver)
-	w.measureWith(40, resolver)
+	wrd.measureWith(80, resolver)
+	wrd.measureWith(40, resolver)
+	wrd.measureWith(40, resolver)
 
 	assert.Equal(t, uint(2), calls)
 }
 
 func TestWordFragMeasure_RecalculateWhenReturningToPreviousCols(t *testing.T) {
-	w := newWordFrag(
-		frag.New("golang"),
-	)
+	frg := frag.FromString("golang")
+	wrd := newWordFrag(&frg)
 
 	calls := uint(0)
 
@@ -81,9 +77,9 @@ func TestWordFragMeasure_RecalculateWhenReturningToPreviousCols(t *testing.T) {
 		return 42
 	}
 
-	w.measureWith(80, resolver)
-	w.measureWith(40, resolver)
-	w.measureWith(80, resolver)
+	wrd.measureWith(80, resolver)
+	wrd.measureWith(40, resolver)
+	wrd.measureWith(80, resolver)
 
 	assert.Equal(t, uint(3), calls)
 }

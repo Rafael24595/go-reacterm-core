@@ -21,10 +21,10 @@ func NewDemoCheck() screen.Node {
 	}
 
 	options := []input.CheckOption{
-		input.NewCheckOption("1", *frag.New("Check 1")),
-		input.NewCheckOption("2", *frag.New("Check 2")),
-		input.NewCheckOption("3", *frag.New("Check 3")),
-		input.NewCheckOption("4", *frag.New("Check 4")),
+		input.NewCheckOption("1", frag.FromString("Check 1")),
+		input.NewCheckOption("2", frag.FromString("Check 2")),
+		input.NewCheckOption("3", frag.FromString("Check 3")),
+		input.NewCheckOption("4", frag.FromString("Check 4")),
 	}
 
 	node := checkmenu.New().

@@ -82,16 +82,14 @@ func makeUnit(fields []key.Descriptor) drawable.Unit {
 		}
 
 		data := fmt.Sprintf("[%s] %s%s", code, field.Detail, separator)
-		frags[i] = *frag.New(data).
-			AddAtom(atom.Wrap)
+		frags[i] = frag.TextAtom(data, atom.Wrap)
 
 	}
 
 	return drain.UnitFromLines(
 		*line.FromFrags(
-			*frag.New("--Help--"),
-			*frag.New("-").
-				AddSpec(spec.Cover()),
+			frag.FromString("--Help--"),
+			frag.TextSpec("-", spec.Cover()),
 		),
 		*line.FromFrags(frags...),
 		*line.New("-", spec.Cover()),

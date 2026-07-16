@@ -33,10 +33,12 @@ func splitLineWords(line *line.Line) ([]word, []wordFrag) {
 			return
 		}
 
-		f := frag.New(sb.String()).
-			CopyMeta(&frg)
+		f := frag.NewBuilder().
+			AddText(sb.String()).
+			WithMeta(&frg).
+			Frag()
 
-		frags = append(frags, *newWordFrag(f))
+		frags = append(frags, *newWordFrag(&f))
 		sb.Reset()
 	}
 

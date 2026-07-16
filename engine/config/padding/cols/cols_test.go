@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
@@ -27,7 +27,7 @@ func TestWithPosition(t *testing.T) {
 }
 
 func TestWithFrag(t *testing.T) {
-	expected := *frag.New(".")
+	expected := frag.FromString(".")
 
 	cfg := ResolveConfig(
 		WithFrag(expected),

@@ -24,16 +24,16 @@ func NewDemoSelect() screen.Node {
 	}
 
 	options := input.NewMenuOptions(
-		input.NewMenuOption("opt_art", *frag.New("[Prim] Option Article"), NewDemoArticle),
-		input.NewMenuOption("opt_txt", *frag.New("[Prim] Option TextArea"), NewDemoTextArea),
-		input.NewMenuOption("opt_tbl", *frag.New("[Prim] Option Table"), NewDemoTable),
-		input.NewMenuOption("opt_mdl", *frag.New("[Prim] Option Modal"), NewDemoModal),
-		input.NewMenuOption("opt_chk", *frag.New("[Prim] Option Check"), NewDemoCheck),
-		input.NewMenuOption("opt_txi", *frag.New("[Prim] Option TextInput"), NewDemoTextInput),
-		input.NewMenuOption("opt_tlk", *frag.New("[Prim] Option Talk"), NewDemoTalk),
-		input.NewMenuOption("opt_clp", *frag.New("[Prim] Option Clip"), NewDemoClip),
-		input.NewMenuOption("opt_frm", *frag.New("[Comp] Option Form"), NewDemoForm),
-		input.NewMenuOption("opt_hsk", *frag.New("[Demo] Option HStack"), NewDemoHStack),
+		input.NewMenuOption("opt_art", frag.FromString("[Prim] Option Article"), NewDemoArticle),
+		input.NewMenuOption("opt_txt", frag.FromString("[Prim] Option TextArea"), NewDemoTextArea),
+		input.NewMenuOption("opt_tbl", frag.FromString("[Prim] Option Table"), NewDemoTable),
+		input.NewMenuOption("opt_mdl", frag.FromString("[Prim] Option Modal"), NewDemoModal),
+		input.NewMenuOption("opt_chk", frag.FromString("[Prim] Option Check"), NewDemoCheck),
+		input.NewMenuOption("opt_txi", frag.FromString("[Prim] Option TextInput"), NewDemoTextInput),
+		input.NewMenuOption("opt_tlk", frag.FromString("[Prim] Option Talk"), NewDemoTalk),
+		input.NewMenuOption("opt_clp", frag.FromString("[Prim] Option Clip"), NewDemoClip),
+		input.NewMenuOption("opt_frm", frag.FromString("[Comp] Option Form"), NewDemoForm),
+		input.NewMenuOption("opt_hsk", frag.FromString("[Demo] Option HStack"), NewDemoHStack),
 	)
 
 	optsSize := len(options)
@@ -42,7 +42,7 @@ func NewDemoSelect() screen.Node {
 		options = append(options,
 			input.NewMenuOption(
 				fmt.Sprintf("opt_%d", i),
-				*frag.New(fmt.Sprintf("Option %d", i+1+optsSize)),
+				frag.FromString(fmt.Sprintf("Option %d", i+1+optsSize)),
 				NewDemoTextArea,
 			),
 		)

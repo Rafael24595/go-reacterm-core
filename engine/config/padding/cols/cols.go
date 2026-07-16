@@ -29,7 +29,7 @@ func defaultColsConfig() Config {
 	return Config{
 		Position: style.Left,
 		Provider: func(_ winsize.Cols, _ ...line.Line) frag.Frag {
-			return *frag.New(marker.DefaultPaddingText)
+			return frag.FromString(marker.DefaultPaddingText)
 		},
 	}
 }
@@ -42,7 +42,7 @@ func WithPosition(position style.HorizontalPosition) Option {
 
 func WithText(txt string) Option {
 	return WithFrag(
-		*frag.New(txt),
+		frag.FromString(txt),
 	)
 }
 

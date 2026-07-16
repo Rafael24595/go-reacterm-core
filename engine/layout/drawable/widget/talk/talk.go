@@ -122,8 +122,8 @@ func (u *TalkUnit) makeLines(
 	ownerLines := wrap.Lines(
 		size.Cols.Sub(3),
 		*line.FromFrags(
-			*frag.New(message.Owner),
-			*frag.New(":"),
+			frag.FromString(message.Owner),
+			frag.FromString(":"),
 		),
 	)
 
@@ -138,7 +138,7 @@ func (u *TalkUnit) makeLines(
 	messageLines := wrap.Lines(
 		size.Cols.Sub(5),
 		*line.FromFrags(
-			*frag.New(message.Message),
+			frag.FromString(message.Message),
 		),
 	)
 
@@ -182,7 +182,7 @@ func (u *TalkUnit) addFocus(
 
 	if len(targetLines[focusRow].Text) == 0 {
 		targetLines[focusRow].Text = append(
-			targetLines[focusRow].Text, *frag.Empty(),
+			targetLines[focusRow].Text, frag.Empty(),
 		)
 	}
 

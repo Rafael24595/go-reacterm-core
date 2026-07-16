@@ -7,7 +7,7 @@ import (
 func FromStrings(text ...string) []Frag {
 	frags := make([]Frag, len(text))
 	for i, v := range text {
-		frags[i] = *New(v)
+		frags[i] = FromString(v)
 	}
 	return frags
 }

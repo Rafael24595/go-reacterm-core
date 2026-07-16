@@ -114,7 +114,7 @@ func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...line.Line) []line.Li
 
 	specCover := spec.ExtendLeft(measure)
 	cover := line.FromFrags(
-		*frag.New(u.separator.Top).AddSpec(specCover),
+		frag.TextSpec(u.separator.Top, specCover),
 	)
 
 	result := make([]line.Line, 0)
@@ -144,9 +144,9 @@ func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...line.Line) []line.Li
 func (u *BoxUnit) wrapLine(line line.Line) line.Line {
 	frags := make([]frag.Frag, 0)
 
-	frags = append(frags, *frag.New(u.separator.Left))
+	frags = append(frags, frag.FromString(u.separator.Left))
 	frags = append(frags, line.Text...)
-	frags = append(frags, *frag.New(u.separator.Right))
+	frags = append(frags, frag.FromString(u.separator.Right))
 
 	line.Text = frags
 

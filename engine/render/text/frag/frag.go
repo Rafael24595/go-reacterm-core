@@ -15,19 +15,11 @@ type Frag struct {
 	hash uint64
 }
 
-func New(text string) *Frag {
-	return newFrag(
-		text,
-		atom.None,
-		spec.Empty(),
-	)
-}
-
-func newFrag(
+func New(
 	text string,
 	atom atom.Atom,
 	spec spec.Spec,
-) *Frag {
+) Frag {
 	hash := calcHash(
 		hash.New(),
 		text,
@@ -35,7 +27,7 @@ func newFrag(
 		spec,
 	)
 
-	return &Frag{
+	return Frag{
 		Text: text,
 		Atom: atom,
 		Spec: spec,
@@ -55,32 +47,16 @@ func calcHash(
 	return hasher
 }
 
-func (f *Frag) CopyMeta(other *Frag) *Frag {
-	f.Atom = other.Atom
-	f.Spec = other.Spec
-	return f
-}
-
-func (f *Frag) AddAtom(styles ...atom.Atom) *Frag {
-	newAtom := atom.Merge(styles...)
-	f.Atom = atom.Merge(f.Atom, newAtom)
-	return f
-}
-
-func (f *Frag) AddSpec(styles ...spec.Spec) *Frag {
-	newSpec := spec.Merge(styles...)
-	f.Spec = spec.Merge(f.Spec, newSpec)
-	return f
-}
-
-func (f *Frag) Size() winsize.Cols {
+func (f Frag) Size() winsize.Cols {
 	return runes.Measure(f.Text)
 }
 
-func (f *Frag) Clone() *Frag {
-	clone := FromMeta(f)
-	clone.Text = f.Text
-	return clone
+func (f Frag) Clone() Frag {
+	return New(
+		f.Text,
+		f.Atom,
+		f.Spec,
+	)
 }
 
 func Measure(cols winsize.Cols, frags ...Frag) winsize.Cols {

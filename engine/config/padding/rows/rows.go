@@ -30,7 +30,7 @@ func defaultConfig() Config {
 	return Config{
 		Position: style.Top,
 		Provider: func(_ winsize.Winsize, _ ...line.Line) frag.Frag {
-			return *frag.Empty()
+			return frag.Empty()
 		},
 	}
 }
@@ -58,8 +58,7 @@ func WithFillFrag(txt ...string) Option {
 	return func(cfg *Config) {
 		cfg.Provider = func(size winsize.Winsize, lines ...line.Line) frag.Frag {
 			measure := line.MaxMeasure(size.Cols, lines...)
-			return *frag.New(data).
-				AddSpec(spec.ExtendRight(measure))
+			return frag.TextSpec(data, spec.ExtendRight(measure))
 		}
 	}
 }

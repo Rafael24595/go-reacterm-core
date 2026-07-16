@@ -75,8 +75,13 @@ func (u *InputLineUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 		return []line.Line{*prompt}, false
 	}
 
-	prompt := frag.FromStrings(u.prompt + marker.DefaultPaddingText)
-	lines[0].Text = append(prompt, lines[0].Text...)
+	prompt := frag.FromString(
+		u.prompt + marker.DefaultPaddingText,
+	)
+
+	lines[0].Text = append(
+		[]frag.Frag{prompt}, lines[0].Text...,
+	)
 
 	return lines, false
 }

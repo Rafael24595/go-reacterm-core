@@ -22,7 +22,7 @@ func FrameLines(lines ...string) Frame {
 
 	for i, line := range lines {
 		frags[i] = row{
-			*frag.New(line),
+			frag.FromString(line),
 		}
 	}
 
@@ -32,7 +32,7 @@ func FrameLines(lines ...string) Frame {
 func TextFrags(texts ...string) row {
 	frags := make(row, len(texts))
 	for i := range texts {
-		frags[i] = *frag.New(texts[i])
+		frags[i] = frag.FromString(texts[i])
 	}
 	return frags
 }
@@ -54,7 +54,7 @@ func normalizeFrame(frame *Frame) *Frame {
 		}
 
 		frame.frags[j] = append(
-			frame.frags[j], *frag.Empty(),
+			frame.frags[j], frag.Empty(),
 		)
 	}
 	return frame

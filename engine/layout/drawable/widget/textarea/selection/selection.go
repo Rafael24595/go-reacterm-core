@@ -62,14 +62,18 @@ func (r Renderer) resolveBackward() Result {
 		focusAtom = atom.None
 
 		frags = append(frags,
-			*frag.FromRunes(marker.PrintableCaretRunes).
-				AddAtom(r.blink, atom.Focus),
+			frag.NewBuilder().
+				AddRunes(marker.PrintableCaretRunes).
+				AddAtom(r.blink, atom.Focus).
+				Frag(),
 		)
 	}
 
 	frags = append(frags,
-		*frag.FromRunes(selection).
-			AddAtom(r.blink, focusAtom),
+		frag.NewBuilder().
+			AddRunes(selection).
+			AddAtom(r.blink, focusAtom).
+			Frag(),
 	)
 
 	return Result{
@@ -93,14 +97,18 @@ func (r Renderer) resolveForwardNonEnter() Result {
 	selection := r.selection()
 	if len(selection) > 1 {
 		frags = append(frags,
-			*frag.FromRunes(selection[:len(selection)-1]).
-				AddAtom(r.blink),
+			frag.NewBuilder().
+				AddRunes(selection[:len(selection)-1]).
+				AddAtom(r.blink).
+				Frag(),
 		)
 	}
 
 	frags = append(frags,
-		*frag.FromRunes(selection[len(selection)-1:]).
-			AddAtom(r.blink, atom.Focus),
+		frag.NewBuilder().
+			AddRunes(selection[len(selection)-1:]).
+			AddAtom(r.blink, atom.Focus).
+			Frag(),
 	)
 
 	return Result{
@@ -115,18 +123,24 @@ func (r Renderer) resolveForwardEnter() Result {
 	selection := r.selection()
 	if len(selection) == 1 {
 		frags = append(frags,
-			*frag.FromRunes(marker.PrintableCaretRunes).
-				AddAtom(r.blink),
+			frag.NewBuilder().
+				AddRunes(marker.PrintableCaretRunes).
+				AddAtom(r.blink).
+				Frag(),
 		)
 	}
 
 	footer, nextEnd := r.resolveEnterFooter()
 
 	frags = append(frags,
-		*frag.FromRunes(selection).
-			AddAtom(r.blink),
-		*frag.FromRunes(footer).
-			AddAtom(r.blink, atom.Focus),
+		frag.NewBuilder().
+			AddRunes(selection).
+			AddAtom(r.blink).
+			Frag(),
+		frag.NewBuilder().
+			AddRunes(footer).
+			AddAtom(r.blink, atom.Focus).
+			Frag(),
 	)
 
 	return Result{
@@ -151,7 +165,7 @@ func (r Renderer) resolveEmpty() Result {
 	assert.Unreachable("selection should have at least one character")
 
 	frags := []frag.Frag{
-		*frag.Empty().AddAtom(atom.Focus),
+		frag.FromAtom(atom.Focus),
 	}
 
 	return Result{

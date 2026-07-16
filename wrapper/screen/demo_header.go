@@ -13,19 +13,25 @@ func NewDemoHeader() pipeline.Transformer {
 	return header.Transformer(
 		pipeline.Before,
 		*line.FromFrags(
-			*frag.New("Lorem ipsum dolor sit amet").
-				AddSpec(spec.AlignCenter()).
-				AddAtom(atom.Upper),
+			frag.New(
+				"Lorem ipsum dolor sit amet",
+				atom.Upper,
+				spec.AlignCenter(),
+			),
 		),
 		*line.FromFrags(
-			*frag.New("consectetur adipiscing").
-				AddSpec(spec.AlignCenter()).
-				AddAtom(atom.Upper),
+			frag.New(
+				"consectetur adipiscing",
+				atom.Upper,
+				spec.AlignCenter(),
+			),
 		),
 		*line.FromFrags(
-			*frag.New("-Server 00-").
-				AddSpec(spec.AlignCenter()).
-				AddAtom(atom.Upper),
+			frag.New(
+				"-Server 00-",
+				atom.Upper,
+				spec.AlignCenter(),
+			),
 		),
 	)
 }

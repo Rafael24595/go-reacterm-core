@@ -98,15 +98,15 @@ func (u *InlineUnit) joinChildren(lines []line.Line) []line.Line {
 
 	merged := line.Empty()
 
-	var separator *frag.Frag
+	var separator frag.Frag
 	if u.separator != "" {
-		separator = frag.New(u.separator)
+		separator = frag.FromString(u.separator)
 	}
 
 	for i, line := range lines {
 		frags := line.Text
 		if u.separator != "" && i < len(lines)-1 {
-			frags = append(frags, *separator)
+			frags = append(frags, separator)
 		}
 
 		merged.PushFrags(frags...).

@@ -87,13 +87,14 @@ func (u *ModalUnit) lazyBoot(size winsize.Winsize) {
 	opts := make([]frag.Frag, len(u.options))
 	for i := range u.options {
 		old := u.options[i]
-		opts[i] = *frag.New(old.Text).
-			AddAtom(old.Atom).
-			AddSpec(old.Spec)
+		frg := frag.NewBuilder().
+			WithFrag(old)
 
 		if i == int(u.cursor) {
-			opts[i].AddAtom(atom.Select)
+			frg.AddAtom(atom.Select)
 		}
+
+		opts[i] = frg.Frag()
 	}
 
 	measure := line.MaxMeasure(size.Cols, u.text...) + 1

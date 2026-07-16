@@ -129,12 +129,15 @@ func (u *CheckMenuUnit) addStyles() []frag.Frag {
 			label = marker.DefaultPaddingText + label
 		}
 
-		frags[i] = *frag.New(u.meta.Open + status + u.meta.Close + label).
-			CopyMeta(&u.options[i].Label)
+		frg := frag.NewBuilder().
+			AddText(u.meta.Open + status + u.meta.Close + label).
+			WithMeta(&u.options[i].Label)
 
 		if u.writeMode && i == int(u.cursor) {
-			frags[i].AddAtom(atom.Select, atom.Focus)
+			frg.AddAtom(atom.Select, atom.Focus)
 		}
+
+		frags[i] = frg.Frag()
 	}
 
 	return frags

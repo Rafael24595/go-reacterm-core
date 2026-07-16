@@ -137,7 +137,7 @@ func (u *TextAreaUnit) resolveFrags(
 
 	if start > 0 {
 		frags = append(frags,
-			*frag.New(string(renderBuffer[:start])),
+			frag.FromString(string(renderBuffer[:start])),
 		)
 	}
 
@@ -152,7 +152,7 @@ func (u *TextAreaUnit) resolveFrags(
 
 	if int(end) < len(renderBuffer) {
 		frags = append(frags,
-			*frag.New(string(renderBuffer[end:])),
+			frag.FromString(string(renderBuffer[end:])),
 		)
 	}
 

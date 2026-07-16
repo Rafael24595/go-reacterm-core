@@ -141,7 +141,8 @@ func (n *TextInput) view(uiState state.UIState) viewmodel.ViewModel {
 		ToUnit()
 
 	if len(n.label) != 0 {
-		frags := append(n.label, *frag.New(": "))
+		frags := append(n.label, frag.FromString(": "))
+		
 		vm.Kernel.Push(
 			drain.UnitFromFrags(frags...),
 		)

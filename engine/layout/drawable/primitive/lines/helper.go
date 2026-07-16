@@ -40,7 +40,7 @@ func NextIndexedLine(
 	cursor, rest := wrap.NextLine(fixedCols, lines)
 	if cursor != nil {
 		cursor.UnshiftFrags(
-			*frag.New(prefix),
+			frag.FromString(prefix),
 		)
 	}
 

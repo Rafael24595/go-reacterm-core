@@ -18,8 +18,8 @@ func DrawTransformer(opts ...Option) pipeline.DrawTransformer {
 	rightMeasure := runes.Measure(meta.right)
 	measure := leftMeasure + rightMeasure
 
-	leftFrg := frag.New(meta.left)
-	rightFrg := frag.New(meta.right)
+	leftFrg := frag.FromString(meta.left)
+	rightFrg := frag.FromString(meta.right)
 
 	return func(size winsize.Winsize, unit drawable.Unit) ([]line.Line, bool) {
 		if measure >= size.Cols {
@@ -34,10 +34,10 @@ func DrawTransformer(opts ...Option) pipeline.DrawTransformer {
 		lines, hasNext := unit.Drawable.Draw(fixedSize)
 		for i := range lines {
 			if leftMeasure > 0 {
-				lines[i].UnshiftFrags(*leftFrg)
+				lines[i].UnshiftFrags(leftFrg)
 			}
 			if rightMeasure > 0 {
-				lines[i].PushFrags(*rightFrg)
+				lines[i].PushFrags(rightFrg)
 			}
 		}
 

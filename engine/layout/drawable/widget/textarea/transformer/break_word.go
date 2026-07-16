@@ -7,7 +7,10 @@ import (
 
 func BreakWord(frags []frag.Frag) []frag.Frag {
 	for i := range frags {
-		frags[i].AddAtom(atom.Break)
+		frags[i] = frag.NewBuilder().
+			WithFrag(frags[i]).
+			AddAtom(atom.Break).
+			Frag()
 	}
 	return frags
 }

@@ -50,8 +50,10 @@ func MaterializeEmpty(
 			lastFrag = line.Source.Text[len(line.Source.Text)-1]
 		}
 
-		frag := *frag.New(placeholder).
-			CopyMeta(&lastFrag)
+		frag := frag.NewBuilder().
+			AddText(placeholder).
+			WithMeta(&lastFrag).
+			Frag()
 
 		lines[i].Source.PushFrags(frag)
 		lines[i].pushFrags(frag)
@@ -193,7 +195,10 @@ func splitLineFeeds(lne *line.Line, order bool) []line.Line {
 		for i, part := range parts {
 			if part != "" {
 				current.PushFrags(
-					*frag.New(part).CopyMeta(&frg),
+					frag.NewBuilder().
+						AddText(part).
+						WithMeta(&frg).
+						Frag(),
 				)
 			}
 
@@ -218,10 +223,11 @@ func splitLineFeeds(lne *line.Line, order bool) []line.Line {
 
 func splitFragAt(frg *wordFrag, cols winsize.Cols) (*wordFrag, *wordFrag) {
 	if cols <= 0 {
-		newFrag := frag.Empty().
-			CopyMeta(frg.Base)
+		newFrag := frag.NewBuilder().
+			WithMeta(frg.Base).
+			Frag()
 
-		return newWordFrag(newFrag), frg
+		return newWordFrag(&newFrag), frg
 	}
 
 	byteIndex, canBreak := runes.RuneIndexToByteIndex(frg.Base.Text, offset.Offset(cols))
@@ -229,11 +235,15 @@ func splitFragAt(frg *wordFrag, cols winsize.Cols) (*wordFrag, *wordFrag) {
 		return frg, nil
 	}
 
-	taken := frag.New(frg.Base.Text[:byteIndex]).
-		CopyMeta(frg.Base)
+	taken := frag.NewBuilder().
+		AddText(frg.Base.Text[:byteIndex]).
+		WithMeta(frg.Base).
+		Frag()
 
-	rest := frag.New(frg.Base.Text[byteIndex:]).
-		CopyMeta(frg.Base)
+	rest := frag.NewBuilder().
+		AddText(frg.Base.Text[byteIndex:]).
+		WithMeta(frg.Base).
+		Frag()
 
-	return newWordFrag(taken), newWordFrag(rest)
+	return newWordFrag(&taken), newWordFrag(&rest)
 }
