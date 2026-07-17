@@ -152,7 +152,7 @@ func (l *LayoutLine) hasAtom(idx int, atm atom.Atom) bool {
 	}
 
 	for _, v := range l.findFrags(idx) {
-		if v.Base.Atom.HasAny(atm) {
+		if v.Base.Atom().HasAny(atm) {
 			return true
 		}
 	}

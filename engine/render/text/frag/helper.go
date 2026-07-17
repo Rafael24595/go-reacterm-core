@@ -14,7 +14,7 @@ func FromStrings(text ...string) []Frag {
 
 func HasAtom(atm atom.Atom, frags ...Frag) bool {
 	for _, v := range frags {
-		if v.Atom.HasAny(atm) {
+		if v.Atom().HasAny(atm) {
 			return true
 		}
 	}

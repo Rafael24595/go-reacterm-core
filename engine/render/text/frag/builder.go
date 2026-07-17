@@ -19,6 +19,11 @@ func NewBuilder() *Builder {
 	}
 }
 
+func BuilderFromFrag(frg Frag) *Builder {
+	return NewBuilder().
+		WithFrag(frg)
+}
+
 func (b *Builder) AddRunes(runes []rune) *Builder {
 	return b.AddText(
 		string(runes),
@@ -31,15 +36,15 @@ func (b *Builder) AddText(text string) *Builder {
 }
 
 func (b *Builder) WithMeta(other *Frag) *Builder {
-	b.Atom = other.Atom
-	b.Spec = other.Spec
+	b.Atom = other.Atom()
+	b.Spec = other.Spec()
 	return b
 }
 
 func (b *Builder) WithFrag(frg Frag) *Builder {
-	b.Text += frg.Text
-	b.Atom = atom.Merge(b.Atom, frg.Atom)
-	b.Spec = spec.Merge(b.Spec, frg.Spec)
+	b.Text += frg.Text()
+	b.Atom = atom.Merge(b.Atom, frg.Atom())
+	b.Spec = spec.Merge(b.Spec, frg.Spec())
 	return b
 }
 

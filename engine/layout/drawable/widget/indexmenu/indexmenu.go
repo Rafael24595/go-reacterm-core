@@ -96,7 +96,7 @@ func (u *IndexMenuUnit) boot() {
 		)
 
 		titleFrag := frag.TextAtom(
-			o.Text, focusAtom, selectAtom,
+			o.Text(), focusAtom, selectAtom,
 		)
 
 		lines = append(lines,

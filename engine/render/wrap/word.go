@@ -56,7 +56,7 @@ func splitLineWords(line *line.Line) ([]word, []wordFrag) {
 	}
 
 	for _, frg := range line.Text {
-		if frg.Atom.HasAny(atom.Wrap) || frag.IsStructural(frg) {
+		if frg.Atom().HasAny(atom.Wrap) || frag.IsStructural(frg) {
 			flushFrag(frg)
 			flushWord()
 
@@ -73,7 +73,7 @@ func splitLineWords(line *line.Line) ([]word, []wordFrag) {
 			continue
 		}
 
-		for _, r := range frg.Text {
+		for _, r := range frg.Text() {
 			isSpace := unicode.IsSpace(r)
 
 			if hasState && isSpace != lastSpace {

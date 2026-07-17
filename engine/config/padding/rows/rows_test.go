@@ -20,7 +20,7 @@ func TestResolveConfigDefaults(t *testing.T) {
 		winsize.New(10, 20),
 	)
 
-	assert.Empty(t, frag.Text)
+	assert.Empty(t, frag.Text())
 }
 
 func TestWithPosition(t *testing.T) {
@@ -42,7 +42,7 @@ func TestWithFrag(t *testing.T) {
 		winsize.New(10, 20),
 	)
 
-	assert.Equal(t, "golang", frag.Text)
+	assert.Equal(t, "golang", frag.Text())
 }
 
 func TestWithFillFrag(t *testing.T) {
@@ -59,7 +59,7 @@ func TestWithFillFrag(t *testing.T) {
 		lines...,
 	)
 
-	assert.Equal(t, ".", frag.Text)
-	assert.True(t, frag.Spec.Kind().HasAny(spec.KindExtendRight))
-	assert.Equal(t, "6", frag.Spec.Args()[spec.KeyExtendRightSize].Text())
+	assert.Equal(t, ".", frag.Text())
+	assert.True(t, frag.Spec().Kind().HasAny(spec.KindExtendRight))
+	assert.Equal(t, "6", frag.Spec().Args()[spec.KeyExtendRightSize].Text())
 }

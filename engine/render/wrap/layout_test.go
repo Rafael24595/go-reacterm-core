@@ -37,13 +37,13 @@ func TestLayoutFindFrags(t *testing.T) {
 	frags := layout.findFrags(0)
 
 	assert.Equal(t, 2, len(frags))
-	assert.Equal(t, "foo", frags[0].Base.Text)
-	assert.Equal(t, "bar", frags[1].Base.Text)
+	assert.Equal(t, "foo", frags[0].Base.Text())
+	assert.Equal(t, "bar", frags[1].Base.Text())
 
 	last := layout.findFrags(1)
 
 	assert.Equal(t, 1, len(last))
-	assert.Equal(t, "baz", last[0].Base.Text)
+	assert.Equal(t, "baz", last[0].Base.Text())
 }
 
 func TestLayoutPushFrags(t *testing.T) {
@@ -192,7 +192,7 @@ func TestSplitWord_SplitLastFrag(t *testing.T) {
 	assert.Size(t, 4, layout.frags)
 
 	assert.Equal(t, "golan", fragsToString(layout.findFrags(0)))
-	assert.Equal(t, "n", layout.frags[2].Base.Text)
+	assert.Equal(t, "n", layout.frags[2].Base.Text())
 	assert.Equal(t, "g", fragsToString(layout.findFrags(1)))
 }
 
@@ -207,8 +207,8 @@ func TestLayoutSplitFrag(t *testing.T) {
 	assert.Equal(t, 2, len(layout.frags))
 	assert.Equal(t, 2, len(layout.words))
 
-	assert.Equal(t, "abc", layout.frags[0].Base.Text)
-	assert.Equal(t, "def", layout.frags[1].Base.Text)
+	assert.Equal(t, "abc", layout.frags[0].Base.Text())
+	assert.Equal(t, "def", layout.frags[1].Base.Text())
 
 	assert.Equal(t, uint32(0), layout.words[0].start)
 	assert.Equal(t, uint32(1), layout.words[0].end)
@@ -384,10 +384,14 @@ func TestLayoutClone(t *testing.T) {
 	assert.True(t, layout.words[0].measured)
 	assert.False(t, clone.words[0].measured)
 
-	clone.frags[0].Base.Text = "rust"
+	bld := frag.BuilderFromFrag(*clone.frags[0].Base)
+	bld.Text = "rust"
+	frg := bld.Frag()
 
-	assert.Equal(t, "rust", layout.frags[0].Base.Text)
-	assert.Equal(t, "rust", clone.frags[0].Base.Text)
+	*clone.frags[0].Base = frg
+
+	assert.Equal(t, "rust", layout.frags[0].Base.Text())
+	assert.Equal(t, "rust", clone.frags[0].Base.Text())
 }
 
 func BenchmarkLayoutMeasure_Cached(b *testing.B) {

@@ -298,7 +298,7 @@ func TestMaterializeEmpty(t *testing.T) {
 			word := layout.words[len(layout.words)-1]
 			frag := layout.frags[word.end-1]
 
-			assert.Equal(t, tt.expectedAtom, frag.Base.Atom)
+			assert.Equal(t, tt.expectedAtom, frag.Base.Atom())
 		})
 	}
 }
@@ -318,7 +318,7 @@ func TestWrapLine_Simple(t *testing.T) {
 	for i, l := range lines {
 		var text strings.Builder
 		for _, f := range l.Text {
-			text.WriteString(f.Text)
+			text.WriteString(f.Text())
 		}
 
 		assert.Equal(t, expected[i], text.String())
@@ -336,12 +336,12 @@ func TestWrapLine_Styles(t *testing.T) {
 
 	assert.Equal(t, 2, len(lines))
 
-	assert.Equal(t, "HELLO", lines[0].Text[0].Text)
-	assert.True(t, lines[0].Text[0].Atom.HasAny(atom.Bold))
+	assert.Equal(t, "HELLO", lines[0].Text[0].Text())
+	assert.True(t, lines[0].Text[0].Atom().HasAny(atom.Bold))
 
-	assert.Equal(t, " ", lines[0].Text[1].Text)
+	assert.Equal(t, " ", lines[0].Text[1].Text())
 
-	assert.Equal(t, "WORLD", lines[1].Text[0].Text)
+	assert.Equal(t, "WORLD", lines[1].Text[0].Text())
 }
 
 func TestWrapLine_LongWord(t *testing.T) {
@@ -357,7 +357,7 @@ func TestWrapLine_LongWord(t *testing.T) {
 	for i, l := range lines {
 		text := ""
 		for _, f := range l.Text {
-			text += f.Text
+			text += f.Text()
 		}
 		if runes.Measure(text) > maxWidth {
 			t.Errorf("line %d too long: %s", i, text)
@@ -367,7 +367,7 @@ func TestWrapLine_LongWord(t *testing.T) {
 	totalRunes := winsize.Cols(0)
 	for _, l := range lines {
 		for _, f := range l.Text {
-			totalRunes += runes.Measure(f.Text)
+			totalRunes += runes.Measure(f.Text())
 		}
 	}
 	if totalRunes != runes.Measure(txt) {
@@ -388,7 +388,7 @@ func TestWrapLine_MultipleFrags(t *testing.T) {
 	for _, l := range lines {
 		width := winsize.Cols(0)
 		for _, f := range l.Text {
-			width += runes.Measure(f.Text)
+			width += runes.Measure(f.Text())
 		}
 		if width > maxWidth {
 			t.Errorf("line exceeds maxWidth: %v", l)
@@ -613,7 +613,7 @@ func TestSplitFragAt_EndOfFrag(t *testing.T) {
 	assert.NotNil(t, left)
 	assert.Nil(t, right)
 
-	assert.Equal(t, "abcdef", left.Base.Text)
+	assert.Equal(t, "abcdef", left.Base.Text())
 }
 
 func TestSplitFragAt_EmptyRestNeverCreated(t *testing.T) {

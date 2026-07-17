@@ -141,7 +141,7 @@ func TestHStack_RenderOutput(t *testing.T) {
 
 	resultText := ""
 	for _, frag := range lines[0].Text {
-		resultText += frag.Text
+		resultText += frag.Text()
 	}
 
 	assert.Equal(t, "go-zig", text_test.LineToString(&lines[0]))

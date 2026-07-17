@@ -15,7 +15,7 @@ func TestResolveConfigDefaults(t *testing.T) {
 	assert.Equal(t, style.Left, cfg.Position)
 
 	frag := cfg.Provider(10)
-	assert.Equal(t, marker.DefaultPaddingText, frag.Text)
+	assert.Equal(t, marker.DefaultPaddingText, frag.Text())
 }
 
 func TestWithPosition(t *testing.T) {
@@ -35,5 +35,5 @@ func TestWithFrag(t *testing.T) {
 
 	got := cfg.Provider(10)
 
-	assert.Equal(t, expected.Text, got.Text)
+	assert.Equal(t, expected.Text(), got.Text())
 }

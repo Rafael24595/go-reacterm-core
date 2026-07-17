@@ -22,16 +22,16 @@ import (
 func renderFrags(frags []frag.Frag) string {
 	var s strings.Builder
 	for _, f := range frags {
-		s.WriteString(f.Text)
+		s.WriteString(f.Text())
 
 		count := winsize.Cols(0)
 		ok := false
-		if args, ex := f.Spec.Args()[spec.KeyExtendRightSize]; ex {
+		if args, ex := f.Spec().Args()[spec.KeyExtendRightSize]; ex {
 			ok = true
 			count = dynamic.MapOr[winsize.Cols](args, 0)
 		}
 
-		if args, ex := f.Spec.Args()[spec.KeyJustifyLeftSize]; ex {
+		if args, ex := f.Spec().Args()[spec.KeyJustifyLeftSize]; ex {
 			ok = true
 			count = dynamic.MapOr[winsize.Cols](args, 0)
 		}
@@ -82,8 +82,8 @@ func TestAddGaps_SingleFrag(t *testing.T) {
 		result := addGaps(10, frags, 3, mode)
 
 		assert.Size(t, 1, result)
-		assert.Equal(t, "abc", result[0].Text)
-		assert.Equal(t, spec.KindNone, result[0].Spec.Kind())
+		assert.Equal(t, "abc", result[0].Text())
+		assert.Equal(t, spec.KindNone, result[0].Spec().Kind())
 	}
 }
 
@@ -98,9 +98,9 @@ func TestAddGaps_IntercalatedSpaces(t *testing.T) {
 		assert.Size(t, 5, result)
 		assert.Equal(t, "aa bb cc", text_test.FragsToString(result))
 
-		assert.Equal(t, spec.KindNone, result[0].Spec.Kind())
-		assert.Equal(t, spec.KindNone, result[2].Spec.Kind())
-		assert.Equal(t, spec.KindNone, result[4].Spec.Kind())
+		assert.Equal(t, spec.KindNone, result[0].Spec().Kind())
+		assert.Equal(t, spec.KindNone, result[2].Spec().Kind())
+		assert.Equal(t, spec.KindNone, result[4].Spec().Kind())
 	}
 }
 
@@ -113,9 +113,9 @@ func TestAddGaps_Between(t *testing.T) {
 
 	assert.Size(t, 5, result)
 
-	assert.Equal(t, 2, dynamic.MapOr[winsize.Cols](result[1].Spec.Args()[spec.KeyJustifyLeftSize], 0))
-	assert.Equal(t, 2, dynamic.MapOr[winsize.Cols](result[3].Spec.Args()[spec.KeyJustifyLeftSize], 0))
-	assert.Equal(t, spec.KindNone, result[2].Spec.Kind())
+	assert.Equal(t, 2, dynamic.MapOr[winsize.Cols](result[1].Spec().Args()[spec.KeyJustifyLeftSize], 0))
+	assert.Equal(t, 2, dynamic.MapOr[winsize.Cols](result[3].Spec().Args()[spec.KeyJustifyLeftSize], 0))
+	assert.Equal(t, spec.KindNone, result[2].Spec().Kind())
 
 	assert.Equal(t, "aa  bb  cc", renderFrags(result))
 }
@@ -129,9 +129,9 @@ func TestAddGaps_Around(t *testing.T) {
 
 	assert.Size(t, 5, result)
 
-	assert.Equal(t, 2, dynamic.MapOr[winsize.Cols](result[1].Spec.Args()[spec.KeyJustifyLeftSize], 0))
-	assert.Equal(t, 1, dynamic.MapOr[winsize.Cols](result[3].Spec.Args()[spec.KeyJustifyLeftSize], 0))
-	assert.Equal(t, spec.KindNone, result[2].Spec.Kind())
+	assert.Equal(t, 2, dynamic.MapOr[winsize.Cols](result[1].Spec().Args()[spec.KeyJustifyLeftSize], 0))
+	assert.Equal(t, 1, dynamic.MapOr[winsize.Cols](result[3].Spec().Args()[spec.KeyJustifyLeftSize], 0))
+	assert.Equal(t, spec.KindNone, result[2].Spec().Kind())
 
 	assert.Equal(t, "aa  bb cc", renderFrags(result))
 }
@@ -153,7 +153,7 @@ func TestAddGaps_DoesNotMutateOriginal(t *testing.T) {
 	_ = addGaps(10, frags, 4, style.JustifyBetween)
 
 	for _, f := range frags {
-		assert.Equal(t, spec.KindNone, f.Spec.Kind())
+		assert.Equal(t, spec.KindNone, f.Spec().Kind())
 	}
 }
 

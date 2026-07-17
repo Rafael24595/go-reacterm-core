@@ -17,7 +17,7 @@ func frameToString(frame *Frame) string {
 	var sb strings.Builder
 	for i, fs := range frame.frags {
 		for _, f := range fs {
-			sb.WriteString(f.Text)
+			sb.WriteString(f.Text())
 		}
 		if i < len(frame.frags)-1 {
 			sb.WriteString("\n")

@@ -175,8 +175,8 @@ func TestRendererResolve(t *testing.T) {
 			for i, frag := range result.Frags {
 				expected := tt.expected[i]
 
-				assert.Equal(t, escapeLF(expected.content), escapeLF(frag.Text))
-				assert.Equal(t, expected.atoms, frag.Atom)
+				assert.Equal(t, escapeLF(expected.content), escapeLF(frag.Text()))
+				assert.Equal(t, expected.atoms, frag.Atom())
 			}
 		})
 	}

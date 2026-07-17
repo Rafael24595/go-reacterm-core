@@ -10,7 +10,7 @@ import (
 func FragsToString(frags []frag.Frag) string {
 	var s strings.Builder
 	for _, f := range frags {
-		s.WriteString(f.Text)
+		s.WriteString(f.Text())
 	}
 	return s.String()
 }

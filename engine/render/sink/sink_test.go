@@ -23,6 +23,6 @@ func TestApplySinks_PaddingLeft(t *testing.T) {
 	assert.Size(t, 1, line.Text)
 
 	firstFrag := line.Text[0]
-	assert.True(t, firstFrag.Spec.Kind().HasAny(spec.KindJustifyRight))
-	assert.Equal(t, 5, dynamic.MapOr[winsize.Cols](firstFrag.Spec.Args()[spec.KeyJustifyRightSize], 0))
+	assert.True(t, firstFrag.Spec().Kind().HasAny(spec.KindJustifyRight))
+	assert.Equal(t, 5, dynamic.MapOr[winsize.Cols](firstFrag.Spec().Args()[spec.KeyJustifyRightSize], 0))
 }

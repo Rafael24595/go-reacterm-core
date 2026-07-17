@@ -36,7 +36,7 @@ func wordsToStrings(tokens []word, frags []wordFrag) []string {
 func fragsToString(frags []wordFrag) string {
 	var b strings.Builder
 	for _, f := range frags {
-		b.WriteString(f.Base.Text)
+		b.WriteString(f.Base.Text())
 	}
 	return b.String()
 }
@@ -179,8 +179,8 @@ func TestSplitLineWords_StyleChangeRequiresFragSplit(t *testing.T) {
 	assert.Size(t, 1, words)
 	assert.Size(t, 2, frags)
 
-	assert.True(t, frags[0].Base.Atom.HasAny(atom.Bold))
-	assert.True(t, frags[1].Base.Atom.HasAny(atom.Bold))
+	assert.True(t, frags[0].Base.Atom().HasAny(atom.Bold))
+	assert.True(t, frags[1].Base.Atom().HasAny(atom.Bold))
 }
 
 func TestSplitLineWords_PreservesStylesAcrossFrags(t *testing.T) {
@@ -195,9 +195,9 @@ func TestSplitLineWords_PreservesStylesAcrossFrags(t *testing.T) {
 	assert.Size(t, 1, words)
 	assert.Size(t, 3, frags)
 
-	assert.True(t, frags[0].Base.Atom.HasNone(atom.Select))
-	assert.True(t, frags[1].Base.Atom.HasAny(atom.Select))
-	assert.True(t, frags[2].Base.Atom.HasNone(atom.Select))
+	assert.True(t, frags[0].Base.Atom().HasNone(atom.Select))
+	assert.True(t, frags[1].Base.Atom().HasAny(atom.Select))
+	assert.True(t, frags[2].Base.Atom().HasNone(atom.Select))
 }
 
 func TestSplitLineWords_MultipleSpaceFragsKeepStyles(t *testing.T) {
@@ -215,17 +215,17 @@ func TestSplitLineWords_MultipleSpaceFragsKeepStyles(t *testing.T) {
 	word := words[0]
 	assert.Size(t, 2, word.end-word.start)
 
-	assert.Equal(t, " ", frags[0].Base.Text)
-	assert.True(t, frags[0].Base.Atom.HasAny(atom.Bold))
+	assert.Equal(t, " ", frags[0].Base.Text())
+	assert.True(t, frags[0].Base.Atom().HasAny(atom.Bold))
 
-	assert.Equal(t, " ", frags[1].Base.Text)
-	assert.True(t, frags[1].Base.Atom.HasAny(atom.Select))
+	assert.Equal(t, " ", frags[1].Base.Text())
+	assert.True(t, frags[1].Base.Atom().HasAny(atom.Select))
 
 	word = words[1]
 	assert.Size(t, 1, word.end-word.start)
 
-	assert.Equal(t, "c", frags[2].Base.Text)
-	assert.True(t, frags[2].Base.Atom.HasAny(atom.Bold))
+	assert.Equal(t, "c", frags[2].Base.Text())
+	assert.True(t, frags[2].Base.Atom().HasAny(atom.Bold))
 }
 
 func TestSplitLineWords_FinalFlushPreservesStyles(t *testing.T) {
@@ -238,7 +238,7 @@ func TestSplitLineWords_FinalFlushPreservesStyles(t *testing.T) {
 	assert.Size(t, 1, words)
 	assert.Size(t, 1, frags)
 
-	assert.True(t, frags[0].Base.Atom.HasAny(atom.Bold))
+	assert.True(t, frags[0].Base.Atom().HasAny(atom.Bold))
 }
 
 func BenchmarkSplitLineFeeds_NoLF(b *testing.B) {

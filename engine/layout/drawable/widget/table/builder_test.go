@@ -69,14 +69,14 @@ func TestBuilder_RenderHeaders_Structure(t *testing.T) {
 
 	assert.Size(t, wantFrags, line.Text)
 
-	assert.Equal(t, "|", line.Text[0].Text)
-	assert.Equal(t, "id", line.Text[1].Text)
-	assert.Equal(t, "|", line.Text[2].Text)
-	assert.Equal(t, "name", line.Text[3].Text)
-	assert.Equal(t, "|", line.Text[4].Text)
+	assert.Equal(t, "|", line.Text[0].Text())
+	assert.Equal(t, "id", line.Text[1].Text())
+	assert.Equal(t, "|", line.Text[2].Text())
+	assert.Equal(t, "name", line.Text[3].Text())
+	assert.Equal(t, "|", line.Text[4].Text())
 
-	assert.NotEqual(t, spec.KindNone, line.Text[1].Spec.Kind())
-	assert.NotEqual(t, spec.KindNone, line.Text[3].Spec.Kind())
+	assert.NotEqual(t, spec.KindNone, line.Text[1].Spec().Kind())
+	assert.NotEqual(t, spec.KindNone, line.Text[3].Spec().Kind())
 }
 
 func TestBuilder_RenderBody_Basic(t *testing.T) {

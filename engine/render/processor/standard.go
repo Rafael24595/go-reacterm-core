@@ -51,27 +51,27 @@ func (r Standard) renderLineFrags(line line.Line, size winsize.Winsize) string {
 
 	for _, f := range line.Text {
 		txt := format.NewText(
-			f.Text,
+			f.Text(),
 			f.Size(),
 		)
 
-		spec := r.spec.Apply(f.Spec, lineSize, txt)
+		spec := r.spec.Apply(f.Spec(), lineSize, txt)
 
 		fragSize := frag.Measure(size.Cols, f)
 		lineSize.Cols = lineSize.Cols.Sub(fragSize)
 
-		if atoms != f.Atom && len(frags) != 0 {
+		if atoms != f.Atom() && len(frags) != 0 {
 			atom := r.atom.Apply(frags, atoms)
 			buffer.WriteString(atom)
 
 			frags = spec
-			atoms = f.Atom
+			atoms = f.Atom()
 
 			continue
 		}
 
 		frags += spec
-		atoms = f.Atom
+		atoms = f.Atom()
 	}
 
 	if len(frags) != 0 {

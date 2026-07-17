@@ -124,7 +124,7 @@ func (u *CheckMenuUnit) addStyles() []frag.Frag {
 			status = u.meta.Checked
 		}
 
-		label := u.options[i].Label.Text
+		label := u.options[i].Label.Text()
 		if len(label) > 0 {
 			label = marker.DefaultPaddingText + label
 		}

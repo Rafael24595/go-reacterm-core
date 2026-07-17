@@ -186,7 +186,10 @@ func (u *TalkUnit) addFocus(
 		)
 	}
 
-	targetLines[focusRow].Text[0].Atom = atom.Focus
+	frg := frag.BuilderFromFrag(targetLines[focusRow].Text[0]).
+		AddAtom(atom.Focus)
+
+	targetLines[focusRow].Text[0] = frg.Frag()
 
 	return ownerLines, messageLines
 }

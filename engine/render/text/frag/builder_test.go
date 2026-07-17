@@ -42,8 +42,8 @@ func TestBuilder_WithMeta(t *testing.T) {
 		WithMeta(&src)
 
 	assert.Equal(t, "world", b.Text)
-	assert.Equal(t, src.Atom, b.Atom)
-	assert.DeepEqual(t, src.Spec, b.Spec)
+	assert.Equal(t, src.Atom(), b.Atom)
+	assert.DeepEqual(t, src.Spec(), b.Spec)
 }
 
 func TestBuilder_WithFrag(t *testing.T) {
@@ -54,9 +54,9 @@ func TestBuilder_WithFrag(t *testing.T) {
 		WithFrag(src).
 		Frag()
 
-	assert.Equal(t, "hellogolang", got.Text)
-	assert.Equal(t, src.Atom, got.Atom)
-	assert.DeepEqual(t, src.Spec, got.Spec)
+	assert.Equal(t, "hellogolang", got.Text())
+	assert.Equal(t, src.Atom(), got.Atom())
+	assert.DeepEqual(t, src.Spec(), got.Spec())
 }
 
 func TestBuilder_AddAtom(t *testing.T) {
@@ -86,9 +86,9 @@ func TestBuilder_Frag(t *testing.T) {
 		AddSpec(spec.JustifyCenter(2)).
 		Frag()
 
-	assert.Equal(t, "hello", got.Text)
-	assert.Equal(t, atom.Bold, got.Atom)
-	assert.DeepEqual(t, spec.JustifyCenter(2), got.Spec)
+	assert.Equal(t, "hello", got.Text())
+	assert.Equal(t, atom.Bold, got.Atom())
+	assert.DeepEqual(t, spec.JustifyCenter(2), got.Spec())
 }
 
 func TestBuilder_Fluent(t *testing.T) {
@@ -101,11 +101,11 @@ func TestBuilder_Fluent(t *testing.T) {
 		AddSpec(spec.JustifyCenter(2)).
 		Frag()
 
-	assert.Equal(t, "hello world", got.Text)
+	assert.Equal(t, "hello world", got.Text())
 	assert.Equal(
 		t,
 		atom.Merge(atom.Bold, atom.Focus),
-		got.Atom,
+		got.Atom(),
 	)
 	assert.DeepEqual(
 		t,
@@ -113,7 +113,7 @@ func TestBuilder_Fluent(t *testing.T) {
 			spec.JustifyCenter(1),
 			spec.JustifyCenter(2),
 		),
-		got.Spec,
+		got.Spec(),
 	)
 }
 

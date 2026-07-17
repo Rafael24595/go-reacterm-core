@@ -184,12 +184,12 @@ func splitLineFeeds(lne *line.Line, order bool) []line.Line {
 	}
 
 	for _, frg := range lne.Text {
-		if !strings.ContainsAny(frg.Text, "\n\r") {
+		if !strings.ContainsAny(frg.Text(), "\n\r") {
 			current.PushFrags(frg)
 			continue
 		}
 
-		normalizedText := runes.NormalizeLineFeed(frg.Text)
+		normalizedText := runes.NormalizeLineFeed(frg.Text())
 
 		parts := strings.Split(normalizedText, "\n")
 		for i, part := range parts {
@@ -230,18 +230,18 @@ func splitFragAt(frg *wordFrag, cols winsize.Cols) (*wordFrag, *wordFrag) {
 		return newWordFrag(&newFrag), frg
 	}
 
-	byteIndex, canBreak := runes.RuneIndexToByteIndex(frg.Base.Text, offset.Offset(cols))
-	if !canBreak || int(byteIndex) >= len(frg.Base.Text) {
+	byteIndex, canBreak := runes.RuneIndexToByteIndex(frg.Base.Text(), offset.Offset(cols))
+	if !canBreak || int(byteIndex) >= len(frg.Base.Text()) {
 		return frg, nil
 	}
 
 	taken := frag.NewBuilder().
-		AddText(frg.Base.Text[:byteIndex]).
+		AddText(frg.Base.Text()[:byteIndex]).
 		WithMeta(frg.Base).
 		Frag()
 
 	rest := frag.NewBuilder().
-		AddText(frg.Base.Text[byteIndex:]).
+		AddText(frg.Base.Text()[byteIndex:]).
 		WithMeta(frg.Base).
 		Frag()
 

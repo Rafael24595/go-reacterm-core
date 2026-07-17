@@ -198,7 +198,7 @@ func (n *IndexMenu) view(uiState state.UIState) viewmodel.ViewModel {
 
 	index := math.SubClampZeroAs[int, uint16](len(n.options), 1)
 	option := min(index, n.cursor)
-	text := n.options[option].Label.Text
+	text := n.options[option].Label.Text()
 
 	vm.Footer.Push(
 		inputline.FromString(text),

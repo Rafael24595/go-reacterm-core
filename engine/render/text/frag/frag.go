@@ -9,9 +9,9 @@ import (
 )
 
 type Frag struct {
-	Text string
-	Atom atom.Atom
-	Spec spec.Spec
+	text string
+	atom atom.Atom
+	spec spec.Spec
 	hash uint64
 }
 
@@ -28,9 +28,9 @@ func New(
 	)
 
 	return Frag{
-		Text: text,
-		Atom: atom,
-		Spec: spec,
+		text: text,
+		atom: atom,
+		spec: spec,
 		hash: hash.Sum64(),
 	}
 }
@@ -47,15 +47,31 @@ func calcHash(
 	return hasher
 }
 
+func (f Frag) Text() string {
+	return f.text
+}
+
+func (f Frag) Atom() atom.Atom {
+	return f.atom
+}
+
+func (f Frag) Spec() spec.Spec {
+	return f.spec
+}
+
+func (s Frag) Hash() uint64 {
+	return s.hash
+}
+
 func (f Frag) Size() winsize.Cols {
-	return runes.Measure(f.Text)
+	return runes.Measure(f.text)
 }
 
 func (f Frag) Clone() Frag {
 	return New(
-		f.Text,
-		f.Atom,
-		f.Spec,
+		f.text,
+		f.atom,
+		f.spec,
 	)
 }
 
@@ -66,18 +82,18 @@ func Measure(cols winsize.Cols, frags ...Frag) winsize.Cols {
 			SizeCols: cols,
 			TextSize: f.Size(),
 		}
-		measure += spec.Measure(f.Spec, ctx)
+		measure += spec.Measure(f.spec, ctx)
 	}
 	return measure
 }
 
 func IsZero(frag Frag) bool {
-	return frag.Text == "" &&
-		frag.Atom == atom.None &&
-		frag.Spec.Kind() == spec.KindNone
+	return frag.text == "" &&
+		frag.atom == atom.None &&
+		frag.spec.Kind() == spec.KindNone
 }
 
 func IsStructural(frag Frag) bool {
-	hasStyles := frag.Atom != atom.None || frag.Spec.Kind() != spec.KindNone
-	return frag.Text == "" && hasStyles
+	hasStyles := frag.atom != atom.None || frag.spec.Kind() != spec.KindNone
+	return frag.text == "" && hasStyles
 }
