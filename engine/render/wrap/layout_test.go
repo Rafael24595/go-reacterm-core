@@ -384,14 +384,7 @@ func TestLayoutClone(t *testing.T) {
 	assert.True(t, layout.words[0].measured)
 	assert.False(t, clone.words[0].measured)
 
-	bld := frag.BuilderFromFrag(*clone.frags[0].Base)
-	bld.Text = "rust"
-	frg := bld.Frag()
-
-	*clone.frags[0].Base = frg
-
-	assert.Equal(t, "rust", layout.frags[0].Base.Text())
-	assert.Equal(t, "rust", clone.frags[0].Base.Text())
+	assert.Same(t, layout.frags[0].Base, clone.frags[0].Base)
 }
 
 func BenchmarkLayoutMeasure_Cached(b *testing.B) {
