@@ -1,5 +1,5 @@
-github.com/Rafael24595/go-assert v0.7.0 h1:3GNwwQKTVHuUdyukbctkQ6jrSWmyNm063Lw9Eiz1xVU=
-github.com/Rafael24595/go-assert v0.7.0/go.mod h1:jErrEaEg+p2PPjtBEUtTheZOdb9EESVAGPPZy13wj2w=
+github.com/Rafael24595/go-assert v0.8.0 h1:cjPYfu0AaKRjbkn8deLULLSc/amvFBOgOkT79qorKjQ=
+github.com/Rafael24595/go-assert v0.8.0/go.mod h1:jErrEaEg+p2PPjtBEUtTheZOdb9EESVAGPPZy13wj2w=
 github.com/Rafael24595/go-log v0.4.0 h1:FNqGL7uXb6TMsJ903Hzo7pWAKOqZ79wqHIp/mOl2zrw=
 github.com/Rafael24595/go-log v0.4.0/go.mod h1:7p9PD5GldKY9aRxDfww6olZDvlms7H/vai86/tZ18sg=
 github.com/Rafael24595/go-supervisor v0.1.1 h1:A1yJ+NNEXgF5FuNF6GjTMvv9dc9co6H6FfuMoy6uCSM=
