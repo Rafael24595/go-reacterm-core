@@ -22,12 +22,25 @@ func (b *Builder) AddSpec(styles ...spec.Spec) *Builder {
 	return b
 }
 
-func (b *Builder) AddFrags(frags ...frag.Frag) *Builder {
+func (b *Builder) UnshiftFrags(frags ...frag.Frag) *Builder {
 	b.Text = append(frags, b.Text...)
 	return b
 }
 
-func (b *Builder) AddBuilder(builder ...*frag.Builder) *Builder {
+func (b *Builder) PushFrags(frags ...frag.Frag) *Builder {
+	b.Text = append(b.Text, frags...)
+	return b
+}
+
+func (b *Builder) UnshiftBuilder(builder ...*frag.Builder) *Builder {
+	frags := make([]frag.Frag, len(builder))
+	for i := range builder {
+		frags[i] = builder[i].Frag()
+	}
+	return b.PushFrags(frags...)
+}
+
+func (b *Builder) PushBuilder(builder ...*frag.Builder) *Builder {
 	for _, f := range builder {
 		b.Text = append(b.Text, f.Frag())
 	}
