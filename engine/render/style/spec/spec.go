@@ -22,23 +22,11 @@ func New(kind Kind, args args) Spec {
 	}
 }
 
-func Empty() Spec {
-	return New(KindNone, args{})
-}
-
-func (s Spec) Kind() Kind {
-	return s.kind
-}
-
-func (s Spec) Args() argMap {
-	return s.args.Items()
-}
-
-func (s Spec) Hash() uint64 {
-	return s.hash
-}
-
-func calcHash(hasher hash.Hasher, kinds Kind, args args) hash.Hasher {
+func calcHash(
+	hasher hash.Hasher,
+	kinds Kind,
+	args args,
+) hash.Hasher {
 	for _, desc := range kindRegistry {
 		if kinds&desc.Kind == 0 {
 			continue
@@ -58,6 +46,18 @@ func calcHash(hasher hash.Hasher, kinds Kind, args args) hash.Hasher {
 	}
 
 	return hasher
+}
+
+func (s Spec) Kind() Kind {
+	return s.kind
+}
+
+func (s Spec) Args() argMap {
+	return s.args.Items()
+}
+
+func (s Spec) Hash() uint64 {
+	return s.hash
 }
 
 func Merge(styles ...Spec) Spec {

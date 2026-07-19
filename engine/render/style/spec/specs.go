@@ -9,6 +9,10 @@ import (
 
 const WinSize = winsize.Cols(0)
 
+func Empty() Spec {
+	return New(KindNone, args{})
+}
+
 func AlignLeft() Spec {
 	return JustifyLeft(WinSize)
 }
