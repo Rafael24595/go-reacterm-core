@@ -48,9 +48,9 @@ func (b *Builder) PushBuilder(builder ...*frag.Builder) *Builder {
 }
 
 func (b *Builder) Line() Line {
-	return Line{
-		Order: b.Order,
-		Spec:  b.Spec,
-		Text:  b.Text,
-	}
+	return *newLine(
+		b.Order,
+		b.Spec,
+		b.Text,
+	)
 }

@@ -8,8 +8,8 @@ import (
 
 type Line struct {
 	Order uint16
-	Text  []frag.Frag
 	Spec  spec.Spec
+	Text  []frag.Frag
 }
 
 func New(text string, styles ...spec.Spec) *Line {
@@ -21,26 +21,15 @@ func New(text string, styles ...spec.Spec) *Line {
 	}
 }
 
-func Empty(size ...int) *Line {
-	bufferSize := 0
-	if len(size) > 0 {
-		bufferSize = size[0]
-	}
-
-	return FromFrags(
-		make([]frag.Frag, 0, bufferSize)...,
-	)
-}
-
-func FromMeta(other *Line, size ...int) *Line {
-	return Empty(size...).
-		CopyMeta(other)
-}
-
-func FromFrags(frags ...frag.Frag) *Line {
+func newLine(
+	order uint16,
+	spec spec.Spec,
+	text []frag.Frag,
+) *Line {
 	return &Line{
-		Text: frags,
-		Spec: spec.Empty(),
+		Order: order,
+		Text:  text,
+		Spec:  spec,
 	}
 }
 
@@ -72,10 +61,16 @@ func (l *Line) AddSpec(styles ...spec.Spec) *Line {
 }
 
 func (l *Line) Clone() *Line {
-	newLine := Empty().CopyMeta(l)
-	newLine.Text = make([]frag.Frag, len(l.Text))
-	copy(newLine.Text, l.Text)
-	return newLine
+	spec := l.Spec.Clone()
+
+	text := make([]frag.Frag, len(l.Text))
+	copy(text, l.Text)
+
+	return &Line{
+		Order: l.Order,
+		Spec:  spec,
+		Text:  text,
+	}
 }
 
 func Measure(line *Line, cols winsize.Cols) winsize.Cols {
