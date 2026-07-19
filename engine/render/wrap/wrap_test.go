@@ -330,7 +330,7 @@ func TestWrapLine_Styles(t *testing.T) {
 		frag.TextAtom("HELLO", atom.Bold),
 		frag.FromString(" "),
 		frag.FromString("WORLD"),
-	).SetSpec(spec.AlignRight())
+	).AddSpec(spec.AlignRight())
 
 	lines := Line(7, line)
 
@@ -380,7 +380,7 @@ func TestWrapLine_MultipleFrags(t *testing.T) {
 		frag.TextAtom("HELLO", atom.Bold),
 		frag.TextAtom("WORLD", atom.Bold),
 		frag.FromString("GO"),
-	).SetSpec(spec.AlignRight())
+	).AddSpec(spec.AlignRight())
 
 	maxWidth := winsize.Cols(8)
 	lines := Line(maxWidth, line)

@@ -71,11 +71,6 @@ func (l *Line) AddSpec(styles ...spec.Spec) *Line {
 	return l
 }
 
-func (l *Line) SetSpec(styles ...spec.Spec) *Line {
-	l.Spec = spec.Merge(styles...)
-	return l
-}
-
 func (l *Line) Clone() *Line {
 	newLine := Empty().CopyMeta(l)
 	newLine.Text = make([]frag.Frag, len(l.Text))
