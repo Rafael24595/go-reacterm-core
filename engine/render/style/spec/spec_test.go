@@ -121,6 +121,20 @@ func TestSpecHash_IsOrderIndependent(t *testing.T) {
 	assert.Equal(t, left.hash, right.hash)
 }
 
+func TestSpecHashChangesWithKind(t *testing.T) {
+	a := Fill(80)
+	b := TruncateRight(80)
+
+	assert.NotEqual(t, a.Hash(), b.Hash())
+}
+
+func TestSpecHashChangesWithArgs(t *testing.T) {
+	a := Fill(80)
+	b := Fill(120)
+
+	assert.NotEqual(t, a.Hash(), b.Hash())
+}
+
 func TestErase_All(t *testing.T) {
 	original := Merge(
 		Fill(10),
