@@ -68,11 +68,12 @@ func (f Frag) Size() winsize.Cols {
 }
 
 func (f Frag) Clone() Frag {
-	return New(
-		f.text,
-		f.atom,
-		f.spec,
-	)
+	return Frag{
+		text: f.text,
+		atom: f.atom,
+		spec: f.spec.Clone(),
+		hash: f.hash,
+	}
 }
 
 func Measure(cols winsize.Cols, frags ...Frag) winsize.Cols {
