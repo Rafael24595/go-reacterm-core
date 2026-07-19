@@ -12,6 +12,13 @@ type args struct {
 	items argMap
 }
 
+func (a *args) lazyInit() *args {
+	if a.items == nil {
+		a.items = make(argMap)
+	}
+	return a
+}
+
 func (a *args) Get(key ArgKey) dynamic.Value {
 	if a.items == nil {
 		var zero dynamic.Value
@@ -32,9 +39,7 @@ func (a *args) TryGet(key ArgKey) (dynamic.Value, bool) {
 }
 
 func (a *args) Set(key ArgKey, value dynamic.Value) {
-	if a.items == nil {
-		a.items = make(argMap)
-	}
+	a.lazyInit()
 	a.items[key] = value
 }
 
@@ -51,16 +56,13 @@ func (a *args) Delete(key ArgKey) (dynamic.Value, bool) {
 }
 
 func (a *args) Copy(src args) argMap {
-	if a.items == nil {
-		a.items = make(argMap)
-	}
+	a.lazyInit()
+
 	maps.Copy(a.items, src.Items())
 	return a.items
 }
 
 func (a *args) Items() argMap {
-	if a.items == nil {
-		a.items = make(argMap)
-	}
+	a.lazyInit()
 	return a.items
 }
