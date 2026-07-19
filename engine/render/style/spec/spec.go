@@ -60,6 +60,14 @@ func (s Spec) Hash() uint64 {
 	return s.hash
 }
 
+func (s Spec) Clone() Spec {
+	return Spec{
+		kind: s.kind,
+		args: s.args.Clone(),
+		hash: s.hash,
+	}
+}
+
 func Merge(styles ...Spec) Spec {
 	return newBuilder().
 		apply(styles...).

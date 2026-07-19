@@ -32,6 +32,31 @@ func TestEmpty(t *testing.T) {
 	assert.NotEqual(t, uint64(0), spec.hash)
 }
 
+func TestSpecClone(t *testing.T) {
+	spec := Merge(
+		Fill(80),
+		JustifyRight(10, "."),
+	)
+
+	clone := spec.Clone()
+
+	assert.Equal(t, spec.kind, clone.kind)
+	assert.Equal(t, spec.hash, clone.hash)
+	assert.DeepEqual(t, spec.args.items, clone.args.items)
+	assert.NotSame(t, spec.args.items, clone.args.items)
+}
+
+func TestSpecCloneIsIndependent(t *testing.T) {
+	spec := Fill(80)
+
+	clone := spec.Clone()
+	clone.args.Set(KeyFillSize, dynamic.From(120))
+
+	size := dynamic.MapOr[winsize.Cols](spec.args.Get(KeyFillSize), 0)
+
+	assert.Equal(t, 80, size)
+}
+
 func TestMerge_Empty(t *testing.T) {
 	spec := Merge()
 
