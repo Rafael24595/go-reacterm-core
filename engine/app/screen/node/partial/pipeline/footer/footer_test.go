@@ -42,7 +42,7 @@ func TestFooter_InsertsBefore(t *testing.T) {
 		Cols: 10,
 	})
 
-	assert.Equal(t, "line_02", text_test.LineToString(&lines[0]))
+	assert.Equal(t, "line_02", text_test.LineToString(lines[0]))
 }
 
 func TestFooter_InsertsAfter(t *testing.T) {
@@ -72,5 +72,5 @@ func TestFooter_InsertsAfter(t *testing.T) {
 		Cols: 10,
 	})
 
-	assert.Equal(t, "line_02", text_test.LineToString(&lines[0]))
+	assert.Equal(t, "line_02", text_test.LineToString(lines[0]))
 }

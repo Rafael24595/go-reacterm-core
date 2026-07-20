@@ -139,6 +139,8 @@ func TestNewPageRenderer_WithLineOverflow(t *testing.T) {
 
 	assert.Size(t, 2, status.Buffer)
 
-	expected := text_test.LineToString(&status.Buffer[0]) + text_test.LineToString(&status.Buffer[1])
+	expected := text_test.LineToString(status.Buffer[0]) +
+		text_test.LineToString(status.Buffer[1])
+		
 	assert.Equal(t, "grus", expected)
 }

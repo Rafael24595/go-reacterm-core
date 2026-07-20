@@ -109,5 +109,5 @@ func TestHistory_ViewFooter(t *testing.T) {
 	next := fmt.Sprintf("%s %s", history.meta.NextTag, mock3.Name)
 	want := fmt.Sprintf("%s%s%s", back, history.meta.Separator, next)
 
-	assert.Equal(t, want, text_test.LineToString(&lines[0]))
+	assert.Equal(t, want, text_test.LineToString(lines[0]))
 }

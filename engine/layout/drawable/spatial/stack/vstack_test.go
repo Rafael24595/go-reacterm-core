@@ -272,7 +272,9 @@ func TestVStack_BufferConcat(t *testing.T) {
 	})
 
 	assert.Size(t, 2, buffer)
-	assert.Equal(t, "golang", text_test.LineToString(&buffer[0])+text_test.LineToString(&buffer[1]))
+	assert.Equal(
+		t, "golang", text_test.LineToString(buffer[0])+text_test.LineToString(buffer[1]),
+	)
 }
 
 func TestVStack_ShortCircuitStopsPropagation(t *testing.T) {

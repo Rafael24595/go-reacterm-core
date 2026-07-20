@@ -58,9 +58,9 @@ func TestActionScroll(t *testing.T) {
 
 	result := action.Handler(state)
 
-	assert.Equal(t, "B", text_test.LineToString(&result.Buffer[0]))
-	assert.Equal(t, "C", text_test.LineToString(&result.Buffer[1]))
-	assert.Equal(t, "", text_test.LineToString(&result.Buffer[2]))
+	assert.Equal(t, "B", text_test.LineToString(result.Buffer[0]))
+	assert.Equal(t, "C", text_test.LineToString(result.Buffer[1]))
+	assert.Equal(t, "", text_test.LineToString(result.Buffer[2]))
 	assert.Equal(t, 1, result.Cursor)
 	assert.False(t, result.Focus)
 }

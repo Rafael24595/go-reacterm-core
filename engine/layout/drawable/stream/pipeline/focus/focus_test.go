@@ -41,8 +41,8 @@ func TestFocusInitTransformer_FocusAtStart(t *testing.T) {
 	assert.Size(t, 2, lines)
 
 	assert.False(t, status)
-	assert.Equal(t, "base_01", text_test.LineToString(&lines[0]))
-	assert.Equal(t, "base_02", text_test.LineToString(&lines[1]))
+	assert.Equal(t, "base_01", text_test.LineToString(lines[0]))
+	assert.Equal(t, "base_02", text_test.LineToString(lines[1]))
 }
 
 func TestFocusInitTransformer_FocusAtEnd(t *testing.T) {
@@ -71,6 +71,6 @@ func TestFocusInitTransformer_FocusAtEnd(t *testing.T) {
 	assert.Size(t, 2, lines)
 
 	assert.False(t, status)
-	assert.Equal(t, "base_02", text_test.LineToString(&lines[0]))
-	assert.Equal(t, "base_03", text_test.LineToString(&lines[1]))
+	assert.Equal(t, "base_02", text_test.LineToString(lines[0]))
+	assert.Equal(t, "base_03", text_test.LineToString(lines[1]))
 }

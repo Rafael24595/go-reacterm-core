@@ -65,7 +65,7 @@ func TestRowPositioners(t *testing.T) {
 					wantString = "Golang"
 				}
 
-				assert.Equal(t, wantString, text_test.LineToString(&gotLines[i]))
+				assert.Equal(t, wantString, text_test.LineToString(gotLines[i]))
 			}
 		})
 	}

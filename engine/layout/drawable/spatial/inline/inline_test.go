@@ -43,7 +43,7 @@ func TestInline_JoinsChildren(t *testing.T) {
 	})
 
 	assert.Size(t, 1, lines)
-	assert.Equal(t, "golang", text_test.LineToString(&lines[0]))
+	assert.Equal(t, "golang", text_test.LineToString(lines[0]))
 }
 
 func TestInline_JoinsChildrenWithSeparator(t *testing.T) {
@@ -71,7 +71,7 @@ func TestInline_JoinsChildrenWithSeparator(t *testing.T) {
 	})
 
 	assert.Size(t, 1, lines)
-	assert.Equal(t, "golang | ziglang", text_test.LineToString(&lines[0]))
+	assert.Equal(t, "golang | ziglang", text_test.LineToString(lines[0]))
 }
 
 func TestInline_MultipleLines(t *testing.T) {
@@ -94,7 +94,7 @@ func TestInline_MultipleLines(t *testing.T) {
 	})
 
 	assert.Size(t, 1, lines)
-	assert.Equal(t, "go | lang", text_test.LineToString(&lines[0]))
+	assert.Equal(t, "go | lang", text_test.LineToString(lines[0]))
 }
 
 func TestInline_Empty(t *testing.T) {

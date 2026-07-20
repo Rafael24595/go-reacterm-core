@@ -48,14 +48,16 @@ func TestArticle_AddTitleAndArticle(t *testing.T) {
 		AddArticle(*body)
 
 	assert.Size(t, 1, article.article)
-	assert.Equal(t, text_test.LineToString(body), text_test.LineToString(&article.article[0]))
+	assert.Equal(
+		t, text_test.LineToString(*body), text_test.LineToString(article.article[0]),
+	)
 }
 
 func TestArticle_View(t *testing.T) {
-	body := line.New("Body")
+	body := line.FromString("Body")
 
 	article := New().
-		AddArticle(*body)
+		AddArticle(body)
 
 	state := state.NewUIState()
 
@@ -76,7 +78,9 @@ func TestArticle_View(t *testing.T) {
 	lines, _ := kernel.Drawable.Draw(size)
 
 	assert.Size(t, 1, lines)
-	assert.Equal(t, text_test.LineToString(body), text_test.LineToString(&lines[0]))
+	assert.Equal(
+		t, text_test.LineToString(body), text_test.LineToString(lines[0]),
+	)
 }
 
 func TestArticle_Tick(t *testing.T) {

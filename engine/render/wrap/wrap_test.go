@@ -23,7 +23,7 @@ func assembleLines(t *testing.T, lines ...line.Line) string {
 
 	for i, l := range lines {
 		_, err := sb.WriteString(
-			text_test.LineToString(&l),
+			text_test.LineToString(l),
 		)
 
 		assert.Nil(t, err)
@@ -198,7 +198,7 @@ func TestWrapOnce(t *testing.T) {
 
 			assert.NotNil(t, head)
 
-			headText := text_test.LineToString(head)
+			headText := text_test.LineToString(*head)
 			assert.Equal(t, tt.expectedHead, headText)
 
 			if tt.expectedRest != "" {
@@ -292,7 +292,7 @@ func TestMaterializeEmpty(t *testing.T) {
 
 			assert.Size(t, tt.expectedCount, got[0].Source.Text)
 			assert.GreaterThan(t, 0, len(got[0].words))
-			assert.Equal(t, tt.expectedText, text_test.LineToString(got[0].Source))
+			assert.Equal(t, tt.expectedText, text_test.LineToString(*got[0].Source))
 
 			layout := got[len(got)-1]
 			word := layout.words[len(layout.words)-1]
@@ -401,7 +401,7 @@ func TestNextLine_Fit(t *testing.T) {
 
 	got, remain := NextLine(10, NormalizeLines(*line))
 
-	assert.Equal(t, "golang", text_test.LineToString(got))
+	assert.Equal(t, "golang", text_test.LineToString(*got))
 	assert.Empty(t, remain)
 }
 
@@ -410,7 +410,7 @@ func TesNextLine_Split(t *testing.T) {
 
 	got, remain := NextLine(2, NormalizeLines(*line))
 
-	assert.Equal(t, "go", text_test.LineToString(got))
+	assert.Equal(t, "go", text_test.LineToString(*got))
 
 	assert.Size(t, 1, remain)
 	assert.Equal(t, "lang", wordsToString(remain[0].words, remain[0].frags))
@@ -427,7 +427,7 @@ func TesNextLine_MultiFrag(t *testing.T) {
 
 	got, remain := NextLine(6, NormalizeLines(*line))
 
-	assert.Equal(t, "go zig", text_test.LineToString(got))
+	assert.Equal(t, "go zig", text_test.LineToString(*got))
 	assert.Size(t, 1, remain)
 
 	assert.Equal(t, " c++", wordsToString(remain[0].words, remain[0].frags))
@@ -437,7 +437,7 @@ func TesNextLine_BreakLongWordSingleFrag(t *testing.T) {
 	line := line.New("golangziglangrustlang")
 
 	got, remain := NextLine(6, NormalizeLines(*line))
-	assert.Equal(t, "golang", text_test.LineToString(got))
+	assert.Equal(t, "golang", text_test.LineToString(*got))
 
 	assert.Equal(t, "ziglangrustlang", wordsToString(remain[0].words, remain[0].frags))
 }
@@ -450,7 +450,7 @@ func TesNextLine_BreakLongWordMultipleFrags(t *testing.T) {
 	)
 
 	got, remain := NextLine(10, NormalizeLines(*line))
-	assert.Equal(t, "golang ", text_test.LineToString(got))
+	assert.Equal(t, "golang ", text_test.LineToString(*got))
 
 	assert.Equal(t, "zigrust", wordsToString(remain[0].words, remain[0].frags))
 }

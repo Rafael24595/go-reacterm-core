@@ -42,7 +42,7 @@ func TestNewInputLine_NoContent_ReturnsPromptOnly(t *testing.T) {
 
 	assert.False(t, status)
 	assert.Size(t, 1, lines)
-	assert.Equal(t, marker.DefaultPromptText, text_test.LineToString(&lines[0]))
+	assert.Equal(t, marker.DefaultPromptText, text_test.LineToString(lines[0]))
 }
 
 func TestNewInputLine_WithSingleLine_AddsPrompt(t *testing.T) {
@@ -64,7 +64,7 @@ func TestNewInputLine_WithSingleLine_AddsPrompt(t *testing.T) {
 	})
 
 	assert.Size(t, 1, lines)
-	assert.Equal(t, marker.DefaultPromptText+" golang", text_test.LineToString(&lines[0]))
+	assert.Equal(t, marker.DefaultPromptText+" golang", text_test.LineToString(lines[0]))
 }
 
 func TestNewInputLine_MultipleDrawCalls_AccumulatesLines(t *testing.T) {
@@ -89,6 +89,6 @@ func TestNewInputLine_MultipleDrawCalls_AccumulatesLines(t *testing.T) {
 
 	assert.Size(t, 2, lines)
 
-	assert.Equal(t, marker.DefaultPromptText+" ziglang", text_test.LineToString(&lines[0]))
-	assert.Equal(t, "golang", text_test.LineToString(&lines[1]))
+	assert.Equal(t, marker.DefaultPromptText+" ziglang", text_test.LineToString(lines[0]))
+	assert.Equal(t, "golang", text_test.LineToString(lines[1]))
 }
