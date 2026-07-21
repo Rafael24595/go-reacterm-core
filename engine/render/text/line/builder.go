@@ -11,8 +11,31 @@ type Builder struct {
 	Text  []frag.Frag
 }
 
+func NewBuilder(capacity ...int) *Builder {
+	size := 0
+	if len(capacity) > 0 {
+		size = capacity[0]
+	}
+
+	return &Builder{
+		Order: 0,
+		Spec:  spec.Empty(),
+		Text:  make([]frag.Frag, 0, size),
+	}
+}
+
+func BuilderFromLine(lne Line) *Builder {
+	return NewBuilder().
+		WithLine(lne)
+}
+
 func (b *Builder) SetOrder(order uint16) *Builder {
 	b.Order = order
+	return b
+}
+
+func (b *Builder) SetSpec(styles ...spec.Spec) *Builder {
+	b.Spec = spec.Merge(styles...)
 	return b
 }
 
@@ -20,6 +43,31 @@ func (b *Builder) AddSpec(styles ...spec.Spec) *Builder {
 	newSpec := spec.Merge(styles...)
 	b.Spec = spec.Merge(b.Spec, newSpec)
 	return b
+}
+
+func (b *Builder) WithMeta(other Line) *Builder {
+	b.Order = other.Order
+	b.AddSpec(other.Spec)
+	return b
+}
+
+func (b *Builder) WithLine(other Line) *Builder {
+	b.Order = other.Order
+	b.AddSpec(other.Spec)
+	b.Text = append(b.Text, other.Text...)
+	return b
+}
+
+func (b *Builder) UnshiftText(text ...string) *Builder {
+	return b.UnshiftFrags(
+		frag.FromStrings(text...)...,
+	)
+}
+
+func (b *Builder) PushText(text ...string) *Builder {
+	return b.PushFrags(
+		frag.FromStrings(text...)...,
+	)
 }
 
 func (b *Builder) UnshiftFrags(frags ...frag.Frag) *Builder {
@@ -37,7 +85,7 @@ func (b *Builder) UnshiftBuilder(builder ...*frag.Builder) *Builder {
 	for i := range builder {
 		frags[i] = builder[i].Frag()
 	}
-	return b.PushFrags(frags...)
+	return b.UnshiftFrags(frags...)
 }
 
 func (b *Builder) PushBuilder(builder ...*frag.Builder) *Builder {
@@ -53,4 +101,9 @@ func (b *Builder) Line() Line {
 		b.Spec,
 		b.Text,
 	)
+}
+
+func (b *Builder) LinePtr() *Line {
+	lne := b.Line()
+	return &lne
 }
