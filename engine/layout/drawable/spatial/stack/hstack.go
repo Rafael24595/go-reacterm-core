@@ -279,7 +279,7 @@ func (u *HStackUnit) inheritCols(
 func (u *HStackUnit) makeLines(blocks []block) []line.Line {
 	buffer := make([]line.Line, 0)
 	for i := range maxLines(blocks) {
-		line := line.Empty()
+		build := line.NewBuilder()
 		for _, b := range blocks {
 			if i >= len(b.lines) {
 				continue
@@ -288,10 +288,10 @@ func (u *HStackUnit) makeLines(blocks []block) []line.Line {
 			l := b.lines[i]
 			result := sink.ApplySinks(&l, b.size.Cols)
 
-			line.CopyMeta(result)
-			line.PushFrags(result.Text...)
+			build.WithMeta(*result).
+				PushFrags(result.Text...)
 		}
-		buffer = append(buffer, *line)
+		buffer = append(buffer, build.Line())
 	}
 
 	return buffer
