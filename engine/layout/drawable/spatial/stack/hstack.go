@@ -285,10 +285,9 @@ func (u *HStackUnit) makeLines(blocks []block) []line.Line {
 				continue
 			}
 
-			l := b.lines[i]
-			result := sink.ApplySinks(&l, b.size.Cols)
+			result := sink.ApplySinks(b.lines[i], b.size.Cols)
 
-			build.WithMeta(*result).
+			build.WithMeta(result).
 				PushFrags(result.Text...)
 		}
 		buffer = append(buffer, build.Line())

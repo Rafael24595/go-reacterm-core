@@ -2,59 +2,65 @@ package sink
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/dynamic"
-	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/dict"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-var specStylesTable = dict.NewInmutableLinkedMap(
-	dict.P(spec.KindJustifyRight, sinkLinePaddingLeft),
-	dict.P(spec.KindJustifyLeft, sinkLinePaddingRight),
-	dict.P(spec.KindJustifyCenter, sinkLinePaddingCenter),
-)
+type sinkFn func(style spec.Kind, lne line.Line, cols winsize.Cols) line.Line
 
-func sinkLinePaddingLeft(style spec.Kind, line *line.Line, _ winsize.Cols) *line.Line {
-	resSpec, delSpec := spec.Erase(line.Spec, style)
-	if delSpec.Kind() == spec.KindNone {
-		return line
-	}
-
-	line.Spec = resSpec
-	line.UnshiftFrags(
-		frag.FromSpec(delSpec),
-	)
-
-	return line
+type sinkRule struct {
+	kind spec.Kind
+	fn   sinkFn
 }
 
-func sinkLinePaddingRight(style spec.Kind, line *line.Line, _ winsize.Cols) *line.Line {
-	resSpec, delSpec := spec.Erase(line.Spec, style)
-	if delSpec.Kind() == spec.KindNone {
-		return line
-	}
-
-	line.Spec = resSpec
-	line.PushFrags(
-		frag.FromSpec(delSpec),
-	)
-
-	return line
+var sinkipeline = [...]sinkRule{
+	{spec.KindJustifyRight, sinkLinePaddingLeft},
+	{spec.KindJustifyLeft, sinkLinePaddingRight},
+	{spec.KindJustifyCenter, sinkLinePaddingCenter},
 }
 
-func sinkLinePaddingCenter(style spec.Kind, line *line.Line, cols winsize.Cols) *line.Line {
-	resSpec, delSpec := spec.Erase(line.Spec, style)
+func sinkLinePaddingLeft(style spec.Kind, lne line.Line, _ winsize.Cols) line.Line {
+	resSpec, delSpec := spec.Erase(lne.Spec, style)
 	if delSpec.Kind() == spec.KindNone {
-		return line
+		return lne
 	}
 
-	line.Spec = resSpec
+	return line.NewBuilder().
+		WithLine(lne).
+		SetSpec(resSpec).
+		UnshiftFrags(frag.FromSpec(delSpec)).
+		Line()
+}
+
+func sinkLinePaddingRight(style spec.Kind, lne line.Line, _ winsize.Cols) line.Line {
+	resSpec, delSpec := spec.Erase(lne.Spec, style)
+	if delSpec.Kind() == spec.KindNone {
+		return lne
+	}
+
+	return line.NewBuilder().
+		WithLine(lne).
+		SetSpec(resSpec).
+		PushFrags(frag.FromSpec(delSpec)).
+		Line()
+}
+
+func sinkLinePaddingCenter(style spec.Kind, lne line.Line, cols winsize.Cols) line.Line {
+	resSpec, delSpec := spec.Erase(lne.Spec, style)
+	if delSpec.Kind() == spec.KindNone {
+		return lne
+	}
+
+	builder := line.NewBuilder().
+		WithLine(lne).
+		SetSpec(resSpec)
 
 	size := dynamic.MapOr(delSpec.Args()[spec.KeyJustifyCenterSize], cols)
 	txt := delSpec.Args()[spec.KeyJustifyCenterText].Text()
 
-	fragSize := frag.Measure(cols, line.Text...)
+	fragSize := frag.Measure(cols, builder.Text...)
 
 	available := size.Sub(fragSize)
 	available = max(0, available)
@@ -62,7 +68,7 @@ func sinkLinePaddingCenter(style spec.Kind, line *line.Line, cols winsize.Cols) 
 	left := available / 2
 	if left > 0 {
 		paddLeft := spec.JustifyRight(left, txt)
-		line.UnshiftFrags(
+		builder.UnshiftFrags(
 			frag.FromSpec(paddLeft),
 		)
 	}
@@ -70,20 +76,20 @@ func sinkLinePaddingCenter(style spec.Kind, line *line.Line, cols winsize.Cols) 
 	right := available.Sub(left)
 	if right > 0 {
 		paddRight := spec.JustifyLeft(right, txt)
-		line.PushFrags(
+		builder.PushFrags(
 			frag.FromSpec(paddRight),
 		)
 	}
 
-	return line
+	return builder.Line()
 }
 
-func ApplySinks(line *line.Line, cols winsize.Cols) *line.Line {
-	for k, t := range specStylesTable.All() {
-		if !line.Spec.Kind().HasAny(k) {
+func ApplySinks(line line.Line, cols winsize.Cols) line.Line {
+	for _, t := range sinkipeline {
+		if !line.Spec.Kind().HasAny(t.kind) {
 			continue
 		}
-		line = t(k, line, cols)
+		line = t.fn(t.kind, line, cols)
 	}
 	return line
 }
