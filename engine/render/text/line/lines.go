@@ -5,28 +5,16 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
-func empty(
-	order uint16,
-	spec spec.Spec,
-	size ...int,
-) *Line {
+func Empty(size ...int) *Line {
 	bufferSize := 0
 	if len(size) > 0 {
 		bufferSize = size[0]
 	}
 
 	return newLine(
-		order,
-		spec,
-		make([]frag.Frag, 0, bufferSize),
-	)
-}
-
-func Empty(size ...int) *Line {
-	return empty(
 		0,
-		spec.Merge(specs...),
-		frag.FromStrings(text),
+		spec.Empty(),
+		make([]frag.Frag, 0, bufferSize),
 	)
 }
 
