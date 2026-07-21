@@ -51,7 +51,7 @@ func TestNewInputLine_WithSingleLine_AddsPrompt(t *testing.T) {
 	mock := &drawable_test.MockUnit{
 		Status: false,
 		Lines: []line.Line{
-			*line.FromFrags(frg...),
+			line.FromFrags(frg...),
 		},
 	}
 
@@ -74,8 +74,8 @@ func TestNewInputLine_MultipleDrawCalls_AccumulatesLines(t *testing.T) {
 	mock := &drawable_test.MockUnit{
 		Status: false,
 		Lines: []line.Line{
-			*line.FromFrags(frg1...),
-			*line.FromFrags(frg2...),
+			line.FromFrags(frg1...),
+			line.FromFrags(frg2...),
 		},
 	}
 

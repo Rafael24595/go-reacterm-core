@@ -119,7 +119,7 @@ func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...line.Line) []line.Li
 
 	result := make([]line.Line, 0)
 
-	result = append(result, *cover)
+	result = append(result, cover)
 
 	available := size.Cols.Sub(vertical)
 
@@ -136,7 +136,7 @@ func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...line.Line) []line.Li
 		}
 	}
 
-	result = append(result, *cover)
+	result = append(result, cover)
 
 	return result
 }

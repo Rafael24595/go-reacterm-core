@@ -163,7 +163,7 @@ func formatLines(lines ...line.Line) []line.Line {
 	out := make([]line.Line, len(lines))
 	copy(out, lines)
 
-	out = append(out, *line.Empty())
+	out = append(out, line.Empty())
 
 	return out
 }

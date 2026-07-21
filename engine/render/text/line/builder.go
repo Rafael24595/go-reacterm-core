@@ -96,7 +96,7 @@ func (b *Builder) PushBuilder(builder ...*frag.Builder) *Builder {
 }
 
 func (b *Builder) Line() Line {
-	return *newLine(
+	return New(
 		b.Order,
 		b.Spec,
 		b.Text,

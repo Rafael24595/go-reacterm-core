@@ -40,7 +40,7 @@ func TextFrags(texts ...string) row {
 func frameToLines(frame Frame) []line.Line {
 	lines := make([]line.Line, len(frame.frags))
 	for i := range frame.frags {
-		lines[i] = *line.FromFrags(
+		lines[i] = line.FromFrags(
 			frame.frags[i]...,
 		)
 	}

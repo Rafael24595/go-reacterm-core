@@ -83,11 +83,11 @@ func (b builder) render(size winsize.Winsize) []section {
 
 		sections = append(sections, section{
 			header: isolated.UnitFromLines(
-				*topCover, headerRow, *topCover,
+				topCover, headerRow, topCover,
 			),
 			rows: lines.UnitFromLines(bodyRows...),
 			footer: isolated.UnitFromLines(
-				*bottomCover,
+				bottomCover,
 			),
 		})
 	}

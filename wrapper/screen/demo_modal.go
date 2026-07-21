@@ -13,7 +13,7 @@ func NewDemoModal() screen.Node {
 		SetName("modal - dolor").
 		AddText(
 			line.FromString("AD Lorem ipsum dolor sit amet"),
-			*line.Empty(),
+			line.Empty(),
 		).
 		AddOptions([]input.MenuOption{
 			input.NewMenuOption("1", frag.FromString("Option_1"), NewDemoSelect),

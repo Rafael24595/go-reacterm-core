@@ -19,7 +19,7 @@ func TestFocusInitTransformer_FocusAtStart(t *testing.T) {
 	mock := &drawable_test.MockUnit{
 		Lines: []line.Line{
 			line.FromString("base_01"),
-			*line.FromFrags(
+			line.FromFrags(
 				frag.TextAtom("base", atom.Focus),
 				frag.FromString("_"),
 				frag.FromString("02"),
@@ -50,7 +50,7 @@ func TestFocusInitTransformer_FocusAtEnd(t *testing.T) {
 		Lines: []line.Line{
 			line.FromString("base_01"),
 			line.FromString("base_02"),
-			*line.FromFrags(
+			line.FromFrags(
 				frag.FromString("base"),
 				frag.TextAtom("_", atom.Focus),
 				frag.FromString("03"),

@@ -44,7 +44,7 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 	mock := &drawable_test.MockUnit{
 		Status: false,
 		Lines: []line.Line{
-			*line.FromFrags(frg...),
+			line.FromFrags(frg...),
 		},
 	}
 
@@ -106,7 +106,7 @@ func TestStandard_InitializeLayers(t *testing.T) {
 	mock := &drawable_test.MockUnit{
 		Status: false,
 		Lines: []line.Line{
-			*line.FromFrags(frag...),
+			line.FromFrags(frag...),
 		},
 	}
 

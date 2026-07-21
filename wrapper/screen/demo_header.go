@@ -12,21 +12,21 @@ import (
 func NewDemoHeader() pipeline.Transformer {
 	return header.Transformer(
 		pipeline.Before,
-		*line.FromFrags(
+		line.FromFrags(
 			frag.New(
 				"Lorem ipsum dolor sit amet",
 				atom.Upper,
 				spec.AlignCenter(),
 			),
 		),
-		*line.FromFrags(
+		line.FromFrags(
 			frag.New(
 				"consectetur adipiscing",
 				atom.Upper,
 				spec.AlignCenter(),
 			),
 		),
-		*line.FromFrags(
+		line.FromFrags(
 			frag.New(
 				"-Server 00-",
 				atom.Upper,

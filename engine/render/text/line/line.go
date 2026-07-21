@@ -16,20 +16,11 @@ type Line struct {
 	hash  uint64
 }
 
-func New(text string, styles ...spec.Spec) *Line {
-	return &Line{
-		Text: []frag.Frag{
-			frag.FromString(text),
-		},
-		Spec: spec.Merge(styles...),
-	}
-}
-
-func newLine(
+func New(
 	order uint16,
 	spec spec.Spec,
 	text []frag.Frag,
-) *Line {
+) Line {
 	hash := calcHash(
 		hash.New(),
 		order,
@@ -37,7 +28,7 @@ func newLine(
 		text,
 	)
 
-	return &Line{
+	return Line{
 		Order: order,
 		Text:  text,
 		Spec:  spec,

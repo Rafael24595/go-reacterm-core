@@ -103,7 +103,7 @@ func (u *CheckMenuUnit) wipe() {
 func (u *CheckMenuUnit) makeVertical(opts []frag.Frag) drawable.Unit {
 	lns := make([]line.Line, len(opts))
 	for i := range opts {
-		lns[i] = *line.FromFrags(opts[i])
+		lns[i] = line.FromFrags(opts[i])
 	}
 	return lines.UnitFromLines(lns...)
 }

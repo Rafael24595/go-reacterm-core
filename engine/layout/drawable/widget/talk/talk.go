@@ -102,7 +102,7 @@ func (u *TalkUnit) lazyBoot(size winsize.Winsize) {
 
 		if i < messagesLen-1 {
 			lines = append(lines,
-				*line.Empty(),
+				line.Empty(),
 			)
 		}
 	}
@@ -121,7 +121,7 @@ func (u *TalkUnit) makeLines(
 
 	ownerLines := wrap.Lines(
 		size.Cols.Sub(3),
-		*line.FromFrags(
+		line.FromFrags(
 			frag.FromString(message.Owner),
 			frag.FromString(":"),
 		),
@@ -140,7 +140,7 @@ func (u *TalkUnit) makeLines(
 
 	messageLines := wrap.Lines(
 		size.Cols.Sub(5),
-		*line.FromFrags(
+		line.FromFrags(
 			frag.FromString(message.Message),
 		),
 	)

@@ -35,13 +35,13 @@ func UnitFromLines(lns ...line.Line) drawable.Unit {
 
 func UnitFromFrags(frs ...frag.Frag) drawable.Unit {
 	return UnitFromLines(
-		*line.FromFrags(frs...),
+		line.FromFrags(frs...),
 	)
 }
 
 func UnitFromString(txt ...string) drawable.Unit {
 	return UnitFromLines(
-		*line.FromFrags(
+		line.FromFrags(
 			frag.FromStrings(txt...)...,
 		),
 	)

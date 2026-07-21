@@ -87,11 +87,11 @@ func makeUnit(fields []key.Descriptor) drawable.Unit {
 	}
 
 	return drain.UnitFromLines(
-		*line.FromFrags(
+		line.FromFrags(
 			frag.FromString("--Help--"),
 			frag.TextSpec("-", spec.Cover()),
 		),
-		*line.FromFrags(frags...),
+		line.FromFrags(frags...),
 		line.TextSpec("-", spec.Cover()),
 	)
 }

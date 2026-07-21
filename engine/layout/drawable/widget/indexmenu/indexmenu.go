@@ -100,7 +100,7 @@ func (u *IndexMenuUnit) boot() {
 		)
 
 		lines = append(lines,
-			*line.FromFrags(
+			line.FromFrags(
 				alignFrag,
 				indexFrag,
 				spacerFrag,
