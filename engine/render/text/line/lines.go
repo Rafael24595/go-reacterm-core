@@ -54,14 +54,6 @@ func FromSpec(spec spec.Spec) Line {
 	)
 }
 
-func FromMeta(other *Line, size ...int) *Line {
-	return empty(
-		other.Order,
-		other.Spec,
-		size...,
-	)
-}
-
 func FromString(text ...string) Line {
 	return *newLine(
 		0,
