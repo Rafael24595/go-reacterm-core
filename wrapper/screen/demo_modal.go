@@ -12,7 +12,7 @@ func NewDemoModal() screen.Node {
 	return modalmenu.New().
 		SetName("modal - dolor").
 		AddText(
-			*line.New("AD Lorem ipsum dolor sit amet"),
+			line.FromString("AD Lorem ipsum dolor sit amet"),
 			*line.Empty(),
 		).
 		AddOptions([]input.MenuOption{

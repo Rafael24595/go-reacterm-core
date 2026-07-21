@@ -92,7 +92,7 @@ func (u *TalkUnit) lazyBoot(size winsize.Winsize) {
 		ownerLines, messageLines := u.makeLines(size, m, uint16(i))
 		if len(ownerLines) >= int(size.Rows) {
 			lines = append(lines,
-				*line.New("..."),
+				line.FromString("..."),
 			)
 			break
 		}

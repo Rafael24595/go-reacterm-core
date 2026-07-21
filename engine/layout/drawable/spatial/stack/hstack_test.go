@@ -114,12 +114,12 @@ func TestHStack_RenderOutput(t *testing.T) {
 
 	mock1 := &drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("go-lang"),
+			line.FromString("go-lang"),
 		},
 	}
 	mock2 := &drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("ziglang"),
+			line.FromString("ziglang"),
 		},
 	}
 

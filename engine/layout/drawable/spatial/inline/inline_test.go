@@ -21,12 +21,12 @@ func TestInline_UnitBasicSuite(t *testing.T) {
 func TestInline_JoinsChildren(t *testing.T) {
 	mock1 := &drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("go"),
+			line.FromString("go"),
 		},
 	}
 	mock2 := &drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("lang"),
+			line.FromString("lang"),
 		},
 	}
 
@@ -49,12 +49,12 @@ func TestInline_JoinsChildren(t *testing.T) {
 func TestInline_JoinsChildrenWithSeparator(t *testing.T) {
 	mock1 := &drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("golang"),
+			line.FromString("golang"),
 		},
 	}
 	mock2 := &drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("ziglang"),
+			line.FromString("ziglang"),
 		},
 	}
 
@@ -77,8 +77,8 @@ func TestInline_JoinsChildrenWithSeparator(t *testing.T) {
 func TestInline_MultipleLines(t *testing.T) {
 	mock := &drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("go"),
-			*line.New("lang"),
+			line.FromString("go"),
+			line.FromString("lang"),
 		},
 	}
 

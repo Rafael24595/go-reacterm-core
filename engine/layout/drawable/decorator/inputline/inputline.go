@@ -71,8 +71,8 @@ func (u *InputLineUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 
 	lines, _ := drain.UnitLazy(size, u.unit)
 	if len(lines) == 0 {
-		prompt := line.New(u.prompt)
-		return []line.Line{*prompt}, false
+		prompt := line.FromString(u.prompt)
+		return []line.Line{prompt}, false
 	}
 
 	prompt := frag.FromString(

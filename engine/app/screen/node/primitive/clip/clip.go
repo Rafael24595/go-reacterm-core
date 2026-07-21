@@ -236,12 +236,12 @@ func (n *Clip) view(uiState state.UIState) viewmodel.ViewModel {
 	)
 
 	if n.bindings.Size() > 0 {
-		line := line.New(
+		line := line.FromString(
 			fmt.Sprintf("Speed: %d", n.pause),
 		)
 
 		vm.Footer.Push(
-			drain.UnitFromLines(*line),
+			drain.UnitFromLines(line),
 		)
 	}
 

@@ -27,7 +27,7 @@ func Standard(
 
 	if staticRows > size.Rows {
 		return uiState, []line.Line{
-			*line.New("Too low resolution"),
+			line.FromString("Too low resolution"),
 		}
 	}
 

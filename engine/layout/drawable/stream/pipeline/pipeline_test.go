@@ -72,8 +72,8 @@ func TestPipeline_BootStepTransformation(t *testing.T) {
 
 	mock2 := &drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("base_01"),
-			*line.New("base_02"),
+			line.FromString("base_01"),
+			line.FromString("base_02"),
 		},
 		Status: true,
 	}
@@ -98,9 +98,9 @@ func TestPipeline_BootStepTransformation(t *testing.T) {
 func TestPipeline_DrawStepTransformation(t *testing.T) {
 	mock := &drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("base_01"),
-			*line.New("base_02"),
-			*line.New("base_03"),
+			line.FromString("base_01"),
+			line.FromString("base_02"),
+			line.FromString("base_03"),
 		},
 		Status: true,
 	}

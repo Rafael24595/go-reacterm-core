@@ -61,7 +61,7 @@ func TestColsLeftTransformer(t *testing.T) {
 
 			lines := make([]line.Line, len(tt.lines))
 			for i, l := range tt.lines {
-				lines[i] = *line.New(l)
+				lines[i] = line.FromString(l)
 			}
 
 			result := transformer(tt.size, lines)
@@ -121,7 +121,7 @@ func TestColsRightTransformer(t *testing.T) {
 
 			lines := make([]line.Line, len(tt.lines))
 			for i, l := range tt.lines {
-				lines[i] = *line.New(l)
+				lines[i] = line.FromString(l)
 			}
 
 			result := transformer(tt.size, lines)
@@ -181,7 +181,7 @@ func TestColsCenterTransformer(t *testing.T) {
 
 			lines := make([]line.Line, len(tt.lines))
 			for i, l := range tt.lines {
-				lines[i] = *line.New(l)
+				lines[i] = line.FromString(l)
 			}
 
 			result := transformer(tt.size, lines)

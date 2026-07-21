@@ -122,9 +122,9 @@ func TestNewPageRenderer_WithLineOverflow(t *testing.T) {
 
 	mock := &drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("golang"),
-			*line.New("ziglang"),
-			*line.New("rust"),
+			line.FromString("golang"),
+			line.FromString("ziglang"),
+			line.FromString("rust"),
 		},
 		Batch: 1,
 	}
@@ -141,6 +141,6 @@ func TestNewPageRenderer_WithLineOverflow(t *testing.T) {
 
 	expected := text_test.LineToString(status.Buffer[0]) +
 		text_test.LineToString(status.Buffer[1])
-		
+
 	assert.Equal(t, "grus", expected)
 }

@@ -42,14 +42,14 @@ func TestArticle_SetName(t *testing.T) {
 }
 
 func TestArticle_AddTitleAndArticle(t *testing.T) {
-	body := line.New("Body")
+	body := line.FromString("Body")
 
 	article := New().
-		AddArticle(*body)
+		AddArticle(body)
 
 	assert.Size(t, 1, article.article)
 	assert.Equal(
-		t, text_test.LineToString(*body), text_test.LineToString(article.article[0]),
+		t, text_test.LineToString(body), text_test.LineToString(article.article[0]),
 	)
 }
 

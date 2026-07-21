@@ -69,7 +69,7 @@ func TestColsTransformer(t *testing.T) {
 	styler := styler.NewDefaultSpec()
 
 	mockLines := []line.Line{
-		*line.New("Golang"),
+		line.FromString("Golang"),
 	}
 
 	tests := []struct {

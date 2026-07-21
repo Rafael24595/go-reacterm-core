@@ -47,9 +47,9 @@ func TestActionScroll(t *testing.T) {
 
 	state := &draw.State{
 		Buffer: []line.Line{
-			*line.New("A"),
-			*line.New("B"),
-			*line.New("C"),
+			line.FromString("A"),
+			line.FromString("B"),
+			line.FromString("C"),
 		},
 		Cursor: 2,
 		Page:   1,

@@ -17,7 +17,7 @@ import (
 
 func TestRowPositioners(t *testing.T) {
 	inputLines := []line.Line{
-		*line.New("Golang"),
+		line.FromString("Golang"),
 	}
 
 	frg := frag.Empty()
@@ -73,7 +73,7 @@ func TestRowPositioners(t *testing.T) {
 
 func TestRowsTransformer(t *testing.T) {
 	mockLines := []line.Line{
-		*line.New("Golang"),
+		line.FromString("Golang"),
 	}
 
 	tests := []struct {

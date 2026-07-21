@@ -18,7 +18,7 @@ func NewDemoTextArea() screen.Node {
 	sizeTitle := runes.Measure(textTitle)
 
 	title := []line.Line{
-		*line.New("Suspendisse sem arcu"),
+		line.FromString("Suspendisse sem arcu"),
 		*line.New("=", spec.Fill(sizeTitle)),
 	}
 

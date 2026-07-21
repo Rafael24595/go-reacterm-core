@@ -29,7 +29,7 @@ func TestDrawTransformer(t *testing.T) {
 			},
 			size: winsize.New(10, 40),
 			lines: []line.Line{
-				*line.New("golang"),
+				line.FromString("golang"),
 			},
 			wantLines: []string{
 				"▌golang",
@@ -46,7 +46,7 @@ func TestDrawTransformer(t *testing.T) {
 			},
 			size: winsize.New(10, 40),
 			lines: []line.Line{
-				*line.New("golang"),
+				line.FromString("golang"),
 			},
 			wantLines: []string{
 				"golang▐",
@@ -63,8 +63,8 @@ func TestDrawTransformer(t *testing.T) {
 			},
 			size: winsize.New(10, 50),
 			lines: []line.Line{
-				*line.New("golang"),
-				*line.New("ziglang"),
+				line.FromString("golang"),
+				line.FromString("ziglang"),
 			},
 			wantLines: []string{
 				">golang<",
@@ -82,7 +82,7 @@ func TestDrawTransformer(t *testing.T) {
 			},
 			size: winsize.New(10, 2),
 			lines: []line.Line{
-				*line.New("golang"),
+				line.FromString("golang"),
 			},
 			wantLines: []string{
 				"golang",

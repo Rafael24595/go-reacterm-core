@@ -27,19 +27,19 @@ func Test_PagerRenderer_StaticLayerDoesNotScroll(t *testing.T) {
 
 	dynamic := drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("dyn-1"),
-			*line.New("dyn-2"),
-			*line.New("dyn-3"),
-			*line.New("dyn-4"),
-			*line.New("dyn-5"),
-			*line.New("dyn-6"),
+			line.FromString("dyn-1"),
+			line.FromString("dyn-2"),
+			line.FromString("dyn-3"),
+			line.FromString("dyn-4"),
+			line.FromString("dyn-5"),
+			line.FromString("dyn-6"),
 		},
 		Batch: 2,
 	}
 
 	static := &drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("stc"),
+			line.FromString("stc"),
 		},
 		Status: true,
 	}
@@ -85,12 +85,12 @@ func Test_PagerRenderer_PropagatesMaxPage(t *testing.T) {
 
 	mock := drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("1"),
-			*line.New("2"),
-			*line.New("3"),
-			*line.New("4"),
-			*line.New("5"),
-			*line.New("6"),
+			line.FromString("1"),
+			line.FromString("2"),
+			line.FromString("3"),
+			line.FromString("4"),
+			line.FromString("5"),
+			line.FromString("6"),
 		},
 		Batch: 2,
 	}
@@ -113,8 +113,8 @@ func Test_PagerRenderer_SetsHasMore(t *testing.T) {
 
 	mock := &drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("1"),
-			*line.New("2"),
+			line.FromString("1"),
+			line.FromString("2"),
 		},
 		Batch: 1,
 	}
@@ -139,9 +139,9 @@ func Test_Pager_ConfirmPage_UsesMaxPage(t *testing.T) {
 
 	unit := (&drawable_test.MockUnit{
 		Lines: []line.Line{
-			*line.New("1"),
-			*line.New("2"),
-			*line.New("3"),
+			line.FromString("1"),
+			line.FromString("2"),
+			line.FromString("3"),
 		},
 		Batch: 1,
 	}).ToUnit()

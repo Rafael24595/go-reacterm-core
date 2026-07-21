@@ -51,7 +51,7 @@ func TestWithFillFrag(t *testing.T) {
 	WithFillFrag(".")(&cfg)
 
 	lines := []line.Line{
-		*line.New("Golang"),
+		line.FromString("Golang"),
 	}
 
 	frag := cfg.Provider(

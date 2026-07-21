@@ -57,7 +57,7 @@ func TestRowsTopTransformer(t *testing.T) {
 
 			lines := make([]line.Line, len(tt.lines))
 			for i, l := range tt.lines {
-				lines[i] = *line.New(l)
+				lines[i] = line.FromString(l)
 			}
 
 			result := transformer(tt.size, lines)
@@ -115,7 +115,7 @@ func TestRowsBottomTransformer(t *testing.T) {
 
 			lines := make([]line.Line, len(tt.lines))
 			for i, l := range tt.lines {
-				lines[i] = *line.New(l)
+				lines[i] = line.FromString(l)
 			}
 
 			result := transformer(tt.size, lines)
@@ -173,7 +173,7 @@ func TestRowsMiddleTransformer(t *testing.T) {
 
 			lines := make([]line.Line, len(tt.lines))
 			for i, l := range tt.lines {
-				lines[i] = *line.New(l)
+				lines[i] = line.FromString(l)
 			}
 
 			result := transformer(tt.size, lines)

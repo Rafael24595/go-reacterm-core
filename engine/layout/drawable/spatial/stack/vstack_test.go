@@ -247,15 +247,15 @@ func TestVStack_DisablesLayer(t *testing.T) {
 func TestVStack_BufferConcat(t *testing.T) {
 	stack := &VStackUnit{}
 
-	line1 := line.New("go")
-	line2 := line.New("lang")
+	line1 := line.FromString("go")
+	line2 := line.FromString("lang")
 
 	mock1 := &drawable_test.MockUnit{
-		Lines:  []line.Line{*line1},
+		Lines:  []line.Line{line1},
 		Status: false,
 	}
 	mock2 := &drawable_test.MockUnit{
-		Lines:  []line.Line{*line2},
+		Lines:  []line.Line{line2},
 		Status: false,
 	}
 

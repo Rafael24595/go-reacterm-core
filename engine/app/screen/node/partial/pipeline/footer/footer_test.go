@@ -19,7 +19,7 @@ func TestFooter_InsertsBefore(t *testing.T) {
 	vm := viewmodel.ViewModel{
 		Footer: stack.NewVStack(
 			lines.UnitFromLines(
-				*line.New("line_01"),
+				line.FromString("line_01"),
 			),
 		),
 	}
@@ -27,8 +27,8 @@ func TestFooter_InsertsBefore(t *testing.T) {
 	units := vm.Footer.Units()
 	assert.Size(t, 1, units)
 
-	line := line.New("line_02")
-	transformer := Transformer(pipeline.Before, *line)
+	line := line.FromString("line_02")
+	transformer := Transformer(pipeline.Before, line)
 	vm = transformer(vm)
 
 	units = vm.Footer.Units()
@@ -49,7 +49,7 @@ func TestFooter_InsertsAfter(t *testing.T) {
 	vm := viewmodel.ViewModel{
 		Footer: stack.NewVStack(
 			lines.UnitFromLines(
-				*line.New("line_01"),
+				line.FromString("line_01"),
 			),
 		),
 	}
@@ -57,8 +57,8 @@ func TestFooter_InsertsAfter(t *testing.T) {
 	units := vm.Footer.Units()
 	assert.Size(t, 1, units)
 
-	line := line.New("line_02")
-	transformer := Transformer(pipeline.After, *line)
+	line := line.FromString("line_02")
+	transformer := Transformer(pipeline.After, line)
 	vm = transformer(vm)
 
 	units = vm.Footer.Units()
