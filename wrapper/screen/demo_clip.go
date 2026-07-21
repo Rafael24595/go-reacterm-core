@@ -19,7 +19,7 @@ import (
 
 func NewDemoClip() screen.Node {
 	title := []line.Line{
-		*line.New("=", spec.Cover()),
+		line.TextSpec("=", spec.Cover()),
 	}
 
 	clip := clip.New().

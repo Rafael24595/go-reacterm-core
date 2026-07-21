@@ -16,8 +16,8 @@ func NewDemoCheck() screen.Node {
 	sizeTitle := runes.Measure(textTitle)
 
 	title := []line.Line{
-		*line.New(textTitle, spec.AlignLeft()),
-		*line.New("-", spec.Fill(sizeTitle)),
+		line.TextSpec(textTitle, spec.AlignLeft()),
+		line.TextSpec("-", spec.Fill(sizeTitle)),
 	}
 
 	options := []input.CheckOption{

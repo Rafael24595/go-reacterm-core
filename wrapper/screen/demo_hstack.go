@@ -39,7 +39,7 @@ func NewDemoHStack() screen.Node {
 func makeTitle() drawable.Unit {
 	return drain.UnitFromLines(
 		line.FromString("Etiam dictum gravida"),
-		*line.New("=", spec.Cover()),
+		line.TextSpec("=", spec.Cover()),
 	)
 }
 

@@ -92,6 +92,6 @@ func makeUnit(fields []key.Descriptor) drawable.Unit {
 			frag.TextSpec("-", spec.Cover()),
 		),
 		*line.FromFrags(frags...),
-		*line.New("-", spec.Cover()),
+		line.TextSpec("-", spec.Cover()),
 	)
 }

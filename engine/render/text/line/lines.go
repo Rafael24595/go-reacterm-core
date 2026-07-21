@@ -25,8 +25,16 @@ func empty(
 func Empty(size ...int) *Line {
 	return empty(
 		0,
-		spec.Empty(),
-		size...,
+		spec.Merge(specs...),
+		frag.FromStrings(text),
+	)
+}
+
+func TextSpec(text string, specs ...spec.Spec) Line {
+	return *newLine(
+		0,
+		spec.Merge(specs...),
+		frag.FromStrings(text),
 	)
 }
 

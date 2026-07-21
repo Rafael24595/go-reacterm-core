@@ -11,7 +11,7 @@ import (
 func NewDemoArticle() screen.Node {
 	title := []line.Line{
 		line.FromString("Ac accumsan dolor laoreet"),
-		*line.New("=", spec.Cover()),
+		line.TextSpec("=", spec.Cover()),
 	}
 
 	node := article.New().

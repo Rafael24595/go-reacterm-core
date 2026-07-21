@@ -27,16 +27,16 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 
 	vm.Header.Push(
 		drain.UnitFromLines(
-			*line.New("HEADER", spec.AlignRight()),
+			line.TextSpec("HEADER", spec.AlignRight()),
 		),
 	)
 
 	vm.Kernel.Push(
 		lines.UnitFromLines(
-			*line.New("=", spec.Cover()),
-			*line.New("LINE TWO", spec.AlignRight()),
-			*line.New("LINE THREE IS LONG", spec.AlignRight()),
-			*line.New("LINE FOUR", spec.AlignRight()),
+			line.TextSpec("=", spec.Cover()),
+			line.TextSpec("LINE TWO", spec.AlignRight()),
+			line.TextSpec("LINE THREE IS LONG", spec.AlignRight()),
+			line.TextSpec("LINE FOUR", spec.AlignRight()),
 		),
 	)
 
@@ -85,19 +85,19 @@ func TestStandard_InitializeLayers(t *testing.T) {
 
 	vm.Header.PushWithOpts(
 		drain.UnitFromLines(
-			*line.New("golang", spec.AlignRight()),
+			line.TextSpec("golang", spec.AlignRight()),
 		),
 		layer.Fixed[winsize.Rows](1),
 	)
 	vm.Kernel.PushWithOpts(
 		lines.UnitFromLines(
-			*line.New("rust", spec.AlignRight()),
+			line.TextSpec("rust", spec.AlignRight()),
 		),
 		layer.Fixed[winsize.Rows](1),
 	)
 	vm.Footer.PushWithOpts(
 		drain.UnitFromLines(
-			*line.New("Ziglang", spec.AlignRight()),
+			line.TextSpec("Ziglang", spec.AlignRight()),
 		),
 		layer.Fixed[winsize.Rows](1),
 	)

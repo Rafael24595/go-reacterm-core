@@ -177,12 +177,12 @@ func (n *History) view(uiState state.UIState) viewmodel.ViewModel {
 		return vm
 	}
 
-	line := line.New(
+	line := line.TextSpec(
 		strings.Join(footers, n.meta.Separator),
 		spec.AlignLeft(),
 	)
 
-	unit := drain.UnitFromLines(*line).
+	unit := drain.UnitFromLines(line).
 		AddTag(screen.SystemMetaTag)
 
 	vm.Footer.Unshift(unit)

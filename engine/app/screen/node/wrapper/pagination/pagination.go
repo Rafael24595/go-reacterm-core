@@ -168,7 +168,7 @@ func (n *Pagination) view(uiState state.UIState) viewmodel.ViewModel {
 	assert.True(ok, errf_unhandled, n.actionKind)
 
 	footer := []line.Line{
-		*line.New(
+		line.TextSpec(
 			fmt.Sprintf("%s: %d", label, uiState.Pager.ActualPage),
 			spec.AlignLeft(),
 		),
