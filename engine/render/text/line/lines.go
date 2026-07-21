@@ -30,7 +30,7 @@ func Empty(size ...int) *Line {
 	)
 }
 
-func OrderedText(order uint16, text ...string) Line {
+func TextOrdered(order uint16, text ...string) Line {
 	return *newLine(
 		order,
 		spec.Empty(),
