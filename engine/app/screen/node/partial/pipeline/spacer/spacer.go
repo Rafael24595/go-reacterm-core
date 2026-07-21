@@ -91,8 +91,7 @@ func appendSpacer(
 func makeLines(size uint8) []line.Line {
 	spaces := make([]line.Line, size)
 	for i := range spaces {
-		spaces[i] = *line.Empty().
-			AddSpec(spec.Cover())
+		spaces[i] = line.FromSpec(spec.Cover())
 	}
 	return spaces
 }

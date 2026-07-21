@@ -128,11 +128,14 @@ func (u *TalkUnit) makeLines(
 	)
 
 	for i := range ownerLines {
+		selector := messageSelector
 		if i == 0 {
-			ownerLines[i].UnshiftFrags(ownerSelector...)
-		} else {
-			ownerLines[i].UnshiftFrags(messageSelector...)
+			selector = ownerSelector
 		}
+
+		ownerLines[i] = line.BuilderFromLine(ownerLines[i]).
+			UnshiftFrags(selector...).
+			Line()
 	}
 
 	messageLines := wrap.Lines(
@@ -143,7 +146,9 @@ func (u *TalkUnit) makeLines(
 	)
 
 	for i := range messageLines {
-		messageLines[i].UnshiftFrags(messageSelector...)
+		messageLines[i] = line.BuilderFromLine(messageLines[i]).
+			UnshiftFrags(messageSelector...).
+			Line()
 	}
 
 	return u.addFocus(size, index, ownerLines, messageLines)

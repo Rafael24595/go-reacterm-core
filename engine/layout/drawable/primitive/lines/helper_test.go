@@ -20,7 +20,7 @@ func TestWrapNextLine_FitWithMeta(t *testing.T) {
 	}
 
 	layout := wrap.NormalizeLines(
-		*line.New("golang").SetOrder(1),
+		line.OrderedText(1, "golang"),
 	)
 
 	got, remain := NextIndexedLine(10, layout, meta)
@@ -39,7 +39,7 @@ func TestWrapNextLine_SplitWithMeta(t *testing.T) {
 	}
 
 	layout := wrap.NormalizeLines(
-		*line.New("golang rust").SetOrder(1),
+		line.OrderedText(1, "golang rust"),
 	)
 
 	got, remain := NextIndexedLine(10, layout, meta)
@@ -62,7 +62,7 @@ func TestWrapNextLine_IndexShouldBeLesser(t *testing.T) {
 	}
 
 	layout := wrap.LayoutLine{
-		Source: line.New("golang").SetOrder(1),
+		Source: line.OrderedText(1, "golang"),
 	}
 
 	assert.Panic(t, func() {

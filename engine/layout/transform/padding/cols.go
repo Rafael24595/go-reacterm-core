@@ -96,6 +96,8 @@ func AddColsPadding(
 		frags = append(frags, frag)
 	}
 
-	return *line.FromMeta(&lne).
-		PushFrags(frags...)
+	return line.NewBuilder().
+		WithMeta(lne).
+		PushFrags(frags...).
+		Line()
 }

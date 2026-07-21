@@ -33,12 +33,20 @@ func DrawTransformer(opts ...Option) pipeline.DrawTransformer {
 
 		lines, hasNext := unit.Drawable.Draw(fixedSize)
 		for i := range lines {
+			if leftMeasure == 0 && rightMeasure == 0 {
+				continue
+			}
+
+			builder := line.BuilderFromLine(lines[i])
+
 			if leftMeasure > 0 {
-				lines[i].UnshiftFrags(leftFrg)
+				builder.UnshiftFrags(leftFrg)
 			}
 			if rightMeasure > 0 {
-				lines[i].PushFrags(rightFrg)
+				builder.PushFrags(rightFrg)
 			}
+
+			lines[i] = builder.Line()
 		}
 
 		return lines, hasNext
