@@ -19,7 +19,7 @@ func NewDemoTextArea() screen.Node {
 
 	title := []line.Line{
 		line.FromString("Suspendisse sem arcu"),
-		*line.New("=", spec.Fill(sizeTitle)),
+		line.TextSpec("=", spec.Fill(sizeTitle)),
 	}
 
 	node := text_screen.NewArea().

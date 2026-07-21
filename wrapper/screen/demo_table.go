@@ -72,7 +72,7 @@ func marshal(lang Language) []table.Field {
 func NewDemoTable() screen.Node {
 	title := []line.Line{
 		line.FromString("Donec massa sem"),
-		*line.New("=", spec.Cover()),
+		line.TextSpec("=", spec.Cover()),
 	}
 
 	node := table_screen.New[Language]().
