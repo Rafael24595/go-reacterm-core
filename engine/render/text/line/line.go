@@ -1,6 +1,7 @@
 package line
 
 import (
+	"github.com/Rafael24595/go-reacterm-core/engine/app/hash"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
@@ -10,6 +11,7 @@ type Line struct {
 	Order uint16
 	Spec  spec.Spec
 	Text  []frag.Frag
+	hash  uint64
 }
 
 func New(text string, styles ...spec.Spec) *Line {
@@ -26,17 +28,33 @@ func newLine(
 	spec spec.Spec,
 	text []frag.Frag,
 ) *Line {
+	hash := calcHash(
+		hash.New(),
+		order,
+		spec,
+		text,
+	)
+
 	return &Line{
 		Order: order,
 		Text:  text,
 		Spec:  spec,
+		hash:  hash.Sum64(),
 	}
 }
 
-func (l *Line) CopyMeta(other *Line) *Line {
-	l.Order = other.Order
-	l.AddSpec(other.Spec)
-	return l
+func calcHash(
+	hasher hash.Hasher,
+	order uint16,
+	spec spec.Spec,
+	text []frag.Frag,
+) hash.Hasher {
+	hasher = hasher.Uint16(order)
+	hasher = hasher.Uint64(spec.Hash())
+	for _, t := range text {
+		hasher = hasher.Uint64(t.Hash())
+	}
+	return hasher
 }
 
 func (l *Line) SetOrder(order uint16) *Line {
@@ -70,6 +88,7 @@ func (l *Line) Clone() *Line {
 		Order: l.Order,
 		Spec:  spec,
 		Text:  text,
+		hash:  l.hash,
 	}
 }
 
