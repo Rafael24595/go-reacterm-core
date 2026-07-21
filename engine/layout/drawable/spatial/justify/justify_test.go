@@ -164,7 +164,7 @@ func TestJustifyLine_Start(t *testing.T) {
 	assert.Size(t, 5, line.Text)
 	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyLeft))
 
-	assert.Equal(t, "aa bb cc  ", renderLine(10, style.JustifyStart, *line))
+	assert.Equal(t, "aa bb cc  ", renderLine(10, style.JustifyStart, line))
 }
 
 func TestJustifyLine_End(t *testing.T) {
@@ -174,7 +174,7 @@ func TestJustifyLine_End(t *testing.T) {
 	assert.Size(t, 5, line.Text)
 	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyRight))
 
-	assert.Equal(t, "  aa bb cc", renderLine(10, style.JustifyEnd, *line))
+	assert.Equal(t, "  aa bb cc", renderLine(10, style.JustifyEnd, line))
 }
 
 func TestJustifyLine_Center(t *testing.T) {
@@ -184,7 +184,7 @@ func TestJustifyLine_Center(t *testing.T) {
 	assert.Size(t, 5, line.Text)
 	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyCenter))
 
-	assert.Equal(t, " aa bb cc ", renderLine(10, style.JustifyCenter, *line))
+	assert.Equal(t, " aa bb cc ", renderLine(10, style.JustifyCenter, line))
 }
 
 func TestJustifyLine_Between(t *testing.T) {
@@ -194,7 +194,7 @@ func TestJustifyLine_Between(t *testing.T) {
 	assert.Size(t, 5, line.Text)
 	assert.True(t, line.Spec.Kind().HasNone(spec.KindJustifyRight|spec.KindJustifyLeft|spec.KindJustifyCenter))
 
-	assert.Equal(t, "aa  bb  cc", renderLine(10, style.JustifyBetween, *line))
+	assert.Equal(t, "aa  bb  cc", renderLine(10, style.JustifyBetween, line))
 }
 
 func TestJustifyLine_Around(t *testing.T) {
@@ -204,7 +204,7 @@ func TestJustifyLine_Around(t *testing.T) {
 	assert.Size(t, 5, line.Text)
 	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyCenter))
 
-	assert.Equal(t, "   aa   bb   cc   ", renderLine(18, style.JustifyAround, *line))
+	assert.Equal(t, "   aa   bb   cc   ", renderLine(18, style.JustifyAround, line))
 }
 
 func TestJustifyLine_Evenly(t *testing.T) {
@@ -214,5 +214,5 @@ func TestJustifyLine_Evenly(t *testing.T) {
 	assert.Size(t, 5, line.Text)
 	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyCenter))
 
-	assert.Equal(t, "  aa    bb    cc  ", renderLine(18, style.JustifyEvenly, *line))
+	assert.Equal(t, "  aa    bb    cc  ", renderLine(18, style.JustifyEvenly, line))
 }

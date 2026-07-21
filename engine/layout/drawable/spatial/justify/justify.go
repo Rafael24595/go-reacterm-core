@@ -110,7 +110,7 @@ func (u *JustifyUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 		newRemaining := remaining + spacing + fragSize
 		if fragsLen > 0 && fragsLen >= maxOpts || newRemaining > maxCols {
 			justify := justifyLine(maxCols, frags, remaining, u.justify)
-			return []line.Line{*justify}, true
+			return []line.Line{justify}, true
 		}
 
 		remaining = newRemaining
@@ -120,30 +120,31 @@ func (u *JustifyUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	}
 
 	justify := justifyLine(maxCols, frags, remaining, u.justify)
-	return []line.Line{*justify}, u.cursor < uint16(len(u.frags))
+	return []line.Line{justify}, u.cursor < uint16(len(u.frags))
 }
 
-func justifyLine(cols winsize.Cols, frags []frag.Frag, size winsize.Cols, mode style.Justify) *line.Line {
-	line := line.FromFrags(
-		addGaps(cols, frags, size, mode)...,
-	)
+func justifyLine(cols winsize.Cols, frags []frag.Frag, size winsize.Cols, mode style.Justify) line.Line {
+	builder := line.NewBuilder().
+		PushFrags(
+			addGaps(cols, frags, size, mode)...,
+		)
 
 	switch mode {
 	case style.JustifyStart:
-		return line.AddSpec(
+		builder.AddSpec(
 			spec.AlignLeft(),
 		)
 	case style.JustifyEnd:
-		return line.AddSpec(
+		builder.AddSpec(
 			spec.AlignRight(),
 		)
 	case style.JustifyCenter, style.JustifyAround, style.JustifyEvenly:
-		return line.AddSpec(
+		builder.AddSpec(
 			spec.AlignCenter(),
 		)
 	}
 
-	return line
+	return builder.Line()
 }
 
 func addGaps(
