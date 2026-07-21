@@ -1,6 +1,8 @@
 package line
 
 import (
+	"iter"
+
 	"github.com/Rafael24595/go-reacterm-core/engine/app/hash"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
@@ -76,6 +78,44 @@ func (l *Line) AddSpec(styles ...spec.Spec) *Line {
 	newSpec := spec.Merge(styles...)
 	l.Spec = spec.Merge(l.Spec, newSpec)
 	return l
+}
+
+func (l *Line) Size() uint {
+	return uint(len(l.Text))
+}
+
+func (l *Line) GetOrder() uint16 {
+	return l.Order
+}
+
+func (l *Line) GetSpec() spec.Spec {
+	return l.Spec
+}
+
+func (l *Line) GetText() []frag.Frag {
+	return l.Text
+}
+
+func (l *Line) GetFrag(index uint) frag.Frag {
+	frg, _ := l.TryGetFrag(index)
+	return frg
+}
+
+func (l *Line) TryGetFrag(index uint) (frag.Frag, bool) {
+	if l.Size() >= index {
+		return frag.Frag{}, false
+	}
+	return l.Text[index], true
+}
+
+func (l *Line) Frags() iter.Seq[frag.Frag] {
+	return func(yield func(frag.Frag) bool) {
+		for _, f := range l.Text {
+			if !yield(f) {
+				return
+			}
+		}
+	}
 }
 
 func (l *Line) Clone() *Line {
