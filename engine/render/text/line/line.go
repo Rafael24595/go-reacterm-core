@@ -98,3 +98,7 @@ func Measure(line *Line, cols winsize.Cols) winsize.Cols {
 		TextSize: frag.Measure(cols, line.Text...),
 	})
 }
+
+func FragsMeasure(cols winsize.Cols, line *Line) winsize.Cols {
+	return frag.Measure(cols, line.Text...)
+}
