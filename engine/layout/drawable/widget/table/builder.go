@@ -83,7 +83,7 @@ func (b builder) render(size winsize.Winsize) []section {
 
 		sections = append(sections, section{
 			header: isolated.UnitFromLines(
-				*topCover, *headerRow, *topCover,
+				*topCover, headerRow, *topCover,
 			),
 			rows: lines.UnitFromLines(bodyRows...),
 			footer: isolated.UnitFromLines(
@@ -247,7 +247,7 @@ func (b builder) renderHeaders(
 	maxCols table.MaxCols,
 	headers []string,
 	separator marker.TableSeparatorMeta,
-) *line.Line {
+) line.Line {
 	renderer := func(col int, header string) frag.Frag {
 		maxCol := maxCols[header]
 
@@ -284,7 +284,7 @@ func (b builder) renderBody(
 			)
 		}
 
-		lines[row] = *b.renderRow(headers, separator, renderer)
+		lines[row] = b.renderRow(headers, separator, renderer)
 	}
 
 	return lines
@@ -294,7 +294,7 @@ func (b builder) renderRow(
 	headers []string,
 	separator marker.TableSeparatorMeta,
 	cellRenderer cellRenderer,
-) *line.Line {
+) line.Line {
 	headersLen := len(headers)
 	capacity := 2*headersLen + 1
 
