@@ -18,8 +18,8 @@ func TestJustifyRight_Strict(t *testing.T) {
 
 	got := justifyRight(spec, 20, text)
 
+	assert.Size(t, 6, got)
 	assert.Equal(t, "----hi", got)
-	assert.Equal(t, 6, len(got))
 }
 
 func TestJustifyRight_RespectsCols(t *testing.T) {
@@ -29,8 +29,8 @@ func TestJustifyRight_RespectsCols(t *testing.T) {
 
 	got := justifyRight(spec, 5, text)
 
+	assert.Size(t, 5, got)
 	assert.Equal(t, "---hi", got)
-	assert.Equal(t, 5, len(got))
 }
 
 func TestJustifyLeft_Strict(t *testing.T) {
@@ -40,8 +40,8 @@ func TestJustifyLeft_Strict(t *testing.T) {
 
 	got := justifyLeft(spec, 20, text)
 
+	assert.Size(t, 6, got)
 	assert.Equal(t, "hi....", got)
-	assert.Equal(t, 6, len(got))
 }
 
 func TestJustifyLeft_RespectsCols(t *testing.T) {
@@ -51,8 +51,8 @@ func TestJustifyLeft_RespectsCols(t *testing.T) {
 
 	got := justifyLeft(spec, 5, text)
 
+	assert.Size(t, 5, got)
 	assert.Equal(t, "hi...", got)
-	assert.Equal(t, 5, len(got))
 }
 
 func TestJustifyCenter_Strict(t *testing.T) {
@@ -62,8 +62,8 @@ func TestJustifyCenter_Strict(t *testing.T) {
 
 	got := justifyCenter(spec, 20, text)
 
+	assert.Size(t, 6, got)
 	assert.Equal(t, "--hi--", got)
-	assert.Equal(t, 6, len(got))
 }
 
 func TestJustifyCenter_RespectsCols(t *testing.T) {
@@ -73,8 +73,8 @@ func TestJustifyCenter_RespectsCols(t *testing.T) {
 
 	got := justifyCenter(spec, 4, text)
 
+	assert.Size(t, 4, got)
 	assert.Equal(t, "-hi-", got)
-	assert.Equal(t, 4, len(got))
 }
 
 func TestJustifyCenter_OddSize(t *testing.T) {
@@ -84,8 +84,8 @@ func TestJustifyCenter_OddSize(t *testing.T) {
 
 	got := justifyCenter(spec, 20, text)
 
+	assert.Size(t, 7, got)
 	assert.Equal(t, "--hi---", got)
-	assert.Equal(t, 7, len(got))
 }
 
 func TestExtendLeft_WithText_Strict(t *testing.T) {
@@ -328,7 +328,7 @@ func TestFill_Strict(t *testing.T) {
 	spec := spec.Fill(10)
 	got := fill(spec, 6, text)
 
-	assert.Equal(t, 6, len(got))
+	assert.Size(t, 6, got)
 	assert.Equal(t, "------", got)
 }
 
@@ -338,7 +338,7 @@ func TestFill_Strict_LongText_Even(t *testing.T) {
 	spec := spec.Fill(20)
 	got := fill(spec, 10, text)
 
-	assert.Equal(t, 10, len(got))
+	assert.Size(t, 10, got)
 	assert.Equal(t, "gogogogogo", got)
 }
 
@@ -348,6 +348,6 @@ func TestFill_Strict_LongText_Odd(t *testing.T) {
 	spec := spec.Fill(20)
 	got := fill(spec, 10, text)
 
-	assert.Equal(t, 10, len(got))
+	assert.Size(t, 10, got)
 	assert.Equal(t, "zigzigzigz", got)
 }

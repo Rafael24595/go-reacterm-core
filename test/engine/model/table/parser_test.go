@@ -29,7 +29,7 @@ func TestStructFieds_ShouldReturnAllFields(t *testing.T) {
 
 	fields := table.StructFieds(s)
 
-	assert.Equal(t, 3, len(fields))
+	assert.Size(t, 3, fields)
 
 	assert.Equal(t, "ID", fields[0].Header)
 	assert.Equal(t, 10, fields[0].Value)
@@ -48,7 +48,7 @@ func TestStructFieds_ShouldWorkWithPointer(t *testing.T) {
 
 	fields := table.StructFieds(s)
 
-	assert.Equal(t, 1, len(fields))
+	assert.Size(t, 1, fields)
 	assert.Equal(t, "Lang", fields[0].Header)
 	assert.Equal(t, "ziglang", fields[0].Value)
 }
@@ -58,13 +58,13 @@ func TestStructFieds_EmptyStruct_ShouldReturnEmptySlice(t *testing.T) {
 
 	fields := table.StructFieds(s)
 
-	assert.Equal(t, 0, len(fields))
+	assert.Empty(t, fields)
 }
 
 func TestStructHeaders_ShouldReturnOnlyHeaders(t *testing.T) {
 	headers := table.StructHeaders[testStruct]()
 
-	assert.Equal(t, 3, len(headers))
+	assert.Size(t, 3, headers)
 
 	assert.Equal(t, "ID", headers[0])
 	assert.Equal(t, "Name", headers[1])

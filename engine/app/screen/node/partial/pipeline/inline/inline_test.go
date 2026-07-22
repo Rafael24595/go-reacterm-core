@@ -52,7 +52,7 @@ func TestInline_GroupUnits_NoMatches(t *testing.T) {
 
 		units := acc.Get(vm).Units()
 
-		assert.Equal(t, 2, len(units))
+		assert.Size(t, 2, units)
 		assert.Equal(t, "a", units[0].Name)
 		assert.Equal(t, "b", units[1].Name)
 	}
@@ -84,7 +84,7 @@ func TestInline_GroupUnits_ByCode(t *testing.T) {
 
 		units := acc.Get(vm).Units()
 
-		assert.Equal(t, 2, len(units))
+		assert.Size(t, 2, units)
 		assert.Equal(t, "b", units[0].Name)
 		assert.Equal(t, Name, units[1].Name)
 	}
@@ -116,7 +116,7 @@ func TestInline_GroupUnits_ByTags(t *testing.T) {
 
 		units := acc.Get(vm).Units()
 
-		assert.Equal(t, 2, len(units))
+		assert.Size(t, 2, units)
 		assert.Equal(t, Name, units[1].Name)
 	}
 }
@@ -151,7 +151,7 @@ func TestInline_GroupUnits_MultipleMatches(t *testing.T) {
 
 		units := acc.Get(vm).Units()
 
-		assert.Equal(t, 2, len(units))
+		assert.Size(t, 2, units)
 		assert.Equal(t, Name, units[0].Name)
 		assert.Equal(t, "b", units[1].Name)
 	}

@@ -66,7 +66,7 @@ func TestBuilderUnshiftText(t *testing.T) {
 		PushText("C").
 		UnshiftText("A", "B")
 
-	assert.Equal(t, 3, len(b.Text))
+	assert.Size(t, 3, b.Text)
 	assert.Equal(t, "A", b.Text[0].Text())
 	assert.Equal(t, "B", b.Text[1].Text())
 	assert.Equal(t, "C", b.Text[2].Text())
@@ -79,7 +79,7 @@ func TestBuilderPushFrags(t *testing.T) {
 			frag.FromString("B"),
 		)
 
-	assert.Equal(t, 2, len(b.Text))
+	assert.Size(t, 2, b.Text)
 	assert.Equal(t, "A", b.Text[0].Text())
 	assert.Equal(t, "B", b.Text[1].Text())
 }
@@ -199,6 +199,6 @@ func TestBuilderLineIsImmutable(t *testing.T) {
 
 	builder.PushText("World")
 
-	assert.Equal(t, 1, len(line.Text))
+	assert.Size(t, 1, line.Text)
 	assert.Equal(t, "Hello", line.Text[0].Text())
 }

@@ -177,8 +177,8 @@ func TestLinkedMap_SetPairsInsertion(t *testing.T) {
 	)
 
 	assert.True(t, ok)
+	assert.Size(t, 3, m.data)
 	assert.Equal(t, 3, added)
-	assert.Equal(t, 3, len(m.data))
 }
 
 func TestLinkedMap_SetPairsOverride(t *testing.T) {

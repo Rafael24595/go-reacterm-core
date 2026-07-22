@@ -27,8 +27,8 @@ func TestNew(t *testing.T) {
 func TestEmpty(t *testing.T) {
 	spec := Empty()
 
+	assert.Size(t, 0, spec.args.items)
 	assert.Equal(t, KindNone, spec.kind)
-	assert.Equal(t, 0, len(spec.args.items))
 	assert.NotEqual(t, uint64(0), spec.hash)
 }
 
@@ -60,8 +60,8 @@ func TestSpecCloneIsIndependent(t *testing.T) {
 func TestMerge_Empty(t *testing.T) {
 	spec := Merge()
 
+	assert.Size(t, 0, spec.args.items)
 	assert.Equal(t, KindNone, spec.kind)
-	assert.Equal(t, 0, len(spec.args.items))
 }
 
 func TestMerge_Single(t *testing.T) {
@@ -173,11 +173,11 @@ func TestEraseSpec_DeleteNonExists(t *testing.T) {
 
 	modified, removed := Erase(scp, KindTruncateLeft)
 
-	assert.Equal(t, scp.kind, modified.kind)
 	assert.Equal(t, len(scp.args.items), len(modified.args.items))
+	assert.Equal(t, scp.kind, modified.kind)
 
+	assert.Empty(t, removed.args.items)
 	assert.Equal(t, KindNone, removed.kind)
-	assert.Equal(t, 0, len(removed.args.items))
 }
 
 func TestEraseSpec_DeleteMultiple(t *testing.T) {
@@ -189,11 +189,11 @@ func TestEraseSpec_DeleteMultiple(t *testing.T) {
 	toRemove := KindJustifyRight | KindFill | KindExtendRight
 	modified, removed := Erase(scp, toRemove)
 
+	assert.Empty(t, modified.args.items)
 	assert.Equal(t, KindNone, modified.kind)
-	assert.Equal(t, 0, len(modified.args.items))
 
+	assert.Size(t, 3, removed.args.items)
 	assert.Equal(t, KindJustifyRight|KindFill, removed.kind)
-	assert.Equal(t, 3, len(removed.args.items))
 }
 
 func TestErase_RebuildsHash(t *testing.T) {

@@ -299,7 +299,7 @@ func TestNormalizeBuffer_NoChange(t *testing.T) {
 	out := runes.NormalizeBuffer(buf, 4)
 
 	assert.Equal(t, "golang", string(out))
-	assert.Equal(t, 6, len(out))
+	assert.Size(t, 6, out)
 }
 
 func TestNormalizeBuffer_Extends(t *testing.T) {
@@ -307,6 +307,6 @@ func TestNormalizeBuffer_Extends(t *testing.T) {
 
 	out := runes.NormalizeBuffer(buf, 8)
 
-	assert.Equal(t, 8, len(out))
+	assert.Size(t, 8, out)
 	assert.Equal(t, "golang", string(out[:6]))
 }

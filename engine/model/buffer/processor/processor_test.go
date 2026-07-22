@@ -52,9 +52,10 @@ func TestProcessor_Limit(t *testing.T) {
 	input := []rune("GolangZiglang")
 	buff, facade := handler(input)
 
+	assert.Size(t, 6, buff)
+	
 	assert.Equal(t, "Golang", string(buff))
 	assert.Equal(t, "Golang", string(facade))
-	assert.Equal(t, 6, len(buff))
 }
 
 func TestProcessor_NumberLimited(t *testing.T) {

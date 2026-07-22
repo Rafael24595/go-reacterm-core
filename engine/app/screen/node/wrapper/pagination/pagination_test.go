@@ -72,7 +72,7 @@ func TestPagination_ViewFooter(t *testing.T) {
 		Cols: 10,
 	})
 
-	assert.True(t, len(lines) > 0)
+	assert.GreaterThan(t, 0, lines)
 	assert.Inside(t, "page: 3", text_test.LineToString(lines[0]))
 }
 

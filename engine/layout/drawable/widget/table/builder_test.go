@@ -239,7 +239,7 @@ func TestBuilder_MaxColsChunks_FitsInOne(t *testing.T) {
 		Cols: 50,
 	})
 
-	assert.Equal(t, 1, len(result))
+	assert.Size(t, 1, result)
 	assert.Equal(t, 10, result[0]["A"])
 	assert.Equal(t, 20, result[0]["B"])
 	assert.Equal(t, 10, result[0]["C"])
@@ -263,7 +263,7 @@ func TestBuilder_MaxColsChunks_MustSplit(t *testing.T) {
 		Cols: 25,
 	})
 
-	assert.True(t, len(result) > 1)
+	assert.GreaterThan(t, 1, result)
 
 	for _, table := range result {
 		total := winsize.Cols(0)
@@ -294,7 +294,7 @@ func TestBuilder_MaxColsChunks_ColumnWiderThanTerminal(t *testing.T) {
 
 	sepMeasure := leftSepMeasure + rightSepMeasure
 
-	assert.Equal(t, 1, len(result))
+	assert.Size(t, 1, result)
 	assert.Equal(t, 80-sepMeasure, result[0]["XL"])
 }
 
@@ -309,7 +309,7 @@ func TestBuilder_MaxColsChunks_EmptyMap(t *testing.T) {
 
 	result := builder.maxColsChunks(winsize.Winsize{})
 
-	assert.Equal(t, 0, len(result))
+	assert.Size(t, 0, result)
 }
 
 func TestAdjustSize_Deterministic(t *testing.T) {

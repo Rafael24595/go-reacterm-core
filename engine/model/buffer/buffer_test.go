@@ -15,9 +15,10 @@ func TestRuneBuffer_NumberFilter(t *testing.T) {
 
 	inserted, deleted := rb.Replace([]rune("1A2"), 0, 0)
 
+	assert.Empty(t, deleted)
+	
 	assert.Equal(t, "12", string(rb.Buffer()))
 	assert.Equal(t, "12", string(inserted))
-	assert.Equal(t, 0, len(deleted))
 	assert.Equal(t, 2, rb.Size())
 }
 
