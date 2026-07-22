@@ -60,6 +60,11 @@ func (b *Builder) WithLine(other Line) *Builder {
 	return b
 }
 
+func (b *Builder) SetText(text ...string) *Builder {
+	b.Text = frag.FromStrings(text...)
+	return b
+}
+
 func (b *Builder) UnshiftText(text ...string) *Builder {
 	return b.UnshiftFrags(
 		frag.FromStrings(text...)...,
@@ -72,6 +77,11 @@ func (b *Builder) PushText(text ...string) *Builder {
 	)
 }
 
+func (b *Builder) SetFrags(frags ...frag.Frag) *Builder {
+	b.Text = frags
+	return b
+}
+
 func (b *Builder) UnshiftFrags(frags ...frag.Frag) *Builder {
 	b.Text = append(frags, b.Text...)
 	return b
@@ -79,6 +89,15 @@ func (b *Builder) UnshiftFrags(frags ...frag.Frag) *Builder {
 
 func (b *Builder) PushFrags(frags ...frag.Frag) *Builder {
 	b.Text = append(b.Text, frags...)
+	return b
+}
+
+func (b *Builder) SetBuilder(builder ...*frag.Builder) *Builder {
+	frags := make([]frag.Frag, len(builder))
+	for i := range builder {
+		frags[i] = builder[i].Frag()
+	}
+	b.Text = frags
 	return b
 }
 

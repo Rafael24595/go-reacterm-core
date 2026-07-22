@@ -70,6 +70,16 @@ func TestBuilderAddSpec(t *testing.T) {
 	assert.Equal(t, expected.Hash(), b.Spec.Hash())
 }
 
+func TestBuilderSetText(t *testing.T) {
+	b := NewBuilder().
+		PushText("Old1", "Old2").
+		SetText("New1", "New2")
+
+	assert.Size(t, 2, b.Text)
+	assert.Equal(t, "New1", b.Text[0].Text())
+	assert.Equal(t, "New2", b.Text[1].Text())
+}
+
 func TestBuilderPushText(t *testing.T) {
 	b := NewBuilder().
 		PushText("A", "B")
@@ -88,6 +98,19 @@ func TestBuilderUnshiftText(t *testing.T) {
 	assert.Equal(t, "A", b.Text[0].Text())
 	assert.Equal(t, "B", b.Text[1].Text())
 	assert.Equal(t, "C", b.Text[2].Text())
+}
+
+func TestBuilderSetFrags(t *testing.T) {
+	b := NewBuilder().
+		PushText("Old").
+		SetFrags(
+			frag.FromString("New1"),
+			frag.FromString("New2"),
+		)
+
+	assert.Size(t, 2, b.Text)
+	assert.Equal(t, "New1", b.Text[0].Text())
+	assert.Equal(t, "New2", b.Text[1].Text())
 }
 
 func TestBuilderPushFrags(t *testing.T) {
@@ -115,6 +138,19 @@ func TestBuilderUnshiftFrags(t *testing.T) {
 	assert.Equal(t, "A", builder.Text[0].Text())
 	assert.Equal(t, "B", builder.Text[1].Text())
 	assert.Equal(t, "C", builder.Text[2].Text())
+}
+
+func TestBuilderSetBuilder(t *testing.T) {
+	fb1 := frag.NewBuilder().AddText("A")
+	fb2 := frag.NewBuilder().AddText("B")
+
+	b := NewBuilder().
+		PushText("Old").
+		SetBuilder(fb1, fb2)
+
+	assert.Size(t, 2, b.Text)
+	assert.Equal(t, "A", b.Text[0].Text())
+	assert.Equal(t, "B", b.Text[1].Text())
 }
 
 func TestBuilderPushBuilder(t *testing.T) {
