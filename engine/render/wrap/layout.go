@@ -12,12 +12,12 @@ import (
 )
 
 type LayoutLine struct {
-	Source *line.Line
+	Source line.Line
 	words  []word
 	frags  []wordFrag
 }
 
-func NewLayoutLine(source *line.Line, words []word, frags []wordFrag) *LayoutLine {
+func NewLayoutLine(source line.Line, words []word, frags []wordFrag) *LayoutLine {
 	return &LayoutLine{
 		Source: source,
 		words:  words,

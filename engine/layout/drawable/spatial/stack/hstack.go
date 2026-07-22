@@ -217,7 +217,7 @@ func (u *HStackUnit) makeBlocks(size winsize.Winsize) ([]block, bool) {
 			wrapped := make([]line.Line, 0)
 			for _, v := range lines {
 				wrapped = append(wrapped,
-					wrap.Line(fixedSize.Cols, &v)...,
+					wrap.Line(fixedSize.Cols, v)...,
 				)
 			}
 

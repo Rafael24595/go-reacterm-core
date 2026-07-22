@@ -18,7 +18,7 @@ type word struct {
 	measure  winsize.Cols
 }
 
-func splitLineWords(line *line.Line) ([]word, []wordFrag) {
+func splitLineWords(line line.Line) ([]word, []wordFrag) {
 	words := make([]word, 0, line.Size())
 	frags := make([]wordFrag, 0, line.Size())
 

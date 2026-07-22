@@ -106,11 +106,11 @@ func (u *TextAreaUnit) lazyBoot(size winsize.Winsize) {
 	u.unit = unit
 }
 
-func (u *TextAreaUnit) makeLines(base *line.Line) []wrap.LayoutLine {
+func (u *TextAreaUnit) makeLines(base line.Line) []wrap.LayoutLine {
 	if u.indexMode {
-		return wrap.NormalizeLinesWithOrder(*base)
+		return wrap.NormalizeLinesWithOrder(base)
 	}
-	return wrap.NormalizeLines(*base)
+	return wrap.NormalizeLines(base)
 
 }
 

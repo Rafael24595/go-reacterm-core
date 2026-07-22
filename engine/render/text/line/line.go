@@ -130,6 +130,6 @@ func Measure(line *Line, cols winsize.Cols) winsize.Cols {
 	})
 }
 
-func FragsMeasure(cols winsize.Cols, line *Line) winsize.Cols {
+func FragsMeasure(cols winsize.Cols, line Line) winsize.Cols {
 	return frag.Measure(cols, line.Text...)
 }

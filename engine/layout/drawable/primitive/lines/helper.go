@@ -24,38 +24,51 @@ func NextIndexedLine(
 		return nil, make([]wrap.LayoutLine, 0)
 	}
 
-	var prefix string
-	if lines[0].Source.Order != 0 {
-		order := int(lines[0].Source.Order)
-		prefix = meta.header(order)
-		lines[0].Source.Order = 0
-	} else {
-		prefix = meta.body()
-	}
+	prefix, lines := extractPrefix(lines, meta)
 
 	fixedCols := cols.Sub(meta.totalWidth)
 
 	assert.True(fixedCols > 0, "index prefix should be lesser than line size")
 
-	cursor, rest := wrap.NextLine(fixedCols, lines)
-	if cursor != nil {
-		cursor.UnshiftFrags(
-			frag.FromString(prefix),
-		)
+	cursor, rest := wrap.NextBuilder(fixedCols, lines)
+	if cursor == nil {
+		return nil, rest
 	}
 
-	return cursor, rest
+	cursor.UnshiftFrags(
+		frag.FromString(prefix),
+	)
+
+	return cursor.LinePtr(), rest
+}
+
+func extractPrefix(
+	lines []wrap.LayoutLine,
+	meta indexMeta,
+) (string, []wrap.LayoutLine) {
+	if lines[0].Source.GetOrder() == 0 {
+		return meta.body(), lines
+
+	}
+	order := int(lines[0].Source.GetOrder())
+	prefix := meta.header(order)
+
+	lines[0].Source = line.BuilderFromLine(lines[0].Source).
+		SetOrder(0).
+		Line()
+
+	return prefix, lines
 }
 
 func computeIndexMeta(lines []wrap.LayoutLine) *indexMeta {
 	size := winsize.Cols(0)
 
 	for _, line := range lines {
-		if line.Source.Order == 0 {
+		if line.Source.GetOrder() == 0 {
 			continue
 		}
 
-		digits := math.Digits(line.Source.Order)
+		digits := math.Digits(line.Source.GetOrder())
 		size = max(size, winsize.Cols(digits))
 	}
 

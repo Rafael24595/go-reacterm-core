@@ -44,19 +44,14 @@ func benchmarkLine(words int) line.Line {
 		builder.WriteString("Lorem ")
 	}
 
-	line := line.New("")
-	line.PushFrags(
-		frag.FromString(builder.String()),
-	)
-
-	return *line
+	return line.FromString(builder.String())
 }
 
 func TestWrapOnce(t *testing.T) {
 	tests := []struct {
 		name         string
 		cols         winsize.Cols
-		line         *line.Line
+		line         line.Line
 		expectedHead string
 		expectedRest string
 	}{
@@ -198,7 +193,7 @@ func TestWrapOnce(t *testing.T) {
 
 			assert.NotNil(t, head)
 
-			headText := text_test.LineToString(*head)
+			headText := text_test.LineToString(head.Line())
 			assert.Equal(t, tt.expectedHead, headText)
 
 			if tt.expectedRest != "" {
@@ -210,11 +205,11 @@ func TestWrapOnce(t *testing.T) {
 }
 
 func TestNormalizeLines_Integrity(t *testing.T) {
-	line := line.New("golang ziglang 10.50 rust")
+	line := line.FromString("golang ziglang 10.50 rust")
 
-	assert.Size(t, 1, line.Text)
+	assert.Equal(t, 1, line.Size())
 
-	layouts := NormalizeLines(*line)
+	layouts := NormalizeLines(line)
 
 	assert.Size(t, 1, layouts)
 	assert.Size(t, 7, layouts[0].words)
@@ -230,7 +225,7 @@ func TestMaterializeEmpty(t *testing.T) {
 	tests := []struct {
 		name          string
 		input         []LayoutLine
-		expectedCount int
+		expectedCount uint
 		expectedText  string
 		expectedAtom  atom.Atom
 	}{
@@ -260,7 +255,7 @@ func TestMaterializeEmpty(t *testing.T) {
 			name: "ShouldMaterializeLineWithOnlyZeroWidthFrags",
 			input: []LayoutLine{
 				*sourceLayout(
-					line.New(""),
+					line.FromString(""),
 				).pushFrags(
 					frag.FromString(""),
 				),
@@ -290,9 +285,9 @@ func TestMaterializeEmpty(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := MaterializeEmpty(size, placeholder, tt.input...)
 
-			assert.Size(t, tt.expectedCount, got[0].Source.Text)
-			assert.GreaterThan(t, 0, len(got[0].words))
-			assert.Equal(t, tt.expectedText, text_test.LineToString(*got[0].Source))
+			assert.Equal(t, tt.expectedCount, got[0].Source.Size())
+			assert.GreaterThan(t, 0, got[0].words)
+			assert.Equal(t, tt.expectedText, text_test.LineToString(got[0].Source))
 
 			layout := got[len(got)-1]
 			word := layout.words[len(layout.words)-1]
@@ -304,7 +299,7 @@ func TestMaterializeEmpty(t *testing.T) {
 }
 
 func TestWrapLine_Simple(t *testing.T) {
-	line := line.New(
+	line := line.TextSpec(
 		"HELLO WORLD",
 		spec.AlignRight(),
 	)
@@ -317,7 +312,7 @@ func TestWrapLine_Simple(t *testing.T) {
 
 	for i, l := range lines {
 		var text strings.Builder
-		for _, f := range l.Text {
+		for f := range l.Frags() {
 			text.WriteString(f.Text())
 		}
 
@@ -326,37 +321,38 @@ func TestWrapLine_Simple(t *testing.T) {
 }
 
 func TestWrapLine_Styles(t *testing.T) {
-	line := line.FromFrags(
-		frag.TextAtom("HELLO", atom.Bold),
-		frag.FromString(" "),
-		frag.FromString("WORLD"),
-	).AddSpec(spec.AlignRight())
+	lne := line.NewBuilder().
+		PushFrags(
+			frag.TextAtom("HELLO", atom.Bold),
+			frag.FromString(" "),
+			frag.FromString("WORLD"),
+		).
+		AddSpec(spec.AlignRight()).
+		Line()
 
-	lines := Line(7, line)
+	lines := Line(7, lne)
 
-	assert.Equal(t, 2, len(lines))
+	assert.Size(t, 2, lines)
 
-	assert.Equal(t, "HELLO", lines[0].Text[0].Text())
-	assert.True(t, lines[0].Text[0].Atom().HasAny(atom.Bold))
+	assert.Equal(t, "HELLO", lines[0].GetFrag(0).Text())
+	assert.True(t, lines[0].GetFrag(0).Atom().HasAny(atom.Bold))
 
-	assert.Equal(t, " ", lines[0].Text[1].Text())
+	assert.Equal(t, " ", lines[0].GetFrag(1).Text())
 
-	assert.Equal(t, "WORLD", lines[1].Text[0].Text())
+	assert.Equal(t, "WORLD", lines[1].GetFrag(0).Text())
 }
 
 func TestWrapLine_LongWord(t *testing.T) {
 	txt := "HELLO WORLD FROM GOLANG"
 
-	line := line.New(txt,
-		spec.AlignRight(),
-	)
+	line := line.TextSpec(txt, spec.AlignRight())
 
 	maxWidth := winsize.Cols(10)
 	lines := Line(maxWidth, line)
 
 	for i, l := range lines {
 		text := ""
-		for _, f := range l.Text {
+		for f := range l.Frags() {
 			text += f.Text()
 		}
 		if runes.Measure(text) > maxWidth {
@@ -366,7 +362,7 @@ func TestWrapLine_LongWord(t *testing.T) {
 
 	totalRunes := winsize.Cols(0)
 	for _, l := range lines {
-		for _, f := range l.Text {
+		for f := range l.Frags() {
 			totalRunes += runes.Measure(f.Text())
 		}
 	}
@@ -376,18 +372,21 @@ func TestWrapLine_LongWord(t *testing.T) {
 }
 
 func TestWrapLine_MultipleFrags(t *testing.T) {
-	line := line.FromFrags(
-		frag.TextAtom("HELLO", atom.Bold),
-		frag.TextAtom("WORLD", atom.Bold),
-		frag.FromString("GO"),
-	).AddSpec(spec.AlignRight())
+	line := line.NewBuilder().
+		PushFrags(
+			frag.TextAtom("HELLO", atom.Bold),
+			frag.TextAtom("WORLD", atom.Bold),
+			frag.FromString("GO"),
+		).
+		AddSpec(spec.AlignRight()).
+		Line()
 
 	maxWidth := winsize.Cols(8)
 	lines := Line(maxWidth, line)
 
 	for _, l := range lines {
 		width := winsize.Cols(0)
-		for _, f := range l.Text {
+		for f := range l.Frags() {
 			width += runes.Measure(f.Text())
 		}
 		if width > maxWidth {
@@ -397,18 +396,18 @@ func TestWrapLine_MultipleFrags(t *testing.T) {
 }
 
 func TestNextLine_Fit(t *testing.T) {
-	line := line.New("golang")
+	line := line.FromString("golang")
 
-	got, remain := NextLine(10, NormalizeLines(*line))
+	got, remain := NextLine(10, NormalizeLines(line))
 
 	assert.Equal(t, "golang", text_test.LineToString(*got))
 	assert.Empty(t, remain)
 }
 
 func TesNextLine_Split(t *testing.T) {
-	line := line.New("golang")
+	line := line.FromString("golang")
 
-	got, remain := NextLine(2, NormalizeLines(*line))
+	got, remain := NextLine(2, NormalizeLines(line))
 
 	assert.Equal(t, "go", text_test.LineToString(*got))
 
@@ -425,7 +424,7 @@ func TesNextLine_MultiFrag(t *testing.T) {
 		frag.FromString("c++"),
 	)
 
-	got, remain := NextLine(6, NormalizeLines(*line))
+	got, remain := NextLine(6, NormalizeLines(line))
 
 	assert.Equal(t, "go zig", text_test.LineToString(*got))
 	assert.Size(t, 1, remain)
@@ -434,9 +433,9 @@ func TesNextLine_MultiFrag(t *testing.T) {
 }
 
 func TesNextLine_BreakLongWordSingleFrag(t *testing.T) {
-	line := line.New("golangziglangrustlang")
+	line := line.FromString("golangziglangrustlang")
 
-	got, remain := NextLine(6, NormalizeLines(*line))
+	got, remain := NextLine(6, NormalizeLines(line))
 	assert.Equal(t, "golang", text_test.LineToString(*got))
 
 	assert.Equal(t, "ziglangrustlang", wordsToString(remain[0].words, remain[0].frags))
@@ -449,7 +448,7 @@ func TesNextLine_BreakLongWordMultipleFrags(t *testing.T) {
 		frag.FromString("zigrust"),
 	)
 
-	got, remain := NextLine(10, NormalizeLines(*line))
+	got, remain := NextLine(10, NormalizeLines(line))
 	assert.Equal(t, "golang ", text_test.LineToString(*got))
 
 	assert.Equal(t, "zigrust", wordsToString(remain[0].words, remain[0].frags))
@@ -458,74 +457,74 @@ func TesNextLine_BreakLongWordMultipleFrags(t *testing.T) {
 func TestSplitLineFeeds(t *testing.T) {
 	tests := []struct {
 		name         string
-		input        *line.Line
+		input        line.Line
 		expectedSize int
 		expectedText string
-		expecteFrags []int
+		expecteFrags []uint
 	}{
 		{
 			name: "WithoutLineFeed",
-			input: line.Empty().PushFrags(
+			input: line.FromFrags(
 				frag.FromString("Hello Golang"),
 			),
 			expectedSize: 1,
 			expectedText: "Hello Golang",
-			expecteFrags: []int{1},
+			expecteFrags: []uint{1},
 		},
 		{
 			name: "SingleLineFeed",
-			input: line.Empty().PushFrags(
+			input: line.FromFrags(
 				frag.FromString("Golang\nZiglang"),
 			),
 			expectedSize: 2,
 			expectedText: "Golang\nZiglang",
-			expecteFrags: []int{1, 1},
+			expecteFrags: []uint{1, 1},
 		},
 		{
 			name: "LineFeedBetweenFrags",
-			input: line.Empty().PushFrags(
+			input: line.FromFrags(
 				frag.FromString("Rust"),
 				frag.FromString("\nZig"),
 			),
 			expectedSize: 2,
 			expectedText: "Rust\nZig",
-			expecteFrags: []int{1, 1},
+			expecteFrags: []uint{1, 1},
 		},
 		{
 			name: "MultipleLineFeedWithEmptyLine",
-			input: line.Empty().PushFrags(
+			input: line.FromFrags(
 				frag.FromString("Go\n\nC++"),
 			),
 			expectedSize: 3,
 			expectedText: "Go\n\nC++",
-			expecteFrags: []int{1, 0, 1},
+			expecteFrags: []uint{1, 0, 1},
 		},
 		{
 			name: "LineFeedAtEnd",
-			input: line.Empty().PushFrags(
+			input: line.FromFrags(
 				frag.FromString("Rust\n"),
 			),
 			expectedSize: 2,
 			expectedText: "Rust\n",
-			expecteFrags: []int{1, 0},
+			expecteFrags: []uint{1, 0},
 		},
 		{
 			name: "LineFeedWithCarriageReturn",
-			input: line.Empty().PushFrags(
+			input: line.FromFrags(
 				frag.FromString("Zig\r\nGolang"),
 			),
 			expectedSize: 2,
 			expectedText: "Zig\nGolang",
-			expecteFrags: []int{1, 1},
+			expecteFrags: []uint{1, 1},
 		},
 		{
 			name: "CarriageReturn",
-			input: line.Empty().PushFrags(
+			input: line.FromFrags(
 				frag.FromString("Java\rElixir"),
 			),
 			expectedSize: 2,
 			expectedText: "Java\nElixir",
-			expecteFrags: []int{1, 1},
+			expecteFrags: []uint{1, 1},
 		},
 	}
 
@@ -537,7 +536,7 @@ func TestSplitLineFeeds(t *testing.T) {
 			assert.Equal(t, tt.expectedText, assembleLines(t, got...))
 
 			for i, v := range got {
-				assert.Size(t, int(tt.expecteFrags[i]), v.Text)
+				assert.Equal(t, tt.expecteFrags[i], v.Size())
 			}
 		})
 	}
@@ -546,26 +545,25 @@ func TestSplitLineFeeds(t *testing.T) {
 func TestSplitLineFeeds_Ordering(t *testing.T) {
 	tests := []struct {
 		name           string
-		input          *line.Line
+		input          line.Line
 		orderFlag      bool
 		expectedOrders []uint16
 	}{
 		{
 			name:           "ShouldNotSetOrderIfFlagIsFalse",
-			input:          line.New("Line1\nLine2"),
+			input:          line.FromString("Line1\nLine2"),
 			orderFlag:      false,
 			expectedOrders: []uint16{0, 0},
 		},
 		{
 			name:           "ShouldStartFromOneIfOrderIsZero",
-			input:          line.New("Line1\nLine2\nLine3"),
+			input:          line.FromString("Line1\nLine2\nLine3"),
 			orderFlag:      true,
 			expectedOrders: []uint16{1, 2, 3},
 		},
 		{
-			name: "ShouldResumeFromExistingOrder",
-			input: line.New("PartA\nPartB").
-				SetOrder(10),
+			name:           "ShouldResumeFromExistingOrder",
+			input:          line.TextOrdered(10, "PartA\nPartB"),
 			orderFlag:      true,
 			expectedOrders: []uint16{10, 11},
 		},
@@ -598,7 +596,7 @@ func TestSplitLineFeeds_Ordering(t *testing.T) {
 			assert.Equal(t, len(tt.expectedOrders), len(got), "Result size mismatch")
 
 			for i, line := range got {
-				assert.Equal(t, tt.expectedOrders[i], line.Order, "Order mismatch at index %d", i)
+				assert.Equal(t, tt.expectedOrders[i], line.GetOrder(), "Order mismatch at index %d", i)
 			}
 		})
 	}
@@ -688,10 +686,10 @@ func BenchmarkWrapOnce(b *testing.B) {
 func BenchmarkWrapOnce_VeryLong(b *testing.B) {
 	line := benchmarkLine(2000)
 
-	words, frags := splitLineWords(&line)
+	words, frags := splitLineWords(line)
 
 	layout := NewLayoutLine(
-		&line, words, frags,
+		line, words, frags,
 	)
 
 	b.ReportAllocs()

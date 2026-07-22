@@ -23,11 +23,11 @@ func normalizeLines(order bool, lines ...line.Line) []LayoutLine {
 	buffer := make([]LayoutLine, 0, len(lines))
 
 	for _, line := range lines {
-		normalizedLF := splitLineFeeds(&line, order)
+		normalizedLF := splitLineFeeds(line, order)
 
 		for _, n := range normalizedLF {
-			words, frags := splitLineWords(&n)
-			layout := NewLayoutLine(&n, words, frags)
+			words, frags := splitLineWords(n)
+			layout := NewLayoutLine(n, words, frags)
 			buffer = append(buffer, *layout)
 		}
 	}
@@ -67,8 +67,8 @@ func MaterializeEmpty(
 	return lines
 }
 
-func Line(cols winsize.Cols, lne *line.Line) []line.Line {
-	return wrapLine(cols, *lne, make([]line.Line, 0))
+func Line(cols winsize.Cols, lne line.Line) []line.Line {
+	return wrapLine(cols, lne, make([]line.Line, 0))
 }
 
 func Lines(cols winsize.Cols, lines ...line.Line) []line.Line {
@@ -82,14 +82,14 @@ func Lines(cols winsize.Cols, lines ...line.Line) []line.Line {
 }
 
 func wrapLine(cols winsize.Cols, line line.Line, dst []line.Line) []line.Line {
-	words, frags := splitLineWords(&line)
-	layout := NewLayoutLine(&line, words, frags)
+	words, frags := splitLineWords(line)
+	layout := NewLayoutLine(line, words, frags)
 
 	current := layout
 
 	for current != nil {
 		head, rest := wrapOnce(cols, current)
-		dst = append(dst, *head)
+		dst = append(dst, head.Line())
 		current = rest
 	}
 
@@ -97,6 +97,11 @@ func wrapLine(cols winsize.Cols, line line.Line, dst []line.Line) []line.Line {
 }
 
 func NextLine(cols winsize.Cols, lines []LayoutLine) (*line.Line, []LayoutLine) {
+	builder, remain := NextBuilder(cols, lines)
+	return builder.LinePtr(), remain
+}
+
+func NextBuilder(cols winsize.Cols, lines []LayoutLine) (*line.Builder, []LayoutLine) {
 	if cols == 0 || len(lines) == 0 {
 		return nil, make([]LayoutLine, 0)
 	}
@@ -112,7 +117,7 @@ func NextLine(cols winsize.Cols, lines []LayoutLine) (*line.Line, []LayoutLine) 
 	return result, remain
 }
 
-func wrapOnce(cols winsize.Cols, lne *LayoutLine) (*line.Line, *LayoutLine) {
+func wrapOnce(cols winsize.Cols, lne *LayoutLine) (*line.Builder, *LayoutLine) {
 	size := lne.Source.Size()
 
 	cursor := line.NewBuilder(int(size)).
@@ -157,7 +162,7 @@ func wrapOnce(cols winsize.Cols, lne *LayoutLine) (*line.Line, *LayoutLine) {
 	}
 
 	if wordIdx >= len(lne.words) {
-		return cursor.LinePtr(), nil
+		return cursor, nil
 	}
 
 	rest := &LayoutLine{
@@ -166,7 +171,7 @@ func wrapOnce(cols winsize.Cols, lne *LayoutLine) (*line.Line, *LayoutLine) {
 		words:  lne.words[wordIdx:],
 	}
 
-	return cursor.LinePtr(), rest
+	return cursor, rest
 }
 
 func shouldWrap(line *LayoutLine, wordIdx int, currentWidth winsize.Cols) bool {
@@ -177,7 +182,7 @@ func shouldWrap(line *LayoutLine, wordIdx int, currentWidth winsize.Cols) bool {
 	return currentWidth > 0
 }
 
-func splitLineFeeds(lne *line.Line, order bool) []line.Line {
+func splitLineFeeds(lne line.Line, order bool) []line.Line {
 	result := make([]line.Line, 0)
 
 	index := uint16(1)
@@ -185,7 +190,7 @@ func splitLineFeeds(lne *line.Line, order bool) []line.Line {
 		index = lne.GetOrder()
 	}
 
-	builder := orderedBuilder(*lne, index, order)
+	builder := orderedBuilder(lne, index, order)
 
 	for frg := range lne.Frags() {
 		if !strings.ContainsAny(frg.Text(), "\n\r") {
@@ -212,7 +217,7 @@ func splitLineFeeds(lne *line.Line, order bool) []line.Line {
 			result = append(result, builder.Line())
 			index += 1
 
-			builder = orderedBuilder(*lne, index, order)
+			builder = orderedBuilder(lne, index, order)
 		}
 	}
 

@@ -130,7 +130,7 @@ func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...line.Line) []line.Li
 	)
 
 	for _, lin := range transformer(size, lines) {
-		for _, v := range wrap.Line(available, &lin) {
+		for _, v := range wrap.Line(available, lin) {
 			line := u.wrapLine(v)
 			result = append(result, line)
 		}

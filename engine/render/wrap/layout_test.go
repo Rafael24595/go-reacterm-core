@@ -12,7 +12,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-func sourceLayout(source *line.Line) *LayoutLine {
+func sourceLayout(source line.Line) *LayoutLine {
 	return &LayoutLine{
 		Source: source,
 		words:  make([]word, 0),
@@ -21,7 +21,7 @@ func sourceLayout(source *line.Line) *LayoutLine {
 }
 
 func emptyLayout() *LayoutLine {
-	return sourceLayout(&line.Line{})
+	return sourceLayout(line.Line{})
 }
 
 func TestLayoutFindFrags(t *testing.T) {
@@ -36,13 +36,13 @@ func TestLayoutFindFrags(t *testing.T) {
 
 	frags := layout.findFrags(0)
 
-	assert.Equal(t, 2, len(frags))
+	assert.Size(t, 2, frags)
 	assert.Equal(t, "foo", frags[0].Base.Text())
 	assert.Equal(t, "bar", frags[1].Base.Text())
 
 	last := layout.findFrags(1)
 
-	assert.Equal(t, 1, len(last))
+	assert.Size(t, 1, last)
 	assert.Equal(t, "baz", last[0].Base.Text())
 }
 
@@ -56,8 +56,8 @@ func TestLayoutPushFrags(t *testing.T) {
 			frag.FromString("c"),
 		)
 
-	assert.Equal(t, 2, len(layout.words))
-	assert.Equal(t, 3, len(layout.frags))
+	assert.Size(t, 2, layout.words)
+	assert.Size(t, 3, layout.frags)
 
 	assert.Equal(t, uint32(0), layout.words[0].start)
 	assert.Equal(t, uint32(1), layout.words[0].end)
@@ -204,8 +204,8 @@ func TestLayoutSplitFrag(t *testing.T) {
 
 	layout.splitFrag(0, 0, 3)
 
-	assert.Equal(t, 2, len(layout.frags))
-	assert.Equal(t, 2, len(layout.words))
+	assert.Size(t, 2, layout.frags)
+	assert.Size(t, 2, layout.words)
 
 	assert.Equal(t, "abc", layout.frags[0].Base.Text())
 	assert.Equal(t, "def", layout.frags[1].Base.Text())

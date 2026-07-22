@@ -44,7 +44,7 @@ func fragsToString(frags []wordFrag) string {
 func TestSplitLineWords(t *testing.T) {
 	tests := []struct {
 		name     string
-		line     *line.Line
+		line     line.Line
 		expected []string
 	}{
 		{
@@ -242,86 +242,86 @@ func TestSplitLineWords_FinalFlushPreservesStyles(t *testing.T) {
 }
 
 func BenchmarkSplitLineFeeds_NoLF(b *testing.B) {
-	line := *line.New(
+	line := line.FromString(
 		strings.Repeat("Hello World ", 100),
 	)
 
 	b.ReportAllocs()
 
 	for b.Loop() {
-		splitLineFeeds(&line, false)
+		splitLineFeeds(line, false)
 	}
 }
 
 func BenchmarkSplitLineFeeds_SomeLF(b *testing.B) {
-	line := *line.New(
+	line := line.FromString(
 		strings.Repeat("Hello\nWorld\n", 100),
 	)
 
 	b.ReportAllocs()
 
 	for b.Loop() {
-		splitLineFeeds(&line, false)
+		splitLineFeeds(line, false)
 	}
 }
 
 func BenchmarkSplitLineFeeds_ManyLF(b *testing.B) {
-	line := *line.New(
+	line := line.FromString(
 		strings.Repeat("\n", 1000),
 	)
 
 	b.ReportAllocs()
 
 	for b.Loop() {
-		splitLineFeeds(&line, false)
+		splitLineFeeds(line, false)
 	}
 }
 
 func BenchmarkSplitLineWords_ASCII(b *testing.B) {
-	line := *line.New(
+	line := line.FromString(
 		strings.Repeat("hello world ", 300),
 	)
 
 	b.ReportAllocs()
 
 	for b.Loop() {
-		splitLineWords(&line)
+		splitLineWords(line)
 	}
 }
 
 func BenchmarkSplitLineWords_Unicode(b *testing.B) {
-	line := *line.New(
+	line := line.FromString(
 		strings.Repeat("áéíóú 世界 😀 ", 300),
 	)
 
 	b.ReportAllocs()
 
 	for b.Loop() {
-		splitLineWords(&line)
+		splitLineWords(line)
 	}
 }
 
 func BenchmarkSplitLineWords_LongWord(b *testing.B) {
-	line := *line.New(
+	line := line.FromString(
 		strings.Repeat("abcdefgh", 1000),
 	)
 
 	b.ReportAllocs()
 
 	for b.Loop() {
-		splitLineWords(&line)
+		splitLineWords(line)
 	}
 }
 
 func BenchmarkSplitLineWords_ManySpaces(b *testing.B) {
-	line := *line.New(
+	line := line.FromString(
 		strings.Repeat("word     ", 500),
 	)
 
 	b.ReportAllocs()
 
 	for b.Loop() {
-		splitLineWords(&line)
+		splitLineWords(line)
 	}
 }
 
@@ -332,14 +332,12 @@ func BenchmarkSplitLineWords_ManyFrags(b *testing.B) {
 		frags[i] = frag.FromString("hello ")
 	}
 
-	line := line.Line{
-		Text: frags,
-	}
+	line := line.FromFrags(frags...)
 
 	b.ReportAllocs()
 
 	for b.Loop() {
-		splitLineWords(&line)
+		splitLineWords(line)
 	}
 }
 
@@ -364,6 +362,6 @@ func BenchmarkSplitLineWords_Long(b *testing.B) {
 	b.ReportAllocs()
 
 	for b.Loop() {
-		_, _ = splitLineWords(&line)
+		_, _ = splitLineWords(line)
 	}
 }
