@@ -98,10 +98,11 @@ func (b *Builder) PushBuilder(builder ...*frag.Builder) *Builder {
 }
 
 func (b *Builder) UnshiftIter(it iter.Seq[frag.Frag]) *Builder {
+	frags := make([]frag.Frag, 0)
 	for f := range it {
-		b.Text = append([]frag.Frag{f}, b.Text...)
+		frags = append(frags, f)
 	}
-	return b
+	return b.UnshiftFrags(frags...)
 }
 
 func (b *Builder) PushIter(it iter.Seq[frag.Frag]) *Builder {
