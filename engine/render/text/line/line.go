@@ -93,7 +93,7 @@ func (l *Line) GetFrag(index uint) frag.Frag {
 }
 
 func (l *Line) TryGetFrag(index uint) (frag.Frag, bool) {
-	if l.Size() >= index {
+	if index >= l.Size() {
 		return frag.Frag{}, false
 	}
 	return l.Text[index], true
