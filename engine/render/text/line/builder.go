@@ -1,6 +1,8 @@
 package line
 
 import (
+	"iter"
+
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
@@ -91,6 +93,20 @@ func (b *Builder) UnshiftBuilder(builder ...*frag.Builder) *Builder {
 func (b *Builder) PushBuilder(builder ...*frag.Builder) *Builder {
 	for _, f := range builder {
 		b.Text = append(b.Text, f.Frag())
+	}
+	return b
+}
+
+func (b *Builder) UnshiftIter(it iter.Seq[frag.Frag]) *Builder {
+	for f := range it {
+		b.Text = append([]frag.Frag{f}, b.Text...)
+	}
+	return b
+}
+
+func (b *Builder) PushIter(it iter.Seq[frag.Frag]) *Builder {
+	for f := range it {
+		b.Text = append(b.Text, f)
 	}
 	return b
 }
