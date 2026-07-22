@@ -69,7 +69,9 @@ func TestColsLeftTransformer(t *testing.T) {
 			assert.Size(t, tt.wantLen, result)
 
 			for i, l := range tt.wantLines {
-				assert.Equal(t, l, render_test.Frags(styler, tt.size, result[i].Text))
+				assert.Equal(
+					t, l, render_test.Frags(styler, tt.size, result[i].GetText()),
+				)
 			}
 		})
 	}
@@ -129,7 +131,9 @@ func TestColsRightTransformer(t *testing.T) {
 			assert.Size(t, tt.wantLen, result)
 
 			for i, l := range tt.wantLines {
-				assert.Equal(t, l, render_test.Frags(styler, tt.size, result[i].Text))
+				assert.Equal(
+					t, l, render_test.Frags(styler, tt.size, result[i].GetText()),
+				)
 			}
 		})
 	}
@@ -189,7 +193,9 @@ func TestColsCenterTransformer(t *testing.T) {
 			assert.Size(t, tt.wantLen, result)
 
 			for i, l := range tt.wantLines {
-				assert.Equal(t, l, render_test.Frags(styler, tt.size, result[i].Text))
+				assert.Equal(
+					t, l, render_test.Frags(styler, tt.size, result[i].GetText()),
+				)
 			}
 		})
 	}

@@ -28,7 +28,7 @@ func Cols(hint hint.Size[winsize.Cols], opts ...cols.Option) transform.Transform
 
 		for i := range lines {
 			remaining := fixedMin.Sub(
-				frag.Measure(size.Cols, lines[i].Text...),
+				line.FragsMeasure(size.Cols, lines[i]),
 			)
 
 			if remaining == 0 {
@@ -74,22 +74,22 @@ func AddColsPadding(
 
 	paddingL, paddingR := positioner(size)
 
-	frags := make([]frag.Frag, 0, 3)
+	frags := make([]frag.Frag, 0, lne.Size()+2)
 
 	if paddingL > 0 {
-		frag := frag.NewBuilder().
-			WithFrag(frg).
+		frag := frag.BuilderFromFrag(frg).
 			AddSpec(spec.ExtendRight(paddingL)).
 			Frag()
 
 		frags = append(frags, frag)
 	}
 
-	frags = append(frags, lne.Text...)
+	for f := range lne.Frags() {
+		frags = append(frags, f)
+	}
 
 	if paddingR > 0 {
-		frag := frag.NewBuilder().
-			WithFrag(frg).
+		frag := frag.BuilderFromFrag(frg).
 			AddSpec(spec.ExtendRight(paddingR)).
 			Frag()
 

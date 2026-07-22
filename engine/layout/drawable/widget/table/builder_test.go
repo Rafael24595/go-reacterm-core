@@ -46,7 +46,7 @@ func TestBuilder_RenderHeaders_Basic(t *testing.T) {
 
 	line := builder{}.renderHeaders(maxCols, headers, separator)
 
-	assert.Equal(t, "|id|name|", text_test.LineToString(*line))
+	assert.Equal(t, "|id|name|", text_test.LineToString(line))
 }
 
 func TestBuilder_RenderHeaders_Structure(t *testing.T) {
@@ -65,18 +65,18 @@ func TestBuilder_RenderHeaders_Structure(t *testing.T) {
 
 	line := builder{}.renderHeaders(maxCols, headers, sep)
 
-	wantFrags := 2*len(headers) + 1
+	wantFrags := uint(2*len(headers) + 1)
 
-	assert.Size(t, wantFrags, line.Text)
+	assert.Equal(t, wantFrags, line.Size())
 
-	assert.Equal(t, "|", line.Text[0].Text())
-	assert.Equal(t, "id", line.Text[1].Text())
-	assert.Equal(t, "|", line.Text[2].Text())
-	assert.Equal(t, "name", line.Text[3].Text())
-	assert.Equal(t, "|", line.Text[4].Text())
+	assert.Equal(t, "|", line.GetFrag(0).Text())
+	assert.Equal(t, "id", line.GetFrag(1).Text())
+	assert.Equal(t, "|", line.GetFrag(2).Text())
+	assert.Equal(t, "name", line.GetFrag(3).Text())
+	assert.Equal(t, "|", line.GetFrag(4).Text())
 
-	assert.NotEqual(t, spec.KindNone, line.Text[1].Spec().Kind())
-	assert.NotEqual(t, spec.KindNone, line.Text[3].Spec().Kind())
+	assert.NotEqual(t, spec.KindNone, line.GetFrag(1).Spec().Kind())
+	assert.NotEqual(t, spec.KindNone, line.GetFrag(3).Spec().Kind())
 }
 
 func TestBuilder_RenderBody_Basic(t *testing.T) {

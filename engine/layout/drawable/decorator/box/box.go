@@ -141,16 +141,20 @@ func (u *BoxUnit) styleLines(size winsize.Winsize, lines ...line.Line) []line.Li
 	return result
 }
 
-func (u *BoxUnit) wrapLine(line line.Line) line.Line {
-	frags := make([]frag.Frag, 0)
+func (u *BoxUnit) wrapLine(lne line.Line) line.Line {
+	frags := make([]frag.Frag, 0, lne.Size()+2)
 
 	frags = append(frags, frag.FromString(u.separator.Left))
-	frags = append(frags, line.Text...)
+
+	for f := range lne.Frags() {
+		frags = append(frags, f)
+	}
+
 	frags = append(frags, frag.FromString(u.separator.Right))
 
-	line.Text = frags
-
-	return line
+	return line.BuilderFromLine(lne).
+		SetFrags(frags...).
+		Line()
 }
 
 func (u *BoxUnit) computeInnerSize(size winsize.Winsize) winsize.Winsize {

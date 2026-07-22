@@ -8,7 +8,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/sink"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
@@ -268,8 +267,8 @@ func (u *HStackUnit) inheritCols(
 		return 0
 	}
 
-	line := block.lines[lineIndex]
-	if frag.Measure(size.Cols, line.Text...) != 0 {
+	lne := block.lines[lineIndex]
+	if line.FragsMeasure(size.Cols, lne) != 0 {
 		return 0
 	}
 
@@ -288,7 +287,7 @@ func (u *HStackUnit) makeLines(blocks []block) []line.Line {
 			result := sink.ApplySinks(b.lines[i], b.size.Cols)
 
 			build.WithMeta(result).
-				PushFrags(result.Text...)
+				PushIter(result.Frags())
 		}
 		buffer = append(buffer, build.Line())
 	}

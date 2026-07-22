@@ -79,9 +79,9 @@ func (u *InputLineUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 		u.prompt + marker.DefaultPaddingText,
 	)
 
-	lines[0].Text = append(
-		[]frag.Frag{prompt}, lines[0].Text...,
-	)
+	lines[0] = line.BuilderFromLine(lines[0]).
+		UnshiftFrags(prompt).
+		Line()
 
 	return lines, false
 }

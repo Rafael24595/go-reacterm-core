@@ -19,7 +19,7 @@ func TestDrawTransformer(t *testing.T) {
 		size        winsize.Winsize
 		lines       []line.Line
 		wantLines   []string
-		wantFrags   []int
+		wantFrags   []uint
 		wantHasNext bool
 	}{
 		{
@@ -34,7 +34,7 @@ func TestDrawTransformer(t *testing.T) {
 			wantLines: []string{
 				"▌golang",
 			},
-			wantFrags: []int{
+			wantFrags: []uint{
 				2,
 			},
 			wantHasNext: false,
@@ -51,7 +51,7 @@ func TestDrawTransformer(t *testing.T) {
 			wantLines: []string{
 				"golang▐",
 			},
-			wantFrags: []int{
+			wantFrags: []uint{
 				2,
 			},
 			wantHasNext: false,
@@ -70,7 +70,7 @@ func TestDrawTransformer(t *testing.T) {
 				">golang<",
 				">ziglang<",
 			},
-			wantFrags: []int{
+			wantFrags: []uint{
 				3, 3,
 			},
 			wantHasNext: true,
@@ -87,7 +87,7 @@ func TestDrawTransformer(t *testing.T) {
 			wantLines: []string{
 				"golang",
 			},
-			wantFrags: []int{
+			wantFrags: []uint{
 				1,
 			},
 			wantHasNext: false,
@@ -107,7 +107,7 @@ func TestDrawTransformer(t *testing.T) {
 
 			assert.Equal(t, tt.wantHasNext, hasNext)
 			for i := range lines {
-				assert.Size(t, tt.wantFrags[i], lines[i].Text)
+				assert.Equal(t, tt.wantFrags[i], lines[i].Size())
 				assert.Equal(t, tt.wantLines[i], text_test.LineToString(lines[i]))
 			}
 		})

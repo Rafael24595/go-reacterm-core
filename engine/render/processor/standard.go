@@ -26,13 +26,13 @@ func New(atom styler.Atom, spec styler.Spec) Standard {
 func (r Standard) Render(lines []line.Line, size winsize.Winsize) []string {
 	buffer := make([]string, len(lines))
 
-	for i, line := range lines {
+	for i, lne := range lines {
 		text := format.NewText(
-			r.renderLineFrags(line, size),
-			frag.Measure(size.Cols, line.Text...),
+			r.renderLineFrags(lne, size),
+			line.FragsMeasure(size.Cols, lne),
 		)
 
-		buffer[i] = r.spec.Apply(line.Spec, size, text)
+		buffer[i] = r.spec.Apply(lne.GetSpec(), size, text)
 	}
 
 	return buffer
@@ -49,7 +49,7 @@ func (r Standard) renderLineFrags(line line.Line, size winsize.Winsize) string {
 		size.Cols,
 	)
 
-	for _, f := range line.Text {
+	for f := range line.Frags() {
 		txt := format.NewText(
 			f.Text(),
 			f.Size(),

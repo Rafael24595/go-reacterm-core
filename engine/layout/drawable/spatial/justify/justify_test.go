@@ -19,9 +19,10 @@ import (
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
-func renderFrags(frags []frag.Frag) string {
+func renderFrags(line line.Line) string {
 	var s strings.Builder
-	for _, f := range frags {
+	
+	for f := range line.Frags() {
 		s.WriteString(f.Text())
 
 		count := winsize.Cols(0)
@@ -50,7 +51,7 @@ func renderLine(cols winsize.Cols, mode style.Justify, line line.Line) string {
 	filler := marker.DefaultPaddingText
 
 	text := format.TextFromString(
-		renderFrags(line.Text),
+		renderFrags(line),
 	)
 
 	switch mode {
@@ -117,7 +118,7 @@ func TestAddGaps_Between(t *testing.T) {
 	assert.Equal(t, 2, dynamic.MapOr[winsize.Cols](result[3].Spec().Args()[spec.KeyJustifyLeftSize], 0))
 	assert.Equal(t, spec.KindNone, result[2].Spec().Kind())
 
-	assert.Equal(t, "aa  bb  cc", renderFrags(result))
+	assert.Equal(t, "aa  bb  cc", renderFrags(line.FromFrags(result...)))
 }
 
 func TestAddGaps_Around(t *testing.T) {
@@ -133,7 +134,7 @@ func TestAddGaps_Around(t *testing.T) {
 	assert.Equal(t, 1, dynamic.MapOr[winsize.Cols](result[3].Spec().Args()[spec.KeyJustifyLeftSize], 0))
 	assert.Equal(t, spec.KindNone, result[2].Spec().Kind())
 
-	assert.Equal(t, "aa  bb cc", renderFrags(result))
+	assert.Equal(t, "aa  bb cc", renderFrags(line.FromFrags(result...)))
 }
 
 func TestAddGaps_Overflow_Start(t *testing.T) {
@@ -161,8 +162,8 @@ func TestJustifyLine_Start(t *testing.T) {
 	frags := frag.FromStrings("aa", "bb", "cc")
 	line := justifyLine(10, frags, 6, style.JustifyStart)
 
-	assert.Size(t, 5, line.Text)
-	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyLeft))
+	assert.Equal(t, 5, line.Size())
+	assert.True(t, line.GetSpec().Kind().HasAny(spec.KindJustifyLeft))
 
 	assert.Equal(t, "aa bb cc  ", renderLine(10, style.JustifyStart, line))
 }
@@ -171,8 +172,8 @@ func TestJustifyLine_End(t *testing.T) {
 	frags := frag.FromStrings("aa", "bb", "cc")
 	line := justifyLine(10, frags, 6, style.JustifyEnd)
 
-	assert.Size(t, 5, line.Text)
-	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyRight))
+	assert.Equal(t, 5, line.Size())
+	assert.True(t, line.GetSpec().Kind().HasAny(spec.KindJustifyRight))
 
 	assert.Equal(t, "  aa bb cc", renderLine(10, style.JustifyEnd, line))
 }
@@ -181,8 +182,8 @@ func TestJustifyLine_Center(t *testing.T) {
 	frags := frag.FromStrings("aa", "bb", "cc")
 	line := justifyLine(10, frags, 6, style.JustifyCenter)
 
-	assert.Size(t, 5, line.Text)
-	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyCenter))
+	assert.Equal(t, 5, line.Size())
+	assert.True(t, line.GetSpec().Kind().HasAny(spec.KindJustifyCenter))
 
 	assert.Equal(t, " aa bb cc ", renderLine(10, style.JustifyCenter, line))
 }
@@ -191,8 +192,10 @@ func TestJustifyLine_Between(t *testing.T) {
 	frags := frag.FromStrings("aa", "bb", "cc")
 	line := justifyLine(10, frags, 6, style.JustifyBetween)
 
-	assert.Size(t, 5, line.Text)
-	assert.True(t, line.Spec.Kind().HasNone(spec.KindJustifyRight|spec.KindJustifyLeft|spec.KindJustifyCenter))
+	assert.Equal(t, 5, line.Size())
+	assert.True(
+		t, line.GetSpec().Kind().HasNone(spec.KindJustifyRight|spec.KindJustifyLeft|spec.KindJustifyCenter),
+	)
 
 	assert.Equal(t, "aa  bb  cc", renderLine(10, style.JustifyBetween, line))
 }
@@ -201,8 +204,8 @@ func TestJustifyLine_Around(t *testing.T) {
 	frags := frag.FromStrings("aa", "bb", "cc")
 	line := justifyLine(18, frags, 6, style.JustifyAround)
 
-	assert.Size(t, 5, line.Text)
-	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyCenter))
+	assert.Equal(t, 5, line.Size())
+	assert.True(t, line.GetSpec().Kind().HasAny(spec.KindJustifyCenter))
 
 	assert.Equal(t, "   aa   bb   cc   ", renderLine(18, style.JustifyAround, line))
 }
@@ -211,8 +214,8 @@ func TestJustifyLine_Evenly(t *testing.T) {
 	frags := frag.FromStrings("aa", "bb", "cc")
 	line := justifyLine(18, frags, 6, style.JustifyEvenly)
 
-	assert.Size(t, 5, line.Text)
-	assert.True(t, line.Spec.Kind().HasAny(spec.KindJustifyCenter))
+	assert.Equal(t, 5, line.Size())
+	assert.True(t, line.GetSpec().Kind().HasAny(spec.KindJustifyCenter))
 
 	assert.Equal(t, "  aa    bb    cc  ", renderLine(18, style.JustifyEvenly, line))
 }

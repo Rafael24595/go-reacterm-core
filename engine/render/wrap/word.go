@@ -19,8 +19,8 @@ type word struct {
 }
 
 func splitLineWords(line *line.Line) ([]word, []wordFrag) {
-	words := make([]word, 0, len(line.Text))
-	frags := make([]wordFrag, 0, len(line.Text))
+	words := make([]word, 0, line.Size())
+	frags := make([]wordFrag, 0, line.Size())
 
 	var sb strings.Builder
 	var lastSpace bool
@@ -55,7 +55,7 @@ func splitLineWords(line *line.Line) ([]word, []wordFrag) {
 		wordStart = len(frags)
 	}
 
-	for _, frg := range line.Text {
+	for frg := range line.Frags() {
 		if frg.Atom().HasAny(atom.Wrap) || frag.IsStructural(frg) {
 			flushFrag(frg)
 			flushWord()

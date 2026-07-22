@@ -74,7 +74,9 @@ func paddingLines(rows winsize.Rows, frg frag.Frag) []line.Line {
 	result := make([]line.Line, rows)
 
 	for i := range result {
-		result[i].Text = append(result[i].Text, frg)
+		result[i] = line.BuilderFromLine(result[i]).
+			PushFrags(frg).
+			Line()
 	}
 
 	return result

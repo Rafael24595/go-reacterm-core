@@ -9,7 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
-	
+
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
@@ -27,14 +27,14 @@ func TestApplySinks_PaddingLeft(t *testing.T) {
 		spec.JustifyRight(5, "-"),
 	)
 
-	assert.Empty(t, line.Text)
+	assert.Equal(t, 0, line.Size())
 
 	result := ApplySinks(line, 80)
 
-	assert.False(t, result.Spec.Kind().HasAny(spec.KindJustifyRight))
-	assert.Size(t, 1, result.Text)
+	assert.False(t, result.GetSpec().Kind().HasAny(spec.KindJustifyRight))
+	assert.Equal(t, 1, result.Size())
 
-	firstFrag := result.Text[0]
+	firstFrag := result.GetFrag(0)
 	assert.True(t, firstFrag.Spec().Kind().HasAny(spec.KindJustifyRight))
 	assert.Equal(t, 5, dynamic.MapOr[winsize.Cols](firstFrag.Spec().Args()[spec.KeyJustifyRightSize], 0))
 }
@@ -44,23 +44,23 @@ func TestApplySinks_PaddingRight(t *testing.T) {
 
 	result := ApplySinks(inputLine, 80)
 
-	assert.False(t, result.Spec.Kind().HasAny(spec.KindJustifyLeft))
-	assert.Size(t, 1, result.Text)
+	assert.False(t, result.GetSpec().Kind().HasAny(spec.KindJustifyLeft))
+	assert.Equal(t, 1, result.Size())
 
-	lastFrag := result.Text[len(result.Text)-1]
+	lastFrag := result.GetFrag(result.Size() - 1)
 	assert.True(t, lastFrag.Spec().Kind().HasAny(spec.KindJustifyLeft))
 }
 
 func TestApplySinks_PaddingCenter_OddAvailableSpace(t *testing.T) {
 	inputLine := line.FromSpec(spec.JustifyCenter(5, " "))
-	
+
 	result := ApplySinks(inputLine, 80)
 
-	assert.False(t, result.Spec.Kind().HasAny(spec.KindJustifyCenter))
-	assert.Size(t, 2, result.Text)
+	assert.False(t, result.GetSpec().Kind().HasAny(spec.KindJustifyCenter))
+	assert.Equal(t, 2, result.Size())
 
-	leftFrag := result.Text[0]
-	rightFrag := result.Text[1]
+	leftFrag := result.GetFrag(0)
+	rightFrag := result.GetFrag(1)
 
 	assert.True(t, leftFrag.Spec().Kind().HasAny(spec.KindJustifyRight))
 	assert.True(t, rightFrag.Spec().Kind().HasAny(spec.KindJustifyLeft))
@@ -70,6 +70,6 @@ func TestApplySinks_PaddingCenter_NoAvailableSpace(t *testing.T) {
 	inputLine := line.FromSpec(spec.JustifyCenter(2, " "))
 
 	result := ApplySinks(inputLine, 10)
-	
-	assert.False(t, result.Spec.Kind().HasAny(spec.KindJustifyCenter))
+
+	assert.False(t, result.GetSpec().Kind().HasAny(spec.KindJustifyCenter))
 }

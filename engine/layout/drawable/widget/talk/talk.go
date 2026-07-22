@@ -185,16 +185,17 @@ func (u *TalkUnit) addFocus(
 	targetRows = max(0, targetRows-1)
 	focusRow = min(targetRows, focusRow)
 
-	if len(targetLines[focusRow].Text) == 0 {
-		targetLines[focusRow].Text = append(
-			targetLines[focusRow].Text, frag.Empty(),
-		)
+	focusLne := line.BuilderFromLine(targetLines[focusRow])
+	if targetLines[focusRow].Size() == 0 {
+		focusLne.PushFrags(frag.Empty())
 	}
 
-	frg := frag.BuilderFromFrag(targetLines[focusRow].Text[0]).
-		AddAtom(atom.Focus)
+	frg := targetLines[focusRow].GetFrag(0)
+	focusLne.Text[0] = frag.BuilderFromFrag(frg).
+		AddAtom(atom.Focus).
+		Frag()
 
-	targetLines[focusRow].Text[0] = frg.Frag()
+	targetLines[focusRow] = focusLne.Line()
 
 	return ownerLines, messageLines
 }

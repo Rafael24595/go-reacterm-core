@@ -10,7 +10,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/styler"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	render_test "github.com/Rafael24595/go-reacterm-core/test/engine/render"
@@ -127,10 +126,12 @@ func TestColsTransformer(t *testing.T) {
 			transformer := Cols(tt.hint, cols.WithPosition(tt.pos))
 			resLines := transformer(tt.size, mockLines)
 
-			gotSize := frag.Measure(tt.size.Cols, resLines[0].Text...)
+			gotSize := line.FragsMeasure(tt.size.Cols, resLines[0])
 
 			assert.Equal(t, tt.wantLength, gotSize)
-			assert.Equal(t, tt.wantString, render_test.Frags(styler, tt.size, resLines[0].Text))
+			assert.Equal(
+				t, tt.wantString, render_test.Frags(styler, tt.size, resLines[0].GetText()),
+			)
 		})
 	}
 }

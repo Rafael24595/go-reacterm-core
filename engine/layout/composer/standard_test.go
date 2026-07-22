@@ -59,16 +59,16 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 	_, lines := Standard(state, *vm, size)
 
 	assert.Size(t, int(size.Rows), lines)
-	assert.Equal(t, "HEADER", lines[0].Text[0].Text())
+	assert.Equal(t, "HEADER", lines[0].GetFrag(0).Text())
 
 	inputLine := lines[len(lines)-1]
 	expectedInput := "> INPUT"
 
-	assert.Equal(t, expectedInput, text_test.FragsToString(inputLine.Text))
+	assert.Equal(t, expectedInput, text_test.LineToString(inputLine))
 
 	for i := 1; i < len(lines)-1; i++ {
 		width := winsize.Cols(0)
-		for _, f := range lines[i].Text {
+		for f := range lines[i].Frags() {
 			width += frag.Measure(size.Cols, f)
 		}
 

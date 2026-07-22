@@ -6,7 +6,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/transform/padding"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/hint"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
@@ -19,7 +18,7 @@ func Cols(hintSize hint.Size[winsize.Cols], opts ...cols.Option) transform.Trans
 		margin := hintSize.Min(size.Cols) * HorizontalFactor(cfg.Position)
 
 		for i := range lines {
-			measure := frag.Measure(size.Cols, lines[i].Text...) + margin
+			measure := line.FragsMeasure(size.Cols, lines[i]) + margin
 
 			cols := size.Cols + margin
 			if cols.Sub(measure) == 0 {
