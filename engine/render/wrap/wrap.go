@@ -40,14 +40,16 @@ func MaterializeEmpty(
 	placeholder string,
 	lines ...LayoutLine,
 ) []LayoutLine {
-	for i, line := range lines {
-		if frag.Measure(size.Cols, line.Source.Text...) != 0 {
+	for i, lne := range lines {
+		if line.FragsMeasure(size.Cols, lne.Source) != 0 {
 			continue
 		}
 
 		lastFrag := frag.Frag{}
-		if len(line.Source.Text) > 0 {
-			lastFrag = line.Source.Text[len(line.Source.Text)-1]
+
+		lneSize := lne.Source.Size()
+		if lneSize > 0 {
+			lastFrag = lne.Source.GetFrag(lneSize - 1)
 		}
 
 		frag := frag.NewBuilder().
@@ -55,7 +57,10 @@ func MaterializeEmpty(
 			WithMeta(&lastFrag).
 			Frag()
 
-		lines[i].Source.PushFrags(frag)
+		lines[i].Source = line.BuilderFromLine(lines[i].Source).
+			PushFrags(frag).
+			Line()
+
 		lines[i].pushFrags(frag)
 	}
 
@@ -108,7 +113,10 @@ func NextLine(cols winsize.Cols, lines []LayoutLine) (*line.Line, []LayoutLine) 
 }
 
 func wrapOnce(cols winsize.Cols, lne *LayoutLine) (*line.Line, *LayoutLine) {
-	cursor := line.FromMeta(lne.Source, len(lne.Source.Text))
+	size := lne.Source.Size()
+
+	cursor := line.NewBuilder(int(size)).
+		WithMeta(lne.Source)
 
 	remaining := cols
 	currentWidth := winsize.Cols(0)
@@ -120,8 +128,7 @@ func wrapOnce(cols winsize.Cols, lne *LayoutLine) (*line.Line, *LayoutLine) {
 
 		if wordMeasure <= remaining {
 			cursor.Text = appendFrags(
-				cursor.Text,
-				lne.findFrags(wordIdx),
+				cursor.Text, lne.findFrags(wordIdx),
 			)
 
 			remaining = remaining.Sub(wordMeasure)
@@ -150,7 +157,7 @@ func wrapOnce(cols winsize.Cols, lne *LayoutLine) (*line.Line, *LayoutLine) {
 	}
 
 	if wordIdx >= len(lne.words) {
-		return cursor, nil
+		return cursor.LinePtr(), nil
 	}
 
 	rest := &LayoutLine{
@@ -159,7 +166,7 @@ func wrapOnce(cols winsize.Cols, lne *LayoutLine) (*line.Line, *LayoutLine) {
 		words:  lne.words[wordIdx:],
 	}
 
-	return cursor, rest
+	return cursor.LinePtr(), rest
 }
 
 func shouldWrap(line *LayoutLine, wordIdx int, currentWidth winsize.Cols) bool {
@@ -174,18 +181,15 @@ func splitLineFeeds(lne *line.Line, order bool) []line.Line {
 	result := make([]line.Line, 0)
 
 	index := uint16(1)
-	if lne.Order != 0 {
-		index = lne.Order
+	if lne.GetOrder() != 0 {
+		index = lne.GetOrder()
 	}
 
-	current := line.FromMeta(lne)
-	if order {
-		current.SetOrder(index)
-	}
+	builder := orderedBuilder(*lne, index, order)
 
-	for _, frg := range lne.Text {
+	for frg := range lne.Frags() {
 		if !strings.ContainsAny(frg.Text(), "\n\r") {
-			current.PushFrags(frg)
+			builder.PushFrags(frg)
 			continue
 		}
 
@@ -194,31 +198,38 @@ func splitLineFeeds(lne *line.Line, order bool) []line.Line {
 		parts := strings.Split(normalizedText, "\n")
 		for i, part := range parts {
 			if part != "" {
-				current.PushFrags(
-					frag.NewBuilder().
-						AddText(part).
-						WithMeta(&frg).
-						Frag(),
-				)
+				frgBuilder := frag.NewBuilder().
+					AddText(part).
+					WithMeta(&frg)
+
+				builder.PushBuilder(frgBuilder)
 			}
 
 			if i >= len(parts)-1 {
 				continue
 			}
 
-			result = append(result, *current)
+			result = append(result, builder.Line())
 			index += 1
 
-			current = line.FromMeta(lne)
-			if order {
-				current.SetOrder(index)
-			}
+			builder = orderedBuilder(*lne, index, order)
 		}
 	}
 
-	result = append(result, *current)
+	result = append(result, builder.Line())
 
 	return result
+}
+
+func orderedBuilder(lne line.Line, index uint16, ordered bool) *line.Builder {
+	current := line.NewBuilder().
+		WithMeta(lne)
+
+	if ordered {
+		current.SetOrder(index)
+	}
+
+	return current
 }
 
 func splitFragAt(frg *wordFrag, cols winsize.Cols) (*wordFrag, *wordFrag) {
