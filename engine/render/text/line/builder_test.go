@@ -17,6 +17,24 @@ func TestNewBuilder(t *testing.T) {
 	assert.Empty(t, b.Text)
 }
 
+func TestBuilderFromLine(t *testing.T) {
+	lne := NewBuilder().
+		SetOrder(15).
+		SetSpec(spec.Fill(50)).
+		PushText("From", "Line").
+		Line()
+
+	b := BuilderFromLine(lne)
+
+	assert.Equal(t, 15, b.Order)
+	assert.Equal(t, lne.Spec.Hash(), b.Spec.Hash())
+
+	assert.Size(t, 2, b.Text)
+	
+	assert.Equal(t, "From", b.Text[0].Text())
+	assert.Equal(t, "Line", b.Text[1].Text())
+}
+
 func TestNewBuilderWithCapacity(t *testing.T) {
 	b := NewBuilder(10)
 
