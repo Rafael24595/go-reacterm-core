@@ -9,7 +9,7 @@ import (
 func MaxMeasure(cols winsize.Cols, lines ...Line) winsize.Cols {
 	size := winsize.Cols(0)
 	for _, l := range lines {
-		measure := frag.Measure(cols, l.Text...)
+		measure := frag.Measure(cols, l.text...)
 		size = max(size, measure)
 	}
 	return size
@@ -17,7 +17,7 @@ func MaxMeasure(cols winsize.Cols, lines ...Line) winsize.Cols {
 
 func HasAtom(atm atom.Atom, lines ...Line) bool {
 	for _, line := range lines {
-		if frag.HasAtom(atm, line.Text...) {
+		if frag.HasAtom(atm, line.text...) {
 			return true
 		}
 	}

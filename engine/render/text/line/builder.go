@@ -48,15 +48,15 @@ func (b *Builder) AddSpec(styles ...spec.Spec) *Builder {
 }
 
 func (b *Builder) WithMeta(other Line) *Builder {
-	b.Order = other.Order
-	b.AddSpec(other.Spec)
+	b.Order = other.order
+	b.AddSpec(other.spec)
 	return b
 }
 
 func (b *Builder) WithLine(other Line) *Builder {
-	b.Order = other.Order
-	b.AddSpec(other.Spec)
-	b.Text = append(b.Text, other.Text...)
+	b.Order = other.order
+	b.AddSpec(other.spec)
+	b.Text = append(b.Text, other.text...)
 	return b
 }
 

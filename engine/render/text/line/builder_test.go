@@ -27,7 +27,7 @@ func TestBuilderFromLine(t *testing.T) {
 	b := BuilderFromLine(lne)
 
 	assert.Equal(t, 15, b.Order)
-	assert.Equal(t, lne.Spec.Hash(), b.Spec.Hash())
+	assert.Equal(t, lne.spec.Hash(), b.Spec.Hash())
 
 	assert.Size(t, 2, b.Text)
 
@@ -191,7 +191,7 @@ func TestBuilderPushIter(t *testing.T) {
 
 	b := NewBuilder().
 		PushText("Base").
-		PushIter(lne.Frags())
+		PushIter(lne.All())
 
 	assert.Size(t, 3, b.Text)
 	assert.Equal(t, "Base", b.Text[0].Text())
@@ -227,7 +227,7 @@ func TestBuilderWithMeta(t *testing.T) {
 		WithMeta(line)
 
 	assert.Equal(t, 12, builder.Order)
-	assert.Equal(t, line.Spec.Hash(), builder.Spec.Hash())
+	assert.Equal(t, line.spec.Hash(), builder.Spec.Hash())
 	assert.Empty(t, builder.Text)
 }
 
@@ -242,7 +242,7 @@ func TestBuilderWithLine(t *testing.T) {
 		WithLine(line)
 
 	assert.Equal(t, uint16(8), builder.Order)
-	assert.Equal(t, line.Spec.Hash(), builder.Spec.Hash())
+	assert.Equal(t, line.spec.Hash(), builder.Spec.Hash())
 
 	assert.Size(t, 2, builder.Text)
 	assert.Equal(t, "Hello", builder.Text[0].Text())
@@ -257,11 +257,11 @@ func TestBuilderLine(t *testing.T) {
 
 	line := builder.Line()
 
-	assert.Equal(t, uint16(5), line.Order)
-	assert.Equal(t, spec.Fill(20).Hash(), line.Spec.Hash())
+	assert.Equal(t, uint16(5), line.order)
+	assert.Equal(t, spec.Fill(20).Hash(), line.spec.Hash())
 
 	assert.Equal(t, 1, line.Size())
-	assert.Equal(t, "Hello", line.Text[0].Text())
+	assert.Equal(t, "Hello", line.text[0].Text())
 }
 
 func TestBuilderLinePtr(t *testing.T) {
@@ -274,8 +274,8 @@ func TestBuilderLinePtr(t *testing.T) {
 
 	assert.NotNil(t, ref)
 
-	assert.Equal(t, val.Order, ref.Order)
-	assert.DeepEqual(t, val.Text, ref.Text)
+	assert.Equal(t, val.order, ref.order)
+	assert.DeepEqual(t, val.text, ref.text)
 }
 
 func TestBuilderLineIsImmutable(t *testing.T) {
@@ -286,6 +286,6 @@ func TestBuilderLineIsImmutable(t *testing.T) {
 
 	builder.PushText("World")
 
-	assert.Size(t, 1, line.Text)
-	assert.Equal(t, "Hello", line.Text[0].Text())
+	assert.Size(t, 1, line.text)
+	assert.Equal(t, "Hello", line.text[0].Text())
 }

@@ -10,9 +10,9 @@ import (
 )
 
 type Line struct {
-	Order uint16
-	Spec  spec.Spec
-	Text  []frag.Frag
+	order uint16
+	spec  spec.Spec
+	text  []frag.Frag
 	hash  uint64
 }
 
@@ -29,9 +29,9 @@ func New(
 	)
 
 	return Line{
-		Order: order,
-		Text:  text,
-		Spec:  spec,
+		order: order,
+		text:  text,
+		spec:  spec,
 		hash:  hash.Sum64(),
 	}
 }
@@ -51,19 +51,19 @@ func calcHash(
 }
 
 func (l *Line) Size() uint {
-	return uint(len(l.Text))
+	return uint(len(l.text))
 }
 
 func (l *Line) GetOrder() uint16 {
-	return l.Order
+	return l.order
 }
 
 func (l *Line) GetSpec() spec.Spec {
-	return l.Spec
+	return l.spec
 }
 
 func (l *Line) GetText() []frag.Frag {
-	return l.Text
+	return l.text
 }
 
 func (l *Line) GetFrag(index uint) frag.Frag {
@@ -75,12 +75,12 @@ func (l *Line) TryGetFrag(index uint) (frag.Frag, bool) {
 	if index >= l.Size() {
 		return frag.Frag{}, false
 	}
-	return l.Text[index], true
+	return l.text[index], true
 }
 
 func (l *Line) Frags() iter.Seq[frag.Frag] {
 	return func(yield func(frag.Frag) bool) {
-		for _, f := range l.Text {
+		for _, f := range l.text {
 			if !yield(f) {
 				return
 			}
@@ -89,26 +89,26 @@ func (l *Line) Frags() iter.Seq[frag.Frag] {
 }
 
 func (l *Line) Clone() *Line {
-	spec := l.Spec.Clone()
+	spec := l.spec.Clone()
 
-	text := make([]frag.Frag, len(l.Text))
-	copy(text, l.Text)
+	text := make([]frag.Frag, len(l.text))
+	copy(text, l.text)
 
 	return &Line{
-		Order: l.Order,
-		Spec:  spec,
-		Text:  text,
+		order: l.order,
+		spec:  spec,
+		text:  text,
 		hash:  l.hash,
 	}
 }
 
 func Measure(line *Line, cols winsize.Cols) winsize.Cols {
-	return spec.Measure(line.Spec, spec.LayoutContext{
+	return spec.Measure(line.spec, spec.LayoutContext{
 		SizeCols: cols,
-		TextSize: frag.Measure(cols, line.Text...),
+		TextSize: frag.Measure(cols, line.text...),
 	})
 }
 
 func FragsMeasure(cols winsize.Cols, line Line) winsize.Cols {
-	return frag.Measure(cols, line.Text...)
+	return frag.Measure(cols, line.text...)
 }
