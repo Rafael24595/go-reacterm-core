@@ -47,6 +47,10 @@ func calcHash(
 	return hasher
 }
 
+func (f Frag) Size() winsize.Cols {
+	return runes.Measure(f.text)
+}
+
 func (f Frag) Text() string {
 	return f.text
 }
@@ -61,10 +65,6 @@ func (f Frag) Spec() spec.Spec {
 
 func (s Frag) Hash() uint64 {
 	return s.hash
-}
-
-func (f Frag) Size() winsize.Cols {
-	return runes.Measure(f.text)
 }
 
 func (f Frag) Clone() Frag {
