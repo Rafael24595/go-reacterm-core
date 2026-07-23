@@ -50,35 +50,37 @@ func calcHash(
 	return hasher
 }
 
-func (l *Line) Size() uint {
+func (l Line) Size() uint {
 	return uint(len(l.text))
 }
 
-func (l *Line) GetOrder() uint16 {
+func (l Line) Order() uint16 {
 	return l.order
 }
 
-func (l *Line) GetSpec() spec.Spec {
+func (l Line) Spec() spec.Spec {
 	return l.spec
 }
 
-func (l *Line) GetText() []frag.Frag {
-	return l.text
-}
-
-func (l *Line) GetFrag(index uint) frag.Frag {
-	frg, _ := l.TryGetFrag(index)
-	return frg
-}
-
-func (l *Line) TryGetFrag(index uint) (frag.Frag, bool) {
+func (l Line) At(index uint) (frag.Frag, bool) {
 	if index >= l.Size() {
 		return frag.Frag{}, false
 	}
 	return l.text[index], true
 }
 
-func (l *Line) Frags() iter.Seq[frag.Frag] {
+func (l Line) AtOrZero(index uint) frag.Frag {
+	frg, _ := l.At(index)
+	return frg
+}
+
+func (l Line) Slice() []frag.Frag {
+	text := make([]frag.Frag, len(l.text))
+	copy(text, l.text)
+	return text
+}
+
+func (l Line) All() iter.Seq[frag.Frag] {
 	return func(yield func(frag.Frag) bool) {
 		for _, f := range l.text {
 			if !yield(f) {
@@ -92,7 +94,7 @@ func (s Line) Hash() uint64 {
 	return s.hash
 }
 
-func (l *Line) Clone() *Line {
+func (l Line) Clone() *Line {
 	spec := l.spec.Clone()
 
 	text := make([]frag.Frag, len(l.text))
@@ -106,7 +108,7 @@ func (l *Line) Clone() *Line {
 	}
 }
 
-func Measure(line *Line, cols winsize.Cols) winsize.Cols {
+func Measure(line Line, cols winsize.Cols) winsize.Cols {
 	return spec.Measure(line.spec, spec.LayoutContext{
 		SizeCols: cols,
 		TextSize: frag.Measure(cols, line.text...),

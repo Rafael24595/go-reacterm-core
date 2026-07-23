@@ -16,5 +16,5 @@ func FragsToString(frags []frag.Frag) string {
 }
 
 func LineToString(line line.Line) string {
-	return FragsToString(line.GetText())
+	return FragsToString(line.Slice())
 }

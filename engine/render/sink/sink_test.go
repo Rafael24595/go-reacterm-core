@@ -31,10 +31,10 @@ func TestApplySinks_PaddingLeft(t *testing.T) {
 
 	result := ApplySinks(line, 80)
 
-	assert.False(t, result.GetSpec().Kind().HasAny(spec.KindJustifyRight))
+	assert.False(t, result.Spec().Kind().HasAny(spec.KindJustifyRight))
 	assert.Equal(t, 1, result.Size())
 
-	firstFrag := result.GetFrag(0)
+	firstFrag := result.AtOrZero(0)
 	assert.True(t, firstFrag.Spec().Kind().HasAny(spec.KindJustifyRight))
 	assert.Equal(t, 5, dynamic.MapOr[winsize.Cols](firstFrag.Spec().Args()[spec.KeyJustifyRightSize], 0))
 }
@@ -44,10 +44,10 @@ func TestApplySinks_PaddingRight(t *testing.T) {
 
 	result := ApplySinks(inputLine, 80)
 
-	assert.False(t, result.GetSpec().Kind().HasAny(spec.KindJustifyLeft))
+	assert.False(t, result.Spec().Kind().HasAny(spec.KindJustifyLeft))
 	assert.Equal(t, 1, result.Size())
 
-	lastFrag := result.GetFrag(result.Size() - 1)
+	lastFrag := result.AtOrZero(result.Size() - 1)
 	assert.True(t, lastFrag.Spec().Kind().HasAny(spec.KindJustifyLeft))
 }
 
@@ -56,11 +56,11 @@ func TestApplySinks_PaddingCenter_OddAvailableSpace(t *testing.T) {
 
 	result := ApplySinks(inputLine, 80)
 
-	assert.False(t, result.GetSpec().Kind().HasAny(spec.KindJustifyCenter))
+	assert.False(t, result.Spec().Kind().HasAny(spec.KindJustifyCenter))
 	assert.Equal(t, 2, result.Size())
 
-	leftFrag := result.GetFrag(0)
-	rightFrag := result.GetFrag(1)
+	leftFrag := result.AtOrZero(0)
+	rightFrag := result.AtOrZero(1)
 
 	assert.True(t, leftFrag.Spec().Kind().HasAny(spec.KindJustifyRight))
 	assert.True(t, rightFrag.Spec().Kind().HasAny(spec.KindJustifyLeft))
@@ -71,5 +71,5 @@ func TestApplySinks_PaddingCenter_NoAvailableSpace(t *testing.T) {
 
 	result := ApplySinks(inputLine, 10)
 
-	assert.False(t, result.GetSpec().Kind().HasAny(spec.KindJustifyCenter))
+	assert.False(t, result.Spec().Kind().HasAny(spec.KindJustifyCenter))
 }

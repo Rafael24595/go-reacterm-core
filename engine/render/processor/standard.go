@@ -32,7 +32,7 @@ func (r Standard) Render(lines []line.Line, size winsize.Winsize) []string {
 			line.FragsMeasure(size.Cols, lne),
 		)
 
-		buffer[i] = r.spec.Apply(lne.GetSpec(), size, text)
+		buffer[i] = r.spec.Apply(lne.Spec(), size, text)
 	}
 
 	return buffer
@@ -49,7 +49,7 @@ func (r Standard) renderLineFrags(line line.Line, size winsize.Winsize) string {
 		size.Cols,
 	)
 
-	for f := range line.Frags() {
+	for f := range line.All() {
 		txt := format.NewText(
 			f.Text(),
 			f.Size(),

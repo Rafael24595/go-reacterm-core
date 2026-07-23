@@ -21,8 +21,8 @@ import (
 
 func renderFrags(line line.Line) string {
 	var s strings.Builder
-	
-	for f := range line.Frags() {
+
+	for f := range line.All() {
 		s.WriteString(f.Text())
 
 		count := winsize.Cols(0)
@@ -163,7 +163,7 @@ func TestJustifyLine_Start(t *testing.T) {
 	line := justifyLine(10, frags, 6, style.JustifyStart)
 
 	assert.Equal(t, 5, line.Size())
-	assert.True(t, line.GetSpec().Kind().HasAny(spec.KindJustifyLeft))
+	assert.True(t, line.Spec().Kind().HasAny(spec.KindJustifyLeft))
 
 	assert.Equal(t, "aa bb cc  ", renderLine(10, style.JustifyStart, line))
 }
@@ -173,7 +173,7 @@ func TestJustifyLine_End(t *testing.T) {
 	line := justifyLine(10, frags, 6, style.JustifyEnd)
 
 	assert.Equal(t, 5, line.Size())
-	assert.True(t, line.GetSpec().Kind().HasAny(spec.KindJustifyRight))
+	assert.True(t, line.Spec().Kind().HasAny(spec.KindJustifyRight))
 
 	assert.Equal(t, "  aa bb cc", renderLine(10, style.JustifyEnd, line))
 }
@@ -183,7 +183,7 @@ func TestJustifyLine_Center(t *testing.T) {
 	line := justifyLine(10, frags, 6, style.JustifyCenter)
 
 	assert.Equal(t, 5, line.Size())
-	assert.True(t, line.GetSpec().Kind().HasAny(spec.KindJustifyCenter))
+	assert.True(t, line.Spec().Kind().HasAny(spec.KindJustifyCenter))
 
 	assert.Equal(t, " aa bb cc ", renderLine(10, style.JustifyCenter, line))
 }
@@ -194,7 +194,7 @@ func TestJustifyLine_Between(t *testing.T) {
 
 	assert.Equal(t, 5, line.Size())
 	assert.True(
-		t, line.GetSpec().Kind().HasNone(spec.KindJustifyRight|spec.KindJustifyLeft|spec.KindJustifyCenter),
+		t, line.Spec().Kind().HasNone(spec.KindJustifyRight|spec.KindJustifyLeft|spec.KindJustifyCenter),
 	)
 
 	assert.Equal(t, "aa  bb  cc", renderLine(10, style.JustifyBetween, line))
@@ -205,7 +205,7 @@ func TestJustifyLine_Around(t *testing.T) {
 	line := justifyLine(18, frags, 6, style.JustifyAround)
 
 	assert.Equal(t, 5, line.Size())
-	assert.True(t, line.GetSpec().Kind().HasAny(spec.KindJustifyCenter))
+	assert.True(t, line.Spec().Kind().HasAny(spec.KindJustifyCenter))
 
 	assert.Equal(t, "   aa   bb   cc   ", renderLine(18, style.JustifyAround, line))
 }
@@ -215,7 +215,7 @@ func TestJustifyLine_Evenly(t *testing.T) {
 	line := justifyLine(18, frags, 6, style.JustifyEvenly)
 
 	assert.Equal(t, 5, line.Size())
-	assert.True(t, line.GetSpec().Kind().HasAny(spec.KindJustifyCenter))
+	assert.True(t, line.Spec().Kind().HasAny(spec.KindJustifyCenter))
 
 	assert.Equal(t, "  aa    bb    cc  ", renderLine(18, style.JustifyEvenly, line))
 }

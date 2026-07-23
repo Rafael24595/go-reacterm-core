@@ -312,7 +312,7 @@ func TestWrapLine_Simple(t *testing.T) {
 
 	for i, l := range lines {
 		var text strings.Builder
-		for f := range l.Frags() {
+		for f := range l.All() {
 			text.WriteString(f.Text())
 		}
 
@@ -334,12 +334,12 @@ func TestWrapLine_Styles(t *testing.T) {
 
 	assert.Size(t, 2, lines)
 
-	assert.Equal(t, "HELLO", lines[0].GetFrag(0).Text())
-	assert.True(t, lines[0].GetFrag(0).Atom().HasAny(atom.Bold))
+	assert.Equal(t, "HELLO", lines[0].AtOrZero(0).Text())
+	assert.True(t, lines[0].AtOrZero(0).Atom().HasAny(atom.Bold))
 
-	assert.Equal(t, " ", lines[0].GetFrag(1).Text())
+	assert.Equal(t, " ", lines[0].AtOrZero(1).Text())
 
-	assert.Equal(t, "WORLD", lines[1].GetFrag(0).Text())
+	assert.Equal(t, "WORLD", lines[1].AtOrZero(0).Text())
 }
 
 func TestWrapLine_LongWord(t *testing.T) {
@@ -352,7 +352,7 @@ func TestWrapLine_LongWord(t *testing.T) {
 
 	for i, l := range lines {
 		text := ""
-		for f := range l.Frags() {
+		for f := range l.All() {
 			text += f.Text()
 		}
 		if runes.Measure(text) > maxWidth {
@@ -362,7 +362,7 @@ func TestWrapLine_LongWord(t *testing.T) {
 
 	totalRunes := winsize.Cols(0)
 	for _, l := range lines {
-		for f := range l.Frags() {
+		for f := range l.All() {
 			totalRunes += runes.Measure(f.Text())
 		}
 	}
@@ -386,7 +386,7 @@ func TestWrapLine_MultipleFrags(t *testing.T) {
 
 	for _, l := range lines {
 		width := winsize.Cols(0)
-		for f := range l.Frags() {
+		for f := range l.All() {
 			width += runes.Measure(f.Text())
 		}
 		if width > maxWidth {
@@ -596,7 +596,9 @@ func TestSplitLineFeeds_Ordering(t *testing.T) {
 			assert.Equal(t, len(tt.expectedOrders), len(got), "Result size mismatch")
 
 			for i, line := range got {
-				assert.Equal(t, tt.expectedOrders[i], line.GetOrder(), "Order mismatch at index %d", i)
+				assert.Equal(
+					t, tt.expectedOrders[i], line.Order(), "Order mismatch at index %d", i,
+				)
 			}
 		})
 	}

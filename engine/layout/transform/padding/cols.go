@@ -84,7 +84,7 @@ func AddColsPadding(
 		frags = append(frags, frag)
 	}
 
-	for f := range lne.Frags() {
+	for f := range lne.All() {
 		frags = append(frags, f)
 	}
 

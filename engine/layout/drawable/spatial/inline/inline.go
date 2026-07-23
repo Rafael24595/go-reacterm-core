@@ -105,7 +105,7 @@ func (u *InlineUnit) joinChildren(lines []line.Line) []line.Line {
 
 	for i, line := range lines {
 		merged.WithMeta(line).
-			PushIter(line.Frags())
+			PushIter(line.All())
 
 		if u.separator != "" && i < len(lines)-1 {
 			merged.PushFrags(separator)

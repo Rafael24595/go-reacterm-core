@@ -50,9 +50,9 @@ func TestHelpUnit_WithFields(t *testing.T) {
 	assert.Equal(t, "--Help---", text_test.LineToString(lines[0]))
 
 	assert.Equal(t, 3, lines[1].Size())
-	assert.Equal(t, "[RET] New line/Accept | ", lines[1].GetFrag(0).Text())
-	assert.Equal(t, "[←] Move left | ", lines[1].GetFrag(1).Text())
-	assert.Equal(t, "[M-b, Alt-b] Back", lines[1].GetFrag(2).Text())
+	assert.Equal(t, "[RET] New line/Accept | ", lines[1].AtOrZero(0).Text())
+	assert.Equal(t, "[←] Move left | ", lines[1].AtOrZero(1).Text())
+	assert.Equal(t, "[M-b, Alt-b] Back", lines[1].AtOrZero(2).Text())
 
 	assert.Equal(t, 1, lines[2].Size())
 	assert.Equal(t, "-", text_test.LineToString(lines[2]))

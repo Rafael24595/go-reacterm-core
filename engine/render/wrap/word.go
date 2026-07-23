@@ -55,7 +55,7 @@ func splitLineWords(line line.Line) ([]word, []wordFrag) {
 		wordStart = len(frags)
 	}
 
-	for frg := range line.Frags() {
+	for frg := range line.All() {
 		if frg.Atom().HasAny(atom.Wrap) || frag.IsStructural(frg) {
 			flushFrag(frg)
 			flushWord()

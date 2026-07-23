@@ -49,7 +49,7 @@ func MaterializeEmpty(
 
 		lneSize := lne.Source.Size()
 		if lneSize > 0 {
-			lastFrag = lne.Source.GetFrag(lneSize - 1)
+			lastFrag = lne.Source.AtOrZero(lneSize - 1)
 		}
 
 		frag := frag.NewBuilder().
@@ -186,13 +186,13 @@ func splitLineFeeds(lne line.Line, order bool) []line.Line {
 	result := make([]line.Line, 0)
 
 	index := uint16(1)
-	if lne.GetOrder() != 0 {
-		index = lne.GetOrder()
+	if lne.Order() != 0 {
+		index = lne.Order()
 	}
 
 	builder := orderedBuilder(lne, index, order)
 
-	for frg := range lne.Frags() {
+	for frg := range lne.All() {
 		if !strings.ContainsAny(frg.Text(), "\n\r") {
 			builder.PushFrags(frg)
 			continue

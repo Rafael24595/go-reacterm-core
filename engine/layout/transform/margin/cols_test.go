@@ -70,7 +70,7 @@ func TestColsLeftTransformer(t *testing.T) {
 
 			for i, l := range tt.wantLines {
 				assert.Equal(
-					t, l, render_test.Frags(styler, tt.size, result[i].GetText()),
+					t, l, render_test.Frags(styler, tt.size, result[i].Slice()),
 				)
 			}
 		})
@@ -132,7 +132,7 @@ func TestColsRightTransformer(t *testing.T) {
 
 			for i, l := range tt.wantLines {
 				assert.Equal(
-					t, l, render_test.Frags(styler, tt.size, result[i].GetText()),
+					t, l, render_test.Frags(styler, tt.size, result[i].Slice()),
 				)
 			}
 		})
@@ -194,7 +194,7 @@ func TestColsCenterTransformer(t *testing.T) {
 
 			for i, l := range tt.wantLines {
 				assert.Equal(
-					t, l, render_test.Frags(styler, tt.size, result[i].GetText()),
+					t, l, render_test.Frags(styler, tt.size, result[i].Slice()),
 				)
 			}
 		})

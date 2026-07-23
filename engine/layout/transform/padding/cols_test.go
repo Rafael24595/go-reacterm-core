@@ -130,7 +130,7 @@ func TestColsTransformer(t *testing.T) {
 
 			assert.Equal(t, tt.wantLength, gotSize)
 			assert.Equal(
-				t, tt.wantString, render_test.Frags(styler, tt.size, resLines[0].GetText()),
+				t, tt.wantString, render_test.Frags(styler, tt.size, resLines[0].Slice()),
 			)
 		})
 	}

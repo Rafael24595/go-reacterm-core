@@ -140,7 +140,7 @@ func TestHStack_RenderOutput(t *testing.T) {
 	assert.Size(t, 3, lines)
 
 	resultText := ""
-	for frag := range lines[0].Frags() {
+	for frag := range lines[0].All() {
 		resultText += frag.Text()
 	}
 

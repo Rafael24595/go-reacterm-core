@@ -46,11 +46,11 @@ func extractPrefix(
 	lines []wrap.LayoutLine,
 	meta indexMeta,
 ) (string, []wrap.LayoutLine) {
-	if lines[0].Source.GetOrder() == 0 {
+	if lines[0].Source.Order() == 0 {
 		return meta.body(), lines
 
 	}
-	order := int(lines[0].Source.GetOrder())
+	order := int(lines[0].Source.Order())
 	prefix := meta.header(order)
 
 	lines[0].Source = line.BuilderFromLine(lines[0].Source).
@@ -64,11 +64,11 @@ func computeIndexMeta(lines []wrap.LayoutLine) *indexMeta {
 	size := winsize.Cols(0)
 
 	for _, line := range lines {
-		if line.Source.GetOrder() == 0 {
+		if line.Source.Order() == 0 {
 			continue
 		}
 
-		digits := math.Digits(line.Source.GetOrder())
+		digits := math.Digits(line.Source.Order())
 		size = max(size, winsize.Cols(digits))
 	}
 

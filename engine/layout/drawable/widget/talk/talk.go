@@ -190,7 +190,7 @@ func (u *TalkUnit) addFocus(
 		focusLne.PushFrags(frag.Empty())
 	}
 
-	frg := targetLines[focusRow].GetFrag(0)
+	frg := targetLines[focusRow].AtOrZero(0)
 	focusLne.Text[0] = frag.BuilderFromFrag(frg).
 		AddAtom(atom.Focus).
 		Frag()

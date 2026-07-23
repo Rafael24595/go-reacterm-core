@@ -207,7 +207,7 @@ func TestBuilderUnshiftIter(t *testing.T) {
 
 	b := NewBuilder().
 		PushText("Base").
-		UnshiftIter(lne.Frags())
+		UnshiftIter(lne.All())
 
 	assert.Size(t, 3, b.Text)
 

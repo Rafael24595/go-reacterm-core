@@ -11,7 +11,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	
+
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
@@ -69,14 +69,14 @@ func TestBuilder_RenderHeaders_Structure(t *testing.T) {
 
 	assert.Equal(t, wantFrags, line.Size())
 
-	assert.Equal(t, "|", line.GetFrag(0).Text())
-	assert.Equal(t, "id", line.GetFrag(1).Text())
-	assert.Equal(t, "|", line.GetFrag(2).Text())
-	assert.Equal(t, "name", line.GetFrag(3).Text())
-	assert.Equal(t, "|", line.GetFrag(4).Text())
+	assert.Equal(t, "|", line.AtOrZero(0).Text())
+	assert.Equal(t, "id", line.AtOrZero(1).Text())
+	assert.Equal(t, "|", line.AtOrZero(2).Text())
+	assert.Equal(t, "name", line.AtOrZero(3).Text())
+	assert.Equal(t, "|", line.AtOrZero(4).Text())
 
-	assert.NotEqual(t, spec.KindNone, line.GetFrag(1).Spec().Kind())
-	assert.NotEqual(t, spec.KindNone, line.GetFrag(3).Spec().Kind())
+	assert.NotEqual(t, spec.KindNone, line.AtOrZero(1).Spec().Kind())
+	assert.NotEqual(t, spec.KindNone, line.AtOrZero(3).Spec().Kind())
 }
 
 func TestBuilder_RenderBody_Basic(t *testing.T) {

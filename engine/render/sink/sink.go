@@ -22,7 +22,7 @@ var sinkipeline = [...]sinkRule{
 }
 
 func sinkLinePaddingLeft(style spec.Kind, lne line.Line, _ winsize.Cols) line.Line {
-	resSpec, delSpec := spec.Erase(lne.GetSpec(), style)
+	resSpec, delSpec := spec.Erase(lne.Spec(), style)
 	if delSpec.Kind() == spec.KindNone {
 		return lne
 	}
@@ -35,7 +35,7 @@ func sinkLinePaddingLeft(style spec.Kind, lne line.Line, _ winsize.Cols) line.Li
 }
 
 func sinkLinePaddingRight(style spec.Kind, lne line.Line, _ winsize.Cols) line.Line {
-	resSpec, delSpec := spec.Erase(lne.GetSpec(), style)
+	resSpec, delSpec := spec.Erase(lne.Spec(), style)
 	if delSpec.Kind() == spec.KindNone {
 		return lne
 	}
@@ -48,7 +48,7 @@ func sinkLinePaddingRight(style spec.Kind, lne line.Line, _ winsize.Cols) line.L
 }
 
 func sinkLinePaddingCenter(style spec.Kind, lne line.Line, cols winsize.Cols) line.Line {
-	resSpec, delSpec := spec.Erase(lne.GetSpec(), style)
+	resSpec, delSpec := spec.Erase(lne.Spec(), style)
 	if delSpec.Kind() == spec.KindNone {
 		return lne
 	}
@@ -86,7 +86,7 @@ func sinkLinePaddingCenter(style spec.Kind, lne line.Line, cols winsize.Cols) li
 
 func ApplySinks(line line.Line, cols winsize.Cols) line.Line {
 	for _, t := range sinkipeline {
-		if !line.GetSpec().Kind().HasAny(t.kind) {
+		if !line.Spec().Kind().HasAny(t.kind) {
 			continue
 		}
 		line = t.fn(t.kind, line, cols)
