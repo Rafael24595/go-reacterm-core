@@ -88,6 +88,10 @@ func (l *Line) Frags() iter.Seq[frag.Frag] {
 	}
 }
 
+func (s Line) Hash() uint64 {
+	return s.hash
+}
+
 func (l *Line) Clone() *Line {
 	spec := l.spec.Clone()
 
