@@ -50,27 +50,6 @@ func calcHash(
 	return hasher
 }
 
-func (l *Line) SetOrder(order uint16) *Line {
-	l.Order = order
-	return l
-}
-
-func (l *Line) UnshiftFrags(frags ...frag.Frag) *Line {
-	l.Text = append(frags, l.Text...)
-	return l
-}
-
-func (l *Line) PushFrags(frags ...frag.Frag) *Line {
-	l.Text = append(l.Text, frags...)
-	return l
-}
-
-func (l *Line) AddSpec(styles ...spec.Spec) *Line {
-	newSpec := spec.Merge(styles...)
-	l.Spec = spec.Merge(l.Spec, newSpec)
-	return l
-}
-
 func (l *Line) Size() uint {
 	return uint(len(l.Text))
 }
