@@ -15,9 +15,9 @@ func TestNew(t *testing.T) {
 
 	frg := New("hello", atom.Bold, spc)
 
-	assert.Equal(t, "hello", frg.Text())
-	assert.Equal(t, atom.Bold, frg.Atom())
-	assert.DeepEqual(t, spc, frg.Spec())
+	assert.Equal(t, "hello", frg.text)
+	assert.Equal(t, atom.Bold, frg.atom)
+	assert.DeepEqual(t, spc, frg.spec)
 }
 
 func TestSize(t *testing.T) {
@@ -31,9 +31,10 @@ func TestClone(t *testing.T) {
 
 	clone := frg.Clone()
 
-	assert.Equal(t, frg.Text(), clone.Text())
-	assert.Equal(t, frg.Atom(), clone.Atom())
-	assert.DeepEqual(t, frg.Spec(), clone.Spec())
+	assert.Equal(t, frg.text, clone.text)
+	assert.Equal(t, frg.atom, clone.atom)
+	assert.DeepEqual(t, frg.spec, clone.spec)
+	assert.Equal(t, frg.hash, clone.hash)
 }
 
 func TestMeasure_Empty(t *testing.T) {
