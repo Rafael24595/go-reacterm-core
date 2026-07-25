@@ -26,7 +26,7 @@ func TextSpec(text string, specs ...spec.Spec) Line {
 	)
 }
 
-func TextOrdered(order uint16, text ...string) Line {
+func TextOrder(order uint16, text ...string) Line {
 	return New(
 		order,
 		spec.Empty(),

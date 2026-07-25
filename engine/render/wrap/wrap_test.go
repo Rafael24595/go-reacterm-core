@@ -563,7 +563,7 @@ func TestSplitLineFeeds_Ordering(t *testing.T) {
 		},
 		{
 			name:           "ShouldResumeFromExistingOrder",
-			input:          line.TextOrdered(10, "PartA\nPartB"),
+			input:          line.TextOrder(10, "PartA\nPartB"),
 			orderFlag:      true,
 			expectedOrders: []uint16{10, 11},
 		},
