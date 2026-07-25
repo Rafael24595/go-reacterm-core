@@ -12,25 +12,25 @@ import (
 func NewDemoHeader() pipeline.Transformer {
 	return header.Transformer(
 		pipeline.Before,
-		line.FromFrags(
-			frag.New(
+		line.SpecFrags(
+			spec.AlignCenter(),
+			frag.TextAtom(
 				"Lorem ipsum dolor sit amet",
 				atom.Upper,
-				spec.AlignCenter(),
 			),
 		),
-		line.FromFrags(
-			frag.New(
+		line.SpecFrags(
+			spec.AlignCenter(),
+			frag.TextAtom(
 				"consectetur adipiscing",
 				atom.Upper,
-				spec.AlignCenter(),
 			),
 		),
-		line.FromFrags(
-			frag.New(
+		line.SpecFrags(
+			spec.AlignCenter(),
+			frag.TextAtom(
 				"-Server 00-",
 				atom.Upper,
-				spec.AlignCenter(),
 			),
 		),
 	)
