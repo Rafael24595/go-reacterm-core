@@ -238,28 +238,31 @@ func orderedBuilder(lne line.Line, index uint16, ordered bool) *line.Builder {
 }
 
 func splitFragAt(frg *wordFrag, cols winsize.Cols) (*wordFrag, *wordFrag) {
-	if cols <= 0 {
-		newFrag := frag.NewBuilder().
-			WithMeta(frg.Base).
-			Frag()
+	text := frg.Base.Text()
 
-		return newWordFrag(&newFrag), frg
+	if cols == 0 {
+		left := clone(frg, "")
+		right := clone(frg, text)
+
+		return left, right
 	}
 
-	byteIndex, canBreak := runes.RuneIndexToByteIndex(frg.Base.Text(), offset.Offset(cols))
-	if !canBreak || int(byteIndex) >= len(frg.Base.Text()) {
-		return frg, nil
+	byteIndex, canBreak := runes.RuneIndexToByteIndex(text, offset.Offset(cols))
+	if !canBreak || int(byteIndex) >= len(text) {
+		return clone(frg, text), nil
 	}
 
-	taken := frag.NewBuilder().
-		AddText(frg.Base.Text()[:byteIndex]).
+	left := clone(frg, text[:byteIndex])
+	right := clone(frg, text[byteIndex:])
+
+	return left, right
+}
+
+func clone(frg *wordFrag, text string) *wordFrag {
+	result := frag.NewBuilder().
+		AddText(text).
 		WithMeta(frg.Base).
 		Frag()
 
-	rest := frag.NewBuilder().
-		AddText(frg.Base.Text()[byteIndex:]).
-		WithMeta(frg.Base).
-		Frag()
-
-	return newWordFrag(&taken), newWordFrag(&rest)
+	return newWordFrag(&result)
 }

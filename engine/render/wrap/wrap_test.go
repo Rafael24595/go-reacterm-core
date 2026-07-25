@@ -604,6 +604,43 @@ func TestSplitLineFeeds_Ordering(t *testing.T) {
 	}
 }
 
+func TestSplitFragAt(t *testing.T) {
+	frg := frag.FromString("ziglang")
+	wrd := newWordFrag(&frg)
+
+	left, right := splitFragAt(wrd, 3)
+
+	assert.NotNil(t, left)
+	assert.NotNil(t, right)
+
+	assert.NotSame(t, wrd, left)
+	assert.NotSame(t, wrd, right)
+
+	assert.NotSame(t, wrd.Base, left.Base)
+	assert.NotSame(t, wrd.Base, right.Base)
+
+	assert.Equal(t, "zig", left.Base.Text())
+	assert.Equal(t, "lang", right.Base.Text())
+}
+
+func TestSplitFragAt_StartOfFrag(t *testing.T) {
+	frg := frag.FromString("abcdef")
+	wrd := newWordFrag(&frg)
+
+	left, right := splitFragAt(wrd, 0)
+
+	assert.NotNil(t, left)
+	assert.NotNil(t, right)
+
+	assert.NotSame(t, wrd, left)
+	assert.NotSame(t, wrd, right)
+
+	assert.NotSame(t, wrd.Base, left.Base)
+	assert.NotSame(t, wrd.Base, right.Base)
+
+	assert.Equal(t, "abcdef", right.Base.Text())
+}
+
 func TestSplitFragAt_EndOfFrag(t *testing.T) {
 	frg := frag.FromString("abcdef")
 	wrd := newWordFrag(&frg)
@@ -613,16 +650,11 @@ func TestSplitFragAt_EndOfFrag(t *testing.T) {
 	assert.NotNil(t, left)
 	assert.Nil(t, right)
 
+	assert.NotSame(t, wrd, left)
+
+	assert.NotSame(t, wrd.Base, left.Base)
+
 	assert.Equal(t, "abcdef", left.Base.Text())
-}
-
-func TestSplitFragAt_EmptyRestNeverCreated(t *testing.T) {
-	frg := frag.FromString("abc")
-	wrd := newWordFrag(&frg)
-
-	_, right := splitFragAt(wrd, 3)
-
-	assert.Nil(t, right)
 }
 
 func BenchmarkWrapLine_Short(b *testing.B) {
