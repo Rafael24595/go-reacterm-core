@@ -34,6 +34,14 @@ func TextOrder(order uint16, text ...string) Line {
 	)
 }
 
+func SpecFrags(spec spec.Spec, frags ...frag.Frag) Line {
+	return New(
+		0,
+		spec,
+		frags,
+	)
+}
+
 func FromSpec(spec spec.Spec) Line {
 	return New(
 		0,
