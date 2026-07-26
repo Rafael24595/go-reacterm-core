@@ -131,7 +131,7 @@ func (u *CheckMenuUnit) addStyles() []frag.Frag {
 
 		frg := frag.NewBuilder().
 			AddText(u.meta.Open + status + u.meta.Close + label).
-			WithMeta(&u.options[i].Label)
+			WithMeta(u.options[i].Label)
 
 		if u.writeMode && i == int(u.cursor) {
 			frg.AddAtom(atom.Select, atom.Focus)

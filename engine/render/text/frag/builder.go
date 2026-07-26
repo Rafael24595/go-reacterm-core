@@ -35,7 +35,7 @@ func (b *Builder) AddText(text string) *Builder {
 	return b
 }
 
-func (b *Builder) WithMeta(other *Frag) *Builder {
+func (b *Builder) WithMeta(other Frag) *Builder {
 	b.Atom = other.Atom()
 	b.Spec = other.Spec()
 	return b

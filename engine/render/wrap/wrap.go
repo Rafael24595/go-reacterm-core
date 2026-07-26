@@ -54,7 +54,7 @@ func MaterializeEmpty(
 
 		frag := frag.NewBuilder().
 			AddText(placeholder).
-			WithMeta(&lastFrag).
+			WithMeta(lastFrag).
 			Frag()
 
 		lines[i].Source = line.BuilderFromLine(lines[i].Source).
@@ -205,7 +205,7 @@ func splitLineFeeds(lne line.Line, order bool) []line.Line {
 			if part != "" {
 				frgBuilder := frag.NewBuilder().
 					AddText(part).
-					WithMeta(&frg)
+					WithMeta(frg)
 
 				builder.PushBuilder(frgBuilder)
 			}
@@ -261,7 +261,7 @@ func splitFragAt(frg *wordFrag, cols winsize.Cols) (*wordFrag, *wordFrag) {
 func clone(frg *wordFrag, text string) *wordFrag {
 	result := frag.NewBuilder().
 		AddText(text).
-		WithMeta(frg.Base).
+		WithMeta(*frg.Base).
 		Frag()
 
 	return newWordFrag(&result)

@@ -39,7 +39,7 @@ func TestBuilder_WithMeta(t *testing.T) {
 
 	b := NewBuilder().
 		AddText("world").
-		WithMeta(&src)
+		WithMeta(src)
 
 	assert.Equal(t, "world", b.Text)
 	assert.Equal(t, src.Atom(), b.Atom)
