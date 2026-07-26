@@ -20,10 +20,10 @@ func TestNew(t *testing.T) {
 	assert.DeepEqual(t, spc, frg.spec)
 }
 
-func TestSize(t *testing.T) {
+func TestMeasure(t *testing.T) {
 	frg := FromString("hello")
 
-	assert.Equal(t, 5, frg.Size())
+	assert.Equal(t, 5, frg.Measure())
 }
 
 func TestClone(t *testing.T) {
@@ -143,7 +143,7 @@ func BenchmarkSize(b *testing.B) {
 
 			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
-				_ = f.Size()
+				_ = f.Measure()
 			}
 		})
 	}

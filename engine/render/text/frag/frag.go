@@ -47,7 +47,7 @@ func calcHash(
 	return hasher
 }
 
-func (f Frag) Size() winsize.Cols {
+func (f Frag) Measure() winsize.Cols {
 	return runes.Measure(f.text)
 }
 
@@ -81,7 +81,7 @@ func Measure(cols winsize.Cols, frags ...Frag) winsize.Cols {
 	for _, f := range frags {
 		ctx := spec.LayoutContext{
 			SizeCols: cols,
-			TextSize: f.Size(),
+			TextSize: f.Measure(),
 		}
 		measure += spec.Measure(f.spec, ctx)
 	}

@@ -20,7 +20,7 @@ func Frags(styler *styler.Spec, size winsize.Winsize, frags []frag.Frag) string 
 	for _, f := range frags {
 		txt := format.NewText(
 			f.Text(),
-			f.Size(),
+			f.Measure(),
 		)
 		spec := styler.Apply(f.Spec(), lineSize, txt)
 

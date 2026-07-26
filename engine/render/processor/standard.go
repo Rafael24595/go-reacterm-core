@@ -52,7 +52,7 @@ func (r Standard) renderLineFrags(line line.Line, size winsize.Winsize) string {
 	for f := range line.All() {
 		txt := format.NewText(
 			f.Text(),
-			f.Size(),
+			f.Measure(),
 		)
 
 		spec := r.spec.Apply(f.Spec(), lineSize, txt)
