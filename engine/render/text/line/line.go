@@ -50,6 +50,14 @@ func calcHash(
 	return hasher
 }
 
+func (f Line) Measure() winsize.Cols {
+	measure := winsize.Cols(0)
+	for f := range f.All() {
+		measure += f.Measure()
+	}
+	return measure
+}
+
 func (l Line) Size() uint {
 	return uint(len(l.text))
 }

@@ -23,6 +23,14 @@ func TestNew(t *testing.T) {
 	assert.DeepEqual(t, frs, lne.text)
 }
 
+func TestMeasure(t *testing.T) {
+	lne := FromFrags(
+		frag.FromStrings("hello", "golang")...,
+	)
+
+	assert.Equal(t, 11, lne.Measure())
+}
+
 func TestAt(t *testing.T) {
 	frg0 := frag.FromString("golang")
 	frg1 := frag.FromString("zig")
