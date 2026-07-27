@@ -18,6 +18,13 @@ type word struct {
 	measure  winsize.Cols
 }
 
+func newWord(start uint32, end uint32) *word {
+	return &word{
+		start: start,
+		end:   end,
+	}
+}
+
 func splitLineWords(line line.Line) ([]word, []wordFrag) {
 	words := make([]word, 0, line.Size())
 	frags := make([]wordFrag, 0, line.Size())
@@ -47,11 +54,12 @@ func splitLineWords(line line.Line) ([]word, []wordFrag) {
 			return
 		}
 
-		words = append(words, word{
-			start: uint32(wordStart),
-			end:   uint32(len(frags)),
-		})
+		wrd := newWord(
+			uint32(wordStart),
+			uint32(wordStart+1),
+		)
 
+		words = append(words, *wrd)
 		wordStart = len(frags)
 	}
 
@@ -62,11 +70,12 @@ func splitLineWords(line line.Line) ([]word, []wordFrag) {
 
 			frags = append(frags, *newWordFrag(&frg))
 
-			words = append(words, word{
-				start: uint32(wordStart),
-				end:   uint32(wordStart + 1),
-			})
+			wrd := newWord(
+				uint32(wordStart),
+				uint32(wordStart+1),
+			)
 
+			words = append(words, *wrd)
 			wordStart = len(frags)
 			hasState = false
 
