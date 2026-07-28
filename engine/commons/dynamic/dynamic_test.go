@@ -321,7 +321,7 @@ func TestArgumentHash_DifferentTypes(t *testing.T) {
 		From(true),
 	}
 
-	seen := set.New[uint64]()
+	seen := set.New[hash.Hash]()
 
 	for _, c := range cases {
 		h := c.Hash(hash.New()).Sum64()

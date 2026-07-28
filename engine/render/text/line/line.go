@@ -36,9 +36,9 @@ func calcHash(
 	text []frag.Frag,
 ) hash.Hasher {
 	hasher = hasher.Uint16(order)
-	hasher = hasher.Uint64(spec.Hash())
+	hasher = hasher.Hash(spec.Hash())
 	for _, t := range text {
-		hasher = hasher.Uint64(t.Hash())
+		hasher = hasher.Hash(t.Hash())
 	}
 	return hasher
 }

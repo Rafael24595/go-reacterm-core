@@ -2,6 +2,8 @@ package hash
 
 type Hasher uint64
 
+type Hash uint64
+
 const (
 	offset64 = 14695981039346656037
 	prime64  = 1099511628211
@@ -39,6 +41,13 @@ func (h Hasher) Uint64(v uint64) Hasher {
 	return h
 }
 
+func (h Hasher) Hash(v Hash) Hasher {
+	h ^= Hasher(v)
+	h *= prime64
+	
+	return h
+}
+
 func (h Hasher) Bool(v bool) Hasher {
 	if v {
 		return h.Uint8(1)
@@ -54,6 +63,6 @@ func (h Hasher) String(s string) Hasher {
 	return h
 }
 
-func (h Hasher) Sum64() uint64 {
-	return uint64(h)
+func (h Hasher) Sum64() Hash {
+	return Hash(h)
 }

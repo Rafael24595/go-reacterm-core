@@ -12,8 +12,10 @@ import (
 func TestNewBuilder(t *testing.T) {
 	b := NewBuilder()
 
+	s := spec.Empty()
+
 	assert.Equal(t, 0, b.Order)
-	assert.Equal(t, spec.Empty().Hash(), b.Spec.Hash())
+	assert.Equal(t, s.Hash(), b.Spec.Hash())
 	assert.Empty(t, b.Text)
 }
 
@@ -54,7 +56,9 @@ func TestBuilderSetSpec(t *testing.T) {
 		AddSpec(spec.JustifyRight(5, ".")).
 		SetSpec(spec.Fill(80))
 
-	assert.Equal(t, spec.Fill(80).Hash(), b.Spec.Hash())
+	s := spec.Fill(80)
+
+	assert.Equal(t, s.Hash(), b.Spec.Hash())
 }
 
 func TestBuilderAddSpec(t *testing.T) {
@@ -250,15 +254,17 @@ func TestBuilderWithLine(t *testing.T) {
 }
 
 func TestBuilderLine(t *testing.T) {
+	spec := spec.Fill(20)
+
 	builder := NewBuilder().
 		SetOrder(5).
-		SetSpec(spec.Fill(20)).
+		SetSpec(spec).
 		PushText("Hello")
 
 	line := builder.Line()
 
 	assert.Equal(t, uint16(5), line.order)
-	assert.Equal(t, spec.Fill(20).Hash(), line.spec.Hash())
+	assert.Equal(t, spec.Hash(), line.spec.Hash())
 
 	assert.Equal(t, 1, line.Size())
 	assert.Equal(t, "Hello", line.text[0].Text())

@@ -129,7 +129,7 @@ func TestHasher_IsImmutable(t *testing.T) {
 
 	_ = base.Uint64(42)
 
-	assert.Equal(t, uint64(offset64), base.Sum64())
+	assert.Equal(t, Hash(offset64), base.Sum64())
 }
 
 func TestHasher_GoldenValue(t *testing.T) {

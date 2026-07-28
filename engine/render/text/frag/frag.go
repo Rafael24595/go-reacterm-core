@@ -36,7 +36,7 @@ func calcHash(
 ) hash.Hasher {
 	hasher = hasher.String(text)
 	hasher = hasher.Uint8(atom.Uint8())
-	hasher = hasher.Uint64(spec.Hash())
+	hasher = hasher.Hash(spec.Hash())
 	return hasher
 }
 

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
@@ -106,7 +106,8 @@ func TestLine_PreserveSpec(t *testing.T) {
 	dst := Line(src, 16)
 
 	for f := range dst.All() {
-		assert.Equal(t, style.Hash(), f.Spec().Hash())
+		s := f.Spec()
+		assert.Equal(t, style.Hash(), s.Hash())
 	}
 }
 
