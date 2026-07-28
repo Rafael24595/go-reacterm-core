@@ -139,6 +139,57 @@ func TestClone(t *testing.T) {
 	assert.Equal(t, lne.hash, clone.hash)
 }
 
+func TestHash_LazyEvaluation(t *testing.T) {
+	lne := New(
+		1,
+		spec.Empty(),
+		frag.FromStrings("golang"),
+	)
+
+	assert.False(t, lne.hashed)
+	assert.Equal(t, 0, lne.hash)
+
+	h1 := lne.Hash()
+	assert.True(t, lne.hashed)
+	assert.NotEqual(t, 0, h1)
+
+	h2 := lne.Hash()
+	assert.Equal(t, h1, h2)
+}
+
+func TestHashClone_LazyState(t *testing.T) {
+	t.Run("Clone unhashed spec", func(t *testing.T) {
+		original := New(
+			1,
+			spec.AlignCenter(),
+			frag.FromStrings("zig"),
+		)
+
+		clone := original.Clone()
+
+		assert.False(t, original.hashed)
+		assert.False(t, clone.hashed)
+
+		assert.Equal(t, original.Hash(), clone.Hash())
+	})
+
+	t.Run("Clone already hashed spec", func(t *testing.T) {
+		original := New(
+			1,
+			spec.AlignCenter(),
+			frag.FromStrings("zig"),
+		)
+
+		_ = original.Hash()
+
+		clone := original.Clone()
+
+		assert.True(t, clone.hashed)
+		assert.Equal(t, original.hash, clone.hash)
+		assert.Equal(t, original.Hash(), clone.Hash())
+	})
+}
+
 func TestHash_Deterministic(t *testing.T) {
 	spc := spec.Empty()
 	frgs := frag.FromStrings("hello")

@@ -10,10 +10,11 @@ import (
 )
 
 type Line struct {
-	order uint16
-	spec  spec.Spec
-	text  []frag.Frag
-	hash  uint64
+	order  uint16
+	spec   spec.Spec
+	text   []frag.Frag
+	hash   hash.Hash
+	hashed bool
 }
 
 func New(
@@ -21,18 +22,10 @@ func New(
 	spec spec.Spec,
 	text []frag.Frag,
 ) Line {
-	hash := calcHash(
-		hash.New(),
-		order,
-		spec,
-		text,
-	)
-
 	return Line{
 		order: order,
 		text:  text,
 		spec:  spec,
-		hash:  hash.Sum64(),
 	}
 }
 
@@ -98,7 +91,20 @@ func (l Line) All() iter.Seq[frag.Frag] {
 	}
 }
 
-func (s Line) Hash() uint64 {
+func (s *Line) Hash() hash.Hash {
+	if s.hashed {
+		return s.hash
+	}
+
+	s.hash = calcHash(
+		hash.New(),
+		s.order,
+		s.spec,
+		s.text,
+	).Sum64()
+
+	s.hashed = true
+
 	return s.hash
 }
 
@@ -109,10 +115,11 @@ func (l Line) Clone() *Line {
 	copy(text, l.text)
 
 	return &Line{
-		order: l.order,
-		spec:  spec,
-		text:  text,
-		hash:  l.hash,
+		order:  l.order,
+		spec:   spec,
+		text:   text,
+		hash:   l.hash,
+		hashed: l.hashed,
 	}
 }
 
