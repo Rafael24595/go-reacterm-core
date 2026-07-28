@@ -41,7 +41,7 @@ func TestClone(t *testing.T) {
 	clone := spec.Clone()
 
 	assert.Equal(t, spec.kind, clone.kind)
-	assert.Equal(t, spec.hash, clone.hash)
+	assert.Equal(t, spec.Hash(), clone.Hash())
 	assert.DeepEqual(t, spec.args.items, clone.args.items)
 	assert.NotSame(t, spec.args.items, clone.args.items)
 }
@@ -70,7 +70,7 @@ func TestMerge_Single(t *testing.T) {
 	merged := Merge(original)
 
 	assert.Equal(t, original.kind, merged.kind)
-	assert.Equal(t, original.hash, merged.hash)
+	assert.Equal(t, original.Hash(), merged.Hash())
 	assert.Equal(t, len(original.args.items), len(merged.args.items))
 }
 
@@ -107,7 +107,44 @@ func TestMerge_LastSpecWins(t *testing.T) {
 	assert.Equal(t, winsize.Cols(30), value)
 }
 
-func TestSpecHash_IsOrderIndependent(t *testing.T) {
+func TestHash_LazyEvaluation(t *testing.T) {
+	spec := Fill(80)
+
+	assert.False(t, spec.hashed)
+	assert.Equal(t, 0, spec.hash)
+
+	h1 := spec.Hash()
+	assert.True(t, spec.hashed)
+	assert.NotEqual(t, 0, h1)
+
+	h2 := spec.Hash()
+	assert.Equal(t, h1, h2)
+}
+
+func TestHashClone_LazyState(t *testing.T) {
+	t.Run("Clone unhashed spec", func(t *testing.T) {
+		original := Fill(80)
+		clone := original.Clone()
+
+		assert.False(t, original.hashed)
+		assert.False(t, clone.hashed)
+
+		assert.Equal(t, original.Hash(), clone.Hash())
+	})
+
+	t.Run("Clone already hashed spec", func(t *testing.T) {
+		original := Fill(80)
+		_ = original.Hash()
+
+		clone := original.Clone()
+
+		assert.True(t, clone.hashed)
+		assert.Equal(t, original.hash, clone.hash)
+		assert.Equal(t, original.Hash(), clone.Hash())
+	})
+}
+
+func TestHash_IsOrderIndependent(t *testing.T) {
 	left := Merge(
 		Fill(20),
 		JustifyRight(10, "."),
@@ -118,7 +155,7 @@ func TestSpecHash_IsOrderIndependent(t *testing.T) {
 		Fill(20),
 	)
 
-	assert.Equal(t, left.hash, right.hash)
+	assert.Equal(t, left.Hash(), right.Hash())
 }
 
 func TestHashChangesWithKind(t *testing.T) {
@@ -208,7 +245,7 @@ func TestErase_RebuildsHash(t *testing.T) {
 		JustifyRight(20, "."),
 	)
 
-	assert.Equal(t, expected.hash, modified.hash)
+	assert.Equal(t, expected.Hash(), modified.Hash())
 }
 
 func TestSpecHash_IsDeterministic(t *testing.T) {
@@ -222,21 +259,21 @@ func TestSpecHash_IsDeterministic(t *testing.T) {
 		JustifyRight(10, " "),
 	)
 
-	assert.Equal(t, left.hash, right.hash)
+	assert.Equal(t, left.Hash(), right.Hash())
 }
 
 func TestSpecHash_ChangesWhenArgumentChanges(t *testing.T) {
 	left := Fill(20)
 	right := Fill(21)
 
-	assert.NotEqual(t, left.hash, right.hash)
+	assert.NotEqual(t, left.Hash(), right.Hash())
 }
 
 func TestSpecHash_ChangesWhenKindChanges(t *testing.T) {
 	left := Fill(20)
 	right := TruncateLeft(20)
 
-	assert.NotEqual(t, left.hash, right.hash)
+	assert.NotEqual(t, left.Hash(), right.Hash())
 }
 
 func BenchmarkMeasure(b *testing.B) {

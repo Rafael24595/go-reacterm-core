@@ -3,22 +3,16 @@ package spec
 import "github.com/Rafael24595/go-reacterm-core/engine/app/hash"
 
 type Spec struct {
-	kind Kind
-	args args
-	hash uint64
+	kind   Kind
+	args   args
+	hash   hash.Hash
+	hashed bool
 }
 
 func New(kind Kind, args args) Spec {
-	hash := calcHash(
-		hash.New(),
-		kind,
-		args,
-	)
-
 	return Spec{
 		kind: kind,
 		args: args,
-		hash: hash.Sum64(),
 	}
 }
 
@@ -56,15 +50,28 @@ func (s Spec) Args() argMap {
 	return s.args.Items()
 }
 
-func (s Spec) Hash() uint64 {
+func (s *Spec) Hash() hash.Hash {
+	if s.hashed {
+		return s.hash
+	}
+
+	s.hash = calcHash(
+		hash.New(),
+		s.kind,
+		s.args,
+	).Sum64()
+
+	s.hashed = true
+
 	return s.hash
 }
 
 func (s Spec) Clone() Spec {
 	return Spec{
-		kind: s.kind,
-		args: s.args.Clone(),
-		hash: s.hash,
+		kind:   s.kind,
+		args:   s.args.Clone(),
+		hash:   s.hash,
+		hashed: s.hashed,
 	}
 }
 
