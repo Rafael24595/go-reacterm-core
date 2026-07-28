@@ -21,7 +21,7 @@ func TestNew(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, winsize.Cols(10), dynamic.MapOr(value, winsize.Cols(0)))
 
-	assert.NotEqual(t, uint64(0), spec.hash)
+	assert.Equal(t, 0, spec.hash)
 }
 
 func TestEmpty(t *testing.T) {
@@ -29,10 +29,10 @@ func TestEmpty(t *testing.T) {
 
 	assert.Size(t, 0, spec.args.items)
 	assert.Equal(t, KindNone, spec.kind)
-	assert.NotEqual(t, uint64(0), spec.hash)
+	assert.Equal(t, 0, spec.hash)
 }
 
-func TestSpecClone(t *testing.T) {
+func TestClone(t *testing.T) {
 	spec := Merge(
 		Fill(80),
 		JustifyRight(10, "."),
@@ -121,14 +121,14 @@ func TestSpecHash_IsOrderIndependent(t *testing.T) {
 	assert.Equal(t, left.hash, right.hash)
 }
 
-func TestSpecHashChangesWithKind(t *testing.T) {
+func TestHashChangesWithKind(t *testing.T) {
 	a := Fill(80)
 	b := TruncateRight(80)
 
 	assert.NotEqual(t, a.Hash(), b.Hash())
 }
 
-func TestSpecHashChangesWithArgs(t *testing.T) {
+func TestHashChangesWithArgs(t *testing.T) {
 	a := Fill(80)
 	b := Fill(120)
 

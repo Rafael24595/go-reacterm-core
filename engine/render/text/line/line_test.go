@@ -63,7 +63,7 @@ func TestAt(t *testing.T) {
 	}
 }
 
-func TestLine_AtOrZero(t *testing.T) {
+func TestAtOrZero(t *testing.T) {
 	frg := frag.FromString("golang")
 
 	lne := New(
@@ -81,7 +81,7 @@ func TestLine_AtOrZero(t *testing.T) {
 	})
 }
 
-func TestLine_Slice(t *testing.T) {
+func TestSlice(t *testing.T) {
 	frg := frag.FromString("golang")
 
 	lne := New(
@@ -99,7 +99,7 @@ func TestLine_Slice(t *testing.T) {
 	assert.NotSame(t, &slice[0], &got)
 }
 
-func TestLine_All(t *testing.T) {
+func TestAll(t *testing.T) {
 	frgs := frag.FromStrings(
 		"golang", "zig", "rust",
 	)
@@ -124,7 +124,7 @@ func TestLine_All(t *testing.T) {
 	})
 }
 
-func TestLine_Clone(t *testing.T) {
+func TestClone(t *testing.T) {
 	lne := New(
 		42,
 		spec.AlignCenter(),
