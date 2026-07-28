@@ -34,7 +34,7 @@ func TestClone(t *testing.T) {
 	assert.Equal(t, frg.text, clone.text)
 	assert.Equal(t, frg.atom, clone.atom)
 	assert.DeepEqual(t, frg.spec, clone.spec)
-	assert.Equal(t, frg.hash, clone.hash)
+	assert.Equal(t, frg.Hash(), clone.Hash())
 }
 
 func TestMeasure_Empty(t *testing.T) {
@@ -102,19 +102,61 @@ func TestIsStructural(t *testing.T) {
 	})
 }
 
+func TestHash_LazyEvaluation(t *testing.T) {
+	frg := New("golang", atom.Bold, spec.Empty())
+
+	assert.False(t, frg.hashed)
+	assert.Equal(t, 0, frg.hash)
+
+	h1 := frg.Hash()
+	assert.True(t, frg.hashed)
+	assert.NotEqual(t, 0, h1)
+
+	h2 := frg.Hash()
+	assert.Equal(t, h1, h2)
+}
+
+func TestHashClone_LazyState(t *testing.T) {
+	t.Run("Clone unhashed spec", func(t *testing.T) {
+		original := New("zig", atom.Select, spec.Empty())
+		clone := original.Clone()
+
+		assert.False(t, original.hashed)
+		assert.False(t, clone.hashed)
+
+		assert.Equal(t, original.Hash(), clone.Hash())
+	})
+
+	t.Run("Clone already hashed spec", func(t *testing.T) {
+		original := New("zig", atom.Select, spec.Empty())
+		_ = original.Hash()
+
+		clone := original.Clone()
+
+		assert.True(t, clone.hashed)
+		assert.Equal(t, original.hash, clone.hash)
+		assert.Equal(t, original.Hash(), clone.Hash())
+	})
+}
+
 func TestHash_Deterministic(t *testing.T) {
 	frg1 := New("hello", atom.Bold, spec.Empty())
 	frg2 := New("hello", atom.Bold, spec.Empty())
 
-	assert.Equal(t, frg1.hash, frg2.hash)
+	assert.Equal(t, frg1.Hash(), frg2.Hash())
 }
 
 func TestHash_ChangesWhenContentChanges(t *testing.T) {
 	base := New("hello", atom.Bold, spec.Empty())
 
-	assert.NotEqual(t, base.hash, New("world", atom.Bold, spec.Empty()).hash)
-	assert.NotEqual(t, base.hash, New("hello", atom.None, spec.Empty()).hash)
-	assert.NotEqual(t, base.hash, New("hello", atom.Bold, spec.JustifyCenter(1)).hash)
+	frg1 := New("world", atom.Bold, spec.Empty())
+	assert.NotEqual(t, base.Hash(), frg1.Hash())
+
+	frg2 := New("hello", atom.None, spec.Empty())
+	assert.NotEqual(t, base.Hash(), frg2.Hash())
+
+	frg3 := New("hello", atom.Bold, spec.JustifyCenter(1))
+	assert.NotEqual(t, base.Hash(), frg3.Hash())
 }
 
 func BenchmarkNew(b *testing.B) {

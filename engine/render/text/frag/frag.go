@@ -9,10 +9,11 @@ import (
 )
 
 type Frag struct {
-	text string
-	atom atom.Atom
-	spec spec.Spec
-	hash uint64
+	text   string
+	atom   atom.Atom
+	spec   spec.Spec
+	hash   hash.Hash
+	hashed bool
 }
 
 func New(
@@ -20,18 +21,10 @@ func New(
 	atom atom.Atom,
 	spec spec.Spec,
 ) Frag {
-	hash := calcHash(
-		hash.New(),
-		text,
-		atom,
-		spec,
-	)
-
 	return Frag{
 		text: text,
 		atom: atom,
 		spec: spec,
-		hash: hash.Sum64(),
 	}
 }
 
@@ -63,16 +56,30 @@ func (f Frag) Spec() spec.Spec {
 	return f.spec
 }
 
-func (s Frag) Hash() uint64 {
+func (s *Frag) Hash() hash.Hash {
+	if s.hashed {
+		return s.hash
+	}
+
+	s.hash = calcHash(
+		hash.New(),
+		s.text,
+		s.atom,
+		s.spec,
+	).Sum64()
+
+	s.hashed = true
+
 	return s.hash
 }
 
 func (f Frag) Clone() Frag {
 	return Frag{
-		text: f.text,
-		atom: f.atom,
-		spec: f.spec.Clone(),
-		hash: f.hash,
+		text:   f.text,
+		atom:   f.atom,
+		spec:   f.spec.Clone(),
+		hash:   f.hash,
+		hashed: f.hashed,
 	}
 }
 
