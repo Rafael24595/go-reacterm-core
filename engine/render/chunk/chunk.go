@@ -29,7 +29,11 @@ func Line(src line.Line, limit offset.Offset) line.Line {
 	return builder.Line()
 }
 
-func split(builder *line.Builder, frg frag.Frag, limit offset.Offset) {
+func split(
+	builder *line.Builder,
+	frg frag.Frag,
+	limit offset.Offset,
+) {
 	for {
 		head, tail := splitAt(frg, limit)
 		builder.PushFrags(head)
@@ -42,7 +46,7 @@ func split(builder *line.Builder, frg frag.Frag, limit offset.Offset) {
 	}
 }
 
-//TODO: Handle special atoms?
+// TODO: Handle special atoms?
 func splitAt(frg frag.Frag, limit offset.Offset) (frag.Frag, *frag.Frag) {
 	text := frg.Text()
 
