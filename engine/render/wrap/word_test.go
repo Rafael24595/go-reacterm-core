@@ -123,7 +123,7 @@ func TestSplitLineWords(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			words, frags := splitLineWords(tt.line)
+			words, frags := SplitLineWords(tt.line)
 			got := wordsToStrings(words, frags)
 
 			assert.Size(t, len(tt.expected), got)
@@ -137,7 +137,7 @@ func TestSplitLineWords(t *testing.T) {
 func TestSplitLineWords_EmptyLine(t *testing.T) {
 	line := line.FromFrags()
 
-	words, frags := splitLineWords(line)
+	words, frags := SplitLineWords(line)
 
 	assert.Empty(t, words)
 	assert.Empty(t, frags)
@@ -149,7 +149,7 @@ func TestSplitLineWords_EmptyFragIgnored(t *testing.T) {
 		frag.FromString("Golang"),
 	)
 
-	words, frags := splitLineWords(line)
+	words, frags := SplitLineWords(line)
 
 	assert.Size(t, 1, words)
 	assert.Size(t, 1, frags)
@@ -161,7 +161,7 @@ func TestSplitLineWords_OnlySpaces(t *testing.T) {
 		frag.FromString("   "),
 	)
 
-	words, frags := splitLineWords(line)
+	words, frags := SplitLineWords(line)
 
 	assert.Size(t, 1, words)
 	assert.Size(t, 1, frags)
@@ -174,7 +174,7 @@ func TestSplitLineWords_StyleChangeRequiresFragSplit(t *testing.T) {
 		frag.TextAtom("lang", atom.Bold),
 	)
 
-	words, frags := splitLineWords(line)
+	words, frags := SplitLineWords(line)
 
 	assert.Size(t, 1, words)
 	assert.Size(t, 2, frags)
@@ -190,7 +190,7 @@ func TestSplitLineWords_PreservesStylesAcrossFrags(t *testing.T) {
 		frag.FromString("up"),
 	)
 
-	words, frags := splitLineWords(line)
+	words, frags := SplitLineWords(line)
 
 	assert.Size(t, 1, words)
 	assert.Size(t, 3, frags)
@@ -207,7 +207,7 @@ func TestSplitLineWords_MultipleSpaceFragsKeepStyles(t *testing.T) {
 		frag.TextAtom("c", atom.Bold),
 	)
 
-	words, frags := splitLineWords(line)
+	words, frags := SplitLineWords(line)
 
 	assert.Size(t, 2, words)
 	assert.Size(t, 3, frags)
@@ -233,7 +233,7 @@ func TestSplitLineWords_FinalFlushPreservesStyles(t *testing.T) {
 		frag.TextAtom("c++", atom.Bold),
 	)
 
-	words, frags := splitLineWords(line)
+	words, frags := SplitLineWords(line)
 
 	assert.Size(t, 1, words)
 	assert.Size(t, 1, frags)

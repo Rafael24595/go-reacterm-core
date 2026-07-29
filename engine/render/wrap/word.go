@@ -25,7 +25,7 @@ func newWord(start uint32, end uint32) *word {
 	}
 }
 
-func splitLineWords(line line.Line) ([]word, []wordFrag) {
+func SplitLineWords(line line.Line) ([]word, []wordFrag) {
 	words := make([]word, 0, line.Size())
 	frags := make([]wordFrag, 0, line.Size())
 
