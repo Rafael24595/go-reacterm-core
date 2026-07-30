@@ -109,7 +109,7 @@ func Lines(cols winsize.Cols, lines ...line.Line) []line.Line {
 }
 
 func wrapLine(cols winsize.Cols, line line.Line, dst []line.Line) []line.Line {
-	words, frags := splitLineWords(line)
+	words, frags := SplitLine(line)
 	layout := NewLayoutLine(line, words, frags)
 
 	current := layout

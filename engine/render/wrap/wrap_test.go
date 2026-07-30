@@ -156,7 +156,7 @@ func TestWrapOnce(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			words, frags := splitLineWords(tt.line)
+			words, frags := SplitLine(tt.line)
 			layout := NewLayoutLine(tt.line, words, frags)
 
 			head, rest := wrapOnce(tt.cols, layout)
@@ -563,7 +563,7 @@ func BenchmarkWrapOnce(b *testing.B) {
 		)...,
 	)
 
-	words, frags := splitLineWords(line)
+	words, frags := SplitLine(line)
 
 	layout := NewLayoutLine(
 		line, words, frags,
@@ -579,7 +579,7 @@ func BenchmarkWrapOnce(b *testing.B) {
 func BenchmarkWrapOnce_VeryLong(b *testing.B) {
 	line := benchmarkLine(2000)
 
-	words, frags := splitLineWords(line)
+	words, frags := SplitLine(line)
 
 	layout := NewLayoutLine(
 		line, words, frags,
