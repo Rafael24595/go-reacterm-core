@@ -9,11 +9,19 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-var wrapper = Wrapper{}
+var wrapper = NewWrapper()
 
 type Wrapper struct {
 	processors []Processor
 	splitter   LineSplitter
+}
+
+func NewWrapper(opts ...Option) Wrapper {
+	cfg := defaultWrapper()
+	for _, opt := range opts {
+		opt(&cfg)
+	}
+	return cfg
 }
 
 func (w Wrapper) normalizeLines(order bool, lines ...line.Line) []LayoutLine {
