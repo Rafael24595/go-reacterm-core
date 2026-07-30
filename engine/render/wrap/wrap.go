@@ -1,8 +1,6 @@
 package wrap
 
 import (
-	"strings"
-
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
@@ -11,28 +9,49 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-func NormalizeLines(lines ...line.Line) []LayoutLine {
-	return normalizeLines(false, lines...)
+var wrapper = Wrapper{}
+
+type Wrapper struct {
+	processors []Processor
+	splitter   LineSplitter
 }
 
-func NormalizeLinesWithOrder(lines ...line.Line) []LayoutLine {
-	return normalizeLines(true, lines...)
-}
-
-func normalizeLines(order bool, lines ...line.Line) []LayoutLine {
+func (w Wrapper) normalizeLines(order bool, lines ...line.Line) []LayoutLine {
 	buffer := make([]LayoutLine, 0, len(lines))
 
-	for _, line := range lines {
-		normalizedLF := splitLineFeeds(line, order)
+	processed := w.proccessLines(order, lines...)
 
-		for _, n := range normalizedLF {
-			words, frags := splitLineWords(n)
-			layout := NewLayoutLine(n, words, frags)
-			buffer = append(buffer, *layout)
-		}
+	for _, lne := range processed {
+		words, frags := w.splitter(lne)
+
+		layout := NewLayoutLine(lne, words, frags)
+		buffer = append(buffer, *layout)
 	}
 
 	return buffer
+}
+
+func (w Wrapper) proccessLines(order bool, lines ...line.Line) []line.Line {
+	processed := lines
+	for _, p := range w.processors {
+		step := make([]line.Line, 0, len(processed)*2)
+		for _, lne := range processed {
+			step = append(
+				step, p(order, lne)...,
+			)
+		}
+		processed = step
+	}
+
+	return processed
+}
+
+func NormalizeLines(lines ...line.Line) []LayoutLine {
+	return wrapper.normalizeLines(false, lines...)
+}
+
+func NormalizeLinesWithOrder(lines ...line.Line) []LayoutLine {
+	return wrapper.normalizeLines(true, lines...)
 }
 
 func MaterializeEmpty(
