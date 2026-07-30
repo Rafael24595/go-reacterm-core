@@ -1,6 +1,7 @@
 package wrap
 
 import (
+	"strings"
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
@@ -208,4 +209,93 @@ func TestSplitLine_FinalFlushPreservesStyles(t *testing.T) {
 	assert.Size(t, 1, frags)
 
 	assert.True(t, frags[0].Base.Atom().HasAny(atom.Bold))
+}
+
+func BenchmarkSplitLine(b *testing.B) {
+	line := line.FromFrags(
+		frag.FromStrings(
+			"Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
+				"Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+		)...,
+	)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_, _ = SplitLine(line)
+	}
+}
+
+func BenchmarkSplitLine_Long(b *testing.B) {
+	line := benchmarkLine(2000)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_, _ = SplitLine(line)
+	}
+}
+
+func BenchmarkSplitLine_ManyFrags(b *testing.B) {
+	frags := make([]frag.Frag, 1000)
+
+	for i := range frags {
+		frags[i] = frag.FromString("hello ")
+	}
+
+	line := line.FromFrags(frags...)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		SplitLine(line)
+	}
+}
+
+func BenchmarkSplitLine_ASCII(b *testing.B) {
+	line := line.FromString(
+		strings.Repeat("hello world ", 300),
+	)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		SplitLine(line)
+	}
+}
+
+func BenchmarkSplitLine_Unicode(b *testing.B) {
+	line := line.FromString(
+		strings.Repeat("áéíóú 世界 😀 ", 300),
+	)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		SplitLine(line)
+	}
+}
+
+func BenchmarkSplitLine_LongWord(b *testing.B) {
+	line := line.FromString(
+		strings.Repeat("abcdefgh", 1000),
+	)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		SplitLine(line)
+	}
+}
+
+func BenchmarkSplitLine_ManySpaces(b *testing.B) {
+	line := line.FromString(
+		strings.Repeat("word     ", 500),
+	)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		SplitLine(line)
+	}
 }
