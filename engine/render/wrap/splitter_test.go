@@ -252,6 +252,50 @@ func BenchmarkSplitLine_ManyFrags(b *testing.B) {
 	}
 }
 
+func BenchmarkSplitWordsCached(b *testing.B) {
+	splitter := CacheLineWords(
+		NewFragCache(),
+	)
+
+	l := benchmarkLine(2000)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		splitter(l)
+	}
+}
+
+func BenchmarkSplitWords_ColdCache(b *testing.B) {
+	cache := NewFragCache()
+
+	splitter := CacheLineWords(cache)
+	lne := benchmarkLine(2000)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		cache.Cls()
+		_, _ = splitter(lne)
+	}
+}
+
+func BenchmarkSplitWords_WarmCache(b *testing.B) {
+	cache := NewFragCache()
+
+	splitter := CacheLineWords(cache)
+	lne := benchmarkLine(2000)
+
+	splitter(lne)
+
+	b.ResetTimer()
+	b.ReportAllocs()
+
+	for b.Loop() {
+		_, _ = splitter(lne)
+	}
+}
+
 func BenchmarkSplitLine_ASCII(b *testing.B) {
 	line := line.FromString(
 		strings.Repeat("hello world ", 300),
