@@ -4,11 +4,21 @@ import (
 	"strings"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/chunk"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
 type Processor func(order bool, lne line.Line) []line.Line
+
+func ChunkProcessor(limit offset.Offset) Processor {
+	return func(_ bool, lne line.Line) []line.Line {
+		return []line.Line{
+			chunk.Line(lne, limit),
+		}
+	}
+}
 
 func LineFeedProcessor(order bool, lne line.Line) []line.Line {
 	result := make([]line.Line, 0)
