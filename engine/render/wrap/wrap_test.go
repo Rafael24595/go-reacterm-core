@@ -8,6 +8,7 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/chunk"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
@@ -476,6 +477,45 @@ func TestSplitFragAt_EndOfFrag(t *testing.T) {
 	assert.Equal(t, "abcdef", left.Base.Text())
 }
 
+func BenchmarkWrapNormalize(b *testing.B) {
+	wrapper := NewWrapper(
+		WithProcessors(
+			LineFeedProcessor,
+		),
+		WithSplitter(
+			SplitLine,
+		),
+	)
+
+	l := benchmarkLine(2000)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		wrapper.normalizeLines(false, l)
+	}
+}
+
+func BenchmarkWrapNormalizeCached(b *testing.B) {
+	wrapper := NewWrapper(
+		WithProcessors(
+			LineFeedProcessor,
+			ChunkProcessor(chunk.DefaultChunk),
+		),
+		WithSplitter(
+			CacheLineWords(NewFragCache()),
+		),
+	)
+
+	l := benchmarkLine(2000)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		wrapper.normalizeLines(false, l)
+	}
+}
+
 func BenchmarkWrapLine_Short(b *testing.B) {
 	line := benchmarkLine(20)
 
@@ -549,5 +589,40 @@ func BenchmarkWrapOnce_VeryLong(b *testing.B) {
 
 	for b.Loop() {
 		wrapOnce(20, layout)
+	}
+}
+
+func BenchmarkWrap(b *testing.B) {
+	l := benchmarkLine(2000)
+
+	b.ReportAllocs()
+
+	for b.Loop() {
+		Lines(80, l)
+	}
+}
+
+func BenchmarkWrap_Resize(b *testing.B) {
+	lne := benchmarkLine(20_000)
+
+	widths := []winsize.Cols{
+		120,
+		100,
+		80,
+		60,
+		40,
+	}
+
+	b.ReportAllocs()
+
+	i := 0
+
+	for b.Loop() {
+		Lines(widths[i], lne)
+
+		i++
+		if i == len(widths) {
+			i = 0
+		}
 	}
 }
