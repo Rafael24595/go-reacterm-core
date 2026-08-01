@@ -1,4 +1,4 @@
-package wrap
+package splitter
 
 import (
 	"strings"
@@ -7,17 +7,16 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap/delta"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap/layout"
 )
 
-type LineSplitter func(lne line.Line) ([]word, []wordFrag)
-type FragSplitter func(frg frag.Frag) Delta
-
-func SplitLine(line line.Line) ([]word, []wordFrag) {
+func SplitLine(line line.Line) ([]layout.Word, []layout.Frag) {
 	return SplitLineWith(SplitFragByWords, line)
 }
 
-func SplitLineWith(splitter FragSplitter, line line.Line) ([]word, []wordFrag) {
-	frgs := NewDelta()
+func SplitLineWith(splitter Frag, line line.Line) ([]layout.Word, []layout.Frag) {
+	frgs := delta.New()
 
 	for frg := range line.All() {
 		if !frg.Atom().HasAny(atom.Wrap) && !frag.IsStructural(frg) {
@@ -27,14 +26,14 @@ func SplitLineWith(splitter FragSplitter, line line.Line) ([]word, []wordFrag) {
 		}
 
 		frgs.BoundAtEnd()
-		frgs.AddFrag(*newWordFrag(&frg))
+		frgs.AddFrag(*layout.NewFrag(&frg))
 	}
 
 	wrds := buildWords(frgs)
 	return wrds, frgs.Frags
 }
 
-func SplitFragByWords(frg frag.Frag) Delta {
+func SplitFragByWords(frg frag.Frag) delta.Delta {
 	var sb strings.Builder
 
 	var hasState bool
@@ -42,7 +41,7 @@ func SplitFragByWords(frg frag.Frag) Delta {
 
 	var startsWithSpace bool
 
-	frgs := NewDelta()
+	frgs := delta.New()
 
 	flush := func(src frag.Frag) {
 		if sb.Len() == 0 {
@@ -54,7 +53,7 @@ func SplitFragByWords(frg frag.Frag) Delta {
 			WithMeta(src).
 			Frag()
 
-		wrd := newWordFrag(&frg)
+		wrd := layout.NewFrag(&frg)
 
 		frgs.AddFrag(*wrd)
 
@@ -85,13 +84,13 @@ func SplitFragByWords(frg frag.Frag) Delta {
 	return frgs
 }
 
-func buildWords(frgs Delta) []word {
-	wrds := make([]word, 0, len(frgs.Bounds)+1)
+func buildWords(frgs delta.Delta) []layout.Word {
+	wrds := make([]layout.Word, 0, len(frgs.Bounds)+1)
 
 	var wordStart uint32
 	for _, p := range frgs.Bounds {
 		wrds = append(
-			wrds, *newWord(wordStart, p),
+			wrds, *layout.New(wordStart, p),
 		)
 
 		wordStart = p
@@ -100,7 +99,7 @@ func buildWords(frgs Delta) []word {
 	lenFrags := frgs.Size()
 	if wordStart != lenFrags {
 		wrds = append(
-			wrds, *newWord(wordStart, lenFrags),
+			wrds, *layout.New(wordStart, lenFrags),
 		)
 	}
 

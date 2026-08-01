@@ -1,26 +1,14 @@
-package wrap
+package processor
 
 import (
 	"strings"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/chunk"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-type Processor func(order bool, lne line.Line) []line.Line
-
-func ChunkProcessor(limit offset.Offset) Processor {
-	return func(_ bool, lne line.Line) []line.Line {
-		return []line.Line{
-			chunk.Line(lne, limit),
-		}
-	}
-}
-
-func LineFeedProcessor(order bool, lne line.Line) []line.Line {
+func LineFeed(order bool, lne line.Line) []line.Line {
 	result := make([]line.Line, 0)
 
 	index := uint16(1)
@@ -62,4 +50,15 @@ func LineFeedProcessor(order bool, lne line.Line) []line.Line {
 	result = append(result, builder.Line())
 
 	return result
+}
+
+func orderedBuilder(lne line.Line, index uint16, ordered bool) *line.Builder {
+	current := line.NewBuilder().
+		WithMeta(lne)
+
+	if ordered {
+		current.SetOrder(index)
+	}
+
+	return current
 }

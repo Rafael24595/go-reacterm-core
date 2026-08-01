@@ -1,19 +1,20 @@
 package wrap
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
-	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap/layout"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap/processor"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap/splitter"
 )
 
 var wrapper = NewWrapper()
 
 type Wrapper struct {
-	processors []Processor
-	splitter   LineSplitter
+	processors []processor.Line
+	splitter   splitter.Line
 }
 
 func NewWrapper(opts ...Option) Wrapper {
@@ -24,22 +25,22 @@ func NewWrapper(opts ...Option) Wrapper {
 	return cfg
 }
 
-func (w Wrapper) normalizeLines(order bool, lines ...line.Line) []LayoutLine {
-	buffer := make([]LayoutLine, 0, len(lines))
+func (w Wrapper) normalize(order bool, lines ...line.Line) []layout.Line {
+	buffer := make([]layout.Line, 0, len(lines))
 
-	processed := w.proccessLines(order, lines...)
+	processed := w.proccess(order, lines...)
 
 	for _, lne := range processed {
 		words, frags := w.splitter(lne)
 
-		layout := NewLayoutLine(lne, words, frags)
+		layout := layout.NewLine(lne, words, frags)
 		buffer = append(buffer, *layout)
 	}
 
 	return buffer
 }
 
-func (w Wrapper) proccessLines(order bool, lines ...line.Line) []line.Line {
+func (w Wrapper) proccess(order bool, lines ...line.Line) []line.Line {
 	processed := lines
 	for _, p := range w.processors {
 		step := make([]line.Line, 0, len(processed)*2)
@@ -54,19 +55,19 @@ func (w Wrapper) proccessLines(order bool, lines ...line.Line) []line.Line {
 	return processed
 }
 
-func NormalizeLines(lines ...line.Line) []LayoutLine {
-	return wrapper.normalizeLines(false, lines...)
+func NormalizeLines(lines ...line.Line) []layout.Line {
+	return wrapper.normalize(false, lines...)
 }
 
-func NormalizeLinesWithOrder(lines ...line.Line) []LayoutLine {
-	return wrapper.normalizeLines(true, lines...)
+func NormalizeLinesWithOrder(lines ...line.Line) []layout.Line {
+	return wrapper.normalize(true, lines...)
 }
 
 func MaterializeEmpty(
 	size winsize.Winsize,
 	placeholder string,
-	lines ...LayoutLine,
-) []LayoutLine {
+	lines ...layout.Line,
+) []layout.Line {
 	for i, lne := range lines {
 		if line.FragsMeasure(size.Cols, lne.Source) != 0 {
 			continue
@@ -88,7 +89,7 @@ func MaterializeEmpty(
 			PushFrags(frag).
 			Line()
 
-		lines[i].pushFrags(frag)
+		lines[i].PushFrags(frag)
 	}
 
 	return lines
@@ -109,8 +110,8 @@ func Lines(cols winsize.Cols, lines ...line.Line) []line.Line {
 }
 
 func wrapLine(cols winsize.Cols, line line.Line, dst []line.Line) []line.Line {
-	words, frags := SplitLine(line)
-	layout := NewLayoutLine(line, words, frags)
+	words, frags := splitter.SplitLine(line)
+	layout := layout.NewLine(line, words, frags)
 
 	current := layout
 
@@ -123,14 +124,14 @@ func wrapLine(cols winsize.Cols, line line.Line, dst []line.Line) []line.Line {
 	return dst
 }
 
-func NextLine(cols winsize.Cols, lines []LayoutLine) (*line.Line, []LayoutLine) {
+func NextLine(cols winsize.Cols, lines []layout.Line) (*line.Line, []layout.Line) {
 	builder, remain := NextBuilder(cols, lines)
 	return builder.LinePtr(), remain
 }
 
-func NextBuilder(cols winsize.Cols, lines []LayoutLine) (*line.Builder, []LayoutLine) {
+func NextBuilder(cols winsize.Cols, lines []layout.Line) (*line.Builder, []layout.Line) {
 	if cols == 0 || len(lines) == 0 {
-		return nil, make([]LayoutLine, 0)
+		return nil, make([]layout.Line, 0)
 	}
 
 	current := lines[0]
@@ -138,13 +139,13 @@ func NextBuilder(cols winsize.Cols, lines []LayoutLine) (*line.Builder, []Layout
 
 	result, rest := wrapOnce(cols, &current)
 	if rest != nil {
-		remain = append([]LayoutLine{*rest}, remain...)
+		remain = append([]layout.Line{*rest}, remain...)
 	}
 
 	return result, remain
 }
 
-func wrapOnce(cols winsize.Cols, lne *LayoutLine) (*line.Builder, *LayoutLine) {
+func wrapOnce(cols winsize.Cols, lne *layout.Line) (*line.Builder, *layout.Line) {
 	size := lne.Source.Size()
 
 	cursor := line.NewBuilder(int(size)).
@@ -153,14 +154,14 @@ func wrapOnce(cols winsize.Cols, lne *LayoutLine) (*line.Builder, *LayoutLine) {
 	remaining := cols
 	currentWidth := winsize.Cols(0)
 
-	wordIdx := 0
+	wordIdx := uint(0)
 
-	for ; wordIdx < len(lne.words); wordIdx++ {
-		wordMeasure := lne.measure(wordIdx, cols)
+	for ; wordIdx < lne.Size(); wordIdx++ {
+		wordMeasure := lne.Measure(wordIdx, cols)
 
 		if wordMeasure <= remaining {
-			cursor.Text = appendFrags(
-				cursor.Text, lne.findFrags(wordIdx),
+			cursor.Text = layout.AppendFrags(
+				cursor.Text, lne.FindFrags(wordIdx),
 			)
 
 			remaining = remaining.Sub(wordMeasure)
@@ -173,13 +174,13 @@ func wrapOnce(cols winsize.Cols, lne *LayoutLine) (*line.Builder, *LayoutLine) {
 			break
 		}
 
-		if ok := lne.splitWord(
+		if ok := lne.SplitWord(
 			wordIdx,
 			cols,
 			remaining,
 		); ok {
-			cursor.Text = appendFrags(
-				cursor.Text, lne.findFrags(wordIdx),
+			cursor.Text = layout.AppendFrags(
+				cursor.Text, lne.FindFrags(wordIdx),
 			)
 		}
 
@@ -188,64 +189,23 @@ func wrapOnce(cols winsize.Cols, lne *LayoutLine) (*line.Builder, *LayoutLine) {
 		break
 	}
 
-	if wordIdx >= len(lne.words) {
+	if wordIdx >= lne.Size() {
 		return cursor, nil
 	}
 
-	rest := &LayoutLine{
-		Source: lne.Source,
-		frags:  lne.frags,
-		words:  lne.words[wordIdx:],
-	}
+	rest := layout.NewLine(
+		lne.Source,
+		lne.Words()[wordIdx:],
+		lne.Frags(),
+	)
 
 	return cursor, rest
 }
 
-func shouldWrap(line *LayoutLine, wordIdx int, currentWidth winsize.Cols) bool {
-	if line.hasAtom(wordIdx, atom.Break) {
+func shouldWrap(line *layout.Line, wordIdx uint, currentWidth winsize.Cols) bool {
+	if line.HasAtom(wordIdx, atom.Break) {
 		return false
 	}
 
 	return currentWidth > 0
-}
-
-func orderedBuilder(lne line.Line, index uint16, ordered bool) *line.Builder {
-	current := line.NewBuilder().
-		WithMeta(lne)
-
-	if ordered {
-		current.SetOrder(index)
-	}
-
-	return current
-}
-
-func splitFragAt(frg *wordFrag, cols winsize.Cols) (*wordFrag, *wordFrag) {
-	text := frg.Base.Text()
-
-	if cols == 0 {
-		left := clone(frg, "")
-		right := clone(frg, text)
-
-		return left, right
-	}
-
-	byteIndex, canBreak := runes.RuneIndexToByteIndex(text, offset.Offset(cols))
-	if !canBreak || int(byteIndex) >= len(text) {
-		return clone(frg, text), nil
-	}
-
-	left := clone(frg, text[:byteIndex])
-	right := clone(frg, text[byteIndex:])
-
-	return left, right
-}
-
-func clone(frg *wordFrag, text string) *wordFrag {
-	result := frag.NewBuilder().
-		AddText(text).
-		WithMeta(*frg.Base).
-		Frag()
-
-	return newWordFrag(&result)
 }

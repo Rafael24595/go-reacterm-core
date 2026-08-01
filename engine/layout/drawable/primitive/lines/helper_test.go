@@ -7,6 +7,7 @@ import (
 
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap/layout"
 
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
@@ -61,11 +62,11 @@ func TestWrapNextLine_IndexShouldBeLesser(t *testing.T) {
 		prefixBody: " ",
 	}
 
-	layout := wrap.LayoutLine{
+	lne := layout.Line{
 		Source: line.TextOrder(1, "golang"),
 	}
 
 	assert.Panic(t, func() {
-		NextIndexedLine(4, []wrap.LayoutLine{layout}, meta)
+		NextIndexedLine(4, []layout.Line{lne}, meta)
 	})
 }

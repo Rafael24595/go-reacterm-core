@@ -1,4 +1,4 @@
-package wrap
+package layout
 
 import (
 	"slices"
@@ -11,49 +11,66 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-type LayoutLine struct {
+type Line struct {
 	Source line.Line
-	words  []word
-	frags  []wordFrag
+	words  []Word
+	frags  []Frag
 }
 
-func NewLayoutLine(source line.Line, words []word, frags []wordFrag) *LayoutLine {
-	return &LayoutLine{
+func NewLine(source line.Line, words []Word, frags []Frag) *Line {
+	return &Line{
 		Source: source,
 		words:  words,
 		frags:  frags,
 	}
 }
 
-func (l *LayoutLine) findFrags(idx int) []wordFrag {
-	if idx >= len(l.words) {
+func (l *Line) Size() uint {
+	return uint(len(l.words))
+}
+
+func (l *Line) Words() []Word {
+	clone := make([]Word, len(l.words))
+	copy(clone, l.words)
+	return clone
+}
+
+func (l *Line) Frags() []Frag {
+	clone := make([]Frag, len(l.frags))
+	copy(clone, l.frags)
+	return clone
+}
+
+func (l *Line) FindFrags(idx uint) []Frag {
+	if idx >= uint(len(l.words)) {
 		assert.Unreachable(
 			"index out of words range [%d] with length %d", idx, len(l.words),
 		)
-		return make([]wordFrag, 0)
+		return make([]Frag, 0)
 	}
 
 	word := l.words[idx]
 	return l.frags[word.start:word.end]
 }
 
-func (l *LayoutLine) pushFrags(frags ...frag.Frag) *LayoutLine {
+func (l *Line) PushFrags(frags ...frag.Frag) *Line {
 	lenFrags := len(l.frags)
-	word := word{
-		start: uint32(lenFrags),
-		end:   uint32(lenFrags + len(frags)),
-	}
 
-	l.words = append(l.words, word)
+	word := New(
+		uint32(lenFrags),
+		uint32(lenFrags+len(frags)),
+	)
+
+	l.words = append(l.words, *word)
 	l.frags = append(l.frags,
-		toWordFrag(frags...)...,
+		FromFrags(frags...)...,
 	)
 
 	return l
 }
 
-func (l *LayoutLine) splitWord(
-	wordIdx int,
+func (l *Line) SplitWord(
+	wordIdx uint,
 	cols winsize.Cols,
 	remaining winsize.Cols,
 ) bool {
@@ -74,7 +91,7 @@ func (l *LayoutLine) splitWord(
 		}
 
 		l.splitFrag(
-			wordIdx, int(fragIdx), remaining,
+			wordIdx, fragIdx, remaining,
 		)
 
 		return true
@@ -83,12 +100,12 @@ func (l *LayoutLine) splitWord(
 	return true
 }
 
-func (l *LayoutLine) splitFrag(
-	wordIdx int,
-	fragIdx int,
+func (l *Line) splitFrag(
+	wordIdx uint,
+	fragIdx uint32,
 	cols winsize.Cols,
 ) {
-	if fragIdx >= len(l.frags) {
+	if fragIdx >= uint32(len(l.frags)) {
 		assert.Unreachable(
 			"index out of frags range [%d] with length %d",
 			fragIdx,
@@ -98,7 +115,7 @@ func (l *LayoutLine) splitFrag(
 		return
 	}
 
-	if wordIdx >= len(l.words) {
+	if wordIdx >= uint(len(l.words)) {
 		assert.Unreachable(
 			"index out of words range [%d] with length %d",
 			fragIdx,
@@ -119,39 +136,39 @@ func (l *LayoutLine) splitFrag(
 
 	nextIdx := fragIdx + 1
 	l.frags = slices.Insert(
-		l.frags, nextIdx, *right,
+		l.frags, int(nextIdx), *right,
 	)
 
 	oldEnd := l.words[wordIdx].end
 
-	l.words[wordIdx].end = uint32(nextIdx)
+	l.words[wordIdx].end = nextIdx
 	l.words[wordIdx].measured = false
 	l.words[wordIdx].measure = 0
 
-	newWord := word{
-		start: l.words[wordIdx].end,
-		end:   oldEnd + 1,
-	}
-
-	l.words = slices.Insert(
-		l.words, wordIdx+1, newWord,
+	newWord := New(
+		l.words[wordIdx].end,
+		oldEnd+1,
 	)
 
-	for i := wordIdx + 2; i < len(l.words); i++ {
+	l.words = slices.Insert(
+		l.words, int(wordIdx+1), *newWord,
+	)
+
+	for i := wordIdx + 2; i < l.Size(); i++ {
 		l.words[i].start++
 		l.words[i].end++
 	}
 }
 
-func (l *LayoutLine) hasAtom(idx int, atm atom.Atom) bool {
-	if idx >= len(l.words) {
+func (l *Line) HasAtom(idx uint, atm atom.Atom) bool {
+	if idx >= uint(len(l.words)) {
 		assert.Unreachable(
 			"index out of words range [%d] with length %d", idx, len(l.words),
 		)
 		return false
 	}
 
-	for _, v := range l.findFrags(idx) {
+	for _, v := range l.FindFrags(idx) {
 		if v.Base.Atom().HasAny(atm) {
 			return true
 		}
@@ -159,16 +176,16 @@ func (l *LayoutLine) hasAtom(idx int, atm atom.Atom) bool {
 	return false
 }
 
-func (l *LayoutLine) measure(idx int, cols winsize.Cols) winsize.Cols {
+func (l *Line) Measure(idx uint, cols winsize.Cols) winsize.Cols {
 	return l.measureWith(idx, cols, fragMeasure)
 }
 
-func (l *LayoutLine) measureWith(
-	idx int,
+func (l *Line) measureWith(
+	idx uint,
 	cols winsize.Cols,
 	resolver measureResolver,
 ) winsize.Cols {
-	if idx >= len(l.words) {
+	if idx >= uint(len(l.words)) {
 		assert.Unreachable(
 			"index out of words range [%d] with length %d", idx, len(l.words),
 		)
@@ -182,7 +199,7 @@ func (l *LayoutLine) measureWith(
 	}
 
 	measure := resolver(
-		cols, l.findFrags(idx)...,
+		cols, l.FindFrags(idx)...,
 	)
 
 	word.cols = cols
@@ -192,8 +209,8 @@ func (l *LayoutLine) measureWith(
 	return measure
 }
 
-func (l *LayoutLine) clone() *LayoutLine {
-	newLine := NewLayoutLine(l.Source, l.words, l.frags)
+func (l *Line) clone() *Line {
+	newLine := NewLine(l.Source, l.words, l.frags)
 
 	newLine.words = slices.Clone(l.words)
 	newLine.frags = slices.Clone(l.frags)
@@ -201,8 +218,8 @@ func (l *LayoutLine) clone() *LayoutLine {
 	return newLine
 }
 
-func CloneLayoutLines(lines ...LayoutLine) []LayoutLine {
-	clones := make([]LayoutLine, len(lines))
+func Clones(lines ...Line) []Line {
+	clones := make([]Line, len(lines))
 	for i, v := range lines {
 		clones[i] = *v.clone()
 	}

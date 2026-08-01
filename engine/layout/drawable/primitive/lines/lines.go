@@ -7,6 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap/layout"
 )
 
 const Name = "line_unit"
@@ -15,11 +16,11 @@ type LineUnit struct {
 	loaded     bool
 	indexMeta  *indexMeta
 	normalizer linesNormalizer
-	lines      []wrap.LayoutLine
-	source     []wrap.LayoutLine
+	lines      []layout.Line
+	source     []layout.Line
 }
 
-func New(lines ...wrap.LayoutLine) *LineUnit {
+func New(lines ...layout.Line) *LineUnit {
 	return new(eagerNormalizer(lines...))
 }
 
@@ -35,7 +36,7 @@ func new(normalizer linesNormalizer) *LineUnit {
 	}
 }
 
-func UnitFromLayout(lines ...wrap.LayoutLine) drawable.Unit {
+func UnitFromLayout(lines ...layout.Line) drawable.Unit {
 	return New(lines...).ToUnit()
 }
 
@@ -56,7 +57,7 @@ func (u *LineUnit) boot() {
 	u.loaded = true
 
 	u.lines = u.normalizer()
-	u.source = wrap.CloneLayoutLines(u.lines...)
+	u.source = layout.Clones(u.lines...)
 
 	u.indexMeta = computeIndexMeta(u.lines)
 }
@@ -83,7 +84,7 @@ func (u *LineUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	return result, len(u.source) > 0
 }
 
-func (u *LineUnit) nextIndexedWrappedLine(size winsize.Winsize) (*line.Line, []wrap.LayoutLine) {
+func (u *LineUnit) nextIndexedWrappedLine(size winsize.Winsize) (*line.Line, []layout.Line) {
 	if u.indexMeta == nil {
 		return wrap.NextLine(size.Cols, u.source)
 	}

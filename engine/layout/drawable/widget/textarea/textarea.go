@@ -14,6 +14,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap/layout"
 )
 
 const Name = "text_area_unit"
@@ -106,7 +107,7 @@ func (u *TextAreaUnit) lazyBoot(size winsize.Winsize) {
 	u.unit = unit
 }
 
-func (u *TextAreaUnit) makeLines(base line.Line) []wrap.LayoutLine {
+func (u *TextAreaUnit) makeLines(base line.Line) []layout.Line {
 	if u.indexMode {
 		return wrap.NormalizeLinesWithOrder(base)
 	}

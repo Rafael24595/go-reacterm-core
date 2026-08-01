@@ -1,4 +1,4 @@
-package wrap
+package processor
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/chunk"
 )
 
-func BenchmarkChunkSizes(b *testing.B) {
+func BenchmarkChunk(b *testing.B) {
 	sizes := []offset.Offset{
 		16,
 		32,

@@ -11,17 +11,18 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap/layout"
 )
 
 const separator = " | "
 
 func NextIndexedLine(
 	cols winsize.Cols,
-	lines []wrap.LayoutLine,
+	lines []layout.Line,
 	meta indexMeta,
-) (*line.Line, []wrap.LayoutLine) {
+) (*line.Line, []layout.Line) {
 	if cols == 0 || len(lines) == 0 {
-		return nil, make([]wrap.LayoutLine, 0)
+		return nil, make([]layout.Line, 0)
 	}
 
 	prefix, lines := extractPrefix(lines, meta)
@@ -43,9 +44,9 @@ func NextIndexedLine(
 }
 
 func extractPrefix(
-	lines []wrap.LayoutLine,
+	lines []layout.Line,
 	meta indexMeta,
-) (string, []wrap.LayoutLine) {
+) (string, []layout.Line) {
 	if lines[0].Source.Order() == 0 {
 		return meta.body(), lines
 
@@ -60,7 +61,7 @@ func extractPrefix(
 	return prefix, lines
 }
 
-func computeIndexMeta(lines []wrap.LayoutLine) *indexMeta {
+func computeIndexMeta(lines []layout.Line) *indexMeta {
 	size := winsize.Cols(0)
 
 	for _, line := range lines {

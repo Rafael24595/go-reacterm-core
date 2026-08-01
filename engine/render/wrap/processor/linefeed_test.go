@@ -1,15 +1,16 @@
-package wrap
+package processor
 
 import (
 	"strings"
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
+	
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-func TestLineFeedProcessor(t *testing.T) {
+func TestLineFeed(t *testing.T) {
 	tests := []struct {
 		name         string
 		input        line.Line
@@ -85,7 +86,7 @@ func TestLineFeedProcessor(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := LineFeedProcessor(false, tt.input)
+			got := LineFeed(false, tt.input)
 
 			assert.Size(t, tt.expectedSize, got)
 			assert.Equal(t, tt.expectedText, assembleLines(t, got...))
@@ -97,7 +98,7 @@ func TestLineFeedProcessor(t *testing.T) {
 	}
 }
 
-func TestLineFeedProcessor_Ordering(t *testing.T) {
+func TestLineFeed_Ordering(t *testing.T) {
 	tests := []struct {
 		name           string
 		input          line.Line
@@ -146,7 +147,7 @@ func TestLineFeedProcessor_Ordering(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := LineFeedProcessor(tt.orderFlag, tt.input)
+			got := LineFeed(tt.orderFlag, tt.input)
 
 			assert.Equal(t, len(tt.expectedOrders), len(got), "Result size mismatch")
 
@@ -159,7 +160,7 @@ func TestLineFeedProcessor_Ordering(t *testing.T) {
 	}
 }
 
-func BenchmarkLineFeedProcessor_NoLF(b *testing.B) {
+func BenchmarkLineFeed_NoLF(b *testing.B) {
 	line := line.FromString(
 		strings.Repeat("Hello World ", 100),
 	)
@@ -167,11 +168,11 @@ func BenchmarkLineFeedProcessor_NoLF(b *testing.B) {
 	b.ReportAllocs()
 
 	for b.Loop() {
-		LineFeedProcessor(false, line)
+		LineFeed(false, line)
 	}
 }
 
-func BenchmarkLineFeedProcessor_SomeLF(b *testing.B) {
+func BenchmarkLineFeed_SomeLF(b *testing.B) {
 	line := line.FromString(
 		strings.Repeat("Hello\nWorld\n", 100),
 	)
@@ -179,6 +180,6 @@ func BenchmarkLineFeedProcessor_SomeLF(b *testing.B) {
 	b.ReportAllocs()
 
 	for b.Loop() {
-		LineFeedProcessor(false, line)
+		LineFeed(false, line)
 	}
 }

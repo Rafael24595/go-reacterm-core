@@ -1,16 +1,18 @@
-package wrap
+package delta
+
+import "github.com/Rafael24595/go-reacterm-core/engine/render/wrap/layout"
 
 type Delta struct {
-	Frags  []wordFrag
+	Frags  []layout.Frag
 	Bounds []uint32
 
 	LeftEdge  bool
 	RightEdge bool
 }
 
-func NewDelta() Delta {
+func New() Delta {
 	return Delta{
-		Frags:  make([]wordFrag, 0),
+		Frags:  make([]layout.Frag, 0),
 		Bounds: make([]uint32, 0),
 	}
 }
@@ -19,7 +21,7 @@ func (f Delta) Size() uint32 {
 	return uint32(len(f.Frags))
 }
 
-func (f *Delta) AddFrag(frag wordFrag) {
+func (f *Delta) AddFrag(frag layout.Frag) {
 	f.Frags = append(f.Frags, frag)
 }
 

@@ -1,4 +1,4 @@
-package wrap
+package splitter
 
 import (
 	"strings"
@@ -183,7 +183,7 @@ func TestSplitLine_MultipleSpaceFragsKeepStyles(t *testing.T) {
 	assert.Size(t, 3, frags)
 
 	word := words[0]
-	assert.Size(t, 2, word.end-word.start)
+	assert.Size(t, 2, word.End()-word.Start())
 
 	assert.Equal(t, " ", frags[0].Base.Text())
 	assert.True(t, frags[0].Base.Atom().HasAny(atom.Bold))
@@ -192,7 +192,7 @@ func TestSplitLine_MultipleSpaceFragsKeepStyles(t *testing.T) {
 	assert.True(t, frags[1].Base.Atom().HasAny(atom.Select))
 
 	word = words[1]
-	assert.Size(t, 1, word.end-word.start)
+	assert.Size(t, 1, word.End()-word.Start())
 
 	assert.Equal(t, "c", frags[2].Base.Text())
 	assert.True(t, frags[2].Base.Atom().HasAny(atom.Bold))
@@ -253,7 +253,7 @@ func BenchmarkSplitLine_ManyFrags(b *testing.B) {
 }
 
 func BenchmarkSplitWordsCached(b *testing.B) {
-	splitter := CacheLineWords(
+	splitter := SplitLineWithCache(
 		NewFragCache(),
 	)
 
@@ -269,7 +269,7 @@ func BenchmarkSplitWordsCached(b *testing.B) {
 func BenchmarkSplitWords_ColdCache(b *testing.B) {
 	cache := NewFragCache()
 
-	splitter := CacheLineWords(cache)
+	splitter := SplitLineWithCache(cache)
 	lne := benchmarkLine(2000)
 
 	b.ReportAllocs()
@@ -283,7 +283,7 @@ func BenchmarkSplitWords_ColdCache(b *testing.B) {
 func BenchmarkSplitWords_WarmCache(b *testing.B) {
 	cache := NewFragCache()
 
-	splitter := CacheLineWords(cache)
+	splitter := SplitLineWithCache(cache)
 	lne := benchmarkLine(2000)
 
 	splitter(lne)

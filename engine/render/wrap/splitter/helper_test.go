@@ -1,4 +1,4 @@
-package wrap
+package splitter
 
 import (
 	"strings"
@@ -29,17 +29,18 @@ func benchmarkLine(size int) line.Line {
 	)
 }
 
-func lineToString(line layout.Line) string {
-	var sb strings.Builder
+func wordToString(word layout.Word, frags []layout.Frag) string {
+	return fragsToString(
+		frags[word.Start():word.End()],
+	)
+}
 
-	frags := line.Frags()
-	for _, word := range line.Words() {
-		text := fragsToString(
-			frags[word.Start():word.End()],
-		)
-		sb.WriteString(text)
+func wordsToStrings(tokens []layout.Word, frags []layout.Frag) []string {
+	out := make([]string, len(tokens))
+	for i, word := range tokens {
+		out[i] = wordToString(word, frags)
 	}
-	return sb.String()
+	return out
 }
 
 func fragsToString(frags []layout.Frag) string {

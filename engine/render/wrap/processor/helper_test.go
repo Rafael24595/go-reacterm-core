@@ -1,12 +1,37 @@
-package wrap
+package processor
 
 import (
 	"strings"
+	"testing"
+
+	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap/layout"
+
+	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
+
+func assembleLines(t *testing.T, lines ...line.Line) string {
+	t.Helper()
+
+	var sb strings.Builder
+
+	for i, l := range lines {
+		_, err := sb.WriteString(
+			text_test.LineToString(l),
+		)
+
+		assert.Nil(t, err)
+
+		if i < len(lines)-1 {
+			_, err := sb.WriteString("\n")
+			assert.Nil(t, err)
+		}
+	}
+
+	return sb.String()
+}
 
 func benchmarkText(size int) string {
 	const sample = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. "
@@ -27,25 +52,4 @@ func benchmarkLine(size int) line.Line {
 			benchmarkText(size),
 		)...,
 	)
-}
-
-func lineToString(line layout.Line) string {
-	var sb strings.Builder
-
-	frags := line.Frags()
-	for _, word := range line.Words() {
-		text := fragsToString(
-			frags[word.Start():word.End()],
-		)
-		sb.WriteString(text)
-	}
-	return sb.String()
-}
-
-func fragsToString(frags []layout.Frag) string {
-	var b strings.Builder
-	for _, f := range frags {
-		b.WriteString(f.Base.Text())
-	}
-	return b.String()
 }
