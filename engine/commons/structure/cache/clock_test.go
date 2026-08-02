@@ -14,13 +14,20 @@ func TestClock_ToCache(t *testing.T) {
 
 func TestClock_Initialization(t *testing.T) {
 	t.Run("default capacity", func(t *testing.T) {
-		c := NewClock[string, int]()
+		c := newClock[string, int]()
+
+		assert.Size(t, 0, c.items)
+		assert.Size(t, 256, c.slots)
 
 		assert.Equal(t, 0, c.Len())
 	})
 
 	t.Run("custom capacity", func(t *testing.T) {
-		c := NewClock[string, int](10)
+		c := newClock[string, int](10)
+
+		assert.Size(t, 0, c.items)
+		assert.Size(t, 10, c.slots)
+
 		assert.Equal(t, 0, c.Len())
 	})
 }

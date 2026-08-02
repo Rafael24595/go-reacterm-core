@@ -13,16 +13,7 @@ type clockCache[T comparable, V any] struct {
 }
 
 func NewClock[T comparable, V any](size ...uint) Cache[T, V] {
-	capacity := uint(defaultClockCapacity)
-	if len(size) > 0 && size[0] > 0 {
-		capacity = size[0]
-	}
-
-	c := &clockCache[T, V]{
-		items:   make(map[T]int, capacity),
-		slots:   make([]*entry[T, V], capacity),
-		maxUsed: DefaultMaxUsed,
-	}
+	c := newClock[T, V](size...)
 
 	return Cache[T, V]{
 		Get: c.Get,
@@ -30,6 +21,19 @@ func NewClock[T comparable, V any](size ...uint) Cache[T, V] {
 		Del: c.Del,
 		Len: c.Len,
 		Cls: c.Cls,
+	}
+}
+
+func newClock[T comparable, V any](size ...uint) *clockCache[T, V] {
+	capacity := uint(defaultClockCapacity)
+	if len(size) > 0 && size[0] > 0 {
+		capacity = size[0]
+	}
+
+	return &clockCache[T, V]{
+		items:   make(map[T]int, capacity),
+		slots:   make([]*entry[T, V], capacity),
+		maxUsed: DefaultMaxUsed,
 	}
 }
 
