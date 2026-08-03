@@ -59,6 +59,23 @@ func (b *Builder) WithClock(clock clock.Clock) *Builder {
 	return b
 }
 
+func (b *Builder) WithNode(node Node) *Builder {
+	return b.WithNodeMeta(node).
+		WithNodeScreen(node)
+}
+
+func (b *Builder) WithNodeMeta(node Node) *Builder {
+	return b.Name(node.Name).
+		AddStack(node.Stack)
+}
+
+func (b *Builder) WithNodeScreen(node Node) *Builder {
+	return b.Boot(node.Screen.Boot).
+		Keys(node.Screen.Keys).
+		Tick(node.Screen.Tick).
+		View(node.Screen.View)
+}
+
 func (b *Builder) NameAsStack(name string) *Builder {
 	return b.Name(name).
 		NameToStack()
