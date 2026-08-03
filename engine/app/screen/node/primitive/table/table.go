@@ -140,8 +140,7 @@ func (n *Table[T]) AddItems(marshal MarshalFunc[T], items ...T) *Table[T] {
 
 func (n *Table[T]) ToNode() screen.Node {
 	return screen.NewBuilder().
-		Name(n.reference).
-		NameToStack().
+		NameAsStack(n.reference).
 		Boot(n.boot).
 		Keys(n.keys).
 		Tick(n.tick).

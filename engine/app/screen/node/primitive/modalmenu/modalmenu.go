@@ -80,8 +80,7 @@ func (n *ModalMenu) SetCursor(cursor uint16) *ModalMenu {
 
 func (n *ModalMenu) ToNode() screen.Node {
 	return screen.NewBuilder().
-		Name(n.reference).
-		NameToStack().
+		NameAsStack(n.reference).
 		Boot(n.boot).
 		Keys(n.keys).
 		Tick(n.tick).

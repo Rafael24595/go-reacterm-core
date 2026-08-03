@@ -112,8 +112,7 @@ func (n *TextInput) AddText(text string) *TextInput {
 
 func (n *TextInput) ToNode() screen.Node {
 	return screen.NewBuilder().
-		Name(n.textarea.reference).
-		NameToStack().
+		NameAsStack(n.textarea.reference).
 		Boot(n.textarea.boot).
 		Keys(n.textarea.keys).
 		Tick(n.textarea.tick).

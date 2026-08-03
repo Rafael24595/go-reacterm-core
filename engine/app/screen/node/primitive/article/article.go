@@ -34,8 +34,7 @@ func (n *Article) AddArticle(article ...line.Line) *Article {
 
 func (n *Article) ToNode() screen.Node {
 	return screen.NewBuilder().
-		Name(n.reference).
-		NameToStack().
+		NameAsStack(n.reference).
 		WithoutBoot().
 		WithoutKeys().
 		Tick(n.tick).

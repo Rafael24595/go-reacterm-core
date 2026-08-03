@@ -139,8 +139,7 @@ func (n *TextArea) HideIndex() *TextArea {
 
 func (n *TextArea) ToNode() screen.Node {
 	return screen.NewBuilder().
-		Name(n.reference).
-		NameToStack().
+		NameAsStack(n.reference).
 		Boot(n.boot).
 		Keys(n.keys).
 		Tick(n.tick).

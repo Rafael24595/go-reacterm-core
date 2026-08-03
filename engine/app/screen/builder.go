@@ -22,7 +22,7 @@ func withoutKeys() Definition {
 	return EmptyDefinition()
 }
 
-func withoutTick(*state.UIState, Event) Result{
+func withoutTick(*state.UIState, Event) Result {
 	return EmptyResult()
 }
 
@@ -57,6 +57,11 @@ func (b *Builder) WithClock(clock clock.Clock) *Builder {
 
 	b.clock = clock
 	return b
+}
+
+func (b *Builder) NameAsStack(name string) *Builder {
+	return b.Name(name).
+		NameToStack()
 }
 
 func (b *Builder) Name(name string) *Builder {

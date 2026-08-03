@@ -90,8 +90,7 @@ func (n *Talk) SetCursor(cursor uint16) *Talk {
 
 func (n *Talk) ToNode() screen.Node {
 	return screen.NewBuilder().
-		Name(n.reference).
-		NameToStack().
+		NameAsStack(n.reference).
 		Boot(n.boot).
 		Keys(n.keys).
 		Tick(n.tick).

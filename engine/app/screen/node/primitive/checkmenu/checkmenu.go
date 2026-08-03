@@ -126,8 +126,7 @@ func (n *CheckMenu) Limit(limit uint16) *CheckMenu {
 
 func (n *CheckMenu) ToNode() screen.Node {
 	return screen.NewBuilder().
-		Name(n.reference).
-		NameToStack().
+		NameAsStack(n.reference).
 		Boot(n.boot).
 		Keys(n.keys).
 		Tick(n.tick).

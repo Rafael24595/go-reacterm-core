@@ -40,6 +40,17 @@ func TestBuilder_WithoutKeys(t *testing.T) {
 	assert.Equal(t, 0, node.Screen.Keys().RequireKeys.Size())
 }
 
+func TestBuilder_NameAsStack(t *testing.T) {
+	name := "home"
+
+	node := NewBuilder().
+		NameAsStack(name).
+		ToNode()
+
+	assert.Equal(t, name, node.Name)
+	assert.Inside(t, name, node.Stack)
+}
+
 func TestBuilder_NameToStack(t *testing.T) {
 	name := "home"
 

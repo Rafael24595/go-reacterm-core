@@ -109,8 +109,7 @@ func (n *Clip) SetFrames(frames ...Frame) *Clip {
 
 func (n *Clip) ToNode() screen.Node {
 	return screen.NewBuilder().
-		Name(n.reference).
-		NameToStack().
+		NameAsStack(n.reference).
 		Boot(n.boot).
 		Keys(n.keys).
 		Tick(n.tick).

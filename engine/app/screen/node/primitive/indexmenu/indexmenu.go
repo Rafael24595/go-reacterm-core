@@ -86,8 +86,7 @@ func (n *IndexMenu) SetCursor(cursor uint16) *IndexMenu {
 
 func (n *IndexMenu) ToNode() screen.Node {
 	return screen.NewBuilder().
-		Name(n.reference).
-		NameToStack().
+		NameAsStack(n.reference).
 		Boot(n.boot).
 		Keys(n.keys).
 		Tick(n.tick).
