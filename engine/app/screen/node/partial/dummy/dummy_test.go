@@ -38,7 +38,6 @@ func TestDummy_Defaults(t *testing.T) {
 	)
 
 	assert.Nil(t, result.Node)
-	assert.False(t, result.Isolate)
 	assert.DeepEqual(t, uiState.Pager, result.Pager)
 
 	view := node.Screen.View(*uiState)

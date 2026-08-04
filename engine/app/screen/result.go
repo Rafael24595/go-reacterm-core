@@ -2,15 +2,14 @@ package screen
 
 import "github.com/Rafael24595/go-reacterm-core/engine/app/state"
 
+// TODO: Use node copy instead reference?
 type Result struct {
-	Isolate bool
 	Node    *Node
 	Pager   state.PagerContext
 }
 
 func ResultFromNode(node *Node) Result {
 	return Result{
-		Isolate: false,
 		Node:    node,
 		Pager:   state.PagerContext{},
 	}
@@ -18,7 +17,6 @@ func ResultFromNode(node *Node) Result {
 
 func ResultFromUIState(uiState *state.UIState) Result {
 	return Result{
-		Isolate: false,
 		Node:    nil,
 		Pager:   uiState.Pager,
 	}
@@ -26,7 +24,6 @@ func ResultFromUIState(uiState *state.UIState) Result {
 
 func EmptyResult() Result {
 	return Result{
-		Isolate: false,
 		Node:    nil,
 		Pager:   state.PagerContext{},
 	}
