@@ -20,18 +20,18 @@ func (n Node) Children() []Node {
 }
 
 func (n Node) Compile(pass ...Pass) (Node, error) {
-	screen := n
+	node := n
 
 	for _, m := range pass {
-		nextScreen, err := m(screen)
+		nextNode, err := m(node)
 		if err != nil {
-			return screen, err
+			return node, err
 		}
 
-		screen = nextScreen
+		node = nextNode
 	}
 
-	return screen, nil
+	return node, nil
 }
 
 func IsZeroNode(node Node) bool {

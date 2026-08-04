@@ -321,7 +321,7 @@ func onTalkView(service *mockTalkService, slot *slot.Slot[predicate.Predicate]) 
 }
 
 func makeTextArea(service *mockTalkService) screen.Node {
-	textscreen := text_screen.NewArea().
+	textArea := text_screen.NewArea().
 		SetName("textarea-form - amet").
 		SetBuffer(buffer.NewRuneBuffer().
 			PushRules(rule.Full...).
@@ -330,18 +330,18 @@ func makeTextArea(service *mockTalkService) screen.Node {
 		EnableBlinking().
 		ToNode()
 
-	textscreen = tick.Use(
-		textscreen,
+	textArea = tick.Use(
+		textArea,
 		onTextAreaTick(service),
 	)
 
-	textscreen = tick.OnKey(
-		textscreen,
+	textArea = tick.OnKey(
+		textArea,
 		onKeyEnter(service),
 		key.ActionEnter,
 	)
 
-	pipeline := node_pipeline.New(textscreen).
+	pipeline := node_pipeline.New(textArea).
 		PushSteps(wrapStep).
 		ExpireOnNode().
 		ToNode()

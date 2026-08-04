@@ -27,14 +27,14 @@ type Pagination struct {
 	node        screen.Node
 }
 
-func New(screen screen.Node) *Pagination {
+func New(node screen.Node) *Pagination {
 	return &Pagination{
 		loaded:      false,
 		bindings:    defaultBindings,
 		definition:  emptyDefinition(),
 		actionKind:  action.KindPaged,
 		forceAction: nil,
-		node:        screen,
+		node:        node,
 	}
 }
 

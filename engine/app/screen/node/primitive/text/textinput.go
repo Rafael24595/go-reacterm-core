@@ -68,7 +68,7 @@ func (n *TextInput) WithReadBindings(overrides *keymap.Bindings[CommandRead]) *T
 func (n *TextInput) SetProcessor(limit winsize.Cols, process processor.Processor) *TextInput {
 	assert.True(
 		limit <= input_max_limit,
-		"longer text fields should use the text area screen instead of the input one.",
+		"longer text fields should use the text area node instead of the input one.",
 	)
 
 	n.limit = limit
