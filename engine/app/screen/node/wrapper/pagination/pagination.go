@@ -133,11 +133,13 @@ func (n *Pagination) localTick(uiState *state.UIState, event screen.Event) *scre
 
 func (n *Pagination) childTick(uiState *state.UIState, event screen.Event) screen.Result {
 	result := n.node.Screen.Tick(uiState, event)
-	if result.Node == nil {
+
+	node, hasNode := result.TryGetNode()
+	if !hasNode {
 		return result
 	}
 
-	newWrapper := New(*result.Node)
+	newWrapper := New(node)
 
 	newWrapper.loaded = n.loaded
 	newWrapper.bindings = n.bindings
@@ -146,7 +148,7 @@ func (n *Pagination) childTick(uiState *state.UIState, event screen.Event) scree
 	newWrapper.forceAction = n.forceAction
 
 	newNode := newWrapper.ToNode()
-	result.Node = &newNode
+	result.SetNode(newNode)
 
 	return result
 }

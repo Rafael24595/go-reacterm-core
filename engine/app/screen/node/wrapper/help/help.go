@@ -62,17 +62,19 @@ func (n *Help) childTick(uiState *state.UIState, event screen.Event) screen.Resu
 	n.visible = uiState.Helper.ShowHelp
 
 	result := n.node.Screen.Tick(uiState, event)
-	if result.Node == nil {
+
+	node, hasNode := result.TryGetNode()
+	if !hasNode {
 		return result
 	}
 
-	newWrapper := New(*result.Node)
+	newWrapper := New(node)
 
 	newWrapper.bindings = n.bindings
 	newWrapper.visible = n.visible
 
 	newNode := newWrapper.ToNode()
-	result.Node = &newNode
+	result.SetNode(newNode)
 
 	return result
 }

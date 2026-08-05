@@ -176,8 +176,8 @@ func TestIndexMenu_Action(t *testing.T) {
 		screen.Event{Key: *key.NewKeyCode(key.ActionEnter)},
 	)
 
-	assert.NotNil(t, result.Node)
-	assert.Equal(t, result.Node.Name, "next")
+	assert.True(t, result.HasNode())
+	assert.Equal(t, result.GetNode().Name, "next")
 }
 
 func TestIndexMenu_ViewCursor(t *testing.T) {

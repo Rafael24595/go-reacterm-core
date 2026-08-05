@@ -173,8 +173,9 @@ func (n *IndexMenu) tickToStore(uiState *state.UIState) {
 }
 
 func (n *IndexMenu) actionEnter() screen.Result {
-	node := n.options[n.cursor].Action()
-	return screen.ResultFromNode(&node)
+	return screen.ResultFromNode(
+		n.options[n.cursor].Action(),
+	)
 }
 
 func (n *IndexMenu) view(uiState state.UIState) viewmodel.ViewModel {

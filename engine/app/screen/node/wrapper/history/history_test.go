@@ -51,7 +51,7 @@ func TestHistory_Navigation(t *testing.T) {
 		Definition: &definition,
 		Tick: func(s *state.UIState, e screen.Event) screen.Result {
 			base := mockBase.ToNode()
-			return screen.ResultFromNode(&base)
+			return screen.ResultFromNode(base)
 		},
 	}
 
@@ -63,16 +63,22 @@ func TestHistory_Navigation(t *testing.T) {
 	assert.Equal(t, node.Name, "next")
 
 	result := node.Screen.Tick(uiState, eventBase)
-	assert.NotNil(t, result.Node)
-	assert.Equal(t, result.Node.Name, "base")
 
-	backResult := result.Node.Screen.Tick(uiState, eventPrev)
-	assert.NotNil(t, backResult.Node.Screen)
-	assert.Equal(t, backResult.Node.Name, "next")
+	wantNode := result.GetNode()
+	assert.True(t, result.HasNode())
+	assert.Equal(t, wantNode.Name, "base")
 
-	nextResult := result.Node.Screen.Tick(uiState, eventNext)
-	assert.NotNil(t, nextResult.Node.Screen)
-	assert.Equal(t, nextResult.Node.Name, "base")
+	backResult := result.GetNode().Screen.Tick(uiState, eventPrev)
+
+	wantNode = backResult.GetNode()
+	assert.NotNil(t, wantNode.Screen)
+	assert.Equal(t, wantNode.Name, "next")
+
+	nextResult := result.GetNode().Screen.Tick(uiState, eventNext)
+
+	wantNode = nextResult.GetNode()
+	assert.NotNil(t, wantNode.Screen)
+	assert.Equal(t, wantNode.Name, "base")
 }
 
 func TestHistory_ViewFooter(t *testing.T) {

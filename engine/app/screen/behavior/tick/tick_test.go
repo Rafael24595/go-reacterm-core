@@ -95,7 +95,7 @@ func TestMap_Transforms(t *testing.T) {
 		mock := screen_test.MockNode{}
 		node := mock.ToNode()
 
-		result.Node = &node
+		result.SetNode(node)
 
 		return result
 	}
@@ -111,7 +111,7 @@ func TestMap_Transforms(t *testing.T) {
 
 	result := node.Screen.Tick(&state.UIState{}, screen.Event{})
 
-	assert.NotNil(t, 1, result.Node)
+	assert.True(t, result.HasNode())
 }
 
 func TestMap_MultipleTransforms(t *testing.T) {

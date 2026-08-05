@@ -31,7 +31,7 @@ func TestStore__PreservesActiveState(t *testing.T) {
 	}.ToNode()
 
 	result := screen.ResultFromUIState(uiState)
-	result.Node = &nodeWrapper
+	result.SetNode(nodeWrapper)
 
 	cleaner.Cleanup(result, uiState)
 
@@ -54,7 +54,7 @@ func TestStore__RemovesInactiveState(t *testing.T) {
 	nodeWrapper.Stack = nodeNext.Stack
 
 	result := screen.ResultFromUIState(uiState)
-	result.Node = &nodeWrapper
+	result.SetNode(nodeWrapper)
 
 	cleaner.Cleanup(result, uiState)
 
@@ -81,7 +81,7 @@ func TestStore__TransitionBetweenScreens(t *testing.T) {
 	nodeWrapper.Stack = nodeBase.Stack
 
 	result := screen.ResultFromUIState(uiState)
-	result.Node = &nodeWrapper
+	result.SetNode(nodeWrapper)
 	cleaner.Cleanup(result, uiState)
 
 	_, exists := uiState.Store.Find(nodeBase.Name, "lang-1")
@@ -90,7 +90,7 @@ func TestStore__TransitionBetweenScreens(t *testing.T) {
 	nodeWrapper.Stack = nodeNext.Stack
 
 	result = screen.ResultFromUIState(uiState)
-	result.Node = &nodeWrapper
+	result.SetNode(nodeWrapper)
 	cleaner.Cleanup(result, uiState)
 
 	_, exists = uiState.Store.Find(nodeBase.Name, "lang-1")

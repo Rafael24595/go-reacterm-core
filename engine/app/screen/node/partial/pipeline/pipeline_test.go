@@ -54,9 +54,7 @@ func TestPipeline_WrapsReturnedScreen(t *testing.T) {
 		Tick: func(s *state.UIState, _ screen.Event) screen.Result {
 			called = true
 			next := screen_test.MockByName("next")
-			return screen.Result{
-				Node: &next,
-			}
+			return screen.ResultFromNode(next)
 		},
 	}
 
@@ -68,9 +66,11 @@ func TestPipeline_WrapsReturnedScreen(t *testing.T) {
 
 	result := help.Screen.Tick(uiState, event)
 
+	node := result.GetNode()
+
 	assert.True(t, called)
-	assert.NotNil(t, result.Node.Screen)
-	assert.Equal(t, "next", result.Node.Name)
+	assert.NotNil(t, node.Screen)
+	assert.Equal(t, "next", node.Name)
 }
 
 func TestPipeline_ActionSingleFocus(t *testing.T) {

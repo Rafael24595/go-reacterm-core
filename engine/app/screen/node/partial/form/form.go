@@ -190,7 +190,8 @@ func (n *Form) tryFocusTick(uiState *state.UIState, event screen.Event) screen.R
 
 func (n *Form) focusTick(uiState *state.UIState, event screen.Event, focus entry.Entry) screen.Result {
 	result := focus.Node.Screen.Tick(uiState, event)
-	if result.Node == nil {
+	
+	if !result.HasNode() {
 		return result
 	}
 
@@ -206,7 +207,7 @@ func (n *Form) focusTick(uiState *state.UIState, event screen.Event, focus entry
 	newWrapper.items = newItems
 
 	newNode := newWrapper.ToNode()
-	result.Node = &newNode
+	result.SetNode(newNode)
 
 	return result
 }

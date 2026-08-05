@@ -162,8 +162,9 @@ func (n *ModalMenu) tickToStore(uiState *state.UIState) {
 }
 
 func (n *ModalMenu) actionEnter() screen.Result {
-	node := n.options[n.cursor].Action()
-	return screen.ResultFromNode(&node)
+	return screen.ResultFromNode(
+		n.options[n.cursor].Action(),
+	)
 }
 
 func (n *ModalMenu) view(uiState state.UIState) viewmodel.ViewModel {

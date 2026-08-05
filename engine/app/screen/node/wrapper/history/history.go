@@ -115,7 +115,7 @@ func (n *History) localTick(uiState *state.UIState, event screen.Event) screen.R
 		}
 
 		return screen.ResultFromNode(
-			n.makeWrapper(&back),
+			n.makeWrapper(back),
 		)
 
 	case CmdNext:
@@ -125,7 +125,7 @@ func (n *History) localTick(uiState *state.UIState, event screen.Event) screen.R
 		}
 
 		return screen.ResultFromNode(
-			n.makeWrapper(&next),
+			n.makeWrapper(next),
 		)
 	}
 
@@ -134,18 +134,23 @@ func (n *History) localTick(uiState *state.UIState, event screen.Event) screen.R
 
 func (n *History) childTick(uiState *state.UIState, event screen.Event) screen.Result {
 	result := n.node.Screen.Tick(uiState, event)
-	if result.Node == nil {
+
+	node, hasNode := result.TryGetNode()
+	if !hasNode {
 		return result
 	}
 
-	n.trail.GoTo(*result.Node)
-	result.Node = n.makeWrapper(result.Node)
+	n.trail.GoTo(node)
+
+	result.SetNode(
+		n.makeWrapper(node),
+	)
 
 	return result
 }
 
-func (n *History) makeWrapper(node *screen.Node) *screen.Node {
-	newWrapper := New(*node)
+func (n *History) makeWrapper(node screen.Node) screen.Node {
+	newWrapper := New(node)
 
 	newWrapper.loaded = n.loaded
 	newWrapper.bindings = n.bindings
@@ -153,7 +158,7 @@ func (n *History) makeWrapper(node *screen.Node) *screen.Node {
 	newWrapper.trail = n.trail
 
 	newNode := newWrapper.ToNode()
-	return &newNode
+	return newNode
 }
 
 func (n *History) view(uiState state.UIState) viewmodel.ViewModel {

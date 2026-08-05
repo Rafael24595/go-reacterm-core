@@ -63,20 +63,22 @@ func (n *Pipeline) tick(uiState *state.UIState, event screen.Event) screen.Resul
 		return result
 	}
 
-	newNode := New(*result.Node).
+	newNode := New(result.GetNode()).
 		PushSteps(n.steps...).
 		ToNode()
-	result.Node = &newNode
+
+	result.SetNode(newNode)
 
 	return result
 }
 
 func (n *Pipeline) shouldPropagate(result screen.Result) bool {
-	if result.Node == nil {
+	node, hasNode := result.TryGetNode()
+	if !hasNode {
 		return false
 	}
 
-	return !n.expiration.On(result.Node)
+	return !n.expiration.On(&node)
 }
 
 func (n *Pipeline) view(uiState state.UIState) viewmodel.ViewModel {

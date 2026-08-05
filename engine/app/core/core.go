@@ -245,8 +245,8 @@ func (e *Engine) manageResult(uiState *state.UIState, result screen.Result) *sta
 }
 
 func (e *Engine) manageNode(uiState state.UIState, result screen.Result) screen.Result {
-	if result.Node != nil {
-		e.compileNodeScreen(uiState, *result.Node)
+	if node, hasNode := result.TryGetNode(); hasNode {
+		e.compileNodeScreen(uiState, node)
 	}
 	return result
 }

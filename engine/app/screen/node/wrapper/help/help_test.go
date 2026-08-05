@@ -92,9 +92,7 @@ func TestHelp_WrapsReturnedScreen(t *testing.T) {
 		Tick: func(s *state.UIState, _ screen.Event) screen.Result {
 			called = true
 			next := screen_test.MockByName("next")
-			return screen.Result{
-				Node: &next,
-			}
+			return screen.ResultFromNode(next)
 		},
 	}
 
@@ -115,6 +113,6 @@ func TestHelp_WrapsReturnedScreen(t *testing.T) {
 	result := wrapped.Screen.Tick(uiState, event)
 
 	assert.True(t, called)
-	assert.NotNil(t, result.Node)
-	assert.Equal(t, "next", result.Node.Name)
+	assert.True(t, result.HasNode())
+	assert.Equal(t, "next", result.GetNode().Name)
 }
