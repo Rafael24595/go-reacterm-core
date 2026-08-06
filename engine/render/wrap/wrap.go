@@ -1,6 +1,8 @@
 package wrap
 
 import (
+	"sync"
+
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
@@ -10,6 +12,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap/splitter"
 )
 
+var once sync.Once
 var wrapper = NewWrapper()
 
 type Wrapper struct {
@@ -18,11 +21,25 @@ type Wrapper struct {
 }
 
 func NewWrapper(opts ...Option) Wrapper {
-	cfg := defaultWrapper()
+	return FromWrapper(
+		DefaultWrapper(), opts...,
+	)
+}
+
+func FromWrapper(cfg Wrapper, opts ...Option) Wrapper {
 	for _, opt := range opts {
 		opt(&cfg)
 	}
 	return cfg
+}
+
+func DefineWrapper(w Wrapper) bool {
+	set := false
+	once.Do(func() {
+		wrapper = w
+		set = true
+	})
+	return set
 }
 
 func (w Wrapper) normalize(order bool, lines ...line.Line) []layout.Line {

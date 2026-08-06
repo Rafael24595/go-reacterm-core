@@ -7,7 +7,7 @@ import (
 
 type Option func(*Wrapper)
 
-func defaultWrapper() Wrapper {
+func DefaultWrapper() Wrapper {
 	return Wrapper{
 		processors: []processor.Line{
 			processor.LineFeed,
@@ -15,18 +15,6 @@ func defaultWrapper() Wrapper {
 		splitter: splitter.SplitLine,
 	}
 }
-
-/*func defaultWrapper() Wrapper {
-	return Wrapper{
-		processors: []Processor{
-			LineFeedProcessor,
-			ChunkProcessor(chunk.DefaultChunk),
-		},
-		splitter: CacheLineWords(
-			NewFragCache(),
-		),
-	}
-}*/
 
 func WithProcessors(processors ...processor.Line) Option {
 	return func(cfg *Wrapper) {
