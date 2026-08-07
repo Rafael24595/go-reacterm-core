@@ -30,13 +30,13 @@ func (b *LayoutBuilder) Transformer(transformer winsize.Transformer) *LayoutBuil
 }
 
 func (b *LayoutBuilder) ToLayout() Layout {
-	apply := b.compose
+	compose := b.compose
 	if b.transformer != nil {
-		apply = wrapTransformer(apply, *b.transformer)
+		compose = wrapTransformer(compose, *b.transformer)
 	}
 
 	return Layout{
-		Compose: apply,
+		Compose: compose,
 	}
 }
 
