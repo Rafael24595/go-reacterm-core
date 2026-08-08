@@ -113,11 +113,11 @@ func MaterializeEmpty(
 }
 
 func Line(cols winsize.Cols, lne line.Line) []line.Line {
-	return wrapLine(cols, lne, make([]line.Line, 0))
+	return wrapLine(cols, lne, make([]line.Line, 0, 2))
 }
 
 func Lines(cols winsize.Cols, lines ...line.Line) []line.Line {
-	result := make([]line.Line, 0)
+	result := make([]line.Line, 0, len(lines)*2)
 
 	for _, line := range lines {
 		result = wrapLine(cols, line, result)
@@ -148,7 +148,7 @@ func NextLine(cols winsize.Cols, lines []layout.Line) (*line.Line, []layout.Line
 
 func NextBuilder(cols winsize.Cols, lines []layout.Line) (*line.Builder, []layout.Line) {
 	if cols == 0 || len(lines) == 0 {
-		return nil, make([]layout.Line, 0)
+		return nil, make([]layout.Line, 0, len(lines)*2)
 	}
 
 	current := lines[0]
