@@ -343,3 +343,21 @@ func BenchmarkSplitLine_ManySpaces(b *testing.B) {
 		SplitLine(line)
 	}
 }
+
+func BenchmarkSplitLineWith_WarmCache(b *testing.B) {
+	cache := NewFragCache()
+	splitter := SplitFragWithCache(cache)
+
+	lne := benchmarkLine(2000)
+
+	for _, frg := range lne.Slice() {
+		splitter(frg)
+	}
+
+	b.ReportAllocs()
+	b.ResetTimer()
+
+	for b.Loop() {
+		_, _ = SplitLineWith(splitter, lne)
+	}
+}
