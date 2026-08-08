@@ -127,15 +127,16 @@ func Lines(cols winsize.Cols, lines ...line.Line) []line.Line {
 }
 
 func wrapLine(cols winsize.Cols, line line.Line, dst []line.Line) []line.Line {
-	words, frags := splitter.SplitLine(line)
-	layout := layout.NewLine(line, words, frags)
+	normalized := NormalizeLines(line)
 
-	current := layout
+	for _, layout := range normalized {
+		current := &layout
 
-	for current != nil {
-		head, rest := wrapOnce(cols, current)
-		dst = append(dst, head.Line())
-		current = rest
+		for current != nil {
+			head, rest := wrapOnce(cols, current)
+			dst = append(dst, head.Line())
+			current = rest
+		}
 	}
 
 	return dst
