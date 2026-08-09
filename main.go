@@ -11,12 +11,16 @@ import (
 	"github.com/Rafael24595/go-log/log"
 	"github.com/Rafael24595/go-log/log/provider/file"
 	"github.com/Rafael24595/go-log/log/record"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/cleaner/composite"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/cleaner/store"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/core"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/hash"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/runtime"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline/inline"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline/spacer"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/wrapper/cache"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/wrapper/help"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/wrapper/history"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/wrapper/pagination"
@@ -26,14 +30,19 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize/transformer"
 	"github.com/Rafael24595/go-reacterm-core/engine/render"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/chunk"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/processor"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/styler"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap/delta"
 	"github.com/Rafael24595/go-reacterm-core/engine/terminal"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/app/cleaner/composite"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/cleaner/store"
-
 	local "github.com/Rafael24595/go-reacterm-core/engine/commons/log"
+
+	system_cache "github.com/Rafael24595/go-reacterm-core/engine/commons/structure/cache"
+
+	wrap_processor "github.com/Rafael24595/go-reacterm-core/engine/render/wrap/processor"
+	wrap_splitter "github.com/Rafael24595/go-reacterm-core/engine/render/wrap/splitter"
 
 	wrapper_render "github.com/Rafael24595/go-reacterm-core/wrapper/render"
 	wrapper_console "github.com/Rafael24595/go-reacterm-core/wrapper/terminal/console"
@@ -66,7 +75,13 @@ func main() {
 		pass.ValidateStructure(),
 	}
 
-	screen := makeNode()
+	cache := system_cache.NewMemory[hash.Hash, delta.Delta]()
+
+	wrap.DefineWrapper(
+		makeWrapper(cache),
+	)
+
+	screen := makeNode(cache)
 
 	<-core.NewEngine(
 		terminal,
@@ -100,10 +115,46 @@ func makeTerminal(ctx context.Context) terminal.Terminal {
 		ToTerminal()
 }
 
-func makeNode() screen.Node {
-	landing := wrapper_screen.NewDemoSelect()
+func makeLayout(transformer winsize.Transformer) layout.Layout {
+	return layout.NewBuilder(composer.Standard).
+		Transformer(transformer).
+		ToLayout()
+}
 
-	history := history.New(landing).ToNode()
+func makeRender(transformer winsize.Transformer) render.Render {
+	atomStyler := styler.NewDefaultAtom().
+		Push(wrapper_render.Atoms.ToPairsSlice()...)
+
+	specStyler := styler.NewDefaultSpec()
+
+	standard := processor.New(*atomStyler, *specStyler)
+
+	adapter := processor.WithPadding(
+		transformer,
+		standard.Render,
+	)
+
+	return render.NewBuilder(adapter).
+		ToRender()
+}
+
+func makeWrapper(cache system_cache.Cache[hash.Hash, delta.Delta]) wrap.Wrapper {
+	return wrap.FromWrapper(
+		wrap.DefaultWrapper(),
+		wrap.WithProcessors(
+			wrap_processor.Chunk(chunk.DefaultChunk),
+		),
+		wrap.WithSplitter(
+			wrap_splitter.SplitLineWithCache(cache),
+		),
+	)
+}
+
+func makeNode(systemCache system_cache.Cache[hash.Hash, delta.Delta]) screen.Node {
+	landing := wrapper_screen.NewDemoTextArea()
+
+	cache := cache.New(systemCache, landing).ToNode()
+	history := history.New(cache).ToNode()
 	pagination := pagination.New(history).
 		ToNode()
 	helper := help.New(pagination).ToNode()
@@ -134,27 +185,4 @@ func makePipeline(node screen.Node) screen.Node {
 	return pipeline.New(node,
 		headerStep, inlineStep, spacerHeader, spacerFooter,
 	).ToNode()
-}
-
-func makeLayout(transformer winsize.Transformer) layout.Layout {
-	return layout.NewBuilder(composer.Standard).
-		Transformer(transformer).
-		ToLayout()
-}
-
-func makeRender(transformer winsize.Transformer) render.Render {
-	atomStyler := styler.NewDefaultAtom().
-		Push(wrapper_render.Atoms.ToPairsSlice()...)
-
-	specStyler := styler.NewDefaultSpec()
-
-	standard := processor.New(*atomStyler, *specStyler)
-
-	adapter := processor.WithPadding(
-		transformer,
-		standard.Render,
-	)
-
-	return render.NewBuilder(adapter).
-		ToRender()
 }
