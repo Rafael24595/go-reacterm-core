@@ -11,6 +11,9 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
+const errf_word_out_of_range = "index out of words range [%d] with length %d"
+const errf_frag_out_of_range = "index out of frags range [%d] with length %d"
+
 type Line struct {
 	Source line.Line
 	words  []Word
@@ -43,9 +46,7 @@ func (l *Line) Frags() []Frag {
 
 func (l *Line) FindFrags(idx uint) []Frag {
 	if idx >= uint(len(l.words)) {
-		assert.Unreachable(
-			"index out of words range [%d] with length %d", idx, len(l.words),
-		)
+		assert.Unreachable(errf_word_out_of_range, idx, len(l.words))
 		return make([]Frag, 0)
 	}
 
@@ -106,22 +107,12 @@ func (l *Line) splitFrag(
 	cols winsize.Cols,
 ) {
 	if fragIdx >= uint32(len(l.frags)) {
-		assert.Unreachable(
-			"index out of frags range [%d] with length %d",
-			fragIdx,
-			len(l.words),
-		)
-
+		assert.Unreachable(errf_frag_out_of_range, fragIdx, len(l.words))
 		return
 	}
 
 	if wordIdx >= uint(len(l.words)) {
-		assert.Unreachable(
-			"index out of words range [%d] with length %d",
-			fragIdx,
-			len(l.words),
-		)
-
+		assert.Unreachable(errf_word_out_of_range, fragIdx, len(l.words))
 		return
 	}
 
@@ -162,9 +153,7 @@ func (l *Line) splitFrag(
 
 func (l *Line) HasAtom(idx uint, atm atom.Atom) bool {
 	if idx >= uint(len(l.words)) {
-		assert.Unreachable(
-			"index out of words range [%d] with length %d", idx, len(l.words),
-		)
+		assert.Unreachable(errf_word_out_of_range, idx, len(l.words))
 		return false
 	}
 
@@ -186,9 +175,7 @@ func (l *Line) measureWith(
 	resolver measureResolver,
 ) winsize.Cols {
 	if idx >= uint(len(l.words)) {
-		assert.Unreachable(
-			"index out of words range [%d] with length %d", idx, len(l.words),
-		)
+		assert.Unreachable(errf_word_out_of_range, idx, len(l.words))
 		return 0
 	}
 
