@@ -32,13 +32,13 @@ func benchmarkLine(size int) line.Line {
 func lineToString(line layout.Line) string {
 	var sb strings.Builder
 
-	frags := line.Frags()
-	for _, word := range line.Words() {
+	for idx := range line.Size() {
 		text := fragsToString(
-			frags[word.Start():word.End()],
+			line.FindFrags(uint(idx)),
 		)
 		sb.WriteString(text)
 	}
+
 	return sb.String()
 }
 
