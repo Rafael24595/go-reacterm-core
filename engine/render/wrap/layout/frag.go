@@ -65,6 +65,13 @@ func AppendToFrags(dst []frag.Frag, src []Frag) []frag.Frag {
 	return dst
 }
 
+func AppendFromFrags(dst []Frag, src []frag.Frag) []Frag {
+	for _, f := range src {
+		dst = append(dst, *NewFrag(&f))
+	}
+	return dst
+}
+
 func splitFragAt(frg *Frag, cols winsize.Cols) (*Frag, *Frag) {
 	text := frg.Base.Text()
 
