@@ -116,18 +116,18 @@ func Line(cols winsize.Cols, lne line.Line) []line.Line {
 	return wrapLine(cols, lne, make([]line.Line, 0, 2))
 }
 
-func Lines(cols winsize.Cols, lines ...line.Line) []line.Line {
-	result := make([]line.Line, 0, len(lines)*2)
+func Lines(cols winsize.Cols, lns ...line.Line) []line.Line {
+	result := make([]line.Line, 0, len(lns)*2)
 
-	for _, line := range lines {
+	for _, line := range lns {
 		result = wrapLine(cols, line, result)
 	}
 
 	return result
 }
 
-func wrapLine(cols winsize.Cols, line line.Line, dst []line.Line) []line.Line {
-	normalized := NormalizeLines(line)
+func wrapLine(cols winsize.Cols, lne line.Line, dst []line.Line) []line.Line {
+	normalized := NormalizeLines(lne)
 
 	for _, layout := range normalized {
 		current := &layout
@@ -142,18 +142,18 @@ func wrapLine(cols winsize.Cols, line line.Line, dst []line.Line) []line.Line {
 	return dst
 }
 
-func NextLine(cols winsize.Cols, lines []layout.Line) (*line.Line, []layout.Line) {
-	builder, remain := NextBuilder(cols, lines)
+func NextLine(cols winsize.Cols, lns []layout.Line) (*line.Line, []layout.Line) {
+	builder, remain := NextBuilder(cols, lns)
 	return builder.LinePtr(), remain
 }
 
-func NextBuilder(cols winsize.Cols, lines []layout.Line) (*line.Builder, []layout.Line) {
-	if cols == 0 || len(lines) == 0 {
-		return nil, make([]layout.Line, 0, len(lines)*2)
+func NextBuilder(cols winsize.Cols, lns []layout.Line) (*line.Builder, []layout.Line) {
+	if cols == 0 || len(lns) == 0 {
+		return nil, make([]layout.Line, 0, len(lns)*2)
 	}
 
-	current := lines[0]
-	remain := lines[1:]
+	current := lns[0]
+	remain := lns[1:]
 
 	result, rest := wrapOnce(cols, &current)
 	if rest != nil {
@@ -220,10 +220,9 @@ func wrapOnce(cols winsize.Cols, lne *layout.Line) (*line.Builder, *layout.Line)
 	return cursor, rest
 }
 
-func shouldWrap(line *layout.Line, wordIdx uint, currentWidth winsize.Cols) bool {
-	if line.HasAtom(wordIdx, atom.Break) {
+func shouldWrap(lne *layout.Line, wordIdx uint, currentWidth winsize.Cols) bool {
+	if lne.HasAtom(wordIdx, atom.Break) {
 		return false
 	}
-
 	return currentWidth > 0
 }
