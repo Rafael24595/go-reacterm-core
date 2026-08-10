@@ -63,9 +63,7 @@ func (l *Line) PushFrags(frags ...frag.Frag) *Line {
 	)
 
 	l.words = append(l.words, *word)
-	l.frags = append(l.frags,
-		FromFrags(frags...)...,
-	)
+	l.frags = AppendFromFrags(l.frags, frags)
 
 	return l
 }
