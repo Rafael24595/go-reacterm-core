@@ -32,7 +32,6 @@ func fragsToString(frags []Frag) string {
 	return b.String()
 }
 
-
 func TestLayoutFindFrags(t *testing.T) {
 	lne := emptyLayout().
 		PushFrags(
@@ -82,6 +81,67 @@ func TestLayoutHasAtom(t *testing.T) {
 
 	assert.True(t, lne.HasAtom(0, atom.Wrap))
 	assert.False(t, lne.HasAtom(0, atom.Focus))
+}
+
+func TestSliceFromWord(t *testing.T) {
+	tests := []struct {
+		name          string
+		initialWords  []string
+		sliceIdx      uint
+		expectedWords []string
+	}{
+		{
+			name:          "slice from index 0 leaves words unchanged",
+			initialWords:  []string{"foo", "bar", "baz"},
+			sliceIdx:      0,
+			expectedWords: []string{"foo", "bar", "baz"},
+		},
+		{
+			name:          "slice from middle index",
+			initialWords:  []string{"foo", "bar", "baz", "qux"},
+			sliceIdx:      2,
+			expectedWords: []string{"baz", "qux"},
+		},
+		{
+			name:          "slice from last index leaves only last word",
+			initialWords:  []string{"foo", "bar", "baz"},
+			sliceIdx:      2,
+			expectedWords: []string{"baz"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			lne := emptyLayout()
+			for _, w := range tt.initialWords {
+				lne.PushFrags(frag.FromString(w))
+			}
+
+			res := lne.SliceFromWord(tt.sliceIdx)
+
+			assert.Same(t, lne, res)
+			assert.Size(t, len(tt.expectedWords), lne.words)
+
+			for i, exp := range tt.expectedWords {
+				frags := lne.FindFrags(uint(i))
+				assert.Equal(t, exp, fragsToString(frags))
+			}
+		})
+	}
+}
+
+func TestSliceFromWord_OutOfBounds(t *testing.T) {
+	lne := emptyLayout().
+		PushFrags(frag.FromString("foo")).
+		PushFrags(frag.FromString("bar"))
+
+	assert.Panic(t, func() {
+		lne.SliceFromWord(2)
+	})
+
+	assert.Panic(t, func() {
+		lne.SliceFromWord(5)
+	})
 }
 
 func TestSplitWord(t *testing.T) {

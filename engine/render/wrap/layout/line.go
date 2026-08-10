@@ -11,6 +11,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
+// TODO: Review documentation.
+
 const errf_word_out_of_range = "index out of words range [%d] with length %d"
 const errf_frag_out_of_range = "index out of frags range [%d] with length %d"
 
@@ -65,6 +67,19 @@ func (l *Line) PushFrags(frags ...frag.Frag) *Line {
 	l.words = append(l.words, *word)
 	l.frags = AppendFromFrags(l.frags, frags)
 
+	return l
+}
+
+// SliceFromWord removes the first idx words from the line.
+//
+// The operation mutates Line and retains the existing backing arrays.
+func (l *Line) SliceFromWord(idx uint) *Line {
+	if idx >= uint(len(l.words)) {
+		assert.Unreachable(errf_word_out_of_range, idx, len(l.words))
+		return l
+	}
+
+	l.words = l.words[idx:]
 	return l
 }
 
