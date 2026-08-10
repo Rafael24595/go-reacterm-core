@@ -58,7 +58,7 @@ func fragMeasure(cols winsize.Cols, frags ...Frag) winsize.Cols {
 	return measure
 }
 
-func AppendFrags(dst []frag.Frag, src []Frag) []frag.Frag {
+func AppendToFrags(dst []frag.Frag, src []Frag) []frag.Frag {
 	for _, f := range src {
 		dst = append(dst, *f.Base)
 	}

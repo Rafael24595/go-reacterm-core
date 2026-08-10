@@ -178,7 +178,7 @@ func wrapOnce(cols winsize.Cols, lne *layout.Line) (*line.Builder, *layout.Line)
 		wordMeasure := lne.Measure(wordIdx, cols)
 
 		if wordMeasure <= remaining {
-			cursor.Text = layout.AppendFrags(
+			cursor.Text = layout.AppendToFrags(
 				cursor.Text, lne.FindFrags(wordIdx),
 			)
 
@@ -197,7 +197,7 @@ func wrapOnce(cols winsize.Cols, lne *layout.Line) (*line.Builder, *layout.Line)
 			cols,
 			remaining,
 		); ok {
-			cursor.Text = layout.AppendFrags(
+			cursor.Text = layout.AppendToFrags(
 				cursor.Text, lne.FindFrags(wordIdx),
 			)
 		}
