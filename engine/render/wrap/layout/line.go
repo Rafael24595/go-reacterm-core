@@ -16,6 +16,10 @@ import (
 const errf_word_out_of_range = "index out of words range [%d] with length %d"
 const errf_frag_out_of_range = "index out of frags range [%d] with length %d"
 
+// Line is a mutable layout representation used during wrapping.
+//
+// A Line owns its words and fragments and may mutate them in place.
+// Callers that need an independent snapshot must use clone/Clones.
 type Line struct {
 	Source line.Line
 	words  []Word
