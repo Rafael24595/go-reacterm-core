@@ -24,7 +24,7 @@ func emptyLayout() *Line {
 	return sourceLayout(line.Line{})
 }
 
-func fragsToString(frags []Frag) string {
+func fragsToString(frags ...Frag) string {
 	var b strings.Builder
 	for _, f := range frags {
 		b.WriteString(f.Base.Text())
@@ -66,11 +66,11 @@ func TestLayoutPushFrags(t *testing.T) {
 	assert.Size(t, 2, lne.words)
 	assert.Size(t, 3, lne.frags)
 
-	assert.Equal(t, uint32(0), lne.words[0].start)
-	assert.Equal(t, uint32(1), lne.words[0].end)
+	assert.Equal(t, 0, lne.words[0].start)
+	assert.Equal(t, 1, lne.words[0].end)
 
-	assert.Equal(t, uint32(1), lne.words[1].start)
-	assert.Equal(t, uint32(3), lne.words[1].end)
+	assert.Equal(t, 1, lne.words[1].start)
+	assert.Equal(t, 3, lne.words[1].end)
 }
 
 func TestLayoutHasAtom(t *testing.T) {
@@ -124,7 +124,7 @@ func TestSliceFromWord(t *testing.T) {
 
 			for i, exp := range tt.expectedWords {
 				frags := lne.FindFrags(uint(i))
-				assert.Equal(t, exp, fragsToString(frags))
+				assert.Equal(t, exp, fragsToString(frags...))
 			}
 		})
 	}
@@ -219,7 +219,9 @@ func TestSplitWord(t *testing.T) {
 
 			if tt.expectedCurrent != "" {
 				assert.True(t, ok)
-				assert.Equal(t, tt.expectedCurrent, fragsToString(tt.layout.FindFrags(idx)))
+				assert.Equal(
+					t, tt.expectedCurrent, fragsToString(tt.layout.FindFrags(idx)...),
+				)
 			}
 		})
 	}
@@ -238,7 +240,7 @@ func TestSplitWord_FitsWithoutMutatingLayout(t *testing.T) {
 	assert.Size(t, 1, lne.words)
 	assert.Size(t, 1, lne.frags)
 
-	assert.Equal(t, "golang", fragsToString(lne.FindFrags(0)))
+	assert.Equal(t, "golang", fragsToString(lne.FindFrags(0)...))
 
 	assert.Equal(t, uint32(0), lne.words[0].start)
 	assert.Equal(t, uint32(1), lne.words[0].end)
@@ -259,9 +261,9 @@ func TestSplitWord_SplitLastFrag(t *testing.T) {
 	assert.Size(t, 2, lne.words)
 	assert.Size(t, 4, lne.frags)
 
-	assert.Equal(t, "golan", fragsToString(lne.FindFrags(0)))
+	assert.Equal(t, "golan", fragsToString(lne.FindFrags(0)...))
 	assert.Equal(t, "n", lne.frags[2].Base.Text())
-	assert.Equal(t, "g", fragsToString(lne.FindFrags(1)))
+	assert.Equal(t, "g", fragsToString(lne.FindFrags(1)...))
 }
 
 func TestLayoutSplitFrag(t *testing.T) {
@@ -325,10 +327,10 @@ func TestLayoutSplitFrag_ShiftsFollowingWords(t *testing.T) {
 	assert.Size(t, 4, lne.words)
 	assert.Size(t, 4, lne.frags)
 
-	assert.Equal(t, "abc", fragsToString(lne.FindFrags(0)))
-	assert.Equal(t, "def", fragsToString(lne.FindFrags(1)))
-	assert.Equal(t, "foo", fragsToString(lne.FindFrags(2)))
-	assert.Equal(t, "bar", fragsToString(lne.FindFrags(3)))
+	assert.Equal(t, "abc", fragsToString(lne.FindFrags(0)...))
+	assert.Equal(t, "def", fragsToString(lne.FindFrags(1)...))
+	assert.Equal(t, "foo", fragsToString(lne.FindFrags(2)...))
+	assert.Equal(t, "bar", fragsToString(lne.FindFrags(3)...))
 
 	assert.Equal(t, 0, lne.words[0].start)
 	assert.Equal(t, 1, lne.words[0].end)
@@ -354,7 +356,7 @@ func TestLayoutSplitFrag_NoSplit(t *testing.T) {
 	assert.Size(t, 1, lne.words)
 	assert.Size(t, 1, lne.frags)
 
-	assert.Equal(t, "abc", fragsToString(lne.FindFrags(0)))
+	assert.Equal(t, "abc", fragsToString(lne.FindFrags(0)...))
 }
 
 func TestLayoutWordMeasure_CacheSameCols(t *testing.T) {
