@@ -38,16 +38,20 @@ func (l *Line) Size() uint {
 	return uint(len(l.words))
 }
 
-func (l *Line) Words() []Word {
-	clone := make([]Word, len(l.words))
-	copy(clone, l.words)
-	return clone
+func (l *Line) FindWord(idx uint) (Word, bool) {
+	if idx >= uint(len(l.words)) {
+		assert.Unreachable(errf_word_out_of_range, idx, len(l.words))
+		return Word{}, false
+	}
+	return l.words[idx], true
 }
 
-func (l *Line) Frags() []Frag {
-	clone := make([]Frag, len(l.frags))
-	copy(clone, l.frags)
-	return clone
+func (l *Line) FindFrag(idx uint32) (Frag, bool) {
+	if idx >= uint32(len(l.frags)) {
+		assert.Unreachable(errf_frag_out_of_range, idx, len(l.frags))
+		return Frag{}, false
+	}
+	return l.frags[idx], true
 }
 
 func (l *Line) FindFrags(idx uint) []Frag {

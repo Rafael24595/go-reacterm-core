@@ -73,6 +73,45 @@ func TestLayoutPushFrags(t *testing.T) {
 	assert.Equal(t, 3, lne.words[1].end)
 }
 
+func TestLayoutFindWord(t *testing.T) {
+	lne := emptyLayout()
+
+	lne.PushFrags(
+		frag.FromString("a"),
+		frag.FromString("b"),
+		frag.FromString("c"),
+	)
+
+	word, ok := lne.FindWord(0)
+
+	assert.True(t, ok)
+	assert.Equal(t, 0, word.start)
+	assert.Equal(t, 3, word.end)
+
+	assert.Panic(t, func() {
+		lne.FindWord(1)
+	})
+}
+
+func TestLayoutFindFrag(t *testing.T) {
+	lne := emptyLayout()
+
+	lne.PushFrags(
+		frag.FromString("a"),
+		frag.FromString("b"),
+		frag.FromString("c"),
+	)
+
+	frag, ok := lne.FindFrag(0)
+
+	assert.True(t, ok)
+	assert.Equal(t, "a", fragsToString(frag))
+
+	assert.Panic(t, func() {
+		lne.FindFrag(3)
+	})
+}
+
 func TestLayoutHasAtom(t *testing.T) {
 	frg := frag.TextAtom("foo", atom.Wrap)
 
