@@ -131,7 +131,7 @@ func makeRender(transformer winsize.Transformer) render.Render {
 
 	adapter := processor.WithPadding(
 		transformer,
-		standard.Render,
+		standard.RawRender,
 	)
 
 	return render.NewBuilder(adapter).

@@ -23,7 +23,7 @@ func New(atom styler.Atom, spec styler.Spec) Standard {
 	}
 }
 
-func (r Standard) Render(lines []line.Line, size winsize.Winsize) []string {
+func (r Standard) RawRender(lines []line.Line, size winsize.Winsize) []string {
 	buffer := make([]string, len(lines))
 
 	for i, lne := range lines {
