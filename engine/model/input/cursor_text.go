@@ -65,12 +65,13 @@ func (c *TextCursor) SelectEnd() offset.Offset {
 	return c.anchor
 }
 
-func (c *TextCursor) MoveCaretTo(buff []rune, caret offset.Offset) {
+func (c *TextCursor) MoveCaretTo(buff []rune, caret offset.Offset) *TextCursor {
 	c.MoveCaretWithoutTick(buff, caret)
 	c.Tick()
+	return c
 }
 
-func (c *TextCursor) MoveCaretWithoutTick(buff []rune, caret offset.Offset) {
+func (c *TextCursor) MoveCaretWithoutTick(buff []rune, caret offset.Offset) *TextCursor {
 	min := offset.Offset(1)
 	len := offset.Offset(len(buff))
 
@@ -80,14 +81,17 @@ func (c *TextCursor) MoveCaretWithoutTick(buff []rune, caret offset.Offset) {
 
 	c.caret = math.Clamp(caret, min, len)
 	c.anchor = c.caret
+
+	return c
 }
 
-func (c *TextCursor) MoveSelectTo(buff []rune, caret, anchor offset.Offset) {
+func (c *TextCursor) MoveSelectTo(buff []rune, caret, anchor offset.Offset) *TextCursor {
 	c.MoveSelectWithoutTick(buff, caret, anchor)
 	c.Tick()
+	return c
 }
 
-func (c *TextCursor) MoveSelectWithoutTick(buff []rune, caret, anchor offset.Offset) {
+func (c *TextCursor) MoveSelectWithoutTick(buff []rune, caret, anchor offset.Offset) *TextCursor {
 	min := offset.Offset(1)
 	len := offset.Offset(len(buff))
 
@@ -97,6 +101,8 @@ func (c *TextCursor) MoveSelectWithoutTick(buff []rune, caret, anchor offset.Off
 
 	c.caret = math.Clamp(caret, min, len)
 	c.anchor = math.Clamp(anchor, min, len)
+	
+	return c
 }
 
 func (c *TextCursor) Tick() {
