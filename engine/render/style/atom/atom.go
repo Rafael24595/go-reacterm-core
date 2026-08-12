@@ -1,6 +1,6 @@
 package atom
 
-type Atom uint8
+type Atom uint16
 
 const (
 	None Atom = 0
@@ -13,8 +13,8 @@ const (
 	Break
 )
 
-func (s Atom) Uint8() uint8 {
-	return uint8(s)
+func (s Atom) Uint16() uint16 {
+	return uint16(s)
 }
 
 func Merge(styles ...Atom) Atom {
