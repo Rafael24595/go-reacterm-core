@@ -13,6 +13,10 @@ func TestCursor_SelectionLogic(t *testing.T) {
 	c := NewTextCursor(true)
 	buff := []rune("Golang")
 
+	c.SelectAll(buff)
+	assert.Equal(t, c.SelectStart(), 1)
+	assert.Equal(t, c.SelectEnd(), 6)
+
 	c.MoveSelectTo(buff, 3, 1)
 	assert.Equal(t, c.SelectStart(), 1)
 	assert.Equal(t, c.SelectEnd(), 3)
@@ -21,7 +25,10 @@ func TestCursor_SelectionLogic(t *testing.T) {
 	assert.Equal(t, c.SelectStart(), 1)
 	assert.Equal(t, c.SelectEnd(), 3)
 
-	c.MoveCaretTo(buff, 99)
+	c.CaretToStart(buff)
+	assert.Equal(t, c.Caret(), 1)
+
+	c.CaretToEnd(buff)
 	assert.Equal(t, c.Caret(), 6)
 }
 
