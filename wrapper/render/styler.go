@@ -19,6 +19,12 @@ var Atoms = dict.NewInmutableLinkedMap(
 		}
 		return wrapper_ansi.Bold + text + wrapper_ansi.NormalWeight
 	}),
+	pa(atom.Dim, func(text string) string {
+		if text == "" {
+			return text
+		}
+		return wrapper_ansi.Dim + text + wrapper_ansi.NormalWeight
+	}),
 	pa(atom.Select, func(text string) string {
 		if text == "" {
 			return text

@@ -5,6 +5,7 @@ type Atom uint16
 const (
 	None Atom = 0
 	Bold Atom = 1 << iota
+	Dim
 	Upper
 	Lower
 	Select
