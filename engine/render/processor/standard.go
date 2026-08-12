@@ -23,6 +23,11 @@ func New(atom styler.Atom, spec styler.Spec) Standard {
 	}
 }
 
+func (r Standard) Render(lines []line.Line, size winsize.Winsize) string {
+	buffer := r.RawRender(lines, size)
+	return strings.Join(buffer, "\n")
+}
+
 func (r Standard) RawRender(lines []line.Line, size winsize.Winsize) []string {
 	buffer := make([]string, len(lines))
 
