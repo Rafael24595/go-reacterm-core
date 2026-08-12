@@ -120,9 +120,7 @@ func (n *TextArea) AddText(text string) *TextArea {
 	}
 
 	n.buffer.Append([]rune(text))
-	n.caret.MoveCaretTo(
-		n.buffer.Buffer(), n.buffer.Size(),
-	)
+	n.caret.CaretToEnd(n.buffer.Buffer())
 
 	return n
 }
@@ -397,7 +395,7 @@ func (n *TextArea) moveHome(uiState *state.UIState, event screen.Event) screen.R
 	buffer := n.buffer.Buffer()
 
 	if event.Key.Mod.HasAny(key.ModCtrl) {
-		n.caret.MoveCaretTo(buffer, 0)
+		n.caret.CaretToStart(buffer)
 		return result
 	}
 
@@ -420,7 +418,7 @@ func (n *TextArea) moveEnd(uiState *state.UIState, event screen.Event) screen.Re
 	buffer := n.buffer.Buffer()
 
 	if event.Key.Mod.HasAny(key.ModCtrl) {
-		n.caret.MoveCaretTo(buffer, n.buffer.Size())
+		n.caret.CaretToEnd(buffer)
 		return result
 	}
 
@@ -452,7 +450,7 @@ func (n *TextArea) moveUp(uiState *state.UIState, event screen.Event) screen.Res
 			return result
 		}
 
-		n.caret.MoveCaretTo(buffer, 0)
+		n.caret.CaretToStart(buffer)
 		return result
 	}
 
@@ -471,7 +469,6 @@ func (n *TextArea) moveDown(uiState *state.UIState, event screen.Event) screen.R
 	result := screen.ResultFromUIState(uiState)
 
 	buffer := n.buffer.Buffer()
-	size := n.buffer.Size()
 
 	start := n.caret.Caret()
 	distance := line.DistanceFromLF(buffer, start)
@@ -479,11 +476,13 @@ func (n *TextArea) moveDown(uiState *state.UIState, event screen.Event) screen.R
 	nextLineStart, ok := line.FindNextLineStart(buffer, start)
 	if !ok {
 		if event.Key.Mod.HasAny(key.ModShift) {
-			n.caret.MoveSelectTo(buffer, size, n.caret.Anchor())
+			n.caret.MoveSelectTo(
+				buffer, n.buffer.Size(), n.caret.Anchor(),
+			)
 			return result
 		}
 
-		n.caret.MoveCaretTo(buffer, size)
+		n.caret.CaretToEnd(buffer)
 		return result
 	}
 
