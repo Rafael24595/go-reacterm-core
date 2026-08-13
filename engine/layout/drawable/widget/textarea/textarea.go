@@ -20,14 +20,15 @@ import (
 const Name = "text_area_unit"
 
 type TextAreaUnit struct {
-	loaded     bool
-	lazyLoaded bool
-	writeMode  bool
-	indexMode  bool
-	buffer     []rune
-	caret      *input.TextCursor
-	steps      []Transformer
-	unit       drawable.Unit
+	loaded      bool
+	lazyLoaded  bool
+	writeMode   bool
+	indexMode   bool
+	placeholder string
+	buffer      []rune
+	caret       *input.TextCursor
+	steps       []Transformer
+	unit        drawable.Unit
 }
 
 func New(buffer []rune, caret *input.TextCursor) *TextAreaUnit {
@@ -53,6 +54,11 @@ func (u *TextAreaUnit) WriteMode(writeMode bool) *TextAreaUnit {
 
 func (u *TextAreaUnit) IndexMode(indexMode bool) *TextAreaUnit {
 	u.indexMode = indexMode
+	return u
+}
+
+func (u *TextAreaUnit) SetPlaceholder(placeholder string) *TextAreaUnit {
+	u.placeholder = placeholder
 	return u
 }
 
@@ -117,6 +123,22 @@ func (u *TextAreaUnit) wipe() {
 }
 
 func (u *TextAreaUnit) resolveFrags() []frag.Frag {
+	if len(u.buffer) == 0 && len(u.placeholder) != 0 {
+		return u.resolvePlaceholder()
+	}
+	return u.resolveBuffer()
+}
+
+func (u *TextAreaUnit) resolvePlaceholder() []frag.Frag {
+	return []frag.Frag{
+		frag.NewBuilder().
+			AddText(u.placeholder).
+			AddAtom(atom.Dim).
+			Frag(),
+	}
+}
+
+func (u *TextAreaUnit) resolveBuffer() []frag.Frag {
 	buffer := u.buffer
 
 	start := u.caret.SelectStart().Sub(1)
