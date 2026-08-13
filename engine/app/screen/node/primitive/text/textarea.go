@@ -25,16 +25,17 @@ import (
 const NameArea = "text_area"
 
 type TextArea struct {
-	reference  string
-	loaded     bool
-	bindings   rw.Bindings[CommandRead, CommandWrite]
-	definition rw.Definition
-	history    *event.TextEventService
-	writeMode  bool
-	indexMode  bool
-	buffer     *buffer.RuneBuffer
-	clipboard  *buffer.Clipboard
-	caret      *input.TextCursor
+	reference   string
+	loaded      bool
+	bindings    rw.Bindings[CommandRead, CommandWrite]
+	definition  rw.Definition
+	history     *event.TextEventService
+	placeholder string
+	writeMode   bool
+	indexMode   bool
+	buffer      *buffer.RuneBuffer
+	clipboard   *buffer.Clipboard
+	caret       *input.TextCursor
 }
 
 func NewArea() *TextArea {
@@ -101,6 +102,11 @@ func (n *TextArea) WriteMode() *TextArea {
 func (n *TextArea) ReadMode() *TextArea {
 	n.writeMode = false
 	return n
+}
+
+func (u *TextArea) SetPlaceholder(placeholder string) *TextArea {
+	u.placeholder = placeholder
+	return u
 }
 
 func (n *TextArea) EnableBlinking() *TextArea {
@@ -628,7 +634,8 @@ func (n *TextArea) viewSources(uiState state.UIState) (
 
 	textarea := textarea.New(n.buffer.Facade(), n.caret).
 		WriteMode(n.writeMode).
-		IndexMode(n.indexMode)
+		IndexMode(n.indexMode).
+		SetPlaceholder(n.placeholder)
 
 	needsPulse := n.needsPulse(uiState)
 
