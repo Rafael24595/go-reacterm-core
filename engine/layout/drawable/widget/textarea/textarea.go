@@ -82,16 +82,7 @@ func (u *TextAreaUnit) lazyBoot(size winsize.Winsize) {
 
 	u.lazyLoaded = true
 
-	start := u.caret.SelectStart().Sub(1)
-	end := u.caret.SelectEnd()
-
-	if len(u.buffer) == 0 {
-		u.buffer = append(u.buffer, marker.PrintableCaretRunes...)
-		start = 0
-		end = 1
-	}
-
-	frags := u.resolveFrags(u.buffer, start, end)
+	frags := u.resolveFrags()
 	for _, step := range u.steps {
 		frags = step(frags)
 	}
@@ -125,35 +116,43 @@ func (u *TextAreaUnit) wipe() {
 	u.unit.Drawable.Wipe()
 }
 
-func (u *TextAreaUnit) resolveFrags(
-	renderBuffer []rune,
-	start, end offset.Offset,
-) []frag.Frag {
+func (u *TextAreaUnit) resolveFrags() []frag.Frag {
+	buffer := u.buffer
+
+	start := u.caret.SelectStart().Sub(1)
+	end := u.caret.SelectEnd()
+
+	if len(buffer) == 0 {
+		buffer = append(buffer, marker.PrintableCaretRunes...)
+		start = 0
+		end = 1
+	}
+
 	frags := make([]frag.Frag, 0, 6)
 
-	bufferLen := offset.Offset(len(renderBuffer))
+	bufferLen := offset.Offset(len(buffer))
 
 	start = min(start, bufferLen.Sub(1))
 	end = min(end, bufferLen)
 
 	if start > 0 {
+		text := string(buffer[:start])
 		frags = append(frags,
-			frag.FromString(string(renderBuffer[:start])),
+			frag.FromString(text),
 		)
 	}
 
-	renderer := selection.NewRenderer(
-		renderBuffer, start, end, u.blinkStyle(),
-	)
-
-	result := renderer.Resolve(u.caret)
+	result := selection.NewRenderer(
+		buffer, start, end, u.blinkStyle(),
+	).Resolve(u.caret)
 
 	end = result.End
 	frags = append(frags, result.Frags...)
 
-	if int(end) < len(renderBuffer) {
+	if int(end) < len(buffer) {
+		text := string(buffer[end:])
 		frags = append(frags,
-			frag.FromString(string(renderBuffer[end:])),
+			frag.FromString(text),
 		)
 	}
 
@@ -164,7 +163,6 @@ func (u *TextAreaUnit) blinkStyle() atom.Atom {
 	if !u.writeMode {
 		return atom.None
 	}
-
 	return u.caret.BlinkStyle()
 }
 
