@@ -271,8 +271,8 @@ func TestMaterializeEmpty(t *testing.T) {
 			assert.Equal(t, tt.expectedText, text_test.LineToString(got[0].Source))
 
 			lne := got[len(got)-1]
-			word := lne.Words()[lne.Size()-1]
-			frag := lne.Frags()[word.End()-1]
+			word, _ := lne.FindWord(lne.Size()-1)
+			frag, _ := lne.FindFrag(word.End()-1)
 
 			assert.Equal(t, tt.expectedAtom, frag.Base.Atom())
 		})
