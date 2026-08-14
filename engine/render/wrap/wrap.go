@@ -211,13 +211,7 @@ func wrapOnce(cols winsize.Cols, lne *layout.Line) (*line.Builder, *layout.Line)
 		return cursor, nil
 	}
 
-	rest := layout.NewLine(
-		lne.Source,
-		lne.Words()[wordIdx:],
-		lne.Frags(),
-	)
-
-	return cursor, rest
+	return cursor, lne.SliceFromWord(wordIdx)
 }
 
 func shouldWrap(lne *layout.Line, wordIdx uint, currentWidth winsize.Cols) bool {
