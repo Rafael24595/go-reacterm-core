@@ -16,21 +16,21 @@ func SplitLine(line line.Line) ([]layout.Word, []layout.Frag) {
 }
 
 func SplitLineWith(splitter Frag, line line.Line) ([]layout.Word, []layout.Frag) {
-	frgs := delta.New()
+	builder := delta.NewBuilder()
 
 	for frg := range line.All() {
 		if !frg.Atom().HasAny(atom.Wrap) && !frag.IsStructural(frg) {
 			result := splitter(frg)
-			frgs.Merge(result)
+			builder.WithDelta(result)
 			continue
 		}
 
-		frgs.BoundAtEnd()
-		frgs.AddFrag(*layout.NewFrag(&frg))
+		builder.BoundAtEnd()
+		builder.AddFrag(*layout.NewFrag(&frg))
 	}
 
-	wrds := buildWords(frgs)
-	return wrds, frgs.Frags
+	wrds := buildWords(builder)
+	return wrds, builder.Frags
 }
 
 func SplitFragByWords(frg frag.Frag) delta.Delta {
@@ -41,7 +41,7 @@ func SplitFragByWords(frg frag.Frag) delta.Delta {
 
 	var startsWithSpace bool
 
-	frgs := delta.New()
+	builder := delta.NewBuilder()
 
 	flush := func(src frag.Frag) {
 		if sb.Len() == 0 {
@@ -55,7 +55,7 @@ func SplitFragByWords(frg frag.Frag) delta.Delta {
 
 		wrd := layout.NewFrag(&frg)
 
-		frgs.AddFrag(*wrd)
+		builder.AddFrag(*wrd)
 
 		sb.Reset()
 	}
@@ -67,7 +67,7 @@ func SplitFragByWords(frg frag.Frag) delta.Delta {
 			startsWithSpace = isSpace
 		} else if isSpace != lastSpace {
 			flush(frg)
-			frgs.BoundAtEnd()
+			builder.BoundAtEnd()
 		}
 
 		lastSpace = isSpace
@@ -78,13 +78,13 @@ func SplitFragByWords(frg frag.Frag) delta.Delta {
 
 	flush(frg)
 
-	frgs.LeftEdge = startsWithSpace
-	frgs.RightEdge = lastSpace
+	builder.LeftEdge = startsWithSpace
+	builder.RightEdge = lastSpace
 
-	return frgs
+	return builder.ToDelta()
 }
 
-func buildWords(frgs delta.Delta) []layout.Word {
+func buildWords(frgs *delta.Builder) []layout.Word {
 	wrds := make([]layout.Word, 0, len(frgs.Bounds)+1)
 
 	var wordStart uint32
