@@ -28,16 +28,16 @@ type Descriptor struct {
 }
 
 func init() {
-	lookup = make(map[Kind]Descriptor, len(registry))
+	lookup = make(map[Kind]Descriptor, len(Registry))
 
-	for _, d := range registry {
+	for _, d := range Registry {
 		lookup[d.Kind] = d
 	}
 }
 
 var lookup map[Kind]Descriptor
 
-var registry = [...]Descriptor{
+var Registry = [...]Descriptor{
 	{
 		Kind: KindJustifyRight,
 		Args: []ArgKey{

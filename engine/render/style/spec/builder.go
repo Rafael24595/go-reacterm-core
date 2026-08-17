@@ -53,7 +53,7 @@ func (b *builder) apply(specs ...Spec) *builder {
 func (b *builder) erase(kinds Kind) Spec {
 	removed := newBuilder()
 
-	for _, desc := range registry {
+	for _, desc := range Registry {
 		if kinds&desc.Kind == KindNone ||
 			!b.has(desc.Kind) {
 			continue

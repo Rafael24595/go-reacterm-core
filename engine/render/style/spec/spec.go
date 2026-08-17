@@ -21,7 +21,7 @@ func calcHash(
 	kinds Kind,
 	args args,
 ) hash.Hasher {
-	for _, desc := range registry {
+	for _, desc := range Registry {
 		if kinds&desc.Kind == 0 {
 			continue
 		}
