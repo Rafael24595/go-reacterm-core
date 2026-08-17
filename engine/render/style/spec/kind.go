@@ -24,6 +24,7 @@ func (s Kind) Uint64() uint64 {
 
 type Descriptor struct {
 	Kind Kind
+	Name string
 	Args []ArgKey
 }
 
@@ -47,6 +48,7 @@ var Registry = [...]Descriptor{
 	},
 	{
 		Kind: KindJustifyLeft,
+		Name: "JustifyLeft",
 		Args: []ArgKey{
 			KeyJustifyLeftSize,
 			KeyJustifyLeftText,
@@ -54,6 +56,7 @@ var Registry = [...]Descriptor{
 	},
 	{
 		Kind: KindJustifyCenter,
+		Name: "JustifyCenter",
 		Args: []ArgKey{
 			KeyJustifyCenterSize,
 			KeyJustifyCenterText,
@@ -61,6 +64,7 @@ var Registry = [...]Descriptor{
 	},
 	{
 		Kind: KindExtendLeft,
+		Name: "ExtendLeft",
 		Args: []ArgKey{
 			KeyExtendLeftSize,
 			KeyExtendLeftText,
@@ -68,6 +72,7 @@ var Registry = [...]Descriptor{
 	},
 	{
 		Kind: KindExtendRight,
+		Name: "ExtendRight",
 		Args: []ArgKey{
 			KeyExtendRightSize,
 			KeyExtendRightText,
@@ -75,18 +80,21 @@ var Registry = [...]Descriptor{
 	},
 	{
 		Kind: KindTruncateLeft,
+		Name: "TruncateLeft",
 		Args: []ArgKey{
 			KeyTruncateLeftSize,
 		},
 	},
 	{
 		Kind: KindTruncateRight,
+		Name: "TruncateRight",
 		Args: []ArgKey{
 			KeyTruncateRightSize,
 		},
 	},
 	{
 		Kind: KindFill,
+		Name: "Fill",
 		Args: []ArgKey{
 			KeyFillSize,
 		},
