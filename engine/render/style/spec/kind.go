@@ -22,22 +22,22 @@ func (s Kind) Uint64() uint64 {
 	return uint64(s)
 }
 
-type KindDescriptor struct {
+type Descriptor struct {
 	Kind Kind
 	Args []ArgKey
 }
 
 func init() {
-	kindLookup = make(map[Kind]KindDescriptor, len(kindRegistry))
+	lookup = make(map[Kind]Descriptor, len(registry))
 
-	for _, d := range kindRegistry {
-		kindLookup[d.Kind] = d
+	for _, d := range registry {
+		lookup[d.Kind] = d
 	}
 }
 
-var kindLookup map[Kind]KindDescriptor
+var lookup map[Kind]Descriptor
 
-var kindRegistry = [...]KindDescriptor{
+var registry = [...]Descriptor{
 	{
 		Kind: KindJustifyRight,
 		Args: []ArgKey{
