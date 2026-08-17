@@ -45,7 +45,7 @@ func calcHash(
 
 func (f Line) Measure() winsize.Cols {
 	measure := winsize.Cols(0)
-	for f := range f.All() {
+	for _, f := range f.text {
 		measure += f.Measure()
 	}
 	return measure
