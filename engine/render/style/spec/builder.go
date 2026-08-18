@@ -53,16 +53,16 @@ func (b *builder) apply(specs ...Spec) *builder {
 func (b *builder) erase(kinds Kind) Spec {
 	removed := newBuilder()
 
-	for _, desc := range Registry {
-		if kinds&desc.Kind == KindNone ||
-			!b.has(desc.Kind) {
+	for _, desc := range registry {
+		if kinds&desc.kind == KindNone ||
+			!b.has(desc.kind) {
 			continue
 		}
 
-		removed.add(desc.Kind)
-		b.remove(desc.Kind)
+		removed.add(desc.kind)
+		b.remove(desc.kind)
 
-		for _, key := range desc.Args {
+		for _, key := range desc.args {
 			val, ok := b.args.TryGet(key)
 			if !ok {
 				continue

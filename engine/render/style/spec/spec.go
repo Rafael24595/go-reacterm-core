@@ -21,14 +21,14 @@ func calcHash(
 	kinds Kind,
 	args args,
 ) hash.Hasher {
-	for _, desc := range Registry {
-		if kinds&desc.Kind == 0 {
+	for _, desc := range registry {
+		if kinds&desc.kind == 0 {
 			continue
 		}
 
-		hasher = hasher.Uint64(desc.Kind.Uint64())
+		hasher = hasher.Uint64(desc.kind.Uint64())
 
-		for _, key := range desc.Args {
+		for _, key := range desc.args {
 			value, ok := args.TryGet(key)
 			if !ok {
 				continue

@@ -1,81 +1,115 @@
 package spec
 
-// TODO: Make Lookup and Registry immutable.
+import "iter"
+
 type Descriptor struct {
-	Kind Kind
-	Name string
-	Args []ArgKey
+	kind Kind
+	name string
+	args []ArgKey
 }
 
-func init() {
-	Lookup = make(map[Kind]Descriptor, len(Registry))
+func (d Descriptor) Kind() Kind {
+	return d.kind
+}
 
-	for _, d := range Registry {
-		Lookup[d.Kind] = d
+func (d Descriptor) Name() string {
+	return d.name
+}
+
+func (d Descriptor) Args() iter.Seq[ArgKey] {
+	return func(yield func(ArgKey) bool) {
+		for i := range d.args {
+			if !yield(d.args[i]) {
+				return
+			}
+		}
 	}
 }
 
-var Lookup map[Kind]Descriptor
+func init() {
+	lookup = make(map[Kind]Descriptor, len(registry))
 
-var Registry = [...]Descriptor{
+	for _, d := range registry {
+		lookup[d.kind] = d
+	}
+}
+
+var lookup map[Kind]Descriptor
+
+var registry = [...]Descriptor{
 	{
-		Kind: KindJustifyRight,
-		Args: []ArgKey{
+		kind: KindJustifyRight,
+		args: []ArgKey{
 			KeyJustifyRightSize,
 			KeyJustifyRightText,
 		},
 	},
 	{
-		Kind: KindJustifyLeft,
-		Name: "JustifyLeft",
-		Args: []ArgKey{
+		kind: KindJustifyLeft,
+		name: "JustifyLeft",
+		args: []ArgKey{
 			KeyJustifyLeftSize,
 			KeyJustifyLeftText,
 		},
 	},
 	{
-		Kind: KindJustifyCenter,
-		Name: "JustifyCenter",
-		Args: []ArgKey{
+		kind: KindJustifyCenter,
+		name: "JustifyCenter",
+		args: []ArgKey{
 			KeyJustifyCenterSize,
 			KeyJustifyCenterText,
 		},
 	},
 	{
-		Kind: KindExtendLeft,
-		Name: "ExtendLeft",
-		Args: []ArgKey{
+		kind: KindExtendLeft,
+		name: "ExtendLeft",
+		args: []ArgKey{
 			KeyExtendLeftSize,
 			KeyExtendLeftText,
 		},
 	},
 	{
-		Kind: KindExtendRight,
-		Name: "ExtendRight",
-		Args: []ArgKey{
+		kind: KindExtendRight,
+		name: "ExtendRight",
+		args: []ArgKey{
 			KeyExtendRightSize,
 			KeyExtendRightText,
 		},
 	},
 	{
-		Kind: KindTruncateLeft,
-		Name: "TruncateLeft",
-		Args: []ArgKey{
+		kind: KindTruncateLeft,
+		name: "TruncateLeft",
+		args: []ArgKey{
 			KeyTruncateLeftSize,
 		},
 	},
 	{
-		Kind: KindTruncateRight,
-		Name: "TruncateRight",
-		Args: []ArgKey{
+		kind: KindTruncateRight,
+		name: "TruncateRight",
+		args: []ArgKey{
 			KeyTruncateRightSize,
 		},
 	},
 	{
-		Kind: KindFill,
-		Name: "Fill",
-		Args: []ArgKey{
+		kind: KindFill,
+		name: "Fill",
+		args: []ArgKey{
 			KeyFillSize,
 		},
 	},
+}
+
+func Lookup(kind Kind) (Descriptor, bool) {
+	desc, ok := lookup[kind]
+	return desc, ok
+}
+
+func Registry() iter.Seq[*Descriptor] {
+	return func(yield func(*Descriptor) bool) {
+		for i := range registry {
+			if !yield(&registry[i]) {
+				return
+			}
+		}
+	}
 }
