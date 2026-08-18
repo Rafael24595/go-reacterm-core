@@ -1,5 +1,6 @@
 package spec
 
+// TODO: Make Lookup and Registry immutable.
 type Descriptor struct {
 	Kind Kind
 	Name string
@@ -7,14 +8,14 @@ type Descriptor struct {
 }
 
 func init() {
-	lookup = make(map[Kind]Descriptor, len(Registry))
+	Lookup = make(map[Kind]Descriptor, len(Registry))
 
 	for _, d := range Registry {
-		lookup[d.Kind] = d
+		Lookup[d.Kind] = d
 	}
 }
 
-var lookup map[Kind]Descriptor
+var Lookup map[Kind]Descriptor
 
 var Registry = [...]Descriptor{
 	{
