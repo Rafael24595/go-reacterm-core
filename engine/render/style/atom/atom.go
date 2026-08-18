@@ -4,13 +4,30 @@ type Atom uint16
 
 const (
 	None Atom = 0
-	Bold Atom = 1 << iota
-	Dim
-	Upper
+
+	// Text atoms:
+
+	// Upper renders the element in uppercase.
+	Upper Atom = 1 << iota
+	// Lower renders the element in lowercase.
 	Lower
+
+	// Style atoms:
+
+	// Bold renders the element in bold.
+	Bold
+	// Dim renders the element with reduced intensity.
+	Dim
+	// Select renders the element as selected.
 	Select
+
+	// Structural atoms:
+
+	// Focus indicates that the element is focused.
 	Focus
+	// Wrap enables text wrapping.
 	Wrap
+	// Break forces a text break.
 	Break
 )
 
