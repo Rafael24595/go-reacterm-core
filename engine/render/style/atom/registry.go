@@ -1,52 +1,76 @@
 package atom
 
-// TODO: Make Lookup and Registry immutable.
+import "iter"
+
 type Descriptor struct {
-	Atom Atom
-	Name string
+	atom Atom
+	name string
+}
+
+func (d Descriptor) Atom() Atom {
+	return d.atom
+}
+
+func (d Descriptor) Name() string {
+	return d.name
 }
 
 func init() {
-	Lookup = make(map[Atom]Descriptor, len(Registry))
+	lookup = make(map[Atom]Descriptor, len(registry))
 
-	for _, d := range Registry {
-		Lookup[d.Atom] = d
+	for _, d := range registry {
+		lookup[d.atom] = d
 	}
 }
 
-var Lookup map[Atom]Descriptor
+var lookup map[Atom]Descriptor
 
-var Registry = [...]Descriptor{
+var registry = [...]Descriptor{
 	{
-		Atom: Bold,
-		Name: "Bold",
+		atom: Bold,
+		name: "Bold",
 	},
 	{
-		Atom: Dim,
-		Name: "Dim",
+		atom: Dim,
+		name: "Dim",
 	},
 	{
-		Atom: Upper,
-		Name: "Upper",
+		atom: Upper,
+		name: "Upper",
 	},
 	{
-		Atom: Lower,
-		Name: "Lower",
+		atom: Lower,
+		name: "Lower",
 	},
 	{
-		Atom: Select,
-		Name: "Select",
+		atom: Select,
+		name: "Select",
 	},
 	{
-		Atom: Focus,
-		Name: "Focus",
+		atom: Focus,
+		name: "Focus",
 	},
 	{
-		Atom: Wrap,
-		Name: "Wrap",
+		atom: Wrap,
+		name: "Wrap",
 	},
 	{
-		Atom: Break,
-		Name: "Break",
+		atom: Break,
+		name: "Break",
 	},
+}
+
+func Lookup(atom Atom) (Descriptor, bool) {
+	desc, ok := lookup[atom]
+	return desc, ok
+}
+
+func Registry() iter.Seq[*Descriptor] {
+	return func(yield func(*Descriptor) bool) {
+		for i := range registry {
+			if !yield(&registry[i]) {
+				return
+			}
+		}
+	}
 }
