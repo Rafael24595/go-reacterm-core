@@ -84,9 +84,7 @@ func AddColsPadding(
 		frags = append(frags, frag)
 	}
 
-	for f := range lne.All() {
-		frags = append(frags, f)
-	}
+	frags = line.AppendFragsTo(frags, lne)
 
 	if paddingR > 0 {
 		frag := frag.BuilderFromFrag(frg).

@@ -91,8 +91,8 @@ func (u *InlineUnit) drawChildren(size winsize.Winsize) []line.Line {
 	return lines
 }
 
-func (u *InlineUnit) joinChildren(lines []line.Line) []line.Line {
-	if len(lines) == 0 {
+func (u *InlineUnit) joinChildren(lns []line.Line) []line.Line {
+	if len(lns) == 0 {
 		return []line.Line{}
 	}
 
@@ -103,11 +103,14 @@ func (u *InlineUnit) joinChildren(lines []line.Line) []line.Line {
 		separator = frag.FromString(u.separator)
 	}
 
-	for i, line := range lines {
-		merged.WithMeta(line).
-			PushIter(line.All())
+	for i, lne := range lns {
+		merged.WithMeta(lne)
+		
+		merged.Text = line.AppendFragsTo(
+			merged.Text, lne,
+		)
 
-		if u.separator != "" && i < len(lines)-1 {
+		if u.separator != "" && i < len(lns)-1 {
 			merged.PushFrags(separator)
 		}
 	}

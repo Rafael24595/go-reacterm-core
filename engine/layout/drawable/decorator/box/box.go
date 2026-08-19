@@ -145,11 +145,7 @@ func (u *BoxUnit) wrapLine(lne line.Line) line.Line {
 	frags := make([]frag.Frag, 0, lne.Size()+2)
 
 	frags = append(frags, frag.FromString(u.separator.Left))
-
-	for f := range lne.All() {
-		frags = append(frags, f)
-	}
-
+	frags = line.AppendFragsTo(frags, lne)
 	frags = append(frags, frag.FromString(u.separator.Right))
 
 	return line.BuilderFromLine(lne).
