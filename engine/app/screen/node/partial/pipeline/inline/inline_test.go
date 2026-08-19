@@ -20,9 +20,7 @@ var targets = []pipeline.Section{
 
 func findAccesor(t *testing.T, s pipeline.Section) pipeline.StackAccessor {
 	acc, ok := pipeline.FindViewModelAccessor(s)
-	if !ok {
-		t.Fatalf("unhandled target %d", s)
-	}
+	assert.True(t, ok)
 	return acc
 }
 

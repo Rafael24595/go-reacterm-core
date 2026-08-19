@@ -331,14 +331,13 @@ func TestWrapLine_LongWord(t *testing.T) {
 	maxWidth := winsize.Cols(10)
 	lines := Line(maxWidth, line)
 
-	for i, l := range lines {
+	for _, l := range lines {
 		text := ""
 		for f := range l.All() {
 			text += f.Text()
 		}
-		if runes.Measure(text) > maxWidth {
-			t.Errorf("line %d too long: %s", i, text)
-		}
+
+		assert.LessOrEqual(t, maxWidth, runes.Measure(text))
 	}
 
 	totalRunes := winsize.Cols(0)
@@ -347,9 +346,8 @@ func TestWrapLine_LongWord(t *testing.T) {
 			totalRunes += runes.Measure(f.Text())
 		}
 	}
-	if totalRunes != runes.Measure(txt) {
-		t.Errorf("total runes mismatch")
-	}
+
+	assert.Equal(t, totalRunes, runes.Measure(txt))
 }
 
 func TestWrapLine_MultipleFrags(t *testing.T) {
@@ -370,9 +368,8 @@ func TestWrapLine_MultipleFrags(t *testing.T) {
 		for f := range l.All() {
 			width += runes.Measure(f.Text())
 		}
-		if width > maxWidth {
-			t.Errorf("line exceeds maxWidth: %v", l)
-		}
+
+		assert.LessOrEqual(t, maxWidth, width)
 	}
 }
 
