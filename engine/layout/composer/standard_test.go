@@ -67,11 +67,7 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 	assert.Equal(t, expectedInput, text_test.LineToString(inputLine))
 
 	for i := 1; i < len(lines)-1; i++ {
-		width := winsize.Cols(0)
-		for f := range lines[i].All() {
-			width += frag.Measure(size.Cols, f)
-		}
-
+		width := line.Measure(lines[i], 0)
 		assert.LessOrEqual(t, size.Cols, width)
 	}
 }
