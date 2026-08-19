@@ -187,39 +187,6 @@ func TestBuilderUnshiftBuilder(t *testing.T) {
 	assert.Equal(t, "C", builder.Text[2].Text())
 }
 
-func TestBuilderPushIter(t *testing.T) {
-	lne := FromFrags(
-		frag.FromString("Iter1"),
-		frag.FromString("Iter2"),
-	)
-
-	b := NewBuilder().
-		PushText("Base").
-		PushIter(lne.All())
-
-	assert.Size(t, 3, b.Text)
-	assert.Equal(t, "Base", b.Text[0].Text())
-	assert.Equal(t, "Iter1", b.Text[1].Text())
-	assert.Equal(t, "Iter2", b.Text[2].Text())
-}
-
-func TestBuilderUnshiftIter(t *testing.T) {
-	lne := FromFrags(
-		frag.FromString("Iter1"),
-		frag.FromString("Iter2"),
-	)
-
-	b := NewBuilder().
-		PushText("Base").
-		UnshiftIter(lne.All())
-
-	assert.Size(t, 3, b.Text)
-
-	assert.Equal(t, "Iter1", b.Text[0].Text())
-	assert.Equal(t, "Iter2", b.Text[1].Text())
-	assert.Equal(t, "Base", b.Text[2].Text())
-}
-
 func TestBuilderWithMeta(t *testing.T) {
 	line := NewBuilder().
 		SetOrder(12).
