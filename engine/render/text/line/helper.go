@@ -6,6 +6,10 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
+func AppendFragsTo(dst []frag.Frag, lne Line) []frag.Frag {
+	return append(dst, lne.text...)
+}
+
 func MaxMeasure(cols winsize.Cols, lines ...Line) winsize.Cols {
 	size := winsize.Cols(0)
 	for _, l := range lines {

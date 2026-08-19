@@ -11,6 +11,30 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
+func TestAppendFragsTo(t *testing.T) {
+	expected := []string{
+		"frg_01",
+		"frg_02",
+		"frg_03",
+	}
+
+	f1 := frag.FromString("frg_01")
+	f2 := frag.FromString("frg_02")
+	f3 := frag.FromString("frg_03")
+
+	lne := FromFrags(f2, f3)
+
+	initialFrags := []frag.Frag{f1}
+
+	result := AppendFragsTo(initialFrags, lne)
+
+	assert.Size(t, 3, result)
+
+	for i := range 3 {
+		assert.Equal(t, expected[i], result[i].Text())
+	}
+}
+
 func TestMaxMeasure(t *testing.T) {
 	cols := winsize.Cols(80)
 
