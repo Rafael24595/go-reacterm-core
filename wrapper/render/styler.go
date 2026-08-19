@@ -13,22 +13,28 @@ func pa(k atom.Atom, s styler.AtomStyler) dict.Pair[atom.Atom, styler.AtomStyler
 }
 
 var Atoms = dict.NewInmutableLinkedMap(
-	pa(atom.Bold, func(text string) string {
-		if text == "" {
-			return text
-		}
-		return wrapper_ansi.Bold + text + wrapper_ansi.NormalWeight
-	}),
-	pa(atom.Dim, func(text string) string {
-		if text == "" {
-			return text
-		}
-		return wrapper_ansi.Dim + text + wrapper_ansi.NormalWeight
-	}),
-	pa(atom.Select, func(text string) string {
-		if text == "" {
-			return text
-		}
-		return wrapper_ansi.Reverse + text + wrapper_ansi.NoReverse
-	}),
+	pa(atom.Bold, toBold),
+	pa(atom.Dim, toDim),
+	pa(atom.Select, toSelect),
 )
+
+func toBold(text string) string {
+	if text == "" {
+		return text
+	}
+	return wrapper_ansi.Bold + text + wrapper_ansi.NormalWeight
+}
+
+func toDim(text string) string {
+	if text == "" {
+		return text
+	}
+	return wrapper_ansi.Dim + text + wrapper_ansi.NormalWeight
+}
+
+func toSelect(text string) string {
+	if text == "" {
+		return text
+	}
+	return wrapper_ansi.Reverse + text + wrapper_ansi.NoReverse
+}
