@@ -20,7 +20,7 @@ func LineFeed(order bool, lne line.Line) []line.Line {
 
 	for frg := range lne.All() {
 		if !strings.ContainsAny(frg.Text(), "\n\r") {
-			builder.PushFrags(frg)
+			builder.PushFrags(*frg)
 			continue
 		}
 
@@ -31,7 +31,7 @@ func LineFeed(order bool, lne line.Line) []line.Line {
 			if part != "" {
 				frgBuilder := frag.NewBuilder().
 					AddText(part).
-					WithMeta(frg)
+					WithMeta(*frg)
 
 				builder.PushBuilder(frgBuilder)
 			}

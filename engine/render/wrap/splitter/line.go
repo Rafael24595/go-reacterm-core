@@ -15,18 +15,18 @@ func SplitLine(line line.Line) ([]layout.Word, []layout.Frag) {
 	return SplitLineWith(SplitFragByWords, line)
 }
 
-func SplitLineWith(splitter Frag, line line.Line) ([]layout.Word, []layout.Frag) {
+func SplitLineWith(splitter Frag, lne line.Line) ([]layout.Word, []layout.Frag) {
 	builder := delta.NewBuilder()
 
-	for frg := range line.All() {
-		if !frg.Atom().HasAny(atom.Wrap) && !frag.IsStructural(frg) {
-			result := splitter(frg)
+	for frg := range lne.All() {
+		if !frg.Atom().HasAny(atom.Wrap) && !frag.IsStructural(*frg) {
+			result := splitter(*frg)
 			builder.WithDelta(result)
 			continue
 		}
 
 		builder.BoundAtEnd()
-		builder.AddFrag(*layout.NewFrag(&frg))
+		builder.AddFrag(*layout.NewFrag(frg))
 	}
 
 	wrds := buildWords(builder)

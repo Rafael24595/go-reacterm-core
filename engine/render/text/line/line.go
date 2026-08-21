@@ -81,10 +81,10 @@ func (l Line) Slice() []frag.Frag {
 	return text
 }
 
-func (l Line) All() iter.Seq[frag.Frag] {
-	return func(yield func(frag.Frag) bool) {
-		for _, f := range l.text {
-			if !yield(f) {
+func (l *Line) All() iter.Seq[*frag.Frag] {
+	return func(yield func(*frag.Frag) bool) {
+		for i := range l.text {
+			if !yield(&l.text[i]) {
 				return
 			}
 		}

@@ -109,7 +109,7 @@ func TestAll(t *testing.T) {
 	t.Run("Iterates all elements", func(t *testing.T) {
 		var collected []frag.Frag
 		for f := range lne.All() {
-			collected = append(collected, f)
+			collected = append(collected, *f)
 		}
 		assert.Size(t, len(frgs), collected)
 	})

@@ -22,8 +22,8 @@ func Line(src line.Line, limit offset.Offset) line.Line {
 	builder := line.NewBuilder().
 		WithMeta(src)
 
-	for frag := range src.All() {
-		split(builder, frag, limit)
+	for frg := range src.All() {
+		split(builder, *frg, limit)
 	}
 
 	return builder.Line()

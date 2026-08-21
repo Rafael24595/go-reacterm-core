@@ -62,7 +62,7 @@ func (r Standard) renderLineFrags(line line.Line, size winsize.Winsize) string {
 
 		spec := r.spec.Apply(f.Spec(), lineSize, txt)
 
-		fragSize := frag.Measure(size.Cols, f)
+		fragSize := frag.Measure(size.Cols, *f)
 		lineSize.Cols = lineSize.Cols.Sub(fragSize)
 
 		if atoms != f.Atom() && len(frags) != 0 {
