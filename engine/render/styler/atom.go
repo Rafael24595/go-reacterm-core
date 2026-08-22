@@ -3,33 +3,30 @@ package styler
 import (
 	"strings"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/dict"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 )
 
 type AtomStyler func(string) string
 
-func pa(k atom.Atom, s AtomStyler) dict.Pair[atom.Atom, AtomStyler] {
-	return dict.NewPair(k, s)
+type AtomRule struct {
+	Atom atom.Atom
+	Fn   AtomStyler
 }
 
-var Atoms = dict.NewInmutableLinkedMap(
-	pa(atom.Lower, func(text string) string {
-		return strings.ToLower(text)
-	}),
-	pa(atom.Upper, func(text string) string {
-		return strings.ToUpper(text)
-	}),
-	pa(atom.Bold, func(text string) string {
-		return text
-	}),
-	pa(atom.Select, func(text string) string {
-		return text
-	}),
-)
+func toLower(text string) string {
+	return strings.ToLower(text)
+}
+
+func toUpper(text string) string {
+	return strings.ToUpper(text)
+}
+
+func toDefault(text string) string {
+	return text
+}
 
 type Atom struct {
-	table *dict.LinkedMap[atom.Atom, AtomStyler]
+	table []AtomRule
 }
 
 func NewAtom() *Atom {
@@ -39,7 +36,7 @@ func NewAtom() *Atom {
 
 func NewDefaultAtom() *Atom {
 	return &Atom{
-		table: Atoms.Clone(false),
+		table: deduplicateAtoms(atoms),
 	}
 }
 
@@ -48,14 +45,17 @@ func (a *Atom) lazyInit() *Atom {
 		return a
 	}
 
-	a.table = dict.NewLinkedMap[atom.Atom, AtomStyler]()
+	a.table = make([]AtomRule, 0)
 	return a
 }
 
-func (a *Atom) Push(pair ...dict.Pair[atom.Atom, AtomStyler]) *Atom {
+func (a *Atom) Push(rules ...AtomRule) *Atom {
 	a.lazyInit()
 
-	a.table.SetPairs(pair...)
+	a.table = deduplicateAtoms(
+		append(a.table, rules...),
+	)
+
 	return a
 }
 
@@ -64,9 +64,9 @@ func (a *Atom) Apply(text string, styles ...atom.Atom) string {
 
 	merged := atom.Merge(styles...)
 
-	for k, p := range a.table.All() {
-		if merged.HasAny(k) {
-			text = p(text)
+	for _, r := range a.table {
+		if merged.HasAny(r.Atom) {
+			text = r.Fn(text)
 		}
 	}
 

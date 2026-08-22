@@ -1,22 +1,17 @@
 package wrapper_render
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/dict"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/styler"
 
 	wrapper_ansi "github.com/Rafael24595/go-reacterm-core/wrapper/ansi"
 )
 
-func pa(k atom.Atom, s styler.AtomStyler) dict.Pair[atom.Atom, styler.AtomStyler] {
-	return dict.NewPair(k, s)
+var Atoms = []styler.AtomRule{
+	{Atom: atom.Bold, Fn: toBold},
+	{Atom: atom.Dim, Fn: toDim},
+	{Atom: atom.Select, Fn: toSelect},
 }
-
-var Atoms = dict.NewInmutableLinkedMap(
-	pa(atom.Bold, toBold),
-	pa(atom.Dim, toDim),
-	pa(atom.Select, toSelect),
-)
 
 func toBold(text string) string {
 	if text == "" {

@@ -4,56 +4,47 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
-	
+
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 )
 
-func TestAtomsStyler(t *testing.T) {
-	tests := []struct {
-		name     string
-		atom     atom.Atom
-		input    string
-		expected string
-	}{
-		{
-			name:     "lowercase transformation",
-			atom:     atom.Lower,
-			input:    "HelLo GoLang",
-			expected: "hello golang",
-		},
-		{
-			name:     "uppercase transformation",
-			atom:     atom.Upper,
-			input:    "HelLo GoLang",
-			expected: "HELLO GOLANG",
-		},
-		{
-			name:     "bold does not modify text",
-			atom:     atom.Bold,
-			input:    "Hello Golang",
-			expected: "Hello Golang",
-		},
-		{
-			name:     "select does not modify text",
-			atom:     atom.Select,
-			input:    "Hello Golang",
-			expected: "Hello Golang",
-		},
-		{
-			name:     "empty string",
-			atom:     atom.Lower,
-			input:    "",
-			expected: "",
-		},
-	}
+func TestAtomRegistryCoverage(t *testing.T) {
+	for r := range atom.Registry() {
+		var found bool
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			fn, ok := Atoms.Get(tt.atom)
-			assert.True(t, ok)
+		for _, s := range atoms {
+			if s.Atom == r.Atom() {
+				found = true
+				break
+			}
+		}
 
-			result := fn(tt.input)
-			assert.Equal(t, tt.expected, result)
-		})
+		assert.True(t, found, "atom %s not found", r.Name)
 	}
+}
+
+func TestAtomsAreUnique(t *testing.T) {
+	cache := make(map[atom.Atom]bool)
+
+	for _, v := range atoms {
+		_, ok := cache[v.Atom]
+		assert.False(t, ok)
+
+		cache[v.Atom] = true
+	}
+}
+
+func TestToLower(t *testing.T) {
+	assert.Equal(t, "hello world", toLower("Hello World"))
+	assert.Equal(t, "", toLower(""))
+}
+
+func TestToUpper(t *testing.T) {
+	assert.Equal(t, "HELLO WORLD", toUpper("Hello World"))
+	assert.Equal(t, "", toUpper(""))
+}
+
+func TestToDefault(t *testing.T) {
+	assert.Equal(t, "Hello World", toDefault("Hello World"))
+	assert.Equal(t, "", toDefault(""))
 }

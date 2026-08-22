@@ -123,7 +123,7 @@ func makeLayout(transformer winsize.Transformer) layout.Layout {
 
 func makeRender(transformer winsize.Transformer) render.Render {
 	atomStyler := styler.NewDefaultAtom().
-		Push(wrapper_render.Atoms.ToPairsSlice()...)
+		Push(wrapper_render.Atoms...)
 
 	specStyler := styler.NewDefaultSpec()
 

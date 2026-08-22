@@ -106,7 +106,7 @@ func helperMakeLayout() layout.Layout {
 
 func helperMakeRender() render.Render {
 	atomStyler := styler.NewDefaultAtom().
-		Push(wrapper_render.Atoms.ToPairsSlice()...)
+		Push(wrapper_render.Atoms...)
 
 	specStyler := styler.NewDefaultSpec()
 
