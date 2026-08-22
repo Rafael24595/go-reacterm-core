@@ -21,23 +21,23 @@ func TestPulse_Toggle(t *testing.T) {
 }
 
 func TestPulse_Reception(t *testing.T) {
-    p := New(10 * time.Millisecond)
-    defer p.Exit()
-    
-    p.Enable()
+	p := New(10 * time.Millisecond)
+	defer p.Exit()
 
-    select {
-    case <-p.Listen():
-    case <-time.After(100 * time.Millisecond):
-        t.Error("timeout: the pulse never came")
-    }
+	p.Enable()
+
+	select {
+	case <-p.Listen():
+	case <-time.After(100 * time.Millisecond):
+		assert.Unreachable(t, "timeout: the pulse never came")
+	}
 }
 
 func TestPulse_Exit(t *testing.T) {
-    p := New(10 * time.Millisecond)
-	
-    p.Enable()
-    p.Exit()
+	p := New(10 * time.Millisecond)
+
+	p.Enable()
+	p.Exit()
 
 	assert.Panic(t, func() {
 		p.Enable()
