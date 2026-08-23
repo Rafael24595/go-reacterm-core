@@ -2,7 +2,6 @@ package styler
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/dynamic"
-	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/dict"
 	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
@@ -11,39 +10,13 @@ import (
 
 type SpecStyler func(spec.Spec, winsize.Cols, format.Text) (string, bool)
 
-func ps(k spec.Kind, s SpecStyler) dict.Pair[spec.Kind, SpecStyler] {
-	return dict.NewPair(k, s)
+type SpecRule struct {
+	Kind spec.Kind
+	Fn   SpecStyler
 }
 
-var Specs = dict.NewInmutableLinkedMap(
-	ps(spec.KindFill, func(spec spec.Spec, cols winsize.Cols, text format.Text) (string, bool) {
-		return fill(spec, cols, text), true
-	}),
-	ps(spec.KindTruncateLeft, func(spec spec.Spec, _ winsize.Cols, text format.Text) (string, bool) {
-		return truncateLeft(spec, text), false
-	}),
-	ps(spec.KindTruncateRight, func(spec spec.Spec, _ winsize.Cols, text format.Text) (string, bool) {
-		return truncateRight(spec, text), false
-	}),
-	ps(spec.KindJustifyRight, func(spec spec.Spec, cols winsize.Cols, text format.Text) (string, bool) {
-		return justifyRight(spec, cols, text), false
-	}),
-	ps(spec.KindJustifyLeft, func(spec spec.Spec, cols winsize.Cols, text format.Text) (string, bool) {
-		return justifyLeft(spec, cols, text), false
-	}),
-	ps(spec.KindJustifyCenter, func(spec spec.Spec, cols winsize.Cols, text format.Text) (string, bool) {
-		return justifyCenter(spec, cols, text), false
-	}),
-	ps(spec.KindExtendLeft, func(spec spec.Spec, cols winsize.Cols, text format.Text) (string, bool) {
-		return extendLeft(spec, cols, text), false
-	}),
-	ps(spec.KindExtendRight, func(spec spec.Spec, cols winsize.Cols, text format.Text) (string, bool) {
-		return extendRight(spec, cols, text), false
-	}),
-)
-
 type Spec struct {
-	table *dict.LinkedMap[spec.Kind, SpecStyler]
+	table []SpecRule
 }
 
 func NewSpec() *Spec {
@@ -53,7 +26,7 @@ func NewSpec() *Spec {
 
 func NewDefaultSpec() *Spec {
 	return &Spec{
-		table: Specs.Clone(false),
+		table: deduplicateSpecs(specs),
 	}
 }
 
@@ -62,14 +35,17 @@ func (s *Spec) lazyInit() *Spec {
 		return s
 	}
 
-	s.table = dict.NewLinkedMap[spec.Kind, SpecStyler]()
+	s.table = make([]SpecRule, 0)
 	return s
 }
 
-func (s *Spec) Push(pair ...dict.Pair[spec.Kind, SpecStyler]) *Spec {
+func (s *Spec) Push(rules ...SpecRule) *Spec {
 	s.lazyInit()
 
-	s.table.SetPairs(pair...)
+	s.table = deduplicateSpecs(
+		append(s.table, rules...),
+	)
+
 	return s
 }
 
@@ -77,17 +53,17 @@ func (s *Spec) Apply(style spec.Spec, size winsize.Winsize, text format.Text) st
 	s.lazyInit()
 
 	kind := style.Kind()
-	for k, p := range s.table.All() {
-		if !kind.HasAny(k) {
+	for _, r := range s.table {
+		if !kind.HasAny(r.Kind) {
 			continue
 		}
 
-		textData, exit := p(style, size.Cols, text)
+		textData, exit := r.Fn(style, size.Cols, text)
 		if exit {
 			return textData
 		}
 
-		textSize := spec.MeasureOf(k, style, spec.LayoutContext{
+		textSize := spec.MeasureOf(r.Kind, style, spec.LayoutContext{
 			SizeCols: size.Cols,
 			TextSize: text.Size,
 		})
@@ -150,16 +126,16 @@ func truncateRight(style spec.Spec, text format.Text) string {
 	return format.TruncateRight(size, text, ellipsis)
 }
 
-func justifyCenter(style spec.Spec, cols winsize.Cols, text format.Text) string {
+func justifyRight(style spec.Spec, cols winsize.Cols, text format.Text) string {
 	args := style.Args()
 
-	size := dynamic.MapOr(args[spec.KeyJustifyCenterSize], cols)
+	size := dynamic.MapOr(args[spec.KeyJustifyRightSize], cols)
 	size = min(cols, size)
 
-	filler := args[spec.KeyJustifyCenterText].
+	filler := args[spec.KeyJustifyRightText].
 		StringOr(marker.DefaultPaddingText)
 
-	return format.JustifyCenter(size, text, filler)
+	return format.JustifyRight(size, text, filler)
 }
 
 func justifyLeft(style spec.Spec, cols winsize.Cols, text format.Text) string {
@@ -174,16 +150,16 @@ func justifyLeft(style spec.Spec, cols winsize.Cols, text format.Text) string {
 	return format.JustifyLeft(size, text, filler)
 }
 
-func justifyRight(style spec.Spec, cols winsize.Cols, text format.Text) string {
+func justifyCenter(style spec.Spec, cols winsize.Cols, text format.Text) string {
 	args := style.Args()
 
-	size := dynamic.MapOr(args[spec.KeyJustifyRightSize], cols)
+	size := dynamic.MapOr(args[spec.KeyJustifyCenterSize], cols)
 	size = min(cols, size)
 
-	filler := args[spec.KeyJustifyRightText].
+	filler := args[spec.KeyJustifyCenterText].
 		StringOr(marker.DefaultPaddingText)
 
-	return format.JustifyRight(size, text, filler)
+	return format.JustifyCenter(size, text, filler)
 }
 
 func extendLeft(style spec.Spec, cols winsize.Cols, text format.Text) string {
