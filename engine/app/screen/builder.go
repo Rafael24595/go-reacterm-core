@@ -138,7 +138,7 @@ func (b *Builder) View(view ViewFunc) *Builder {
 }
 
 func (b *Builder) makeTags() set.Set[string] {
-	tags := set.New[string]()
+	tags := set.New[string](5)
 
 	if b.name == "" {
 		tags.Add(ErrorMissingName)
