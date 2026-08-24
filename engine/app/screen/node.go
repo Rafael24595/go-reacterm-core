@@ -2,6 +2,9 @@ package screen
 
 import "github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 
+// TODO: Keep it functional?
+type Pass func(Node) (Node, error)
+
 type Node struct {
 	id       string
 	Name     string
