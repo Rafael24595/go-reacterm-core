@@ -92,8 +92,8 @@ func Helper_ToNode(t *testing.T, node screen.Node) {
 	assert.NotNil(t, node.Id(), "Node.Stack should be set")
 	assert.NotNil(t, node.Name, "Node.Name should be set")
 	assert.NotNil(t, node.Stack, "Node.Stack should be set")
-	assert.NotNil(t, node.Tags, "Node.Stack should be set")
-	assert.NotNil(t, node.Children(), "Node.Stack should be set")
+	assert.NotNil(t, node.Tags, "Node.Tags should be set")
+	assert.NotNil(t, node.Children(), "Node.Children should be set")
 
 	assert.NotNil(t, node.Screen.Boot, "Screen.Boot should be set")
 	assert.NotNil(t, node.Screen.Keys, "Screen.Keys should be set")
