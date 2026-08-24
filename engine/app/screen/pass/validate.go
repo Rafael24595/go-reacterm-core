@@ -48,14 +48,12 @@ func ValidateStructure() screen.Pass {
 				return node, fmt.Errorf(errf_view, focus.Name)
 			}
 
-			children := focus.Children()
-			for i := range children {
-				child := children[i]
-				if visited.Has(child.Id()) {
-					return node, fmt.Errorf(errf_cycle, child.Name)
+			for c := range focus.Children() {
+				if visited.Has(c.Id()) {
+					return node, fmt.Errorf(errf_cycle, c.Name)
 				}
 
-				pending = append(pending, child)
+				pending = append(pending, *c)
 			}
 
 			cursor += 1

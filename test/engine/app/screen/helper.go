@@ -107,9 +107,22 @@ func Helper_Propagate(
 	child uint,
 	node screen.Node,
 ) {
-	assert.GreaterOrEqual(t, child+1, node.Children())
+	children := childrenIterToSlice(t, node)
+
+	assert.GreaterOrEqual(t, child+1, children)
 	assert.True(t, node.Stack.Has(name))
-	assert.Equal(t, name, node.Children()[child].Name)
+	assert.Equal(t, name, children[child].Name)
+}
+
+func childrenIterToSlice(t *testing.T, node screen.Node) []screen.Node {
+	t.Helper()
+
+	children := make([]screen.Node, 0)
+	for c := range node.Children() {
+		children = append(children, *c)
+	}
+
+	return children
 }
 
 func Helper_BindingsCover[T keymap.Command](

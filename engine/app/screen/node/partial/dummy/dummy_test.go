@@ -10,6 +10,17 @@ import (
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
 )
 
+func childrenIterToSlice(t *testing.T, node screen.Node) []screen.Node {
+	t.Helper()
+
+	children := make([]screen.Node, 0)
+	for c := range node.Children() {
+		children = append(children, *c)
+	}
+
+	return children
+}
+
 func TestDummy_ToNode(t *testing.T) {
 	node := ToNode()
 	screen_test.Helper_ToNode(t, node)
@@ -25,7 +36,7 @@ func TestDummy_Defaults(t *testing.T) {
 	assert.Size(t, 1, node.Tags)
 	assert.True(t, node.Tags.Has(Tag))
 
-	assert.Empty(t, node.Children())
+	assert.Empty(t, childrenIterToSlice(t, node))
 
 	definition := node.Screen.Keys()
 	assert.Equal(t, 0, definition.Descriptor.Size())

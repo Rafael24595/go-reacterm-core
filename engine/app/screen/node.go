@@ -1,6 +1,10 @@
 package screen
 
-import "github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
+import (
+	"iter"
+
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
+)
 
 // TODO: Keep it functional?
 type Pass func(Node) (Node, error)
@@ -18,8 +22,14 @@ func (n Node) Id() string {
 	return n.id
 }
 
-func (n Node) Children() []Node {
-	return n.children
+func (n *Node) Children() iter.Seq[*Node] {
+	return func(yield func(*Node) bool) {
+		for i := range n.children {
+			if !yield(&n.children[i]) {
+				return
+			}
+		}
+	}
 }
 
 func CompileNode(n Node, pass ...Pass) (Node, error) {
