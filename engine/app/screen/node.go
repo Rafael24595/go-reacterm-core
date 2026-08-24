@@ -38,21 +38,8 @@ func CompileNode(n Node, pass ...Pass) (Node, error) {
 }
 
 func IsZeroNode(node Node) bool {
-	if node.Name == "" {
-		return true
-	}
-
-	if node.Tags == nil {
-		return true
-	}
-
-	if IsZeroScreen(node.Screen) {
-		return true
-	}
-
-	if node.Stack == nil {
-		return true
-	}
-
-	return false
+	return node.Name == "" ||
+		node.Tags == nil ||
+		node.Stack == nil ||
+		IsZeroScreen(node.Screen)
 }
