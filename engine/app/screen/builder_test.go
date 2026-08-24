@@ -1,6 +1,7 @@
 package screen
 
 import (
+	"fmt"
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
@@ -178,4 +179,67 @@ func TestBuilder_WithClock(t *testing.T) {
 		ToNode()
 
 	assert.Equal(t, "custom_clock_node_12345", node.Id())
+}
+
+func BenchmarkBuilder_ToNode(b *testing.B) {
+	b.ReportAllocs()
+	
+
+	for b.Loop() {
+		_ = NewBuilder().
+			Name("home_screen").
+			NameToStack().
+			Boot(dummyBoot).
+			Keys(dummyKeys).
+			Tick(dummyTick).
+			View(dummyView).
+			ToNode()
+	}
+}
+
+func BenchmarkNode_Compile(b *testing.B) {
+	node := NewBuilder().
+		Name("base_node").
+		WithoutBoot().
+		WithoutKeys().
+		WithoutTick().
+		View(dummyView).
+		ToNode()
+
+	pass1 := func(n Node) (Node, error) {
+		n.Name = "pass1_" + n.Name
+		return n, nil
+	}
+	pass2 := func(n Node) (Node, error) {
+		n.Name = n.Name + "_transformed"
+		return n, nil
+	}
+
+	b.ReportAllocs()
+	
+
+	for b.Loop() {
+		_, _ = CompileNode(node, pass1, pass2)
+	}
+}
+
+func BenchmarkNode_ChildrenIteration(b *testing.B) {
+	children := make([]Node, 10)
+	for i := range 10 {
+		children[i] = NewBuilder().Name(fmt.Sprintf("child_%d", i)).ToNode()
+	}
+
+	parent := NewBuilder().
+		Name("parent").
+		Children(children...).
+		ToNode()
+
+	b.ReportAllocs()
+	
+
+	for b.Loop() {
+		for child := range parent.Children() {
+			_ = child.Name
+		}
+	}
 }
