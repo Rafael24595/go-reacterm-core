@@ -18,7 +18,7 @@ type Node struct {
 	children []Node
 }
 
-func (n Node) Id() string {
+func (n *Node) Id() string {
 	return n.id
 }
 
