@@ -209,7 +209,7 @@ func (e *Engine) Exit() {
 }
 
 func (e *Engine) compileNodeScreen(uiState state.UIState, node screen.Node) *Engine {
-	newNode, err := node.Compile(e.passes...)
+	newNode, err := screen.CompileNode(node, e.passes...)
 	if err != nil {
 		e.logErr(err)
 	}

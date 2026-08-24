@@ -22,11 +22,11 @@ func (n Node) Children() []Node {
 	return n.children
 }
 
-func (n Node) Compile(pass ...Pass) (Node, error) {
+func CompileNode(n Node, pass ...Pass) (Node, error) {
 	node := n
 
-	for _, m := range pass {
-		nextNode, err := m(node)
+	for _, p := range pass {
+		nextNode, err := p(node)
 		if err != nil {
 			return node, err
 		}
