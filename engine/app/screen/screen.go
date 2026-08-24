@@ -26,21 +26,8 @@ type Screen struct {
 }
 
 func IsZeroScreen(screen Screen) bool {
-	if screen.Boot == nil {
-		return true
-	}
-
-	if screen.Keys == nil {
-		return true
-	}
-
-	if screen.Tick == nil {
-		return true
-	}
-
-	if screen.View == nil {
-		return true
-	}
-
-	return false
+	return screen.Boot == nil ||
+		screen.Keys == nil ||
+		screen.Tick == nil ||
+		screen.View == nil
 }
