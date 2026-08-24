@@ -30,7 +30,7 @@ func (n *Help) WithBindings(overrides *keymap.Bindings[Command]) *Help {
 func (n *Help) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.node.Name).
-		AddStack(n.node.Stack).
+		Stack(n.node.Stack).
 		Boot(n.node.Screen.Boot).
 		Keys(n.node.Screen.Keys).
 		Tick(n.tick).

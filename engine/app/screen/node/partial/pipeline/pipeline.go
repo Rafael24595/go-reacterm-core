@@ -47,7 +47,7 @@ func (n *Pipeline) Persistent() *Pipeline {
 func (n *Pipeline) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.node.Name).
-		AddStack(n.node.Stack).
+		Stack(n.node.Stack).
 		Boot(n.node.Screen.Boot).
 		Keys(n.node.Screen.Keys).
 		Tick(n.tick).

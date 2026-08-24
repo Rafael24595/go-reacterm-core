@@ -41,7 +41,7 @@ func (n *Template) ViewModel(model viewmodel.ViewModel) *Template {
 func (n *Template) ToNode() screen.Node {
 	return screen.NewBuilder().
 		NameAsStack(n.reference).
-		AddStack(n.stack).
+		Stack(n.stack).
 		WithoutBoot().
 		WithoutKeys().
 		Tick(n.tick).

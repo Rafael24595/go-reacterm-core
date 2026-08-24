@@ -66,7 +66,7 @@ func (b *Builder) WithNode(node Node) *Builder {
 
 func (b *Builder) WithNodeMeta(node Node) *Builder {
 	return b.Name(node.Name).
-		AddStack(node.Stack)
+		Stack(node.Stack)
 }
 
 func (b *Builder) WithNodeScreen(node Node) *Builder {
@@ -87,12 +87,12 @@ func (b *Builder) Name(name string) *Builder {
 }
 
 func (b *Builder) NameToStack() *Builder {
-	return b.AddStack(
+	return b.Stack(
 		set.From(b.name),
 	)
 }
 
-func (b *Builder) AddStack(stack set.Set[string]) *Builder {
+func (b *Builder) Stack(stack set.Set[string]) *Builder {
 	b.stack.Merge(stack)
 	return b
 }

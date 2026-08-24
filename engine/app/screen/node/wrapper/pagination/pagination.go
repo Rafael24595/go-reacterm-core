@@ -78,7 +78,7 @@ func (n *Pagination) ForceEngine(forceAction action.Action) *Pagination {
 func (n *Pagination) ToNode() screen.Node {
 	return screen.NewBuilder().
 		Name(n.node.Name).
-		AddStack(n.node.Stack).
+		Stack(n.node.Stack).
 		Boot(n.boot).
 		Keys(n.keys).
 		Tick(n.tick).

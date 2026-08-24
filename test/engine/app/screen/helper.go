@@ -37,7 +37,7 @@ func (t MockNode) ToNode() screen.Node {
 
 	node := screen.NewBuilder().
 		Name(t.Name).
-		AddStack(stack).
+		Stack(stack).
 		Boot(
 			func(uiState state.UIState) {
 				if t.Boot != nil {

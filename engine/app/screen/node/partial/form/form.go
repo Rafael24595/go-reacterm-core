@@ -100,7 +100,7 @@ func (n *Form) ToNode() screen.Node {
 
 	for _, v := range n.items {
 		builder.Children(v.Node).
-			AddStack(v.Node.Stack)
+			Stack(v.Node.Stack)
 	}
 
 	return builder.ToNode()
@@ -190,7 +190,7 @@ func (n *Form) tryFocusTick(uiState *state.UIState, event screen.Event) screen.R
 
 func (n *Form) focusTick(uiState *state.UIState, event screen.Event, focus entry.Entry) screen.Result {
 	result := focus.Node.Screen.Tick(uiState, event)
-	
+
 	if !result.HasNode() {
 		return result
 	}
