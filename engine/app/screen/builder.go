@@ -1,7 +1,7 @@
 package screen
 
 import (
-	"fmt"
+	"strconv"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
@@ -164,7 +164,10 @@ func (b *Builder) makeTags() set.Set[string] {
 }
 
 func (b *Builder) makeID() string {
-	return fmt.Sprintf("%s_%d", b.name, b.clock())
+	if b.clock == nil {
+		return b.name + "_0"
+	}
+	return b.name + "_" + strconv.FormatInt(b.clock(), 10)
 }
 
 func (b *Builder) toScreen() Screen {
