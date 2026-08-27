@@ -1,7 +1,7 @@
 package wrapper_screen
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/rule"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/template"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -26,8 +26,8 @@ func NewDemoHStack() screen.Node {
 	vm.Header.Push(makeTitle())
 	vm.Kernel.Push(makeKernel())
 
-	vm.Pager.SetPredicate(
-		predicate.Page(),
+	vm.Pager.WithRule(
+		rule.OnPage(),
 	)
 
 	return template.New().

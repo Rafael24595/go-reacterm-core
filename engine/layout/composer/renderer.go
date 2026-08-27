@@ -19,8 +19,12 @@ func newRenderContext() *renderContext {
 	return &renderContext{}
 }
 
-func pagerRenderer(uiState *state.UIState, strategy pager.PagerStrategy, ctx *renderContext) stack.LayerRenderer {
-	renderer := page.NewPageRenderer(strategy)
+func pagerRenderer(
+	uiState *state.UIState,
+	strategy pager.Strategy,
+	ctx *renderContext,
+) stack.LayerRenderer {
+	renderer := page.NewRenderer(strategy)
 
 	return func(size winsize.Winsize, unit drawable.Unit) ([]line.Line, bool) {
 		status := renderer(uiState, size, unit)

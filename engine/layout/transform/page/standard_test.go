@@ -6,7 +6,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/draw"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/rule"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
@@ -24,7 +24,7 @@ func TestNewPageRenderer_NoEngineCall(t *testing.T) {
 	}
 
 	mockStrategy := pager_test.MockStrategy{
-		PredicateBool: false,
+		RuleBool: false,
 	}
 
 	strategy := mockStrategy.ToStrategy()
@@ -33,10 +33,10 @@ func TestNewPageRenderer_NoEngineCall(t *testing.T) {
 		Lines: make([]line.Line, 1),
 	}
 
-	renderer := NewPageRenderer(strategy)
+	renderer := NewRenderer(strategy)
 	status := renderer(uiState, size, mock.ToUnit())
 
-	assert.Equal(t, 0, mockStrategy.ActionCall)
+	assert.Equal(t, 0, mockStrategy.StepCall)
 	assert.True(t, status.Work.Finished())
 	assert.False(t, status.IsFull())
 }
@@ -49,8 +49,8 @@ func TestNewPageRenderer_EngineCall(t *testing.T) {
 	}
 
 	mockStrategy := &pager_test.MockStrategy{
-		PredicateBool: false,
-		ActionHandler: func(ds *draw.State) *draw.State {
+		RuleBool: false,
+		StepHandler: func(ds *draw.State) *draw.State {
 			ds.Reset()
 			ds.Page += 1
 			return ds
@@ -64,10 +64,10 @@ func TestNewPageRenderer_EngineCall(t *testing.T) {
 		Batch: 5,
 	}
 
-	renderer := NewPageRenderer(strategy)
+	renderer := NewRenderer(strategy)
 	status := renderer(uiState, size, mock.ToUnit())
 
-	assert.Equal(t, 1, mockStrategy.ActionCall)
+	assert.Equal(t, 1, mockStrategy.StepCall)
 	assert.Equal(t, 1, status.Page)
 	assert.True(t, status.Work.Finished())
 	assert.False(t, status.IsFull())
@@ -81,7 +81,7 @@ func TestNewPageRenderer_EarlyPredicate(t *testing.T) {
 	}
 
 	mockStrategy := &pager_test.MockStrategy{
-		PredicateBool: true,
+		RuleBool: true,
 	}
 
 	strategy := mockStrategy.ToStrategy()
@@ -91,11 +91,11 @@ func TestNewPageRenderer_EarlyPredicate(t *testing.T) {
 		Batch: 5,
 	}
 
-	renderer := NewPageRenderer(strategy)
+	renderer := NewRenderer(strategy)
 	status := renderer(uiState, size, mock.ToUnit())
 
-	assert.Equal(t, 0, mockStrategy.ActionCall)
-	assert.Equal(t, 1, mockStrategy.PredicateCall)
+	assert.Equal(t, 0, mockStrategy.StepCall)
+	assert.Equal(t, 1, mockStrategy.RuleCall)
 	assert.True(t, status.Work.Unfinished())
 	assert.True(t, status.IsFull())
 }
@@ -108,13 +108,13 @@ func TestNewPageRenderer_WithLineOverflow(t *testing.T) {
 	}
 
 	mockStrategy := &pager_test.MockStrategy{
-		ActionHandler: func(ds *draw.State) *draw.State {
+		StepHandler: func(ds *draw.State) *draw.State {
 			ds.Reset()
 			ds.Page += 1
 			return ds
 		},
-		PredicateFunc: func(_ state.PagerContext, pc predicate.Context) bool {
-			return pc.Page == 2
+		RuleHandler: func(_ state.PagerContext, ctx rule.Context) bool {
+			return ctx.Page == 2
 		},
 	}
 
@@ -129,10 +129,10 @@ func TestNewPageRenderer_WithLineOverflow(t *testing.T) {
 		Batch: 1,
 	}
 
-	renderer := NewPageRenderer(strategy)
+	renderer := NewRenderer(strategy)
 	status := renderer(uiState, size, mock.ToUnit())
 
-	assert.Equal(t, 2, mockStrategy.ActionCall)
+	assert.Equal(t, 2, mockStrategy.StepCall)
 	assert.Equal(t, 2, status.Page)
 	assert.True(t, status.Work.Unfinished())
 	assert.True(t, status.IsFull())

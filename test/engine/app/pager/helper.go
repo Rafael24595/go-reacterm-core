@@ -3,41 +3,42 @@ package pager_test
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/draw"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/rule"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/step"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 )
 
 type MockStrategy struct {
-	ActionCall    uint
-	ActionKind    action.Kind
-	ActionHandler action.Handler
-	PredicateCall uint
-	PredicateKind predicate.Kind
-	PredicateBool bool
-	PredicateFunc predicate.Handler
+	StepCall    uint
+	StepKind    step.Kind
+	StepHandler step.Handler
+
+	RuleCall    uint
+	RuleKind    rule.Kind
+	RuleBool    bool
+	RuleHandler rule.Handler
 }
 
-func (s *MockStrategy) ToStrategy() pager.PagerStrategy {
-	return pager.PagerStrategy{
-		Action: action.Action{
-			Kind: s.ActionKind,
+func (s *MockStrategy) ToStrategy() pager.Strategy {
+	return pager.Strategy{
+		Step: step.Step{
+			Kind: s.StepKind,
 			Handler: func(ds *draw.State) *draw.State {
-				s.ActionCall += 1
-				if s.ActionHandler != nil {
-					return s.ActionHandler(ds)
+				s.StepCall += 1
+				if s.StepHandler != nil {
+					return s.StepHandler(ds)
 				}
 				return ds
 			},
 		},
-		Predicate: predicate.Predicate{
-			Kind: s.PredicateKind,
-			Handler: func(c state.PagerContext, pc predicate.Context) bool {
-				s.PredicateCall += 1
-				if s.PredicateFunc != nil {
-					return s.PredicateFunc(c, pc)
+		Rule: rule.Rule{
+			Kind: s.RuleKind,
+			Handler: func(c state.PagerContext, ctx rule.Context) bool {
+				s.RuleCall += 1
+				if s.RuleHandler != nil {
+					return s.RuleHandler(c, ctx)
 				}
-				return s.PredicateBool
+				return s.RuleBool
 			},
 		},
 	}

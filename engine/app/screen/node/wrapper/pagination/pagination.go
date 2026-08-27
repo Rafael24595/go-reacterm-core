@@ -5,8 +5,8 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/rule"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/step"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
@@ -19,22 +19,22 @@ import (
 const errf_unhandled = "unhandled pager type '%d'"
 
 type Pagination struct {
-	loaded      bool
-	bindings    bindings
-	definition  definition
-	actionKind  action.Kind
-	forceAction *action.Action
-	node        screen.Node
+	loaded     bool
+	bindings   bindings
+	definition definition
+	stepKind   step.Kind
+	forceStep  *step.Step
+	node       screen.Node
 }
 
 func New(node screen.Node) *Pagination {
 	return &Pagination{
-		loaded:      false,
-		bindings:    defaultBindings,
-		definition:  emptyDefinition(),
-		actionKind:  action.KindPaged,
-		forceAction: nil,
-		node:        node,
+		loaded:     false,
+		bindings:   defaultBindings,
+		definition: emptyDefinition(),
+		stepKind:   step.KindPage,
+		forceStep:  nil,
+		node:       node,
 	}
 }
 
@@ -68,9 +68,9 @@ func (n *Pagination) WithBindingsForScroll(overrides *keymap.Bindings[Command]) 
 	return n
 }
 
-func (n *Pagination) ForceEngine(forceAction action.Action) *Pagination {
-	n.forceAction = &forceAction
-	n.actionKind = forceAction.Kind
+func (n *Pagination) WithStep(step step.Step) *Pagination {
+	n.forceStep = &step
+	n.stepKind = step.Kind
 
 	return n
 }
@@ -97,7 +97,7 @@ func (n *Pagination) boot(uiState state.UIState) {
 }
 
 func (n *Pagination) keys() screen.Definition {
-	return n.definition.get(n.actionKind).
+	return n.definition.get(n.stepKind).
 		Merge(n.node.Screen.Keys())
 }
 
@@ -115,7 +115,7 @@ func (n *Pagination) tick(uiState *state.UIState, event screen.Event) screen.Res
 }
 
 func (n *Pagination) localTick(uiState *state.UIState, event screen.Event) *screen.Result {
-	binding := n.bindings.get(n.actionKind)
+	binding := n.bindings.get(n.stepKind)
 
 	switch binding.Command(event.Key.Code) {
 	case CmdPageUp, CmdPrevPage:
@@ -144,8 +144,8 @@ func (n *Pagination) childTick(uiState *state.UIState, event screen.Event) scree
 	newWrapper.loaded = n.loaded
 	newWrapper.bindings = n.bindings
 	newWrapper.definition = n.definition
-	newWrapper.actionKind = n.actionKind
-	newWrapper.forceAction = n.forceAction
+	newWrapper.stepKind = n.stepKind
+	newWrapper.forceStep = n.forceStep
 
 	newNode := newWrapper.ToNode()
 	result.SetNode(newNode)
@@ -155,19 +155,19 @@ func (n *Pagination) childTick(uiState *state.UIState, event screen.Event) scree
 
 func (n *Pagination) view(uiState state.UIState) viewmodel.ViewModel {
 	vm := n.node.Screen.View(uiState)
-	if n.forceAction != nil {
-		vm.Pager.SetAction(*n.forceAction)
+	if n.forceStep != nil {
+		vm.Pager.WithStep(*n.forceStep)
 	}
 
-	n.actionKind = vm.Pager.Action.Kind
+	n.stepKind = vm.Pager.Step.Kind
 
 	if !n.shouldShowPage(uiState, vm) {
 		return vm
 	}
 
-	label, ok := labels[n.actionKind]
+	label, ok := labels[n.stepKind]
 
-	assert.True(ok, errf_unhandled, n.actionKind)
+	assert.True(ok, errf_unhandled, n.stepKind)
 
 	footer := []line.Line{
 		line.TextSpec(
@@ -185,7 +185,7 @@ func (n *Pagination) view(uiState state.UIState) viewmodel.ViewModel {
 }
 
 func (n *Pagination) shouldShowPage(uiState state.UIState, vm viewmodel.ViewModel) bool {
-	if vm.Pager.Predicate.Kind != predicate.KindPage {
+	if vm.Pager.Rule.Kind != rule.KindPage {
 		return false
 	}
 

@@ -2,7 +2,8 @@ package pagination
 
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
+
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/step"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
@@ -45,13 +46,13 @@ type bindings struct {
 	scroll *keymap.Bindings[Command]
 }
 
-func (d bindings) get(kind action.Kind) *keymap.Bindings[Command] {
+func (d bindings) get(kind step.Kind) *keymap.Bindings[Command] {
 	var page *keymap.Bindings[Command]
 
 	switch kind {
-	case action.KindPaged:
+	case step.KindPage:
 		page = d.pager
-	case action.KindScroll:
+	case step.KindLine:
 		page = d.scroll
 	default:
 		assert.Unreachable("unhandled action definition %d", kind)
@@ -89,13 +90,13 @@ func definitionFromBindings(bindings bindings) definition {
 	}
 }
 
-func (d definition) get(kind action.Kind) screen.Definition {
+func (d definition) get(kind step.Kind) screen.Definition {
 	var page screen.Definition
 
 	switch kind {
-	case action.KindPaged:
+	case step.KindPage:
 		page = d.pager
-	case action.KindScroll:
+	case step.KindLine:
 		page = d.scroll
 	default:
 		assert.Unreachable("unhandled action definition %d", kind)
@@ -105,7 +106,7 @@ func (d definition) get(kind action.Kind) screen.Definition {
 	return d.base.Merge(page)
 }
 
-var labels = map[action.Kind]string{
-	action.KindPaged:  "page",
-	action.KindScroll: "scroll",
+var labels = map[step.Kind]string{
+	step.KindPage: "page",
+	step.KindLine: "scroll",
 }

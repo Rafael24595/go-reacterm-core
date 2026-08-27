@@ -1,4 +1,4 @@
-package action
+package step
 
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/draw"
@@ -9,20 +9,20 @@ import (
 type Kind uint8
 
 const (
-	KindPaged Kind = iota
-	KindScroll
+	KindPage Kind = iota
+	KindLine
 )
 
 type Handler func(*draw.State) *draw.State
 
-type Action struct {
+type Step struct {
 	Kind    Kind
 	Handler Handler
 }
 
-func Paged() Action {
-	return Action{
-		Kind: KindPaged,
+func ByPage() Step {
+	return Step{
+		Kind: KindPage,
 		Handler: func(stt *draw.State) *draw.State {
 			stt.Reset()
 			stt.Page += 1
@@ -31,9 +31,9 @@ func Paged() Action {
 	}
 }
 
-func Scroll() Action {
-	return Action{
-		Kind: KindScroll,
+func ByLine() Step {
+	return Step{
+		Kind: KindLine,
 		Handler: func(stt *draw.State) *draw.State {
 			if len(stt.Buffer) == 0 {
 				return stt

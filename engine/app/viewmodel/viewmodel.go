@@ -10,7 +10,7 @@ type ViewModel struct {
 	Header   *stack.VStackUnit
 	Kernel   *stack.VStackUnit
 	Footer   *stack.VStackUnit
-	Pager    *pager.PagerStrategy
+	Pager    *pager.Strategy
 	Behavior BehaviorContext
 }
 

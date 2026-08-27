@@ -3,7 +3,6 @@ package text
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap/rw"
@@ -20,6 +19,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
+
+	pager_rule "github.com/Rafael24595/go-reacterm-core/engine/app/pager/rule"
 )
 
 const NameArea = "text_area"
@@ -613,24 +614,24 @@ func (n *TextArea) view(uiState state.UIState) viewmodel.ViewModel {
 
 	n.loadFromStore(uiState)
 
-	predicate, textarea, needsPulse := n.viewSources(uiState)
+	rule, textarea, needsPulse := n.viewSources(uiState)
 
 	vm.Kernel.Push(
 		textarea.ToUnit(),
 	)
 
-	vm.Pager.SetPredicate(predicate)
+	vm.Pager.WithRule(rule)
 	vm.Behavior.NeedsPulse = needsPulse
 
 	return *vm
 }
 
 func (n *TextArea) viewSources(uiState state.UIState) (
-	predicate.Predicate,
+	pager_rule.Rule,
 	*textarea.TextAreaUnit,
 	bool,
 ) {
-	predicate := predicates[n.writeMode]
+	rule := rules[n.writeMode]
 
 	textarea := textarea.New(n.buffer.Facade(), n.caret).
 		WriteMode(n.writeMode).
@@ -639,7 +640,7 @@ func (n *TextArea) viewSources(uiState state.UIState) (
 
 	needsPulse := n.needsPulse(uiState)
 
-	return predicate, textarea, needsPulse
+	return rule, textarea, needsPulse
 }
 
 func (n *TextArea) needsPulse(uiState state.UIState) bool {

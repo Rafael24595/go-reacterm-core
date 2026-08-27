@@ -1,7 +1,7 @@
 package text
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/rule"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap/rw"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
@@ -104,7 +104,7 @@ var defaultWriteBindings = keymap.NewBindings[CommandWrite]().
 	Bind(key.CustomActionCopy, CmdWriteCopy).
 	Bind(key.CustomActionPaste, CmdWritePaste)
 
-var predicates = map[bool]predicate.Predicate{
-	false: predicate.Page(),
-	true:  predicate.Focus(),
+var rules = map[bool]rule.Rule{
+	false: rule.OnPage(),
+	true:  rule.OnFocus(),
 }

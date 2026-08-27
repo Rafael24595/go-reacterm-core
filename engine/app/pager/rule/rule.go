@@ -1,4 +1,4 @@
-package predicate
+package rule
 
 import "github.com/Rafael24595/go-reacterm-core/engine/app/state"
 
@@ -16,13 +16,13 @@ type Context struct {
 
 type Handler func(state.PagerContext, Context) bool
 
-type Predicate struct {
+type Rule struct {
 	Kind    Kind
 	Handler Handler
 }
 
-func Page() Predicate {
-	return Predicate{
+func OnPage() Rule {
+	return Rule{
 		Kind: KindPage,
 		Handler: func(pager state.PagerContext, ctx Context) bool {
 			return ctx.Page == pager.TargetPage
@@ -30,8 +30,8 @@ func Page() Predicate {
 	}
 }
 
-func ToStart() Predicate {
-	return Predicate{
+func OnStart() Rule {
+	return Rule{
 		Kind: KindPage,
 		Handler: func(_ state.PagerContext, ctx Context) bool {
 			return true
@@ -39,8 +39,8 @@ func ToStart() Predicate {
 	}
 }
 
-func ToEnd() Predicate {
-	return Predicate{
+func OnEnd() Rule {
+	return Rule{
 		Kind: KindPage,
 		Handler: func(_ state.PagerContext, ctx Context) bool {
 			return false
@@ -48,8 +48,8 @@ func ToEnd() Predicate {
 	}
 }
 
-func Focus() Predicate {
-	return Predicate{
+func OnFocus() Rule {
+	return Rule{
 		Kind: KindFocus,
 		Handler: func(_ state.PagerContext, ctx Context) bool {
 			return ctx.HasFocus

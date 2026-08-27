@@ -8,8 +8,6 @@ import (
 	text_screen "github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/text"
 	drawable_pipeline "github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/behavior/tick"
@@ -39,6 +37,9 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
+
+	pager_rule "github.com/Rafael24595/go-reacterm-core/engine/app/pager/rule"
+	pager_step "github.com/Rafael24595/go-reacterm-core/engine/app/pager/step"
 )
 
 type eventKind int
@@ -116,12 +117,12 @@ func (s *mockTalkService) reply() {
 func NewDemoForm() screen.Node {
 	service := initTalkService()
 
-	action := action.Scroll()
-	predicate := slot.New[predicate.Predicate]()
+	step := pager_step.ByLine()
+	rule := slot.New[pager_rule.Rule]()
 
 	node := form.New().
 		AddNode(
-			makeTalk(service, predicate),
+			makeTalk(service, rule),
 			entry.Selectable(),
 			entry.WithLayout(
 				layer.Percent[winsize.Rows](73),
@@ -145,17 +146,17 @@ func NewDemoForm() screen.Node {
 
 	node = view.Map(
 		node,
-		onFormView(action, predicate),
+		onFormView(step, rule),
 	)
 
 	return node
 }
 
-func onFormView(action action.Action, predicate *slot.Slot[predicate.Predicate]) view.Handler {
+func onFormView(step pager_step.Step, slot *slot.Slot[pager_rule.Rule]) view.Handler {
 	return func(vm viewmodel.ViewModel) viewmodel.ViewModel {
-		vm.Pager.Action = action
-		if predicate, ok := predicate.Take(); ok {
-			vm.Pager.Predicate = predicate
+		vm.Pager.Step = step
+		if rule, ok := slot.Take(); ok {
+			vm.Pager.Rule = rule
 		}
 		return vm
 	}
@@ -278,7 +279,7 @@ func initMessagesService() *mockMessageService {
 	}
 }
 
-func makeTalk(service *mockTalkService, slot *slot.Slot[predicate.Predicate]) screen.Node {
+func makeTalk(service *mockTalkService, slot *slot.Slot[pager_rule.Rule]) screen.Node {
 	talk := talk.New().
 		SetName("talk-form - amet").
 		SetOwner("human_001").
@@ -292,7 +293,7 @@ func makeTalk(service *mockTalkService, slot *slot.Slot[predicate.Predicate]) sc
 	return talk
 }
 
-func onTalkView(service *mockTalkService, slot *slot.Slot[predicate.Predicate]) view.Middleware {
+func onTalkView(service *mockTalkService, slot *slot.Slot[pager_rule.Rule]) view.Middleware {
 	return func(uiState state.UIState, context behavior.Context[screen.ViewFunc]) viewmodel.ViewModel {
 		messagesLen := 0
 		if state, ok := talk.KeyState.Get(
@@ -313,7 +314,7 @@ func onTalkView(service *mockTalkService, slot *slot.Slot[predicate.Predicate]) 
 		vm := context.Next(uiState)
 
 		if messagesLen != len(service.chat) {
-			slot.Set(predicate.ToEnd())
+			slot.Set(pager_rule.OnEnd())
 		}
 
 		return vm
@@ -458,9 +459,9 @@ func wrapStep(vm viewmodel.ViewModel) viewmodel.ViewModel {
 }
 
 func pageTransformer() drawable_pipeline.DrawTransformer {
-	action := action.Scroll()
+	step := pager_step.ByLine()
 	return func(winsize winsize.Winsize, unit drawable.Unit) ([]line.Line, bool) {
-		transformer := focus.DrawTransformer(action)
+		transformer := focus.DrawTransformer(step)
 		return transformer(winsize, unit)
 	}
 }

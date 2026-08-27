@@ -3,7 +3,7 @@ package page
 import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/draw"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/rule"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
@@ -12,7 +12,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap"
 )
 
-func NewPageRenderer(strategy pager.PagerStrategy) Renderer {
+func NewRenderer(strategy pager.Strategy) Renderer {
 	return func(uiState *state.UIState, size winsize.Winsize, unit drawable.Unit) *draw.State {
 		status := draw.NewState(size.Rows)
 		if size.Rows == 0 {
@@ -65,7 +65,7 @@ func NewPageRenderer(strategy pager.PagerStrategy) Renderer {
 					}
 
 					if status.Work.Unfinished() {
-						status = strategy.Action.Handler(status)
+						status = strategy.Step.Handler(status)
 					}
 				}
 			}
@@ -77,12 +77,12 @@ func NewPageRenderer(strategy pager.PagerStrategy) Renderer {
 
 func shouldStop(
 	ctx state.PagerContext,
-	strategy pager.PagerStrategy,
+	strategy pager.Strategy,
 	status *draw.State,
 ) bool {
-	args := predicate.Context{
+	args := rule.Context{
 		Page:     status.Page,
 		HasFocus: status.Focus,
 	}
-	return strategy.Predicate.Handler(ctx, args)
+	return strategy.Rule.Handler(ctx, args)
 }

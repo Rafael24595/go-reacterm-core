@@ -5,7 +5,7 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/step"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
@@ -30,7 +30,7 @@ func TestFocusInitTransformer_FocusAtStart(t *testing.T) {
 	}
 
 	transformer := DrawTransformer(
-		action.Paged(),
+		step.ByPage(),
 	)
 
 	lines, status := transformer(winsize.Winsize{
@@ -60,7 +60,7 @@ func TestFocusInitTransformer_FocusAtEnd(t *testing.T) {
 	}
 
 	transformer := DrawTransformer(
-		action.Scroll(),
+		step.ByLine(),
 	)
 
 	lines, status := transformer(winsize.Winsize{

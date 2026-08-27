@@ -1,8 +1,8 @@
 package talk
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/rule"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/step"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap/rw"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/key"
@@ -61,12 +61,12 @@ var defaultWriteBindings = keymap.NewBindings[CommandWrite]().
 	Bind(key.ActionArrowDown, CmdWriteNextOption).
 	Bind(key.CustomActionPointer, CmdWriteSwitchPointer)
 
-var predicates = map[bool]predicate.Predicate{
-	false: predicate.Page(),
-	true:  predicate.Focus(),
+var rules = map[bool]rule.Rule{
+	false: rule.OnPage(),
+	true:  rule.OnFocus(),
 }
 
-var actions = map[bool]action.Action{
-	false: action.Scroll(),
-	true:  action.Paged(),
+var actions = map[bool]step.Step{
+	false: step.ByLine(),
+	true:  step.ByPage(),
 }

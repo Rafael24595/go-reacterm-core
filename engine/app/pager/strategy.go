@@ -1,33 +1,33 @@
 package pager
 
 import (
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/rule"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/step"
 )
 
 var (
-	default_predicate = predicate.Page()
-	default_action    = action.Paged()
+	defaultRule = rule.OnPage()
+	defaultStep = step.ByPage()
 )
 
-type PagerStrategy struct {
-	Predicate predicate.Predicate
-	Action    action.Action
+type Strategy struct {
+	Rule rule.Rule
+	Step step.Step
 }
 
-func NewStrategy() *PagerStrategy {
-	return &PagerStrategy{
-		Predicate: default_predicate,
-		Action:    default_action,
+func NewStrategy() *Strategy {
+	return &Strategy{
+		Rule: defaultRule,
+		Step: defaultStep,
 	}
 }
 
-func (p *PagerStrategy) SetPredicate(predicate predicate.Predicate) *PagerStrategy {
-	p.Predicate = predicate
+func (p *Strategy) WithRule(rule rule.Rule) *Strategy {
+	p.Rule = rule
 	return p
 }
 
-func (p *PagerStrategy) SetAction(action action.Action) *PagerStrategy {
-	p.Action = action
+func (p *Strategy) WithStep(step step.Step) *Strategy {
+	p.Step = step
 	return p
 }

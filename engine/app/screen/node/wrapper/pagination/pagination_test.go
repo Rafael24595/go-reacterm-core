@@ -5,7 +5,7 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/rule"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -56,7 +56,7 @@ func TestPagination_ViewFooter(t *testing.T) {
 		Name: "base",
 		View: func(_ state.UIState) viewmodel.ViewModel {
 			vm := viewmodel.New()
-			vm.Pager.SetPredicate(predicate.Page())
+			vm.Pager.WithRule(rule.OnPage())
 			return *vm
 		},
 	}

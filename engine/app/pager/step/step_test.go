@@ -1,4 +1,4 @@
-package action
+package step
 
 import (
 	"testing"
@@ -11,8 +11,13 @@ import (
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
-func TestActionPaged(t *testing.T) {
-	action := Paged()
+func TestKinds(t *testing.T) {
+	assert.Equal(t, KindPage, ByPage().Kind)
+	assert.Equal(t, KindLine, ByLine().Kind)
+}
+
+func TestByPage(t *testing.T) {
+	step := ByPage()
 
 	state := &draw.State{
 		Buffer: []line.Line{{}, {}, {}},
@@ -21,7 +26,7 @@ func TestActionPaged(t *testing.T) {
 		Focus:  true,
 	}
 
-	result := action.Handler(state)
+	result := step.Handler(state)
 
 	assert.Size(t, 3, result.Buffer)
 	assert.Equal(t, 2, result.Page)
@@ -29,21 +34,21 @@ func TestActionPaged(t *testing.T) {
 	assert.False(t, result.Focus)
 }
 
-func TestActionPaged_AlwaysResetsBuffer(t *testing.T) {
-	action := Paged()
+func TestByPage_AlwaysResetsBuffer(t *testing.T) {
+	step := ByPage()
 
 	state := &draw.State{
 		Buffer: []line.Line{{}, {}},
 	}
 
-	action.Handler(state)
-	action.Handler(state)
+	step.Handler(state)
+	step.Handler(state)
 
 	assert.Equal(t, 2, state.Page)
 }
 
-func TestActionScroll(t *testing.T) {
-	action := Scroll()
+func TestByLine(t *testing.T) {
+	step := ByLine()
 
 	state := &draw.State{
 		Buffer: []line.Line{
@@ -56,7 +61,7 @@ func TestActionScroll(t *testing.T) {
 		Focus:  true,
 	}
 
-	result := action.Handler(state)
+	result := step.Handler(state)
 
 	assert.Equal(t, "B", text_test.LineToString(result.Buffer[0]))
 	assert.Equal(t, "C", text_test.LineToString(result.Buffer[1]))
@@ -65,14 +70,29 @@ func TestActionScroll(t *testing.T) {
 	assert.False(t, result.Focus)
 }
 
-func TestActionScroll_CursorNeverNegative(t *testing.T) {
-	action := Scroll()
+func TestByLine_CursorNeverNegative(t *testing.T) {
+	step := ByLine()
 
 	state := &draw.State{
 		Cursor: 0,
 	}
 
-	result := action.Handler(state)
+	result := step.Handler(state)
 
+	assert.Equal(t, 0, result.Cursor)
+}
+
+func TestByLine_EmptyBuffer(t *testing.T) {
+	step := ByLine()
+	state := &draw.State{
+		Buffer: []line.Line{},
+		Cursor: 0,
+		Page:   1,
+	}
+
+	result := step.Handler(state)
+
+	assert.Size(t, 0, result.Buffer)
+	assert.Equal(t, 1, result.Page)
 	assert.Equal(t, 0, result.Cursor)
 }

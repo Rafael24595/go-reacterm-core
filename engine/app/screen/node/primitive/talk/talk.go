@@ -220,10 +220,10 @@ func (n *Talk) view(uiState state.UIState) viewmodel.ViewModel {
 		)
 	}
 
-	vm.Pager.Action = actions[n.navigation]
+	vm.Pager.Step = actions[n.navigation]
 
-	vm.Pager.SetPredicate(
-		predicates[n.navigation],
+	vm.Pager.WithRule(
+		rules[n.navigation],
 	)
 
 	return *vm

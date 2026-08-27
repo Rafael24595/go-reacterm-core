@@ -3,7 +3,7 @@ package indexmenu
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/rule"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
@@ -204,8 +204,8 @@ func (n *IndexMenu) view(uiState state.UIState) viewmodel.ViewModel {
 		inputline.FromString(text),
 	)
 
-	vm.Pager.SetPredicate(
-		predicate.Focus(),
+	vm.Pager.WithRule(
+		rule.OnFocus(),
 	)
 
 	return *vm

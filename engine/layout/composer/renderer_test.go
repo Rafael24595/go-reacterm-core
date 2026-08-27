@@ -6,7 +6,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/action"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/step"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/config/layer"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/spatial/stack"
@@ -21,7 +21,7 @@ func Test_PagerRenderer_StaticLayerDoesNotScroll(t *testing.T) {
 	uiState := state.NewUIState()
 	ctx := newRenderContext()
 	strategy := pager.NewStrategy().
-		SetAction(action.Scroll())
+		WithStep(step.ByLine())
 
 	renderer := pagerRenderer(uiState, *strategy, ctx)
 
@@ -79,7 +79,7 @@ func Test_PagerRenderer_PropagatesMaxPage(t *testing.T) {
 
 	ctx := newRenderContext()
 	strategy := pager.NewStrategy().
-		SetAction(action.Scroll())
+		WithStep(step.ByLine())
 
 	renderer := pagerRenderer(uiState, *strategy, ctx)
 
@@ -107,7 +107,7 @@ func Test_PagerRenderer_SetsHasMore(t *testing.T) {
 	uiState := state.NewUIState()
 	ctx := newRenderContext()
 	strategy := pager.NewStrategy().
-		SetAction(action.Scroll())
+		WithStep(step.ByLine())
 
 	renderer := pagerRenderer(uiState, *strategy, ctx)
 
@@ -133,7 +133,7 @@ func Test_Pager_ConfirmPage_UsesMaxPage(t *testing.T) {
 
 	ctx := newRenderContext()
 	strategy := pager.NewStrategy().
-		SetAction(action.Scroll())
+		WithStep(step.ByLine())
 
 	renderer := pagerRenderer(uiState, *strategy, ctx)
 

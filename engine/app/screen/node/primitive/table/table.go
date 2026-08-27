@@ -3,7 +3,7 @@ package table
 import (
 	assert "github.com/Rafael24595/go-assert/assert/runtime"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/rule"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap/rw"
@@ -267,9 +267,9 @@ func (n *Table[T]) view(uiState state.UIState) viewmodel.ViewModel {
 
 	vm.Kernel.Push(position)
 
-	preficate := predicate.Page()
+	preficate := rule.OnPage()
 	if n.action.EnableMode && n.action.WriteMode {
-		preficate = predicate.Focus()
+		preficate = rule.OnFocus()
 
 		cell, _ := n.table.FindCellByCoords(n.cursor.Row, n.cursor.Col)
 
@@ -280,7 +280,7 @@ func (n *Table[T]) view(uiState state.UIState) viewmodel.ViewModel {
 		)
 	}
 
-	vm.Pager.SetPredicate(preficate)
+	vm.Pager.WithRule(preficate)
 
 	return *vm
 }

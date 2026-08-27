@@ -1,4 +1,4 @@
-package predicate
+package rule
 
 import (
 	"testing"
@@ -8,8 +8,13 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 )
 
-func TestPredicatePage(t *testing.T) {
-	p := Page()
+func TestKinds(t *testing.T) {
+	assert.Equal(t, KindPage, OnPage().Kind)
+	assert.Equal(t, KindFocus, OnFocus().Kind)
+}
+
+func TestOnPage(t *testing.T) {
+	rule := OnPage()
 
 	pager := state.PagerContext{
 		TargetPage: 2,
@@ -34,14 +39,24 @@ func TestPredicatePage(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := p.Handler(pager, tt.ctx)
+			got := rule.Handler(pager, tt.ctx)
 			assert.Equal(t, tt.want, got)
 		})
 	}
 }
 
-func TestPredicateFocus(t *testing.T) {
-	p := Focus()
+func TestOnStart(t *testing.T) {
+	r := OnStart()
+	assert.True(t, r.Handler(state.PagerContext{}, Context{}))
+}
+
+func TestOnEnd(t *testing.T) {
+	r := OnEnd()
+	assert.False(t, r.Handler(state.PagerContext{}, Context{}))
+}
+
+func TestOnFocus(t *testing.T) {
+	rule := OnFocus()
 
 	tests := []struct {
 		name string
@@ -62,7 +77,7 @@ func TestPredicateFocus(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := p.Handler(state.PagerContext{}, tt.ctx)
+			got := rule.Handler(state.PagerContext{}, tt.ctx)
 			assert.Equal(t, tt.want, got)
 		})
 	}

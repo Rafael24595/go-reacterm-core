@@ -5,7 +5,7 @@ import (
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
-	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/predicate"
+	"github.com/Rafael24595/go-reacterm-core/engine/app/pager/rule"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
@@ -197,7 +197,7 @@ func TestIndexMenu_ViewCursor(t *testing.T) {
 
 	uiState := state.NewUIState()
 
-	ctx := predicate.Context{
+	ctx := rule.Context{
 		HasFocus: true,
 	}
 
@@ -210,8 +210,8 @@ func TestIndexMenu_ViewCursor(t *testing.T) {
 	lines, _ := kernel.Drawable.Draw(winsize.Winsize{Cols: 10, Rows: 2})
 
 	assert.NotNil(t, vm.Pager)
-	assert.Equal(t, predicate.KindFocus, vm.Pager.Predicate.Kind)
-	assert.True(t, vm.Pager.Predicate.Handler(uiState.Pager, ctx))
+	assert.Equal(t, rule.KindFocus, vm.Pager.Rule.Kind)
+	assert.True(t, vm.Pager.Rule.Handler(uiState.Pager, ctx))
 
 	assert.Equal(t, "- A", text_test.LineToString(lines[0]))
 	assert.Equal(t, "> B", text_test.LineToString(lines[1]))
