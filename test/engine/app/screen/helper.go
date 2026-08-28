@@ -12,6 +12,18 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 )
 
+func DummyBoot(state.UIState)                              {}
+func DummyKeys() screen.Definition                         { return screen.Definition{} }
+func DummyTick(*state.UIState, screen.Event) screen.Result { return screen.Result{} }
+func DummyView(state.UIState) viewmodel.ViewModel          { return viewmodel.ViewModel{} }
+
+var DummyNode = screen.NewBuilder().
+	Boot(DummyBoot).
+	Keys(DummyKeys).
+	Tick(DummyTick).
+	View(DummyView).
+	ToNode()
+
 type MockNode struct {
 	Name       string
 	Definition *screen.Definition
