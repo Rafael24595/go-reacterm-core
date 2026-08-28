@@ -137,3 +137,29 @@ func TestValidateStructure_NilView(t *testing.T) {
 	assert.NotNil(t, err)
 	assert.Equal(t, fmt.Sprintf(errf_view, name), err.Error())
 }
+
+func TestValidateStructure_CycleDetected(t *testing.T) {
+	parent := screen.NewBuilder().
+		WithClock(func() int64 {
+			return 0
+		}).
+		WithNode(screen_test.DummyNode).
+		Name("parent")
+
+	child := screen.NewBuilder().
+		WithClock(func() int64 {
+			return 1
+		}).
+		WithNode(screen_test.DummyNode).
+		Name("child")
+
+	child.Children(parent.ToNode())
+	parent.Children(child.ToNode())
+
+	_, err := ValidateStructure(parent.ToNode())
+
+	println(err.Error())
+
+	assert.NotNil(t, err)
+	assert.Equal(t, fmt.Sprintf(errf_cycle, name), err.Error())
+}
