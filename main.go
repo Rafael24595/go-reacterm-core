@@ -151,7 +151,7 @@ func makeWrapper(cache system_cache.Cache[hash.Hash, delta.Delta]) wrap.Wrapper 
 }
 
 func makeNode(systemCache system_cache.Cache[hash.Hash, delta.Delta]) screen.Node {
-	landing := wrapper_screen.NewDemoTextArea()
+	landing := wrapper_screen.NewDemoClip()
 
 	cache := cache.New(systemCache, landing).ToNode()
 	history := history.New(cache).ToNode()
