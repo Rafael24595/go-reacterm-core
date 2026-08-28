@@ -95,7 +95,7 @@ func main() {
 
 func configLog(ctx context.Context) {
 	provider := file.FileProvider{
-		Session: runtime.Instance.SessionId(),
+		Session: runtime.Instance.SessionID(),
 	}
 
 	if err := log.DefaultFromProvider(ctx, provider); err != nil {
