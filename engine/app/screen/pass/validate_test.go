@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
+
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
@@ -24,8 +25,7 @@ func TestValidateStructure_ValidNode(t *testing.T) {
 		},
 	}.ToNode()
 
-	pass := ValidateStructure()
-	_, err := pass(node)
+	_, err := ValidateStructure(node)
 
 	assert.Nil(t, err)
 }
@@ -45,8 +45,7 @@ func TestValidateStructure_EmptyName(t *testing.T) {
 		},
 	}
 
-	pass := ValidateStructure()
-	_, err := pass(node)
+	_, err := ValidateStructure(node)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, err_name, err.Error())
@@ -68,8 +67,7 @@ func TestValidateStructure_NilKeys(t *testing.T) {
 		},
 	}
 
-	pass := ValidateStructure()
-	_, err := pass(node)
+	_, err := ValidateStructure(node)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, fmt.Sprintf(errf_keys, name), err.Error())
@@ -90,8 +88,7 @@ func TestValidateStructure_NilBoot(t *testing.T) {
 		},
 	}
 
-	pass := ValidateStructure()
-	_, err := pass(node)
+	_, err := ValidateStructure(node)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, fmt.Sprintf(errf_boot, name), err.Error())
@@ -113,8 +110,7 @@ func TestValidateStructure_NilTick(t *testing.T) {
 		},
 	}
 
-	pass := ValidateStructure()
-	_, err := pass(node)
+	_, err := ValidateStructure(node)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, fmt.Sprintf(errf_tick, name), err.Error())
@@ -136,8 +132,7 @@ func TestValidateStructure_NilView(t *testing.T) {
 		},
 	}
 
-	pass := ValidateStructure()
-	_, err := pass(node)
+	_, err := ValidateStructure(node)
 
 	assert.NotNil(t, err)
 	assert.Equal(t, fmt.Sprintf(errf_view, name), err.Error())

@@ -72,7 +72,7 @@ func main() {
 	)
 
 	passes := []screen.Pass{
-		pass.ValidateStructure(),
+		pass.ValidateStructure,
 	}
 
 	cache := system_cache.NewMemory[hash.Hash, delta.Delta]()
