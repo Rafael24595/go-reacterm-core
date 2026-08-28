@@ -1,7 +1,6 @@
 package pass
 
 import (
-	"fmt"
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
@@ -48,14 +47,12 @@ func TestValidateStructure_EmptyName(t *testing.T) {
 	_, err := ValidateStructure(node)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, err_name, err.Error())
+	assert.ErrorIs(t, ErrMissingName, err)
 }
 
 func TestValidateStructure_NilKeys(t *testing.T) {
-	name := "home"
-
 	node := screen.Node{
-		Name: name,
+		Name: "home",
 		Screen: screen.Screen{
 			Boot: func(u state.UIState) {},
 			Tick: func(*state.UIState, screen.Event) screen.Result {
@@ -70,14 +67,12 @@ func TestValidateStructure_NilKeys(t *testing.T) {
 	_, err := ValidateStructure(node)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, fmt.Sprintf(errf_keys, name), err.Error())
+	assert.ErrorIs(t, ErrNilKeys, err)
 }
 
 func TestValidateStructure_NilBoot(t *testing.T) {
-	name := "home"
-
 	node := screen.Node{
-		Name: name,
+		Name: "home",
 		Screen: screen.Screen{
 			Keys: func() screen.Definition {
 				return screen.Definition{}
@@ -91,14 +86,12 @@ func TestValidateStructure_NilBoot(t *testing.T) {
 	_, err := ValidateStructure(node)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, fmt.Sprintf(errf_boot, name), err.Error())
+	assert.ErrorIs(t, ErrNilBoot, err)
 }
 
 func TestValidateStructure_NilTick(t *testing.T) {
-	name := "home"
-
 	node := screen.Node{
-		Name: name,
+		Name: "home",
 		Screen: screen.Screen{
 			Boot: func(u state.UIState) {},
 			Keys: func() screen.Definition {
@@ -113,14 +106,12 @@ func TestValidateStructure_NilTick(t *testing.T) {
 	_, err := ValidateStructure(node)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, fmt.Sprintf(errf_tick, name), err.Error())
+	assert.ErrorIs(t, ErrNilTick, err)
 }
 
 func TestValidateStructure_NilView(t *testing.T) {
-	name := "home"
-
 	node := screen.Node{
-		Name: name,
+		Name: "home",
 		Screen: screen.Screen{
 			Boot: func(u state.UIState) {},
 			Keys: func() screen.Definition {
@@ -135,7 +126,7 @@ func TestValidateStructure_NilView(t *testing.T) {
 	_, err := ValidateStructure(node)
 
 	assert.NotNil(t, err)
-	assert.Equal(t, fmt.Sprintf(errf_view, name), err.Error())
+	assert.ErrorIs(t, ErrNilView, err)
 }
 
 func TestValidateStructure_CycleDetected(t *testing.T) {
@@ -161,5 +152,5 @@ func TestValidateStructure_CycleDetected(t *testing.T) {
 	println(err.Error())
 
 	assert.NotNil(t, err)
-	assert.Equal(t, fmt.Sprintf(errf_cycle, name), err.Error())
+	assert.ErrorIs(t, ErrCycleFound, err)
 }
