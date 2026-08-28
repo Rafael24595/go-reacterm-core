@@ -9,14 +9,23 @@ import (
 )
 
 var (
+	// ErrMissingName indicates that a Node is missing a name.
 	ErrMissingName = errors.New("screen: name is required")
+	// ErrMissingBoot indicates that a Node is missing a Boot function.
 	ErrNilBoot     = errors.New("screen: Boot function is nil")
+	// ErrMissingKeys indicates that a Node is missing a Keys function.
 	ErrNilKeys     = errors.New("screen: Keys function is nil")
+	// ErrMissingTick indicates that a Node is missing a Tick function.
 	ErrNilTick     = errors.New("screen: Tick function is nil")
+	// ErrMissingView indicates that a Node is missing a View function.
 	ErrNilView     = errors.New("screen: View function is nil")
+	// ErrCycleFound indicates that a cycle was detected in the node tree.
 	ErrCycleFound  = errors.New("screen: cycle detected in node tree")
 )
 
+// ValidateStructure is a compiler Pass that traverses the node hierarchy using breadth-first search (BFS).
+// It verifies that each node in the tree has a valid name and fully initialized screen lifecycle functions
+// (Boot, Keys, Tick, View), while ensuring no cyclic dependencies exist between parent and child nodes.
 func ValidateStructure(node screen.Node) (screen.Node, error) {
 	visited := set.New[string]()
 
