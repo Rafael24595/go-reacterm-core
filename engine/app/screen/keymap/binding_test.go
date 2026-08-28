@@ -187,3 +187,27 @@ func TestOverlay(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, CmdOpen, cmd)
 }
+
+func TestBindingsToDefinition(t *testing.T) {
+	customResolver := func(action key.Action) *key.Descriptor {
+		return &key.Descriptor{}
+	}
+
+	kb := NewBindings[testCommand]().
+		SetResolver(customResolver)
+
+	action1 := key.Action(1)
+	action2 := key.Action(2)
+
+	kb.Bind(action1, CmdOpen)
+	kb.Bind(action2, CmdSave)
+
+	def := BindingsToDefinition(kb)
+
+	assert.NotNil(t, def.RequireKeys)
+	assert.NotNil(t, def.Descriptor)
+	assert.Equal(t, 2, def.RequireKeys.Size())
+	assert.Equal(t, 2, def.Descriptor.Size())
+	assert.True(t, def.RequireKeys.Exists(action1))
+	assert.True(t, def.RequireKeys.Exists(action2))
+}
