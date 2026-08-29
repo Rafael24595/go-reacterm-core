@@ -27,7 +27,7 @@ func TestWrap_AddsTag_AndExecutesDecorator(t *testing.T) {
 
 	mock := screen_test.MockByName("test-node")
 
-	wrapped := Wrap(decorator)(mock)
+	wrapped := wrap(decorator)(mock)
 	assert.Inside(t, Tag, wrapped.Tags)
 
 	wrapped.Screen.Tick(&state.UIState{}, screen.Event{})
@@ -51,7 +51,7 @@ func TestWrap_PreservesNextChain(t *testing.T) {
 		},
 	}
 
-	wrapped := Wrap(decorator)(mock.ToNode())
+	wrapped := wrap(decorator)(mock.ToNode())
 	wrapped.Screen.Tick(&state.UIState{}, screen.Event{})
 
 	assert.Equal(t, 1, called)
@@ -65,7 +65,7 @@ func TestWrap_DoesNotMutateOriginalNode(t *testing.T) {
 		Tags: tags,
 	}
 
-	_ = Wrap(func(target behavior.Target, next screen.TickFunc) screen.TickFunc {
+	_ = wrap(func(target behavior.Target, next screen.TickFunc) screen.TickFunc {
 		return next
 	})(mock.ToNode())
 
@@ -84,7 +84,7 @@ func TestWrap_TargetIsCorrect(t *testing.T) {
 
 	mock := screen_test.MockByName("node-123")
 
-	wrapped := Wrap(decorator)(mock)
+	wrapped := wrap(decorator)(mock)
 	wrapped.Screen.Tick(&state.UIState{}, screen.Event{})
 
 	assert.Equal(t, mock.Name, captured.Name)

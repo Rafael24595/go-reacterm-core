@@ -14,13 +14,13 @@ const Tag = "behavior:tick"
 type Handler func(result screen.Result) screen.Result
 type Middleware func(uiState *state.UIState, event screen.Event, context behavior.Context[screen.TickFunc]) screen.Result
 
-func Apply(node screen.Node, decorator behavior.Tick) screen.Node {
+func apply(node screen.Node, decorator behavior.Tick) screen.Node {
 	return behavior.Apply(
-		node, Wrap(decorator),
+		node, wrap(decorator),
 	)
 }
 
-func Wrap(decorator behavior.Tick) behavior.Behavior {
+func wrap(decorator behavior.Tick) behavior.Behavior {
 	return func(node screen.Node) screen.Node {
 		node.Screen.Tick = decorator(
 			behavior.TargetOf(node),
@@ -34,7 +34,7 @@ func Wrap(decorator behavior.Tick) behavior.Behavior {
 }
 
 func Map(node screen.Node, handler Handler) screen.Node {
-	return Apply(node, mapp(handler))
+	return apply(node, mapp(handler))
 }
 
 func mapp(handler Handler) behavior.Tick {
@@ -46,7 +46,7 @@ func mapp(handler Handler) behavior.Tick {
 }
 
 func Use(node screen.Node, middleware Middleware) screen.Node {
-	return Apply(node, use(middleware))
+	return apply(node, use(middleware))
 }
 
 func use(middleware Middleware) behavior.Tick {
@@ -59,7 +59,7 @@ func use(middleware Middleware) behavior.Tick {
 }
 
 func OnKey(node screen.Node, middleware Middleware, keys ...key.Action) screen.Node {
-	return Apply(node, onKey(keys, middleware))
+	return apply(node, onKey(keys, middleware))
 }
 
 func onKey(keys []key.Action, middleware Middleware) behavior.Tick {
