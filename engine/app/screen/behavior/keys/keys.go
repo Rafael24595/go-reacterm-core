@@ -10,13 +10,13 @@ const Tag = "behavior:keys"
 type Handler func(definition screen.Definition) screen.Definition
 type Middleware func(context behavior.Context[screen.KeysFunc]) screen.Definition
 
-func Apply(node screen.Node, decorator behavior.Keys) screen.Node {
+func apply(node screen.Node, decorator behavior.Keys) screen.Node {
 	return behavior.Apply(
-		node, Wrap(decorator),
+		node, wrap(decorator),
 	)
 }
 
-func Wrap(decorator behavior.Keys) behavior.Behavior {
+func wrap(decorator behavior.Keys) behavior.Behavior {
 	return func(node screen.Node) screen.Node {
 		node.Screen.Keys = decorator(
 			behavior.TargetOf(node),
@@ -29,7 +29,7 @@ func Wrap(decorator behavior.Keys) behavior.Behavior {
 }
 
 func Map(node screen.Node, handler Handler) screen.Node {
-	return Apply(node, mapp(handler))
+	return apply(node, mapp(handler))
 }
 
 func mapp(handler Handler) behavior.Keys {
@@ -41,7 +41,7 @@ func mapp(handler Handler) behavior.Keys {
 }
 
 func Use(node screen.Node, middleware Middleware) screen.Node {
-	return Apply(node, use(middleware))
+	return apply(node, use(middleware))
 }
 
 func use(middleware Middleware) behavior.Keys {
