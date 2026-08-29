@@ -12,13 +12,13 @@ const Tag = "behavior:keys"
 type Handler func(vm viewmodel.ViewModel) viewmodel.ViewModel
 type Middleware func(uiState state.UIState, context behavior.Context[screen.ViewFunc]) viewmodel.ViewModel
 
-func Apply(node screen.Node, decorator behavior.View) screen.Node {
+func apply(node screen.Node, decorator behavior.View) screen.Node {
 	return behavior.Apply(
-		node, Wrap(decorator),
+		node, wrap(decorator),
 	)
 }
 
-func Wrap(decorator behavior.View) behavior.Behavior {
+func wrap(decorator behavior.View) behavior.Behavior {
 	return func(node screen.Node) screen.Node {
 		node.Screen.View = decorator(
 			behavior.TargetOf(node),
@@ -31,7 +31,7 @@ func Wrap(decorator behavior.View) behavior.Behavior {
 }
 
 func Map(node screen.Node, handler Handler) screen.Node {
-	return Apply(node, mapp(handler))
+	return apply(node, mapp(handler))
 }
 
 func mapp(handler Handler) behavior.View {
@@ -43,7 +43,7 @@ func mapp(handler Handler) behavior.View {
 }
 
 func Use(node screen.Node, middleware Middleware) screen.Node {
-	return Apply(node, use(middleware))
+	return apply(node, use(middleware))
 }
 
 func use(middleware Middleware) behavior.View {
