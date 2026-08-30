@@ -48,6 +48,13 @@ func TestHasher_Uint64_DifferentValuesProduceDifferentHashes(t *testing.T) {
 	assert.NotEqual(t, h1, h2)
 }
 
+func TestHasher_Hash(t *testing.T) {
+	h1 := New().Hash(Hash(12345)).Sum64()
+	h2 := New().Hash(Hash(12345)).Sum64()
+
+	assert.Equal(t, h1, h2)
+}
+
 func TestHasher_Bool(t *testing.T) {
 	h1 := New().Bool(true).Sum64()
 	h2 := New().Bool(false).Sum64()
@@ -141,6 +148,20 @@ func TestHasher_GoldenValue(t *testing.T) {
 		Sum64()
 
 	assert.Equal(t, 18071347750596753038, got)
+}
+
+func TestHasher_Uint16_GoldenValue(t *testing.T) {
+	h := New().Uint16(0x0102).Sum64()
+	expected := New().Uint8(0x02).Uint8(0x01).Sum64()
+
+	assert.Equal(t, expected, h)
+}
+
+func TestHasher_Uint32_GoldenValue(t *testing.T) {
+	h := New().Uint32(0x01020304).Sum64()
+	expected := New().Uint8(0x04).Uint8(0x03).Uint8(0x02).Uint8(0x01).Sum64()
+
+	assert.Equal(t, expected, h)
 }
 
 func BenchmarkNew(b *testing.B) {
