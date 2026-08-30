@@ -140,7 +140,7 @@ func TestHasher_GoldenValue(t *testing.T) {
 		Bool(true).
 		Sum64()
 
-	assert.Equal(t, 0xdbf288cb32d28296, got)
+	assert.Equal(t, 18071347750596753038, got)
 }
 
 func BenchmarkNew(b *testing.B) {

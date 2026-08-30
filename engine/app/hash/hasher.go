@@ -1,8 +1,14 @@
 package hash
 
+import "unsafe"
+
 type Hasher uint64
 
 type Hash uint64
+
+type unsigned interface {
+	~uint16 | ~uint32 | ~uint64
+}
 
 const (
 	offset64 = 14695981039346656037
@@ -13,38 +19,36 @@ func New() Hasher {
 	return Hasher(offset64)
 }
 
+func writeUnsigned[T unsigned](h Hasher, v T) Hasher {
+	for range unsafe.Sizeof(v) {
+		h ^= Hasher(v & 0xFF)
+		h *= prime64
+		v >>= 8
+	}
+	return h
+}
+
 func (h Hasher) Uint8(v uint8) Hasher {
 	h ^= Hasher(v)
 	h *= prime64
-	
 	return h
 }
 
 func (h Hasher) Uint16(v uint16) Hasher {
-	h ^= Hasher(v)
-	h *= prime64
-
-	return h
+	return writeUnsigned(h, v)
 }
 
 func (h Hasher) Uint32(v uint32) Hasher {
-	h ^= Hasher(v)
-	h *= prime64
-
-	return h
+	return writeUnsigned(h, v)
 }
 
 func (h Hasher) Uint64(v uint64) Hasher {
-	h ^= Hasher(v)
-	h *= prime64
-	
-	return h
+	return writeUnsigned(h, v)
 }
 
 func (h Hasher) Hash(v Hash) Hasher {
 	h ^= Hasher(v)
 	h *= prime64
-	
 	return h
 }
 
