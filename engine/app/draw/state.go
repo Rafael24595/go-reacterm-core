@@ -60,10 +60,7 @@ func (s *State) Written() []line.Line {
 }
 
 func (s *State) Reset() {
-	for i := range s.Buffer {
-		s.Buffer[i] = line.Line{}
-	}
-
+	clear(s.Buffer)
 	s.Cursor = 0
 	s.Focus = false
 }
