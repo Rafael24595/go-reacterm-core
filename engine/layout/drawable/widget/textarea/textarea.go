@@ -89,10 +89,6 @@ func (u *TextAreaUnit) lazyBoot(size winsize.Winsize) {
 	u.lazyLoaded = true
 
 	frags := u.resolveFrags()
-	for _, step := range u.steps {
-		frags = step(frags)
-	}
-
 	base := line.FromFrags(frags...)
 
 	result := u.makeLines(base)
@@ -123,10 +119,19 @@ func (u *TextAreaUnit) wipe() {
 }
 
 func (u *TextAreaUnit) resolveFrags() []frag.Frag {
+	var frags []frag.Frag
+	
 	if len(u.buffer) == 0 && len(u.placeholder) != 0 {
-		return u.resolvePlaceholder()
+		frags = u.resolvePlaceholder()
+	} else {
+		frags = u.resolveBuffer()
 	}
-	return u.resolveBuffer()
+
+	for _, step := range u.steps {
+		frags = step(frags)
+	}
+
+	return frags
 }
 
 func (u *TextAreaUnit) resolvePlaceholder() []frag.Frag {
