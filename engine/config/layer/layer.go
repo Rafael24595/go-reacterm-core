@@ -31,9 +31,11 @@ func FromLayer[T math.Number](other Layer[T], opts ...Option[T]) Layer[T] {
 		opt(&cfg)
 	}
 
+	unit := cfg.Unit()
+
 	assert.LazyFalse(func() bool {
-		return drawable.IsZeroUnit(cfg.Unit())
-	}, "unit is not defined")
+		return drawable.IsZeroUnit(unit)
+	}, "unit '%s' is not defined", unit.Name)
 
 	cfg.Status = true
 
