@@ -101,5 +101,5 @@ func Helper_ToUnit(t *testing.T, unit drawable.Unit) {
 
 	assert.NotNil(t, unit.Drawable.Boot, "Drawable.Boot should be set")
 	assert.NotNil(t, unit.Drawable.Wipe, "Drawable.Wipe should be set")
-	assert.NotNil(t, unit.Drawable, "Drawable.Draw should be set")
+	assert.NotNil(t, unit.Drawable.Draw, "Drawable.Draw should be set")
 }
