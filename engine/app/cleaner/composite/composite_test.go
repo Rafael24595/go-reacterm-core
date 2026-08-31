@@ -38,3 +38,15 @@ func TestComposite(t *testing.T) {
 	assert.True(t, uiState.Pager.ForceShow)
 	assert.False(t, uiState.Helper.ShowHelp)
 }
+
+func TestComposite_EmptyListIsNoOp(t *testing.T) {
+	cleaner := Cleaner()
+
+	uiState := state.NewUIState()
+	uiState.Pager.CurrentPage = 5
+
+	result := cleaner(screen.Result{}, uiState)
+
+	assert.Equal(t, uiState, result)
+	assert.Equal(t, 5, result.Pager.CurrentPage)
+}
