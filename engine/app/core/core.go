@@ -36,7 +36,7 @@ type Engine struct {
 	terminal terminal.Terminal
 	layout   layout.Layout
 	render   render.Render
-	cleaner  cleaner.StateCleaner
+	cleaner  cleaner.Cleaner
 	node     screen.Node
 	passes   []screen.Pass
 }
@@ -46,7 +46,7 @@ func NewEngine(
 	terminal terminal.Terminal,
 	layout layout.Layout,
 	render render.Render,
-	cleaner cleaner.StateCleaner,
+	cleaner cleaner.Cleaner,
 	node screen.Node,
 ) *Engine {
 	pulse := pulse.New(50 * time.Millisecond)
@@ -232,7 +232,7 @@ func (e *Engine) tickNode(
 	e.manageResult(uiState, result)
 	e.manageNode(*uiState, result)
 
-	uiState = e.cleaner.Cleanup(result, uiState)
+	uiState = e.cleaner(result, uiState)
 
 	e.renderFrame(uiState, size)
 

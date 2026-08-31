@@ -67,8 +67,8 @@ func main() {
 	layout := makeLayout(transformer)
 	render := makeRender(transformer)
 
-	cleaner := composite.NewCleaner(
-		store.Cleanup,
+	cleaner := composite.Cleaner(
+		store.Cleaner,
 	)
 
 	passes := []screen.Pass{
