@@ -171,7 +171,7 @@ func (n *Pagination) view(uiState state.UIState) viewmodel.ViewModel {
 
 	footer := []line.Line{
 		line.TextSpec(
-			fmt.Sprintf("%s: %d", label, uiState.Pager.ActualPage),
+			fmt.Sprintf("%s: %d", label, uiState.Pager.CurrentPage),
 			spec.AlignLeft(),
 		),
 	}
@@ -193,5 +193,5 @@ func (n *Pagination) shouldShowPage(uiState state.UIState, vm viewmodel.ViewMode
 		return true
 	}
 
-	return uiState.Pager.HasMore || uiState.Pager.ActualPage > 0
+	return uiState.Pager.HasMore || uiState.Pager.CurrentPage > 0
 }

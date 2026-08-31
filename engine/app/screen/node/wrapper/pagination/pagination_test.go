@@ -50,7 +50,7 @@ func TestPagination_LocalTick(t *testing.T) {
 
 func TestPagination_ViewFooter(t *testing.T) {
 	uiState := state.NewUIState()
-	uiState.Pager.ActualPage = 3
+	uiState.Pager.CurrentPage = 3
 
 	base := screen_test.MockNode{
 		Name: "base",

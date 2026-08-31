@@ -154,5 +154,5 @@ func Test_Pager_ConfirmPage_UsesMaxPage(t *testing.T) {
 
 	uiState.Pager.ConfirmPage(ctx.MaxPage)
 
-	assert.Equal(t, 2, uiState.Pager.ActualPage)
+	assert.Equal(t, 2, uiState.Pager.CurrentPage)
 }

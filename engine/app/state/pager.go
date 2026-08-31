@@ -5,24 +5,24 @@ import (
 )
 
 type PagerContext struct {
-	Syncronyzed bool
-	modificated bool
-	TargetPage  uint
-	ActualPage  uint
-	HasMore     bool
-	ForceShow   bool
+	Synchronized bool
+	modified     bool
+	TargetPage   uint
+	CurrentPage  uint
+	HasMore      bool
+	ForceShow    bool
 }
 
 func (s *PagerContext) DecTarget() *PagerContext {
-	s.Syncronyzed = false
-	s.modificated = true
+	s.Synchronized = false
+	s.modified = true
 	s.TargetPage = math.SubClampZero(s.TargetPage, 1)
 	return s
 }
 
 func (s *PagerContext) IncTarget() *PagerContext {
-	s.Syncronyzed = false
-	s.modificated = true
+	s.Synchronized = false
+	s.modified = true
 	s.TargetPage += 1
 	return s
 }
@@ -32,12 +32,12 @@ func (s *PagerContext) ConfirmPage(page ...uint) *PagerContext {
 		s.TargetPage = page[0]
 	}
 
-	if s.modificated &&
-		s.TargetPage == s.ActualPage {
-		s.Syncronyzed = true
+	if s.modified &&
+		s.TargetPage == s.CurrentPage {
+		s.Synchronized = true
 	}
 
-	s.ActualPage = s.TargetPage
-	s.modificated = false
+	s.CurrentPage = s.TargetPage
+	s.modified = false
 	return s
 }

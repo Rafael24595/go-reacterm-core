@@ -286,14 +286,11 @@ func (e *Engine) renderFrame(uiState *state.UIState, size winsize.Winsize) {
 	}
 }
 
-func (e *Engine) syncPager(uiState *state.UIState, vm *viewmodel.ViewModel) (*state.UIState, *viewmodel.ViewModel) {
-	if uiState.Pager.Syncronyzed {
-		return uiState, vm
+func (e *Engine) syncPager(uiState *state.UIState, vm *viewmodel.ViewModel) {
+	if !uiState.Pager.Synchronized {
+		vm.Behavior.NeedsPulse = true
+		uiState.Pager.Synchronized = true
 	}
-
-	vm.Behavior.NeedsPulse = true
-	uiState.Pager.Syncronyzed = true
-	return uiState, vm
 }
 
 func (e *Engine) logErr(err error) {

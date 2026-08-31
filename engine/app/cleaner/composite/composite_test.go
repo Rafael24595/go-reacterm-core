@@ -12,7 +12,7 @@ import (
 func TestComposite(t *testing.T) {
 	cleaner := Cleaner(
 		func(r screen.Result, s *state.UIState) *state.UIState {
-			s.Pager.ActualPage = 0
+			s.Pager.CurrentPage = 0
 			return s
 		},
 		func(r screen.Result, s *state.UIState) *state.UIState {
@@ -26,7 +26,7 @@ func TestComposite(t *testing.T) {
 	)
 
 	uiState := state.NewUIState()
-	uiState.Pager.ActualPage = 10
+	uiState.Pager.CurrentPage = 10
 	uiState.Pager.ForceShow = false
 	uiState.Helper.ShowHelp = true
 
@@ -34,7 +34,7 @@ func TestComposite(t *testing.T) {
 
 	uiState = cleaner(res, uiState)
 
-	assert.Equal(t, 0, uiState.Pager.ActualPage)
+	assert.Equal(t, 0, uiState.Pager.CurrentPage)
 	assert.True(t, uiState.Pager.ForceShow)
 	assert.False(t, uiState.Helper.ShowHelp)
 }
