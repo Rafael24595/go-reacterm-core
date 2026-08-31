@@ -49,10 +49,10 @@ func NewRenderer(strategy pager.Strategy) Renderer {
 				status.Work.Add(fixedLen)
 
 				for _, fix := range fixed {
-					status.SetAndNext(fix)
+					status.WriteLine(fix)
 					status.Work.Advance()
 
-					status.MarkFocus(
+					status.EnableFocus(
 						line.HasAtom(atom.Focus, fix),
 					)
 

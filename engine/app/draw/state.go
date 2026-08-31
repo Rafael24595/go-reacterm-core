@@ -31,22 +31,22 @@ func NewState(size ...winsize.Rows) *State {
 	}
 }
 
-func (s *State) ShowPagination() bool {
+func (s *State) IsPaginated() bool {
 	return s.Page != 0 || s.Work.Unfinished()
 }
 
-func (s *State) MarkFocus(focus bool) *State {
+func (s *State) EnableFocus(focus bool) *State {
 	s.Focus = s.Focus || focus
 	return s
 }
 
-func (s *State) SetAndNext(line line.Line) *State {
+func (s *State) WriteLine(lne line.Line) *State {
 	if s.IsFull() {
 		assert.Unreachable("buffer overflow")
 		return s
 	}
 
-	s.Buffer[s.Cursor] = line
+	s.Buffer[s.Cursor] = lne
 	s.Cursor += 1
 	return s
 }

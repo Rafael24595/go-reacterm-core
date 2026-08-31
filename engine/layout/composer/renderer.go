@@ -30,7 +30,7 @@ func pagerRenderer(
 		status := renderer(uiState, size, unit)
 
 		ctx.MaxPage = max(ctx.MaxPage, status.Page)
-		if status.ShowPagination() {
+		if status.IsPaginated() {
 			ctx.HasMore = true
 		}
 
