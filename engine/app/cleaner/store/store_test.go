@@ -11,6 +11,21 @@ import (
 	screen_test "github.com/Rafael24595/go-reacterm-core/test/engine/app/screen"
 )
 
+func TestStore_PreservesStateWhenNoNodeInResult(t *testing.T) {
+	uiState := state.NewUIState()
+	nodeBase := screen_test.MockByName("base")
+
+	uiState.Store.Push(nodeBase.Name, "lang-1", "golang")
+
+	result := screen.ResultFromUIState(uiState)
+
+	Cleaner(result, uiState)
+
+	value, exists := uiState.Store.Find(nodeBase.Name, "lang-1")
+	assert.True(t, exists)
+	assert.Equal(t, "golang", value.Text())
+}
+
 func TestStore_PreservesActiveState(t *testing.T) {
 	uiState := state.NewUIState()
 
