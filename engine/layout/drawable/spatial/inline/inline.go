@@ -47,7 +47,11 @@ func (u *InlineUnit) boot() {
 	u.loaded = true
 }
 
-func (u *InlineUnit) wipe() {}
+func (u *InlineUnit) wipe() {
+	for i := range u.units {
+		u.units[i].Drawable.Wipe()
+	}
+}
 
 func (u *InlineUnit) draw(size winsize.Winsize) ([]line.Line, bool) {
 	assert.True(u.loaded, drawable.MessageInitialized)
@@ -105,7 +109,7 @@ func (u *InlineUnit) joinChildren(lns []line.Line) []line.Line {
 
 	for i, lne := range lns {
 		merged.WithMeta(lne)
-		
+
 		merged.Text = line.AppendFragsTo(
 			merged.Text, lne,
 		)
