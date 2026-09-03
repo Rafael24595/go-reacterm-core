@@ -30,7 +30,10 @@ func (v *ViewModel) Clone() *ViewModel {
 	vm.Header.Push(v.Header.Units()...)
 	vm.Kernel.Push(v.Kernel.Units()...)
 	vm.Footer.Push(v.Footer.Units()...)
-	vm.Pager = v.Pager
+	
+	if v.Pager != nil {
+		vm.Pager = v.Pager.Clone()
+	}
 
 	return vm
 }
