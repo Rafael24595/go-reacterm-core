@@ -8,7 +8,6 @@ import (
 )
 
 type Scope struct {
-	mu        sync.RWMutex
 	timestamp int64
 	context   map[string]Entry
 }
@@ -21,9 +20,6 @@ func newScope(clock clock.Clock) *Scope {
 }
 
 func (n *Scope) Find(key string) (*dynamic.Value, bool) {
-	n.mu.RLock()
-	defer n.mu.RUnlock()
-
 	arg, ok := n.context[key]
 	if !ok {
 		return nil, false
@@ -33,18 +29,12 @@ func (n *Scope) Find(key string) (*dynamic.Value, bool) {
 }
 
 func (n *Scope) Push(key string, arg Entry) *Scope {
-	n.mu.Lock()
-	defer n.mu.Unlock()
-
 	n.context[key] = arg
 
 	return n
 }
 
 func (n *Scope) Remove(key string) (*dynamic.Value, bool) {
-	n.mu.Lock()
-	defer n.mu.Unlock()
-
 	arg, ok := n.context[key]
 	if !ok {
 		return nil, false
