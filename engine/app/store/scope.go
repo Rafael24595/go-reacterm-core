@@ -27,7 +27,7 @@ func (n *Scope) Find(key string) (*dynamic.Value, bool) {
 		return nil, false
 	}
 
-	return &arg.argument, true
+	return &arg.value, true
 }
 
 func (n *Scope) Push(key string, arg Entry) *Scope {
@@ -46,5 +46,5 @@ func (n *Scope) Remove(key string) (*dynamic.Value, bool) {
 	n.timestamp = n.clock()
 	delete(n.context, key)
 
-	return &arg.argument, true
+	return &arg.value, true
 }
