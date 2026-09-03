@@ -10,13 +10,13 @@ import (
 type Scope struct {
 	mu        sync.RWMutex
 	timestamp int64
-	context   map[string]Argument
+	context   map[string]Entry
 }
 
 func newScope(clock clock.Clock) *Scope {
 	return &Scope{
 		timestamp: clock(),
-		context:   make(map[string]Argument),
+		context:   make(map[string]Entry),
 	}
 }
 
@@ -32,7 +32,7 @@ func (n *Scope) Find(key string) (*dynamic.Value, bool) {
 	return &arg.argument, true
 }
 
-func (n *Scope) Push(key string, arg Argument) *Scope {
+func (n *Scope) Push(key string, arg Entry) *Scope {
 	n.mu.Lock()
 	defer n.mu.Unlock()
 
