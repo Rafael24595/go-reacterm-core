@@ -35,5 +35,7 @@ func (v *ViewModel) Clone() *ViewModel {
 		vm.Pager = v.Pager.Clone()
 	}
 
+	vm.Behavior = v.Behavior
+
 	return vm
 }
