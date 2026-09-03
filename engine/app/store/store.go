@@ -79,18 +79,12 @@ func (s *Store) RemoveArgument(scope, key string) (*dynamic.Value, bool) {
 
 func (s *Store) RetainOnly(scopes set.Set[string]) *Store {
 	s.mu.Lock()
-	items := make([]string, 0)
+	defer s.mu.Unlock()
 
 	for scope := range s.scopes {
 		if !scopes.Has(scope) {
-			items = append(items, scope)
+			delete(s.scopes, scope)
 		}
-	}
-
-	s.mu.Unlock()
-
-	for _, name := range items {
-		s.RemoveScope(name)
 	}
 
 	return s
