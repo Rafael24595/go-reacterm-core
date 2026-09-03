@@ -37,3 +37,17 @@ func (p *Strategy) WithStep(step step.Step) *Strategy {
 	p.Step = step
 	return p
 }
+
+// Clone creates a deep copy of the Strategy, preserving its rule and step configurations.
+func (p *Strategy) Clone() *Strategy {
+	return &Strategy{
+		Rule: rule.Rule{
+			Kind:    p.Rule.Kind,
+			Handler: p.Rule.Handler,
+		},
+		Step: step.Step{
+			Kind:    p.Step.Kind,
+			Handler: p.Step.Handler,
+		},
+	}
+}

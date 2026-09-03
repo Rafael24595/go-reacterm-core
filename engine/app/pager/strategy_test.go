@@ -41,3 +41,25 @@ func TestPagerStrategy_Integration(t *testing.T) {
 
 	assert.True(t, shouldStop)
 }
+
+func TestStrategy_Clone_PreservesValuesAndIsIndependent(t *testing.T) {
+	original := &Strategy{
+		Rule: rule.Rule{
+			Kind: rule.KindPage,
+		},
+		Step: step.Step{
+			Kind: step.KindLine,
+		},
+	}
+
+	cloned := original.Clone()
+
+	assert.NotNil(t, cloned)
+	assert.Equal(t, original.Rule.Kind, cloned.Rule.Kind)
+	assert.Equal(t, original.Step.Kind, cloned.Step.Kind)
+
+	assert.NotSame(t, original, cloned)
+
+	original.Rule.Kind = rule.KindFocus
+	assert.NotEqual(t, original.Rule.Kind, cloned.Rule.Kind)
+}
