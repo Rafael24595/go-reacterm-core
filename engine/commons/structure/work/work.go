@@ -12,7 +12,7 @@ func NewTracker() *Tracker {
 }
 
 func (t *Tracker) Add(tasks uint) *Tracker {
-	if tasks <= 0 {
+	if tasks == 0 {
 		assert.Unreachable("tasks should be greater than 0")
 
 		return t
