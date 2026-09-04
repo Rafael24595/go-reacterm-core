@@ -45,7 +45,7 @@ func (s *Store) Push(scope string, key string, arg any) *Store {
 	}
 
 	s.scopes[scope] = ctx.Push(key,
-		newArgument(s.clock, arg),
+		newEntry(s.clock, arg),
 	)
 
 	return s
