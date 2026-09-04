@@ -52,7 +52,7 @@ func NewEngine(
 ) *Engine {
 	pulse := pulse.New(50 * time.Millisecond)
 	return &Engine{
-		context:  nil,
+		context:  context.Background(),
 		doneSgnl: make(chan struct{}),
 		pulse:    pulse,
 		terminal: terminal,
