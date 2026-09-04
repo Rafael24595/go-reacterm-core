@@ -123,7 +123,7 @@ func (e *Engine) run() {
 		return
 	}
 
-	defer local.LogErrorHandler(e.terminal.OnClose)
+	defer local.Log(e.terminal.OnClose)
 
 	keys := e.terminal.KeyEvents()
 	resizes := e.terminal.ResizeEvents()

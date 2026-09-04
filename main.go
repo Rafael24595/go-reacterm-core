@@ -59,7 +59,7 @@ func main() {
 	defer stop()
 
 	configLog(ctx)
-	defer local.WriterErrorHandler(os.Stderr, log.OnClose)
+	defer local.Writer(os.Stderr, log.OnClose)
 
 	terminal := makeTerminal(ctx)
 

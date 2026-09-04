@@ -7,20 +7,20 @@ import (
 	"github.com/Rafael24595/go-log/log/record"
 )
 
-func WriterErrorHandler(w io.Writer, f func() error) {
-	err := f();
-	if  err == nil {
+func Writer(w io.Writer, f func() error) {
+	err := f()
+	if err == nil {
 		return
 	}
 
 	_, err = w.Write([]byte(err.Error()))
-	if  err == nil {
+	if err == nil {
 		return
 	}
 
 	println(err.Error())
 }
 
-func LogErrorHandler(f func() error) {
-	WriterErrorHandler(log.WriterFromCategory(record.ERROR), f)
+func Log(f func() error) {
+	Writer(log.WriterFromCategory(record.ERROR), f)
 }
