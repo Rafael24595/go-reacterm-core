@@ -28,6 +28,7 @@ import (
 const code = "engine"
 const category = record.Category("SUPERVISOR")
 
+// Engine manages the terminal lifecycle, input handling, and view render loop.
 type Engine struct {
 	running  bool
 	context  context.Context
@@ -43,6 +44,8 @@ type Engine struct {
 }
 
 // TODO: Disable pulse on proactive terminal
+
+// NewEngine constructs a new Engine instance initialized with default options.
 func NewEngine(
 	terminal terminal.Terminal,
 	layout layout.Layout,
@@ -64,6 +67,7 @@ func NewEngine(
 	}
 }
 
+// Context sets the parent context for the engine prior to starting.
 func (e *Engine) Context(ctx context.Context) *Engine {
 	if e.running {
 		assert.Unreachable("the engine can be modified after initialization")
@@ -74,6 +78,7 @@ func (e *Engine) Context(ctx context.Context) *Engine {
 	return e
 }
 
+// AddPass appends compiler screen passes to the engine execution chain.
 func (e *Engine) AddPass(passes ...screen.Pass) *Engine {
 	if e.running {
 		assert.Unreachable("the engine can be modified after initialization")
@@ -84,12 +89,16 @@ func (e *Engine) AddPass(passes ...screen.Pass) *Engine {
 	return e
 }
 
+// Run starts the engine using a default background context in a separate goroutine.
+// Returns a read-only channel that closes when execution terminates.
 func (e *Engine) Run() <-chan struct{} {
 	return e.RunWithContext(
 		context.Background(),
 	)
 }
 
+// RunWithContext starts the engine with a custom parent context in a separate goroutine.
+// Returns a read-only channel that closes when execution terminates.
 func (e *Engine) RunWithContext(ctx context.Context) <-chan struct{} {
 	if e.running {
 		assert.Unreachable("The engine can not be initialized more than once")
@@ -198,6 +207,7 @@ func (e *Engine) loop(
 	}
 }
 
+// Exit triggers a safe shutdown of the engine loop.
 func (e *Engine) Exit() {
 	if e.cancel != nil {
 		e.cancel()
