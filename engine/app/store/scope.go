@@ -1,8 +1,6 @@
 package store
 
 import (
-	"sync"
-
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/dynamic"
 	"github.com/Rafael24595/go-reacterm-core/engine/platform/clock"
 )
