@@ -31,6 +31,7 @@ const category = record.Category("SUPERVISOR")
 type Engine struct {
 	running  bool
 	context  context.Context
+	cancel   context.CancelFunc
 	doneSgnl chan struct{}
 	pulse    *pulse.Pulse
 	terminal terminal.Terminal
@@ -96,7 +97,7 @@ func (e *Engine) RunWithContext(ctx context.Context) <-chan struct{} {
 	}
 
 	e.running = true
-	e.context = ctx
+	e.context, e.cancel = context.WithCancel(ctx)
 
 	go e.run()
 
@@ -193,18 +194,13 @@ func (e *Engine) loop(
 
 			size = s
 			e.renderFrame(uiState, size)
-
-		case <-e.doneSgnl:
-			return
 		}
 	}
 }
 
 func (e *Engine) Exit() {
-	select {
-	case <-e.doneSgnl:
-	default:
-		close(e.doneSgnl)
+	if e.cancel != nil {
+		e.cancel()
 	}
 }
 
