@@ -152,7 +152,7 @@ func (e *Engine) run() {
 
 			uiState := state.NewUIState()
 
-			e.compileNodeScreen(*uiState, e.node)
+			e.compileNodeScreen(uiState, e.node)
 			e.renderFrame(uiState, size)
 
 			e.loop(uiState, size, keys, resizes)
@@ -204,14 +204,14 @@ func (e *Engine) Exit() {
 	}
 }
 
-func (e *Engine) compileNodeScreen(uiState state.UIState, node screen.Node) *Engine {
+func (e *Engine) compileNodeScreen(uiState *state.UIState, node screen.Node) *Engine {
 	newNode, err := screen.CompileNode(node, e.passes...)
 	if err != nil {
 		e.logErr(err)
 	}
 
 	e.node = newNode
-	e.node.Screen.Boot(uiState)
+	e.node.Screen.Boot(*uiState)
 
 	return e
 }
@@ -226,7 +226,7 @@ func (e *Engine) tickNode(
 	)
 
 	e.manageResult(uiState, result)
-	e.manageNode(*uiState, result)
+	e.manageNode(uiState, result)
 
 	uiState = e.cleaner(result, uiState)
 
@@ -240,7 +240,7 @@ func (e *Engine) manageResult(uiState *state.UIState, result screen.Result) *sta
 	return uiState
 }
 
-func (e *Engine) manageNode(uiState state.UIState, result screen.Result) screen.Result {
+func (e *Engine) manageNode(uiState *state.UIState, result screen.Result) screen.Result {
 	if node, hasNode := result.TryGetNode(); hasNode {
 		e.compileNodeScreen(uiState, node)
 	}
