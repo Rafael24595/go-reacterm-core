@@ -29,6 +29,20 @@ func TestStack_PushPop_LIFO(t *testing.T) {
 	assert.False(t, ok)
 }
 
+func TestStack_Peek(t *testing.T) {
+	s := New[string](2)
+
+	_, ok := s.Peek()
+	assert.False(t, ok)
+
+	s.Push("golang")
+	v, ok := s.Peek()
+
+	assert.True(t, ok)
+	assert.Equal(t, "golang", v)
+	assert.Equal(t, 1, s.Len())
+}
+
 func TestStack_ReplaceWhenFull(t *testing.T) {
 	s := New[int](3)
 
