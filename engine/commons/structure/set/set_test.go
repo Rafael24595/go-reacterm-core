@@ -56,6 +56,24 @@ func TestSet_Slice(t *testing.T) {
 	assert.Size(t, 2, items)
 }
 
+func TestSet_Clear(t *testing.T) {
+	s := From("golang", "zig", "rust")
+
+	assert.Size(t, 3, s)
+	assert.True(t, s.Has("golang"))
+
+	s.Clear()
+
+	assert.Size(t, 0, s)
+	assert.False(t, s.Has("golang"))
+	assert.False(t, s.Has("zig"))
+	assert.False(t, s.Has("rust"))
+
+	s.Add("elixir")
+	assert.Size(t, 1, s)
+	assert.True(t, s.Has("elixir"))
+}
+
 func TestSet_Any(t *testing.T) {
 	tests := []struct {
 		name     string

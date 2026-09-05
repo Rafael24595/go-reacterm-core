@@ -79,6 +79,10 @@ func (s Set[T]) Slice() []T {
 	return items
 }
 
+func (s Set[T]) Clear() {
+	clear(s)
+}
+
 func (s Set[T]) Clone() Set[T] {
 	return maps.Clone(s)
 }
