@@ -2,11 +2,13 @@ package heap
 
 import "cmp"
 
+// Heap represents a binary heap of elements ordered by a custom comparator function.
 type Heap[T any] struct {
 	items []T
 	less  func(a, b T) bool
 }
 
+// New creates an empty Heap with a custom comparator function.
 func New[T any](less func(a, b T) bool) *Heap[T] {
 	return &Heap[T]{
 		items: []T{},
@@ -14,6 +16,7 @@ func New[T any](less func(a, b T) bool) *Heap[T] {
 	}
 }
 
+// NewMin creates an empty Min-Heap for ordered types.
 func NewMin[T cmp.Ordered]() *Heap[T] {
 	return &Heap[T]{
 		items: []T{},
@@ -23,6 +26,7 @@ func NewMin[T cmp.Ordered]() *Heap[T] {
 	}
 }
 
+// NewMax creates an empty Max-Heap for ordered types.
 func NewMax[T cmp.Ordered]() *Heap[T] {
 	return &Heap[T]{
 		items: []T{},
@@ -32,6 +36,7 @@ func NewMax[T cmp.Ordered]() *Heap[T] {
 	}
 }
 
+// NewMinBy creates a Min-Heap ordered by a extracted key.
 func NewMinBy[T any, K cmp.Ordered](get func(i T) K) *Heap[T] {
 	return &Heap[T]{
 		items: []T{},
@@ -41,6 +46,7 @@ func NewMinBy[T any, K cmp.Ordered](get func(i T) K) *Heap[T] {
 	}
 }
 
+// NewMaxBy creates a Max-Heap ordered by a extracted key.
 func NewMaxBy[T any, K cmp.Ordered](get func(i T) K) *Heap[T] {
 	return &Heap[T]{
 		items: []T{},
@@ -50,19 +56,23 @@ func NewMaxBy[T any, K cmp.Ordered](get func(i T) K) *Heap[T] {
 	}
 }
 
+// Len returns the number of elements in the heap.
 func (h *Heap[T]) Len() int {
 	return len(h.items)
 }
 
+// IsEmpty reports whether the heap contains no items.
 func (h *Heap[T]) IsEmpty() bool {
 	return len(h.items) == 0
 }
 
+// Push adds an item to the heap and restores its invariant.
 func (h *Heap[T]) Push(x T) {
 	h.items = append(h.items, x)
 	h.up(h.Len() - 1)
 }
 
+// Pop removes and returns the root item from the heap.
 func (h *Heap[T]) Pop() (T, bool) {
 	if h.Len() == 0 {
 		var zero T
@@ -80,6 +90,7 @@ func (h *Heap[T]) Pop() (T, bool) {
 	return top, true
 }
 
+// Peek returns the root element without removing it.
 func (h *Heap[T]) Peek() (T, bool) {
 	if h.Len() == 0 {
 		var zero T
@@ -88,6 +99,7 @@ func (h *Heap[T]) Peek() (T, bool) {
 	return h.items[0], true
 }
 
+// Clear removes all elements from the heap while maintaining allocated capacity.
 func (h *Heap[T]) Clear() {
 	clear(h.items)
 	h.items = h.items[:0]
