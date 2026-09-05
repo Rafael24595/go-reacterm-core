@@ -38,6 +38,17 @@ func TestSet_Has(t *testing.T) {
 	}
 }
 
+func TestSet_Remove(t *testing.T) {
+	s := From(1, 2, 3)
+
+	s.Remove(2)
+
+	assert.True(t, s.Has(1))
+	assert.False(t, s.Has(2))
+	assert.True(t, s.Has(3))
+	assert.Size(t, 2, s)
+}
+
 func TestSet_Any(t *testing.T) {
 	tests := []struct {
 		name     string

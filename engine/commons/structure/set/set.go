@@ -30,6 +30,12 @@ func (s Set[T]) Add(v ...T) {
 	}
 }
 
+func (s Set[T]) Remove(v ...T) {
+	for _, t := range v {
+		delete(s, t)
+	}
+}
+
 func (s Set[T]) Merge(v Set[T]) {
 	for k := range v {
 		s.Add(k)
