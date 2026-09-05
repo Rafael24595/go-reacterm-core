@@ -49,6 +49,13 @@ func TestSet_Remove(t *testing.T) {
 	assert.Size(t, 2, s)
 }
 
+func TestSet_Slice(t *testing.T) {
+	s := From(10, 20)
+	items := s.Slice()
+
+	assert.Size(t, 2, items)
+}
+
 func TestSet_Any(t *testing.T) {
 	tests := []struct {
 		name     string
