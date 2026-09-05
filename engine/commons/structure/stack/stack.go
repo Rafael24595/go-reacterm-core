@@ -69,11 +69,6 @@ func (s *Stack[T]) Pop() (T, bool) {
 }
 
 func (s *Stack[T]) Clear() {
-	var zero T
-
-	for i := range s.data {
-		s.data[i] = zero
-	}
-
+	clear(s.data)
 	s.data = s.data[:0]
 }
