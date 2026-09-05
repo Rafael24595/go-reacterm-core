@@ -13,6 +13,22 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/test"
 )
 
+func TestArgumentInvalidConversions(t *testing.T) {
+	invalidString := From("not_a_number")
+
+	_, okInt := invalidString.Int64()
+	assert.False(t, okInt)
+
+	_, okUint := invalidString.Uint64()
+	assert.False(t, okUint)
+
+	_, okFloat := invalidString.Float64()
+	assert.False(t, okFloat)
+
+	_, okBool := invalidString.Bool()
+	assert.False(t, okBool)
+}
+
 func TestValue_Int64_OverflowProtection(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -424,4 +440,15 @@ func TestArgumentHash_IsComposable(t *testing.T) {
 	h2 = From("abc").Hash(h2)
 
 	assert.Equal(t, h1.Sum64(), h2.Sum64())
+}
+
+func TestMapOrAndParsed(t *testing.T) {
+	assert.Equal(t, "golang", MapOr(From("golang"), "default"))
+	assert.Equal(t, 100, MapOr(From("golang"), 100))
+
+	gotParsed := Parsed(From("100"), strconv.Atoi, 0)
+	assert.Equal(t, 100, gotParsed)
+
+	gotFallback := Parsed(From("golang"), strconv.Atoi, 999)
+	assert.Equal(t, 999, gotFallback)
 }
