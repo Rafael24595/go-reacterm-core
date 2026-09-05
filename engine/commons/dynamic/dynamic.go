@@ -9,16 +9,19 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/hash"
 )
 
+// Value wraps an arbitrary Go item, providing safe, multi-type casting and parsing operations.
 type Value struct {
 	item any
 }
 
+// From constructs a Value container around the given item.
 func From(item any) Value {
 	return Value{
 		item: item,
 	}
 }
 
+// Bool attempts to convert the underlying item into a boolean.
 func (a Value) Bool() (bool, bool) {
 	switch v := a.item.(type) {
 	case bool:
@@ -38,6 +41,7 @@ func (a Value) Bool() (bool, bool) {
 	return false, false
 }
 
+// BoolOr returns the boolean value or default if conversion fails.
 func (a Value) BoolOr(def bool) bool {
 	if v, ok := a.Bool(); ok {
 		return v
@@ -45,6 +49,7 @@ func (a Value) BoolOr(def bool) bool {
 	return def
 }
 
+// String retrieves the underlying string or rune slice if available.
 func (a Value) String() (string, bool) {
 	switch v := a.item.(type) {
 	case string:
@@ -55,6 +60,7 @@ func (a Value) String() (string, bool) {
 	return "", false
 }
 
+// StringOr returns the string value or default if not a string.
 func (a Value) StringOr(def string) string {
 	if v, ok := a.String(); ok {
 		return v
@@ -62,6 +68,7 @@ func (a Value) StringOr(def string) string {
 	return def
 }
 
+// Int attempts to retrieve an int value.
 func (a Value) Int() (int, bool) {
 	if v, ok := a.Int64(); ok {
 		return int(v), true
@@ -69,6 +76,7 @@ func (a Value) Int() (int, bool) {
 	return 0, false
 }
 
+// IntOr returns the int value or default.
 func (a Value) IntOr(def int) int {
 	if v, ok := a.Int64(); ok {
 		return int(v)
@@ -76,6 +84,7 @@ func (a Value) IntOr(def int) int {
 	return def
 }
 
+// Int8 attempts to retrieve an int8 value.
 func (a Value) Int8() (int8, bool) {
 	if v, ok := a.Int64(); ok {
 		return int8(v), true
@@ -83,6 +92,7 @@ func (a Value) Int8() (int8, bool) {
 	return 0, false
 }
 
+// Int8Or returns the int8 value or default.
 func (a Value) Int8Or(def int8) int8 {
 	if v, ok := a.Int8(); ok {
 		return v
@@ -90,6 +100,7 @@ func (a Value) Int8Or(def int8) int8 {
 	return def
 }
 
+// Int16 attempts to retrieve an int16 value.
 func (a Value) Int16() (int16, bool) {
 	if v, ok := a.Int64(); ok {
 		return int16(v), true
@@ -97,6 +108,7 @@ func (a Value) Int16() (int16, bool) {
 	return 0, false
 }
 
+// Int16Or returns the int16 value or default.
 func (a Value) Int16Or(def int16) int16 {
 	if v, ok := a.Int16(); ok {
 		return v
@@ -104,6 +116,7 @@ func (a Value) Int16Or(def int16) int16 {
 	return def
 }
 
+// Int32 attempts to retrieve an int32 value.
 func (a Value) Int32() (int32, bool) {
 	if v, ok := a.Int64(); ok {
 		return int32(v), true
@@ -111,6 +124,7 @@ func (a Value) Int32() (int32, bool) {
 	return 0, false
 }
 
+// Int32Or returns the int32 value or default.
 func (a Value) Int32Or(def int32) int32 {
 	if v, ok := a.Int32(); ok {
 		return v
@@ -118,6 +132,7 @@ func (a Value) Int32Or(def int32) int32 {
 	return def
 }
 
+// Int64 converts numeric, boolean, or string representations into int64.
 func (a Value) Int64() (int64, bool) {
 	switch v := a.item.(type) {
 	case int:
@@ -170,6 +185,7 @@ func (a Value) Int64() (int64, bool) {
 	return 0, false
 }
 
+// Int64Or returns the int64 value or default.
 func (a Value) Int64Or(def int64) int64 {
 	if v, ok := a.Int64(); ok {
 		return v
@@ -177,6 +193,7 @@ func (a Value) Int64Or(def int64) int64 {
 	return def
 }
 
+// Uint attempts to retrieve a uint value.
 func (a Value) Uint() (uint, bool) {
 	if v, ok := a.Int64(); ok && v >= 0 {
 		return uint(v), true
@@ -184,6 +201,7 @@ func (a Value) Uint() (uint, bool) {
 	return 0, false
 }
 
+// UintOr returns the uint value or default.
 func (a Value) UintOr(def uint) uint {
 	if v, ok := a.Uint(); ok {
 		return v
@@ -191,6 +209,7 @@ func (a Value) UintOr(def uint) uint {
 	return def
 }
 
+// Uint8 attempts to retrieve a uint8 value.
 func (a Value) Uint8() (uint8, bool) {
 	if v, ok := a.Int64(); ok && v >= 0 {
 		return uint8(v), true
@@ -198,6 +217,7 @@ func (a Value) Uint8() (uint8, bool) {
 	return 0, false
 }
 
+// Uint8Or returns the uint8 value or default.
 func (a Value) Uint8Or(def uint8) uint8 {
 	if v, ok := a.Uint8(); ok {
 		return v
@@ -205,6 +225,7 @@ func (a Value) Uint8Or(def uint8) uint8 {
 	return def
 }
 
+// Uint16 attempts to retrieve a uint16 value.
 func (a Value) Uint16() (uint16, bool) {
 	if v, ok := a.Int64(); ok && v >= 0 {
 		return uint16(v), true
@@ -212,6 +233,7 @@ func (a Value) Uint16() (uint16, bool) {
 	return 0, false
 }
 
+// Uint16Or returns the uint16 value or default.
 func (a Value) Uint16Or(def uint16) uint16 {
 	if v, ok := a.Uint16(); ok {
 		return v
@@ -219,6 +241,7 @@ func (a Value) Uint16Or(def uint16) uint16 {
 	return def
 }
 
+// Uint32 attempts to retrieve a uint32 value.
 func (a Value) Uint32() (uint32, bool) {
 	if v, ok := a.Int64(); ok && v >= 0 {
 		return uint32(v), true
@@ -226,6 +249,7 @@ func (a Value) Uint32() (uint32, bool) {
 	return 0, false
 }
 
+// Uint32Or returns the uint32 value or default.
 func (a Value) Uint32Or(def uint32) uint32 {
 	if v, ok := a.Uint32(); ok {
 		return v
@@ -233,6 +257,7 @@ func (a Value) Uint32Or(def uint32) uint32 {
 	return def
 }
 
+// Uint64 attempts to retrieve a uint64 value.
 func (a Value) Uint64() (uint64, bool) {
 	switch v := a.item.(type) {
 	case uint64:
@@ -258,6 +283,7 @@ func (a Value) Uint64() (uint64, bool) {
 	return 0, false
 }
 
+// Uint64Or returns the uint64 value or default.
 func (a Value) Uint64Or(def uint64) uint64 {
 	if v, ok := a.Uint64(); ok {
 		return v
@@ -265,6 +291,7 @@ func (a Value) Uint64Or(def uint64) uint64 {
 	return def
 }
 
+// Float32 attempts to retrieve a float32 value.
 func (a Value) Float32() (float32, bool) {
 	if v, ok := a.Float64(); ok {
 		return float32(v), true
@@ -272,6 +299,7 @@ func (a Value) Float32() (float32, bool) {
 	return 0, false
 }
 
+// Float32Or returns the float32 value or default.
 func (a Value) Float32Or(def float32) float32 {
 	if v, ok := a.Float64(); ok {
 		return float32(v)
@@ -279,6 +307,7 @@ func (a Value) Float32Or(def float32) float32 {
 	return def
 }
 
+// Float64 converts numeric, boolean, or string representations into float64.
 func (a Value) Float64() (float64, bool) {
 	switch v := a.item.(type) {
 	case int, int8, int16, int32, int64:
@@ -305,6 +334,7 @@ func (a Value) Float64() (float64, bool) {
 	return 0, false
 }
 
+// Float64Or returns the float64 value or default.
 func (a Value) Float64Or(def float64) float64 {
 	if v, ok := a.Float64(); ok {
 		return v
@@ -312,6 +342,7 @@ func (a Value) Float64Or(def float64) float64 {
 	return def
 }
 
+// Text converts any primitive type to its string representation.
 func (a Value) Text() string {
 	switch v := a.item.(type) {
 	case nil:
@@ -332,6 +363,7 @@ func (a Value) Text() string {
 	return fmt.Sprintf("%v", a.item)
 }
 
+// Hash feeds the internal type tag and bits into a provided Hasher instance.
 func (a Value) Hash(h hash.Hasher) hash.Hasher {
 	switch v := a.item.(type) {
 	case nil:
@@ -399,11 +431,13 @@ func (a Value) Hash(h hash.Hasher) hash.Hasher {
 		String(a.Text())
 }
 
+// Map attempts a direct generic type-assertion to type T.
 func Map[T any](a Value) (T, bool) {
 	val, ok := a.item.(T)
 	return val, ok
 }
 
+// MapOr attempts type-assertion to T or returns the default value.
 func MapOr[T any](a Value, def T) T {
 	if v, ok := Map[T](a); ok {
 		return v
@@ -411,6 +445,7 @@ func MapOr[T any](a Value, def T) T {
 	return def
 }
 
+// Parse applies a custom parsing function over the text representation of the Value.
 func Parse[T any](a Value, parse func(string) (T, error)) (T, bool) {
 	var zero T
 
@@ -422,6 +457,7 @@ func Parse[T any](a Value, parse func(string) (T, error)) (T, bool) {
 	return v, true
 }
 
+// Parsed applies a custom parser or returns the default value if parsing fails.
 func Parsed[T any](a Value, parse func(string) (T, error), def T) T {
 	if v, ok := Parse(a, parse); ok {
 		return v
