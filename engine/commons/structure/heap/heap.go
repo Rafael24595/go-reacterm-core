@@ -54,6 +54,10 @@ func (h *Heap[T]) Len() int {
 	return len(h.items)
 }
 
+func (h *Heap[T]) IsEmpty() bool {
+	return len(h.items) == 0
+}
+
 func (h *Heap[T]) Push(x T) {
 	h.items = append(h.items, x)
 	h.up(h.Len() - 1)
@@ -82,6 +86,11 @@ func (h *Heap[T]) Peek() (T, bool) {
 		return zero, false
 	}
 	return h.items[0], true
+}
+
+func (h *Heap[T]) Clear() {
+	clear(h.items)
+	h.items = h.items[:0]
 }
 
 func (h *Heap[T]) pop() T {

@@ -80,3 +80,19 @@ func TestHeap_EmptyState(t *testing.T) {
 	assert.False(t, ok)
 	assert.Equal(t, "", val)
 }
+
+func TestHeap_Clear(t *testing.T) {
+	h := NewMin[int]()
+	h.Push(10)
+	h.Push(20)
+
+	assert.Equal(t, 2, h.Len())
+
+	h.Clear()
+
+	assert.Equal(t, 0, h.Len())
+	assert.True(t, h.IsEmpty())
+
+	_, ok := h.Pop()
+	assert.False(t, ok)
+}
