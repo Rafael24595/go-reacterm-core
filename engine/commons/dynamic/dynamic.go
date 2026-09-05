@@ -222,8 +222,26 @@ func (a Value) Uint32Or(def uint32) uint32 {
 }
 
 func (a Value) Uint64() (uint64, bool) {
-	if v, ok := a.Int64(); ok && v >= 0 {
-		return uint64(v), true
+	switch v := a.item.(type) {
+	case uint64:
+		return v, true
+	case uint, uint8, uint16, uint32:
+		return uint64(a.Int64Or(0)), true
+	case int, int8, int16, int32, int64:
+		val := a.Int64Or(-1)
+		if val >= 0 {
+			return uint64(val), true
+		}
+	case bool:
+		if v {
+			return 1, true
+		}
+		return 0, true
+	case string:
+		val, err := strconv.ParseUint(v, 10, 64)
+		if err == nil {
+			return val, true
+		}
 	}
 	return 0, false
 }
