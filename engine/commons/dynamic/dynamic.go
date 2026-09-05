@@ -131,6 +131,9 @@ func (a Value) Int64() (int64, bool) {
 	case int64:
 		return v, true
 	case uint:
+		if uint64(v) > math.MaxInt64 {
+			return 0, false
+		}
 		return int64(v), true
 	case uint8:
 		return int64(v), true
@@ -139,10 +142,19 @@ func (a Value) Int64() (int64, bool) {
 	case uint32:
 		return int64(v), true
 	case uint64:
+		if v > math.MaxInt64 {
+			return 0, false
+		}
 		return int64(v), true
 	case float32:
+		if v < math.MinInt64 || v > math.MaxInt64 || math.IsNaN(float64(v)) {
+			return 0, false
+		}
 		return int64(v), true
 	case float64:
+		if v < math.MinInt64 || v > math.MaxInt64 || math.IsNaN(v) {
+			return 0, false
+		}
 		return int64(v), true
 	case bool:
 		if v {

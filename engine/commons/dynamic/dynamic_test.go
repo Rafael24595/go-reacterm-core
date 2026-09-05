@@ -2,6 +2,7 @@ package dynamic
 
 import (
 	"encoding/json"
+	"math"
 	"strconv"
 	"testing"
 
@@ -11,6 +12,75 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/test"
 )
+
+func TestValue_Int64_OverflowProtection(t *testing.T) {
+	tests := []struct {
+		name     string
+		value    Value
+		wantVal  int64
+		wantOk   bool
+	}{
+		{
+			name:    "uint64 within max int64 boundary",
+			value:   From(uint64(math.MaxInt64)),
+			wantVal: math.MaxInt64,
+			wantOk:  true,
+		},
+		{
+			name:    "uint64 exceeding max int64 should fail",
+			value:   From(uint64(math.MaxInt64) + 1),
+			wantVal: 0,
+			wantOk:  false,
+		},
+		{
+			name:    "uint64 max uint64 should fail",
+			value:   From(uint64(math.MaxUint64)),
+			wantVal: 0,
+			wantOk:  false,
+		},
+		{
+			name:    "float64 exceeding max int64 should fail",
+			value:   From(float64(math.MaxInt64) * 2),
+			wantVal: 0,
+			wantOk:  false,
+		},
+		{
+			name:    "float64 below min int64 should fail",
+			value:   From(float64(math.MinInt64) * 2),
+			wantVal: 0,
+			wantOk:  false,
+		},
+		{
+			name:    "float64 NaN should fail",
+			value:   From(math.NaN()),
+			wantVal: 0,
+			wantOk:  false,
+		},
+		{
+			name:    "float64 Infinity should fail",
+			value:   From(math.Inf(1)),
+			wantVal: 0,
+			wantOk:  false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, ok := tt.value.Int64()
+			assert.Equal(t, tt.wantOk, ok)
+			assert.Equal(t, tt.wantVal, got)
+		})
+	}
+}
+
+func TestValue_Int64Or_FallbackOnOverflow(t *testing.T) {
+	overflowingUint := uint64(math.MaxInt64) + 500
+	fallback := int64(-1)
+
+	got := From(overflowingUint).Int64Or(fallback)
+
+	assert.Equal(t, fallback, got)
+}
 
 func TestArgumentNumericConversions(t *testing.T) {
 	tests := []struct {
