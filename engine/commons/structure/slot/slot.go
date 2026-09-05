@@ -15,7 +15,8 @@ func (s *Slot[T]) Set(v T) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	s.value = &v
+	val := v
+	s.value = &val
 }
 
 func (s *Slot[T]) Take() (T, bool) {
