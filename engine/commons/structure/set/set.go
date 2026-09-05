@@ -71,6 +71,7 @@ func (s Set[T]) Any(other Set[T]) bool {
 	return false
 }
 
+// Slice converts the set into a flat slice of items.
 func (s Set[T]) Slice() []T {
 	items := make([]T, 0, len(s))
 	for k := range s {
@@ -79,10 +80,12 @@ func (s Set[T]) Slice() []T {
 	return items
 }
 
+// Clear removes all elements from the set.
 func (s Set[T]) Clear() {
 	clear(s)
 }
 
+// Clone creates a shallow copy of the set.
 func (s Set[T]) Clone() Set[T] {
 	return maps.Clone(s)
 }
