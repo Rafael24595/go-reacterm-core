@@ -269,26 +269,12 @@ func (a Value) Float32Or(def float32) float32 {
 
 func (a Value) Float64() (float64, bool) {
 	switch v := a.item.(type) {
-	case int:
-		return float64(v), true
-	case int8:
-		return float64(v), true
-	case int16:
-		return float64(v), true
-	case int32:
-		return float64(v), true
-	case int64:
-		return float64(v), true
-	case uint:
-		return float64(v), true
-	case uint8:
-		return float64(v), true
-	case uint16:
-		return float64(v), true
-	case uint32:
-		return float64(v), true
-	case uint64:
-		return float64(v), true
+	case int, int8, int16, int32, int64:
+		return float64(a.Int64Or(0)), true
+	case uint, uint8, uint16, uint32, uint64:
+		if u, ok := a.Uint64(); ok {
+			return float64(u), true
+		}
 	case float32:
 		return float64(v), true
 	case float64:
