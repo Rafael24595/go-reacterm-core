@@ -7,7 +7,7 @@ import (
 )
 
 func TestSet_Has(t *testing.T) {
-	s := From("apple", "banana")
+	s := From("golang", "zig")
 
 	tests := []struct {
 		name     string
@@ -16,17 +16,17 @@ func TestSet_Has(t *testing.T) {
 	}{
 		{
 			name:     "Element exists",
-			input:    "apple",
+			input:    "golang",
 			expected: true,
 		},
 		{
-			input:    "Element does not exist",
-			name:     "orange",
+			name:     "Element does not exist",
+			input:    "java",
 			expected: false,
 		},
 		{
-			input:    "Empty string",
-			name:     "",
+			name:     "Empty string",
+			input:    "",
 			expected: false,
 		},
 	}
