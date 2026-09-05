@@ -86,8 +86,10 @@ func (h *Heap[T]) Peek() (T, bool) {
 
 func (h *Heap[T]) pop() T {
 	last := len(h.items) - 1
-
 	item := h.items[last]
+
+	var zero T
+	h.items[last] = zero
 	h.items = h.items[:last]
 
 	return item
