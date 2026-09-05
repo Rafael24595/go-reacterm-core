@@ -27,6 +27,23 @@ func TestSetAndTake(t *testing.T) {
 	assert.Equal(t, "golang", v)
 }
 
+func TestPeek(t *testing.T) {
+	s := New[string]()
+
+	_, ok := s.Peek()
+	assert.False(t, ok)
+
+	s.Set("peek_value")
+
+	v, ok := s.Peek()
+	assert.True(t, ok)
+	assert.Equal(t, "peek_value", v)
+
+	v2, ok2 := s.Take()
+	assert.True(t, ok2)
+	assert.Equal(t, "peek_value", v2)
+}
+
 func TestTakeConsumesValue(t *testing.T) {
 	s := New[string]()
 

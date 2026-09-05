@@ -33,3 +33,15 @@ func (s *Slot[T]) Take() (T, bool) {
 
 	return v, true
 }
+
+func (s *Slot[T]) Peek() (T, bool) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if s.value == nil {
+		var zero T
+		return zero, false
+	}
+
+	return *s.value, true
+}
