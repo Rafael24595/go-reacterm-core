@@ -19,10 +19,10 @@ func (s *Stack[T]) Cap() uint {
 }
 
 func (s *Stack[T]) Items() []T {
-	items := make([]T, len(s.data))
-	for i := range s.data {
-		index := len(s.data) - 1 - i
-		items[i] = s.data[index]
+	n := len(s.data)
+	items := make([]T, n)
+	for i := range n {
+		items[i] = s.data[n-1-i]
 	}
 	return items
 }
