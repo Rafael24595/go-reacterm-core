@@ -108,9 +108,17 @@ func (l *List[T]) Delete(e *Item[T]) (T, bool) {
 
 func (l *List[T]) All() iter.Seq[*Item[T]] {
 	return func(yield func(*Item[T]) bool) {
-		for i := l.root.next; i != &l.root; i = i.next {
+		l.lazyInit()
+
+		for i := l.root.next; i != &l.root; {
+			next := i.next
 			if !yield(i) {
 				return
+			}
+			if i.list != nil {
+				i = i.next
+			} else {
+				i = next
 			}
 		}
 	}

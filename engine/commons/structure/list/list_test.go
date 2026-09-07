@@ -96,3 +96,25 @@ func TestList_CrossListDelete(t *testing.T) {
 	assert.Equal(t, 0, val)
 	assert.Equal(t, 1, l1.Size())
 }
+
+func TestList_DeleteDuringIteration(t *testing.T) {
+	l := New[int]()
+	l.Push(1)
+	l.Push(2)
+	l.Push(3)
+
+	for item := range l.All() {
+		if item.Data == 2 {
+			l.Delete(item)
+		}
+	}
+
+	assert.Equal(t, uint(2), l.Size())
+	
+	vals := []int{}
+	for item := range l.All() {
+		vals = append(vals, item.Data)
+	}
+	
+	assert.DeepEqual(t, []int{1, 3}, vals)
+}
