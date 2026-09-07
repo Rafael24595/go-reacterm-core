@@ -10,9 +10,12 @@ import (
 )
 
 const (
+	// ErrorImmutableSource indicates that the source is immutable and cannot be modified.
 	ErrorImmutableSource = "cannot modify an immutable source"
 )
 
+// LinkedMap represents an ordered map that maintains insertion order
+// using an internal doubly linked list alongside a hash map for O(1) lookups.
 type LinkedMap[K comparable, V any] struct {
 	init sync.Once
 	inmu bool
@@ -20,10 +23,13 @@ type LinkedMap[K comparable, V any] struct {
 	data map[K]*list.Item[Pair[K, V]]
 }
 
+// NewLinkedMap creates and initializes a new mutable LinkedMap.
 func NewLinkedMap[K comparable, V any]() *LinkedMap[K, V] {
 	return new(LinkedMap[K, V]).Init()
 }
 
+// NewInmutableLinkedMap creates an immutable LinkedMap pre-populated with the given pairs.
+// Any subsequent modification attempt (Set, Delete, Merge, etc.) will trigger an assertion panic.
 func NewInmutableLinkedMap[K comparable, V any](pairs ...Pair[K, V]) *LinkedMap[K, V] {
 	linked := NewLinkedMap[K, V]().Init()
 	linked.inmu = true
@@ -39,6 +45,7 @@ func (m *LinkedMap[K, V]) lazyInit() *LinkedMap[K, V] {
 	return m.Init()
 }
 
+// Init initializes or resets the LinkedMap instance.
 func (m *LinkedMap[K, V]) Init() *LinkedMap[K, V] {
 	m.init.Do(func() {
 		m.list = list.New[Pair[K, V]]()
@@ -47,16 +54,20 @@ func (m *LinkedMap[K, V]) Init() *LinkedMap[K, V] {
 	return m
 }
 
+// Size returns the number of key-value pairs stored in the map.
 func (m *LinkedMap[K, V]) Size() uint {
 	m.lazyInit()
 	return uint(len(m.data))
 }
 
+// Exists checks if a given key is present in the map.
 func (m *LinkedMap[K, V]) Exists(k K) bool {
 	_, exists := m.Get(k)
 	return exists
 }
 
+// Get retrieves the value associated with key k.
+// Returns the value and true if found, or zero value and false if not present.
 func (m *LinkedMap[K, V]) Get(k K) (V, bool) {
 	m.lazyInit()
 
@@ -68,6 +79,8 @@ func (m *LinkedMap[K, V]) Get(k K) (V, bool) {
 	return zero, false
 }
 
+// Set inserts or updates a key-value pair.
+// Returns the previous value and true if updating an existing key, or zero value and false if inserting new.
 func (m *LinkedMap[K, V]) Set(k K, v V) (V, bool) {
 	var old V
 
@@ -82,6 +95,8 @@ func (m *LinkedMap[K, V]) Set(k K, v V) (V, bool) {
 	return m.set(pair)
 }
 
+// SetPairs inserts or updates multiple key-value pairs.
+// Returns the number of newly added keys (excluding updates) and true on success.
 func (m *LinkedMap[K, V]) SetPairs(pairs ...Pair[K, V]) (uint, bool) {
 	if m.inmu {
 		assert.Unreachable(ErrorImmutableSource)
@@ -119,6 +134,8 @@ func (m *LinkedMap[K, V]) set(pair Pair[K, V]) (V, bool) {
 	return old, true
 }
 
+// Merge inserts all key-value pairs from the other map into m, overwriting existing keys.
+// Returns the count of newly inserted keys and true.
 func (m *LinkedMap[K, V]) Merge(other *LinkedMap[K, V]) (uint, bool) {
 	if m.inmu {
 		assert.Unreachable(ErrorImmutableSource)
@@ -141,6 +158,8 @@ func (m *LinkedMap[K, V]) Merge(other *LinkedMap[K, V]) (uint, bool) {
 	return added, true
 }
 
+// Supplement inserts key-value pairs from other into m ONLY if the key does not exist yet.
+// Existing keys in m remain untouched. Returns the count of newly added keys and true.
 func (m *LinkedMap[K, V]) Supplement(other *LinkedMap[K, V]) (uint, bool) {
 	if m.inmu {
 		assert.Unreachable(ErrorImmutableSource)
@@ -164,6 +183,8 @@ func (m *LinkedMap[K, V]) Supplement(other *LinkedMap[K, V]) (uint, bool) {
 	return added, true
 }
 
+// Delete removes a key and its associated value from the map.
+// Returns the deleted value and true if found, or zero value and false if the key was missing.
 func (m *LinkedMap[K, V]) Delete(k K) (V, bool) {
 	var old V
 
@@ -187,6 +208,7 @@ func (m *LinkedMap[K, V]) Delete(k K) (V, bool) {
 	return old, true
 }
 
+// All returns a two-variable iterator (iter.Seq2) yielding key-value pairs in insertion order.
 func (m *LinkedMap[K, V]) All() iter.Seq2[K, V] {
 	m.lazyInit()
 
@@ -199,6 +221,7 @@ func (m *LinkedMap[K, V]) All() iter.Seq2[K, V] {
 	}
 }
 
+// Pairs returns an iterator yielding Pair[K, V] structs in insertion order.
 func (m *LinkedMap[K, V]) Pairs() iter.Seq[Pair[K, V]] {
 	m.lazyInit()
 
@@ -211,6 +234,7 @@ func (m *LinkedMap[K, V]) Pairs() iter.Seq[Pair[K, V]] {
 	}
 }
 
+// ToPairsSlice returns a slice containing all Pair[K, V] items in insertion order.
 func (m *LinkedMap[K, V]) ToPairsSlice() []Pair[K, V] {
 	m.lazyInit()
 	pairs := make([]Pair[K, V], 0, len(m.data))
@@ -220,6 +244,7 @@ func (m *LinkedMap[K, V]) ToPairsSlice() []Pair[K, V] {
 	return pairs
 }
 
+// Keys returns an iterator yielding all keys in insertion order.
 func (m *LinkedMap[K, V]) Keys() iter.Seq[K] {
 	m.lazyInit()
 
@@ -232,6 +257,7 @@ func (m *LinkedMap[K, V]) Keys() iter.Seq[K] {
 	}
 }
 
+// ToKeysSlice returns a slice of all keys in insertion order.
 func (m *LinkedMap[K, V]) ToKeysSlice() []K {
 	m.lazyInit()
 	keys := make([]K, 0, len(m.data))
@@ -241,6 +267,7 @@ func (m *LinkedMap[K, V]) ToKeysSlice() []K {
 	return keys
 }
 
+// Values returns an iterator yielding all values in insertion order.
 func (m *LinkedMap[K, V]) Values() iter.Seq[V] {
 	m.lazyInit()
 
@@ -253,6 +280,7 @@ func (m *LinkedMap[K, V]) Values() iter.Seq[V] {
 	}
 }
 
+// ToValuesSlice returns a slice of all values in insertion order.
 func (m *LinkedMap[K, V]) ToValuesSlice() []V {
 	m.lazyInit()
 	values := make([]V, 0, len(m.data))
@@ -262,6 +290,8 @@ func (m *LinkedMap[K, V]) ToValuesSlice() []V {
 	return values
 }
 
+// Clone creates a shallow copy of the LinkedMap.
+// Optionally takes a boolean flag to set whether the clone should be immutable.
 func (m *LinkedMap[K, V]) Clone(inmu ...bool) *LinkedMap[K, V] {
 	m.lazyInit()
 
