@@ -9,6 +9,10 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/list"
 )
 
+const (
+	ErrorImmutableSource = "cannot modify an immutable source"
+)
+
 type LinkedMap[K comparable, V any] struct {
 	init sync.Once
 	inmu bool
@@ -68,7 +72,7 @@ func (m *LinkedMap[K, V]) Set(k K, v V) (V, bool) {
 	var old V
 
 	if m.inmu {
-		assert.Unreachable("cannot modify an inmutable souce")
+		assert.Unreachable(ErrorImmutableSource)
 		return old, false
 	}
 
@@ -80,7 +84,7 @@ func (m *LinkedMap[K, V]) Set(k K, v V) (V, bool) {
 
 func (m *LinkedMap[K, V]) SetPairs(pairs ...Pair[K, V]) (uint, bool) {
 	if m.inmu {
-		assert.Unreachable("cannot modify an inmutable souce")
+		assert.Unreachable(ErrorImmutableSource)
 		return 0, false
 	}
 
@@ -117,7 +121,7 @@ func (m *LinkedMap[K, V]) set(pair Pair[K, V]) (V, bool) {
 
 func (m *LinkedMap[K, V]) Merge(other *LinkedMap[K, V]) (uint, bool) {
 	if m.inmu {
-		assert.Unreachable("cannot modify an inmutable souce")
+		assert.Unreachable(ErrorImmutableSource)
 		return 0, false
 	}
 
@@ -139,7 +143,7 @@ func (m *LinkedMap[K, V]) Merge(other *LinkedMap[K, V]) (uint, bool) {
 
 func (m *LinkedMap[K, V]) Supplement(other *LinkedMap[K, V]) (uint, bool) {
 	if m.inmu {
-		assert.Unreachable("cannot modify an inmutable source")
+		assert.Unreachable(ErrorImmutableSource)
 		return 0, false
 	}
 
@@ -164,7 +168,7 @@ func (m *LinkedMap[K, V]) Delete(k K) (V, bool) {
 	var old V
 
 	if m.inmu {
-		assert.Unreachable("cannot modify an inmutable souce")
+		assert.Unreachable(ErrorImmutableSource)
 		return old, false
 	}
 
