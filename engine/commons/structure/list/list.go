@@ -29,6 +29,8 @@ func (l *List[T]) Init() *List[T] {
 }
 
 func (l *List[T]) Size() uint {
+	l.lazyInit()
+
 	return l.size
 }
 
