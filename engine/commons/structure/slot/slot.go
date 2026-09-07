@@ -39,6 +39,7 @@ func (s *Slot[T]) Take() (T, bool) {
 	return v, true
 }
 
+// Peek returns a copy of the current value without consuming/clearing it.
 func (s *Slot[T]) Peek() (T, bool) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
