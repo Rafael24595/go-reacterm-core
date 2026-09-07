@@ -85,8 +85,13 @@ func (l *List[T]) Delete(e *Item[T]) (T, bool) {
 		return zero, false
 	}
 
+	deleted := e.Data
+
 	e.prev.next = e.next
 	e.next.prev = e.prev
+
+	var zero T
+	e.Data = zero
 
 	e.next = nil
 	e.prev = nil
@@ -96,7 +101,7 @@ func (l *List[T]) Delete(e *Item[T]) (T, bool) {
 		l.size -= 1
 	}
 
-	return e.Data, true
+	return deleted, true
 }
 
 func (l *List[T]) All() iter.Seq[*Item[T]] {
