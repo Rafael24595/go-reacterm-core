@@ -6,6 +6,7 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
+	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
@@ -21,6 +22,19 @@ func TestResolveConfigDefaults(t *testing.T) {
 	)
 
 	assert.Empty(t, frag.Text())
+}
+
+func TestResolveConfigWithMultipleOptions(t *testing.T) {
+	cfg := ResolveConfig(
+		WithPosition(style.Bottom),
+		WithFrag(frag.FromString("custom")),
+	)
+
+	assert.Equal(t, style.Bottom, cfg.Position)
+
+	f := cfg.Provider(winsize.New(10, 20))
+	
+	assert.Equal(t, "custom", f.Text())
 }
 
 func TestWithPosition(t *testing.T) {
@@ -46,20 +60,31 @@ func TestWithFrag(t *testing.T) {
 }
 
 func TestWithFillFrag(t *testing.T) {
-	cfg := defaultConfig()
+	t.Run("applies specified fill text", func(t *testing.T) {
+		cfg := defaultConfig()
+		WithFillFrag(".")(&cfg)
 
-	WithFillFrag(".")(&cfg)
+		lines := []line.Line{
+			line.FromString("Golang"),
+		}
 
-	lines := []line.Line{
-		line.FromString("Golang"),
-	}
+		f := cfg.Provider(winsize.New(10, 20), lines...)
 
-	frag := cfg.Provider(
-		winsize.New(10, 20),
-		lines...,
-	)
+		assert.Equal(t, ".", f.Text())
+		assert.True(t, f.Spec().Kind().HasAny(spec.KindExtendRight))
+		assert.Equal(t, "6", f.Spec().Args()[spec.KeyExtendRightSize].Text())
+	})
 
-	assert.Equal(t, ".", frag.Text())
-	assert.True(t, frag.Spec().Kind().HasAny(spec.KindExtendRight))
-	assert.Equal(t, "6", frag.Spec().Args()[spec.KeyExtendRightSize].Text())
+	t.Run("uses default padding when empty parameter provided", func(t *testing.T) {
+		cfg := defaultConfig()
+		WithFillFrag("")(&cfg)
+
+		lines := []line.Line{
+			line.FromString("Golang"),
+		}
+
+		f := cfg.Provider(winsize.New(10, 20), lines...)
+
+		assert.Equal(t, marker.DefaultPaddingText, f.Text())
+	})
 }
