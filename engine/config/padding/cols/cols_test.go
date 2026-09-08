@@ -26,6 +26,15 @@ func TestWithPosition(t *testing.T) {
 	assert.Equal(t, style.Right, cfg.Position)
 }
 
+func TestWithText(t *testing.T) {
+	cfg := ResolveConfig(
+		WithText("padding"),
+	)
+
+	f := cfg.Provider(10)
+	assert.Equal(t, "padding", f.Text())
+}
+
 func TestWithFrag(t *testing.T) {
 	expected := frag.FromString(".")
 
