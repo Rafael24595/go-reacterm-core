@@ -6,10 +6,10 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 )
 
-const max_chunk = 100
+const maxChunk = 100
 
 const (
-	err_chunk_size = "chunk value should be less or equals than %s"
+	ErrorChunkSize = "chunk value should be less or equals than %d"
 )
 
 type chunkAdapter[T math.Number] func(size T) T
@@ -37,9 +37,9 @@ func Fixed[T math.Number](fix T) Chunk[T] {
 }
 
 func Percent[T math.Number](chunk T) Chunk[T] {
-	if chunk > max_chunk {
-		assert.Unreachable(err_chunk_size, max_chunk)
-		chunk = max_chunk
+	if chunk > maxChunk {
+		assert.Unreachable(ErrorChunkSize, maxChunk)
+		chunk = maxChunk
 	}
 
 	return Chunk[T]{
