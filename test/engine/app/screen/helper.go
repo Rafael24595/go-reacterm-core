@@ -42,6 +42,10 @@ func MockByName(name string) screen.Node {
 }
 
 func (t MockNode) ToNode() screen.Node {
+	if t.Name == "" {
+		t.Name = "MockNode"
+	}
+
 	stack := t.Stack
 	if t.Stack == nil {
 		stack = set.From(t.Name)
