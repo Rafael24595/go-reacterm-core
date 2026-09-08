@@ -3,8 +3,7 @@ package expiration
 import "github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 
 type Expiration struct {
-	node *screen.Node
-	name string
+	strategy func(node *screen.Node) bool
 }
 
 func Persistent() Expiration {
@@ -13,26 +12,29 @@ func Persistent() Expiration {
 
 func OnNode(node *screen.Node) Expiration {
 	return Expiration{
-		node: node,
-		name: "",
+		func(next *screen.Node) bool {
+			if node != nil {
+				return node != next
+			}
+			return false
+		},
 	}
 }
 
 func OnName(name string) Expiration {
 	return Expiration{
-		node: nil,
-		name: name,
+		strategy: func(next *screen.Node) bool {
+			if next != nil {
+				return name == next.Name
+			}
+			return false
+		},
 	}
 }
 
 func (e Expiration) On(node *screen.Node) bool {
-	if e.node != nil {
-		return e.node != node
+	if e.strategy == nil {
+		return false
 	}
-
-	if e.name != "" {
-		return e.name == node.Name
-	}
-
-	return false
+	return e.strategy(node)
 }
