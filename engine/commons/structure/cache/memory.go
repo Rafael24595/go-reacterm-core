@@ -36,5 +36,5 @@ func (c *memoryCache[T, K]) Len() uint {
 }
 
 func (c *memoryCache[T, K]) Cls() {
-	c.items = make(map[T]K)
+	clear(c.items)
 }
