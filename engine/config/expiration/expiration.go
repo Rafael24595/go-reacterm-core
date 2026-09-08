@@ -6,6 +6,10 @@ type Expiration struct {
 	strategy func(node *screen.Node) bool
 }
 
+func Custom(fn func(node *screen.Node) bool) Expiration {
+	return Expiration{strategy: fn}
+}
+
 func Persistent() Expiration {
 	return Expiration{}
 }
