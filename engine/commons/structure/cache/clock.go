@@ -2,6 +2,8 @@ package cache
 
 const defaultClockCapacity = 256
 
+// clockCache implements an eviction policy based on the Second Chance (Clock) algorithm.
+// It maintains a circular-like buffer of entries with reference bits to approximate LRU behavior in O(1) time.
 type clockCache[T comparable, V any] struct {
 	items map[T]int
 	slots []*entry[T, V]
@@ -12,6 +14,8 @@ type clockCache[T comparable, V any] struct {
 	maxUsed uint8
 }
 
+// NewClock initializes a Cache backed by a Clock eviction policy.
+// If size is omitted or zero, it defaults to 256 slots.
 func NewClock[T comparable, V any](size ...uint) Cache[T, V] {
 	c := newClock[T, V](size...)
 
@@ -37,6 +41,8 @@ func newClock[T comparable, V any](size ...uint) *clockCache[T, V] {
 	}
 }
 
+// Get retrieves a key's value from the cache and updates its reference score (touch).
+// Returns the value and true if found, or zero value and false otherwise.
 func (c *clockCache[T, V]) Get(key T) (V, bool) {
 	if idx, ok := c.items[key]; ok {
 		e := c.slots[idx]
@@ -48,6 +54,8 @@ func (c *clockCache[T, V]) Get(key T) (V, bool) {
 	return zero, false
 }
 
+// Put inserts or updates a key-value pair in the cache.
+// If the cache is full, it triggers a Clock eviction to free space for the new entry.
 func (c *clockCache[T, V]) Put(key T, value V) {
 	if idx, ok := c.items[key]; ok {
 		entry := c.slots[idx]
@@ -78,6 +86,7 @@ func (c *clockCache[T, V]) Put(key T, value V) {
 	c.incHand()
 }
 
+// Del removes a key from the cache in O(1) time by swapping the target slot with the last active slot.
 func (c *clockCache[T, V]) Del(key T) {
 	idx, ok := c.items[key]
 	if !ok {
@@ -102,10 +111,12 @@ func (c *clockCache[T, V]) Del(key T) {
 	}
 }
 
+// Len returns the current number of cached elements.
 func (c *clockCache[T, V]) Len() uint {
 	return uint(c.len)
 }
 
+// Cls clears all items from the cache and resets the hand pointer.
 func (c *clockCache[T, V]) Cls() {
 	clear(c.items)
 
