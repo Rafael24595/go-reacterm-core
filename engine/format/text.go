@@ -32,3 +32,7 @@ func TextFromAny(data any) Text {
 func EmptyText() Text {
 	return TextFromString("")
 }
+
+func (t Text) IsEmpty() bool {
+	return t.Data == "" || t.Size == 0
+}
