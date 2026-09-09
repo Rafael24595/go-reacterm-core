@@ -17,27 +17,8 @@ type Unsigned interface {
 }
 
 func Abs[T Number](val T) T {
-	switch v := any(val).(type) {
-	case int:
-		if v < 0 {
-			return T(-v)
-		}
-	case int8:
-		if v < 0 {
-			return T(-v)
-		}
-	case int16:
-		if v < 0 {
-			return T(-v)
-		}
-	case int32:
-		if v < 0 {
-			return T(-v)
-		}
-	case int64:
-		if v < 0 {
-			return T(-v)
-		}
+	if val < 0 {
+		return -val
 	}
 	return val
 }
