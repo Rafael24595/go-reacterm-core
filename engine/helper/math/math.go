@@ -83,12 +83,17 @@ func MaxMap[K comparable, V cmp.Ordered](m map[K]V) (K, V, bool) {
 
 	var maxK K
 	var maxV V
+	var init bool
+
 	for k, v := range m {
-		if v < maxV {
+		if v < maxV && init {
 			continue
 		}
+
 		maxK = k
 		maxV = v
+
+		init = true
 	}
 
 	return maxK, maxV, true
