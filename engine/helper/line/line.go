@@ -12,8 +12,13 @@ func DistanceFromLF(buffer []rune, from offset.Offset) offset.Offset {
 }
 
 func FindLineStart(buffer []rune, from offset.Offset) offset.Offset {
-	if from == 0 {
+	bufLen := offset.Offset(len(buffer))
+	if bufLen == 0 || from == 0 {
 		return 0
+	}
+
+	if from > bufLen {
+		from = bufLen
 	}
 
 	for i := from - 1; ; i-- {
@@ -30,19 +35,25 @@ func FindLineStart(buffer []rune, from offset.Offset) offset.Offset {
 }
 
 func FindLineEnd(buffer []rune, start offset.Offset) offset.Offset {
+	bufLen := offset.Offset(len(buffer))
+
 	i := start
-	for i < offset.Offset(len(buffer)) && buffer[i] != ascii.ENTER_LF {
+	for i < bufLen && buffer[i] != ascii.ENTER_LF {
 		i++
 	}
+
 	return i
 }
 
 func FindNextLineStart(buf []rune, from offset.Offset) (offset.Offset, bool) {
-	for i := from; i < offset.Offset(len(buf)); i++ {
+	bufLen := offset.Offset(len(buf))
+
+	for i := from; i < bufLen; i++ {
 		if buf[i] == ascii.ENTER_LF {
 			return i + 1, true
 		}
 	}
+	
 	return 0, false
 }
 
