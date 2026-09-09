@@ -116,12 +116,10 @@ func TruncateLeft(width winsize.Cols, text Text, ellipsis Ellipsis) string {
 		return text.Data[index:]
 	}
 
-	ellipsisText := strings.Repeat(ellipsis.Data, int(ellipsis.Count))
-
 	offset := offset.Offset(width + ellipsisMeasure)
 	index, _ := runes.RuneIndexToByteIndex(text.Data, offset)
 
-	return ellipsisText + text.Data[index:]
+	return ellipsis.string() + text.Data[index:]
 }
 
 func TruncateRight(width winsize.Cols, text Text, ellipsis Ellipsis) string {
@@ -141,12 +139,10 @@ func TruncateRight(width winsize.Cols, text Text, ellipsis Ellipsis) string {
 		return text.Data[:index]
 	}
 
-	ellipsisText := strings.Repeat(ellipsis.Data, int(ellipsis.Count))
-
 	size := width.Sub(ellipsisMeasure)
 	index, _ := runes.RuneIndexToByteIndex(text.Data, offset.Offset(size))
 
-	return text.Data[:index] + ellipsisText
+	return text.Data[:index] + ellipsis.string()
 }
 
 func NumberToAlpha(n int) string {

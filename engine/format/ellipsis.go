@@ -17,6 +17,13 @@ func NewEllipsis(data string, count winsize.Cols) Ellipsis {
 	}
 }
 
+func (e Ellipsis) string() string {
+	if e.Count <= 0 {
+		return ""
+	}
+	return strings.Repeat(e.Data, int(e.Count))
+}
+
 func (e Ellipsis) measure() winsize.Cols {
 	return runes.Measure(e.Data) * e.Count
 }
