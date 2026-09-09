@@ -9,6 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 )
 
+// JustifyCenter centers text within width, padding equally on both sides with filler.
 func JustifyCenter(width winsize.Cols, text Text, filler string) string {
 	if text.Size >= width {
 		return text.Data
@@ -25,6 +26,7 @@ func JustifyCenter(width winsize.Cols, text Text, filler string) string {
 	return left + text.Data + right
 }
 
+// JustifyLeft aligns text to the left within width, appending filler to the right.
 func JustifyLeft(width winsize.Cols, text Text, filler string) string {
 	if text.Size >= width {
 		return text.Data
@@ -35,6 +37,7 @@ func JustifyLeft(width winsize.Cols, text Text, filler string) string {
 	return text.Data + strings.Repeat(filler, int(padding))
 }
 
+// JustifyRight aligns text to the right within width, prepending filler to the left.
 func JustifyRight(width winsize.Cols, text Text, filler string) string {
 	if text.Size >= width {
 		return text.Data
@@ -45,6 +48,7 @@ func JustifyRight(width winsize.Cols, text Text, filler string) string {
 	return strings.Repeat(filler, int(padding)) + text.Data
 }
 
+// PatternLeft repeats the text pattern to fit width, filling remaining space on the left side.
 func PatternLeft(width winsize.Cols, text Text) string {
 	if text.Size >= width {
 		return text.Data
@@ -67,6 +71,7 @@ func PatternLeft(width winsize.Cols, text Text) string {
 	return fix + strings.Repeat(data, int(width))
 }
 
+// PatternRight repeats the text pattern to fit width, filling remaining space on the right side.
 func PatternRight(width winsize.Cols, text Text) string {
 	if text.Size >= width {
 		return text.Data
@@ -89,14 +94,17 @@ func PatternRight(width winsize.Cols, text Text) string {
 	return strings.Repeat(data, int(width)) + fix
 }
 
+// ExtendLeft prepends a repeating filler pattern to reach target width.
 func ExtendLeft(width winsize.Cols, text Text, filler string) string {
 	return PatternLeft(width, TextFromString(filler)) + text.Data
 }
 
+// ExtendRight appends a repeating filler pattern to reach target width.
 func ExtendRight(width winsize.Cols, text Text, filler string) string {
 	return text.Data + PatternRight(width, TextFromString(filler))
 }
 
+// TruncateLeft trims text from the left side to fit within width, replacing cut content with ellipsis.
 func TruncateLeft(width winsize.Cols, text Text, ellipsis Ellipsis) string {
 	if text.Data == "" {
 		return text.Data
@@ -122,6 +130,7 @@ func TruncateLeft(width winsize.Cols, text Text, ellipsis Ellipsis) string {
 	return ellipsis.string() + text.Data[index:]
 }
 
+// TruncateRight trims text from the right side to fit within width, replacing cut content with ellipsis.
 func TruncateRight(width winsize.Cols, text Text, ellipsis Ellipsis) string {
 	if text.Data == "" {
 		return text.Data
@@ -145,6 +154,7 @@ func TruncateRight(width winsize.Cols, text Text, ellipsis Ellipsis) string {
 	return text.Data[:index] + ellipsis.string()
 }
 
+// NumberToAlpha converts a 1-based index into an alphabetical sequence (e.g., 1 -> "a", 27 -> "aa").
 func NumberToAlpha(n int) string {
 	if n <= 0 {
 		return "?"
