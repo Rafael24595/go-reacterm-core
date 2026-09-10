@@ -152,9 +152,9 @@ func (b builder) splitMaxCols(maxCols table.MaxCols, size winsize.Winsize) []tab
 	separator := b.table.GetSeparator()
 	headers := b.table.GetHeaders()
 
-	leftLen := runes.Measure(separator.Left)
-	centerLen := runes.Measure(separator.Center)
-	rightLen := runes.Measure(separator.Right)
+	leftLen := runes.MeasureCols(separator.Left)
+	centerLen := runes.MeasureCols(separator.Center)
+	rightLen := runes.MeasureCols(separator.Right)
 
 	headersLen := len(headers)
 
@@ -198,9 +198,9 @@ func (b builder) calcRowCapacity(maxCols table.MaxCols) winsize.Cols {
 
 	separator := b.table.GetSeparator()
 
-	centerMeasure := runes.Measure(separator.Center)
-	leftMeasure := runes.Measure(separator.Left)
-	rightMeasure := runes.Measure(separator.Right)
+	centerMeasure := runes.MeasureCols(separator.Center)
+	leftMeasure := runes.MeasureCols(separator.Left)
+	rightMeasure := runes.MeasureCols(separator.Right)
 
 	joinMeasure := winsize.Cols(cols) * centerMeasure
 	borderMeasure := leftMeasure + rightMeasure

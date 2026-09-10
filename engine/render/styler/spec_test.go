@@ -172,7 +172,7 @@ func TestTruncateLeft_Standard(t *testing.T) {
 			assert.Equal(t, tt.want, got)
 
 			if tt.size > 0 && text.Size > 0 {
-				assert.Equal(t, tt.size, runes.Measure(got))
+				assert.Equal(t, tt.size, runes.MeasureCols(got))
 			}
 		})
 	}
@@ -220,7 +220,7 @@ func TestTruncateLeft_WithEllipsis(t *testing.T) {
 			assert.Equal(t, tt.want, got)
 
 			if tt.size > 0 && text.Size > 0 {
-				assert.Equal(t, tt.size, runes.Measure(got))
+				assert.Equal(t, tt.size, runes.MeasureCols(got))
 			}
 		})
 	}
@@ -269,7 +269,7 @@ func TestTruncateRight_Standard(t *testing.T) {
 			assert.Equal(t, tt.want, got)
 
 			if tt.size > 0 && text.Size > 0 {
-				assert.Equal(t, tt.size, runes.Measure(got))
+				assert.Equal(t, tt.size, runes.MeasureCols(got))
 			}
 		})
 	}
@@ -317,7 +317,7 @@ func TestTruncateRight_WithEllipsis(t *testing.T) {
 			assert.Equal(t, tt.want, got)
 
 			if tt.size > 0 && text.Size > 0 {
-				assert.Equal(t, tt.size, runes.Measure(got))
+				assert.Equal(t, tt.size, runes.MeasureCols(got))
 			}
 		})
 	}

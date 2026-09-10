@@ -14,8 +14,8 @@ const Name = "gutter_pipeline"
 func DrawTransformer(opts ...Option) pipeline.DrawTransformer {
 	meta := newMeta(opts...)
 
-	leftMeasure := runes.Measure(meta.left)
-	rightMeasure := runes.Measure(meta.right)
+	leftMeasure := runes.MeasureCols(meta.left)
+	rightMeasure := runes.MeasureCols(meta.right)
 	measure := leftMeasure + rightMeasure
 
 	leftFrg := frag.FromString(meta.left)

@@ -337,17 +337,17 @@ func TestWrapLine_LongWord(t *testing.T) {
 			text += f.Text()
 		}
 
-		assert.LessOrEqual(t, maxWidth, runes.Measure(text))
+		assert.LessOrEqual(t, maxWidth, runes.MeasureCols(text))
 	}
 
 	totalRunes := winsize.Cols(0)
 	for _, l := range lines {
 		for f := range l.All() {
-			totalRunes += runes.Measure(f.Text())
+			totalRunes += runes.MeasureCols(f.Text())
 		}
 	}
 
-	assert.Equal(t, totalRunes, runes.Measure(txt))
+	assert.Equal(t, totalRunes, runes.MeasureCols(txt))
 }
 
 func TestWrapLine_MultipleFrags(t *testing.T) {
@@ -366,7 +366,7 @@ func TestWrapLine_MultipleFrags(t *testing.T) {
 	for _, l := range lines {
 		width := winsize.Cols(0)
 		for f := range l.All() {
-			width += runes.Measure(f.Text())
+			width += runes.MeasureCols(f.Text())
 		}
 
 		assert.LessOrEqual(t, maxWidth, width)

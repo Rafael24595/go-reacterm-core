@@ -13,7 +13,7 @@ import (
 
 func NewDemoCheck() screen.Node {
 	textTitle := "Sed facilisis, leo sit amet molestie congue, justo risus bibendum tortor"
-	sizeTitle := runes.Measure(textTitle)
+	sizeTitle := runes.MeasureCols(textTitle)
 
 	title := []line.Line{
 		line.TextSpec(textTitle, spec.AlignLeft()),

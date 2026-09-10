@@ -49,7 +49,7 @@ type mergeAction struct {
 func (m *mergeAction) len() offset.Offset {
 	var n offset.Offset
 	for _, t := range m.insert {
-		n += runes.Measureo(t)
+		n += runes.MeasureOffset(t)
 	}
 	return n
 }
@@ -200,7 +200,7 @@ func (s *TextEventService) Undo() *delta.Delta {
 
 	return &delta.Delta{
 		Start: event.start,
-		End:   event.start + runes.Measureo(event.insert),
+		End:   event.start + runes.MeasureOffset(event.insert),
 		Text:  event.delete,
 	}
 }
@@ -218,7 +218,7 @@ func (s *TextEventService) Redo() *delta.Delta {
 
 	return &delta.Delta{
 		Start: event.start,
-		End:   event.start + runes.Measureo(event.delete),
+		End:   event.start + runes.MeasureOffset(event.delete),
 		Text:  event.insert,
 	}
 }

@@ -41,7 +41,7 @@ func calcHash(
 }
 
 func (f Frag) Measure() winsize.Cols {
-	return runes.Measure(f.text)
+	return runes.MeasureCols(f.text)
 }
 
 func (f Frag) Text() string {

@@ -59,7 +59,7 @@ func PatternLeft(width winsize.Cols, text Text) string {
 		data = marker.DefaultPaddingText
 	}
 
-	measure := runes.Measure(data)
+	measure := runes.MeasureCols(data)
 
 	fix := ""
 	if rest := width % measure; rest != 0 {
@@ -82,7 +82,7 @@ func PatternRight(width winsize.Cols, text Text) string {
 		data = marker.DefaultPaddingText
 	}
 
-	measure := runes.Measure(data)
+	measure := runes.MeasureCols(data)
 
 	fix := ""
 	if rest := width % measure; rest != 0 {
@@ -110,7 +110,7 @@ func TruncateLeft(width winsize.Cols, text Text, ellipsis Ellipsis) string {
 		return text.Data
 	}
 
-	realSize := runes.Measure(text.Data)
+	realSize := runes.MeasureCols(text.Data)
 	if width >= text.Size || width > realSize {
 		return text.Data
 	}
@@ -136,7 +136,7 @@ func TruncateRight(width winsize.Cols, text Text, ellipsis Ellipsis) string {
 		return text.Data
 	}
 
-	realSize := runes.Measure(text.Data)
+	realSize := runes.MeasureCols(text.Data)
 	if width >= text.Size || width > realSize {
 		return text.Data
 	}

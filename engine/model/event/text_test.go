@@ -31,7 +31,7 @@ func TestForgeEvent_Insert(t *testing.T) {
 	ev := s.forgeEvent(m)
 
 	assert.Equal(t, 5, ev.start)
-	assert.Equal(t, 8, ev.start+runes.Measureo(ev.insert))
+	assert.Equal(t, 8, ev.start+runes.MeasureOffset(ev.insert))
 	assert.Equal(t, "abc", ev.insert)
 	assert.Equal(t, "", ev.delete)
 }
@@ -51,7 +51,7 @@ func TestForgeEvent_Replace(t *testing.T) {
 	ev := s.forgeEvent(m)
 
 	assert.Equal(t, 5, ev.start)
-	assert.Equal(t, 8, ev.start+runes.Measureo(ev.insert))
+	assert.Equal(t, 8, ev.start+runes.MeasureOffset(ev.insert))
 	assert.Equal(t, "abc", ev.insert)
 	assert.Equal(t, "AZ", ev.delete)
 }
@@ -70,7 +70,7 @@ func TestForgeEvent_DeleteBackward(t *testing.T) {
 	ev := s.forgeEvent(m)
 
 	assert.Equal(t, 2, ev.start)
-	assert.Equal(t, 5, ev.start+runes.Measureo(ev.delete))
+	assert.Equal(t, 5, ev.start+runes.MeasureOffset(ev.delete))
 	assert.Equal(t, "abc", ev.delete)
 	assert.Equal(t, "", ev.insert)
 }
@@ -89,7 +89,7 @@ func TestForgeEvent_DeleteForward(t *testing.T) {
 	ev := s.forgeEvent(m)
 
 	assert.Equal(t, 2, ev.start)
-	assert.Equal(t, 5, ev.start+runes.Measureo(ev.delete))
+	assert.Equal(t, 5, ev.start+runes.MeasureOffset(ev.delete))
 	assert.Equal(t, "abc", ev.delete)
 	assert.Equal(t, "", ev.insert)
 }
@@ -109,7 +109,7 @@ func TestForgeEvent_SelectionActive(t *testing.T) {
 	ev := s.forgeEvent(m)
 
 	assert.Equal(t, 3, ev.start)
-	assert.Equal(t, 7, ev.start+runes.Measureo(ev.delete))
+	assert.Equal(t, 7, ev.start+runes.MeasureOffset(ev.delete))
 
 	assert.Equal(t, "X", ev.insert)
 	assert.Equal(t, "abcd", ev.delete)
@@ -134,7 +134,7 @@ func TestMergeActions_MultipleInserts(t *testing.T) {
 	ev := events[0]
 
 	assert.Equal(t, 0, ev.start)
-	assert.Equal(t, 6, ev.start+runes.Measureo(ev.insert))
+	assert.Equal(t, 6, ev.start+runes.MeasureOffset(ev.insert))
 	assert.Equal(t, "golang", ev.insert)
 }
 
@@ -185,7 +185,7 @@ func TestMerge_DeleteBackwardContiguous(t *testing.T) {
 
 	ev := events[0]
 	assert.Equal(t, 3, ev.start)
-	assert.Equal(t, 6, ev.start+runes.Measureo(ev.delete))
+	assert.Equal(t, 6, ev.start+runes.MeasureOffset(ev.delete))
 	assert.Equal(t, "Zig", ev.delete)
 }
 
@@ -447,7 +447,7 @@ func TestPushEvent_UndoRedoTruncateHistory(t *testing.T) {
 
 	buff = applyDeltaStr(buff, event)
 	assert.Equal(t, "Golang ", string(buff))
-	i = runes.Measureo(buff)
+	i = runes.MeasureOffset(buff)
 
 	s.PushEvent(Insert, i, i, "", "New")
 	assert.Size(t, s.cursor, s.events)

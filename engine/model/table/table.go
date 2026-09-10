@@ -102,11 +102,11 @@ func (t *Table) MaxCols() MaxCols {
 	size := make(MaxCols)
 	for _, h := range t.headers {
 		if _, ok := size[h]; !ok {
-			size[h] = runes.Measure(h)
+			size[h] = runes.MeasureCols(h)
 		}
 
 		for _, c := range t.cols[h] {
-			size[h] = max(size[h], runes.Measure(c))
+			size[h] = max(size[h], runes.MeasureCols(c))
 		}
 	}
 

@@ -12,7 +12,7 @@ type Delta struct {
 }
 
 func (d Delta) Measure() offset.Offset {
-	return runes.Measureo(d.Text)
+	return runes.MeasureOffset(d.Text)
 }
 
 func Apply(buffer []rune, delta *Delta) []rune {
@@ -29,7 +29,7 @@ func Apply(buffer []rune, delta *Delta) []rune {
 		[]rune(delta.Text),
 	)
 
-	runesSize := runes.MeasureoRunes(deltaBuffer)
+	runesSize := runes.MeasureOffsetRunes(deltaBuffer)
 
 	tail := size - delta.End
 	total := delta.Start + runesSize + tail

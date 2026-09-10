@@ -164,7 +164,7 @@ func (u *BoxUnit) computeInnerSize(size winsize.Winsize) winsize.Winsize {
 }
 
 func horizontalSeparatorSize(separator marker.BoxSeparatorMeta) (winsize.Cols, winsize.Cols) {
-	return runes.Measure(separator.Left), runes.Measure(separator.Right)
+	return runes.MeasureCols(separator.Left), runes.MeasureCols(separator.Right)
 }
 
 func horizontalStaticSize(separator marker.BoxSeparatorMeta) winsize.Cols {

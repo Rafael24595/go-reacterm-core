@@ -25,7 +25,7 @@ func NewText(data string, size winsize.Cols) Text {
 
 // TextFromString creates a Text instance measuring the visual width automatically.
 func TextFromString(data string) Text {
-	return NewText(data, runes.Measure(data))
+	return NewText(data, runes.MeasureCols(data))
 }
 
 // TextFromAny converts any value into its string representation and measures its width.

@@ -85,6 +85,6 @@ func computeIndexMeta(lines []layout.Line) *indexMeta {
 		sufix:      separator,
 		prefixBody: prefix,
 		digits:     uint16(size),
-		totalWidth: size + runes.Measure(separator),
+		totalWidth: size + runes.MeasureCols(separator),
 	}
 }

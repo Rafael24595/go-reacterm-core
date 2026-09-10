@@ -13,6 +13,10 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 )
 
+type measurable interface {
+	~int | winsize.Cols | offset.Offset
+}
+
 var lineNormalizer = strings.NewReplacer("\r\n", "\n", "\r", "\n")
 
 var NextWordRunes = []RuneDefinition{
@@ -260,26 +264,26 @@ func SanitizeRunes(runes []rune) []rune {
 	return runes[:last]
 }
 
-func Measure(text string) winsize.Cols {
-	return winsize.Cols(measure(text))
+func Measure[T measurable](text string) T {
+	return T(utf8.RuneCountInString(text))
 }
 
-func MeasureRunes(runes []rune) winsize.Cols {
-	return winsize.Cols(measureRunes(runes))
+func MeasureRunes[T measurable](runes []rune) T {
+	return T(len(runes))
 }
 
-func Measureo(text string) offset.Offset {
-	return offset.Offset(measure(text))
+func MeasureCols(text string) winsize.Cols {
+	return Measure[winsize.Cols](text)
 }
 
-func MeasureoRunes(runes []rune) offset.Offset {
-	return offset.Offset(measureRunes(runes))
+func MeasureColsRunes(runes []rune) winsize.Cols {
+	return MeasureRunes[winsize.Cols](runes)
 }
 
-func measure(text string) int {
-	return utf8.RuneCountInString(text)
+func MeasureOffset(text string) offset.Offset {
+	return Measure[offset.Offset](text)
 }
 
-func measureRunes(runes []rune) int {
-	return len(runes)
+func MeasureOffsetRunes(runes []rune) offset.Offset {
+	return MeasureRunes[offset.Offset](runes)
 }

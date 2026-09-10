@@ -30,5 +30,5 @@ func (e Ellipsis) string() string {
 }
 
 func (e Ellipsis) measure() winsize.Cols {
-	return runes.Measure(e.Data) * e.Count
+	return runes.MeasureCols(e.Data) * e.Count
 }
