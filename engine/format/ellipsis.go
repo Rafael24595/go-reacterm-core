@@ -1,6 +1,8 @@
 package format
 
 import (
+	"strings"
+
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 )
