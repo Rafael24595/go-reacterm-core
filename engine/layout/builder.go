@@ -8,11 +8,13 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
+// LayoutBuilder constructs a Layout instance with optional window size transformations.
 type LayoutBuilder struct {
 	transformer winsize.Transformer
 	compose     Composer
 }
 
+// NewBuilder initializes a LayoutBuilder with a non-nil Composer.
 func NewBuilder(composer Composer) *LayoutBuilder {
 	assert.False(composer == nil, "Composer function cannot be nil")
 
@@ -21,11 +23,13 @@ func NewBuilder(composer Composer) *LayoutBuilder {
 	}
 }
 
+// Transformer attaches a winsize.Transformer to pre-process window dimensions before layout composition.
 func (b *LayoutBuilder) Transformer(transformer winsize.Transformer) *LayoutBuilder {
 	b.transformer = transformer
 	return b
 }
 
+// ToLayout builds and returns the final Layout struct.
 func (b *LayoutBuilder) ToLayout() Layout {
 	compose := b.compose
 	if b.transformer != nil {
