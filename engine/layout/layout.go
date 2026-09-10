@@ -12,37 +12,3 @@ type Composer func(*state.UIState, winsize.Winsize, viewmodel.ViewModel) (*state
 type Layout struct {
 	Compose Composer
 }
-
-type LayoutBuilder struct {
-	transformer *winsize.Transformer
-	compose     Composer
-}
-
-func NewBuilder(composer Composer) *LayoutBuilder {
-	return &LayoutBuilder{
-		compose: composer,
-	}
-}
-
-func (b *LayoutBuilder) Transformer(transformer winsize.Transformer) *LayoutBuilder {
-	b.transformer = &transformer
-	return b
-}
-
-func (b *LayoutBuilder) ToLayout() Layout {
-	compose := b.compose
-	if b.transformer != nil {
-		compose = wrapTransformer(compose, *b.transformer)
-	}
-
-	return Layout{
-		Compose: compose,
-	}
-}
-
-func wrapTransformer(compose Composer, transformer winsize.Transformer) Composer {
-	return func(uiState *state.UIState, size winsize.Winsize, vm viewmodel.ViewModel) (*state.UIState, []line.Line) {
-		newSize := transformer(size)
-		return compose(uiState, newSize, vm)
-	}
-}
