@@ -123,8 +123,8 @@ func TestEngine_Event_ResizeTriggersRender(t *testing.T) {
 
 	composer := func(
 		s *state.UIState,
-		vm viewmodel.ViewModel,
 		ws winsize.Winsize,
+		vm viewmodel.ViewModel,
 	) (*state.UIState, []line.Line) {
 		select {
 		case renderedSize <- ws:

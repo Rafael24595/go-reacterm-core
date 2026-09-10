@@ -45,7 +45,7 @@ func BenchmarkPipeline_WithOutCache(b *testing.B) {
 		ui.Pager.TargetPage += 1
 
 		vm := node.Screen.View(*ui)
-		_, lines := layout.Compose(ui, vm, size)
+		_, lines := layout.Compose(ui, size, vm)
 		_ = render.Processor(lines, size)
 	}
 }
@@ -71,7 +71,7 @@ func BenchmarkPipeline_WithCache(b *testing.B) {
 		ui.Pager.TargetPage += 1
 
 		vm := node.Screen.View(*ui)
-		_, lines := layout.Compose(ui, vm, size)
+		_, lines := layout.Compose(ui, size, vm)
 		_ = render.Processor(lines, size)
 	}
 }

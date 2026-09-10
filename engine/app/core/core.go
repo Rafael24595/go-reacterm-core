@@ -270,7 +270,7 @@ func (e *Engine) syncPulse(vm viewmodel.ViewModel) viewmodel.ViewModel {
 func (e *Engine) renderFrame(uiState *state.UIState, size winsize.Winsize) {
 	vm := e.node.Screen.View(*uiState)
 
-	uiState, lines := e.layout.Compose(uiState, vm, size)
+	uiState, lines := e.layout.Compose(uiState, size, vm)
 	result := e.render.Processor(lines, size)
 
 	e.syncPager(uiState, &vm)

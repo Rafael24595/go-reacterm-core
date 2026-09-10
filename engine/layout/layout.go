@@ -7,7 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-type Composer func(*state.UIState, viewmodel.ViewModel, winsize.Winsize) (*state.UIState, []line.Line)
+type Composer func(*state.UIState, winsize.Winsize, viewmodel.ViewModel) (*state.UIState, []line.Line)
 
 type Layout struct {
 	Compose Composer
@@ -41,8 +41,8 @@ func (b *LayoutBuilder) ToLayout() Layout {
 }
 
 func wrapTransformer(compose Composer, transformer winsize.Transformer) Composer {
-	return func(uiState *state.UIState, vm viewmodel.ViewModel, size winsize.Winsize) (*state.UIState, []line.Line) {
+	return func(uiState *state.UIState, size winsize.Winsize, vm viewmodel.ViewModel) (*state.UIState, []line.Line) {
 		newSize := transformer(size)
-		return compose(uiState, vm, newSize)
+		return compose(uiState, newSize, vm)
 	}
 }

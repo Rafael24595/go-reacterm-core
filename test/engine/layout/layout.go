@@ -24,7 +24,11 @@ func DiscardLayout() layout.Layout {
 
 func (m MockLayout) ToLayout() layout.Layout {
 	if m.Composer == nil {
-		m.Composer = func(s *state.UIState, vm viewmodel.ViewModel, size winsize.Winsize) (*state.UIState, []line.Line) {
+		m.Composer = func(
+			s *state.UIState,
+			size winsize.Winsize,
+			vm viewmodel.ViewModel,
+		) (*state.UIState, []line.Line) {
 			return s, make([]line.Line, 0)
 		}
 	}
