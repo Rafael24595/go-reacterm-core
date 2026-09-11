@@ -56,7 +56,7 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 
 	state := &state.UIState{}
 
-	_, lines := Standard(state, *vm, size)
+	_, lines := Standard(state, size, *vm)
 
 	assert.Size(t, int(size.Rows), lines)
 	assert.Equal(t, "HEADER", lines[0].AtOrZero(0).Text())
@@ -116,7 +116,7 @@ func TestStandard_InitializeLayers(t *testing.T) {
 	assert.True(t, vm.Kernel.HasNext())
 	assert.True(t, vm.Footer.HasNext())
 
-	Standard(uiState, *vm, size)
+	Standard(uiState, size, *vm)
 
 	assert.False(t, vm.Header.HasNext())
 	assert.False(t, vm.Kernel.HasNext())

@@ -10,8 +10,8 @@ import (
 
 func Standard(
 	uiState *state.UIState,
-	vm viewmodel.ViewModel,
 	size winsize.Winsize,
+	vm viewmodel.ViewModel,
 ) (*state.UIState, []line.Line) {
 	header := vm.Header.ToUnit()
 	header.Drawable.Boot()
