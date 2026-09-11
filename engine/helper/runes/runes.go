@@ -59,11 +59,21 @@ func Insert(
 	insert []rune,
 	position offset.Offset,
 ) []rune {
-	size := offset.Offset(len(insert))
-	buffer = append(buffer, make([]rune, size)...)
-	copy(buffer[position+size:], buffer[position:])
-	copy(buffer[position:], insert)
-	return buffer
+	bufLen := offset.Offset(len(buffer))
+	insLen := offset.Offset(len(insert))
+
+	assert.False(
+		bufLen < position,
+		"position %d is out of bounds for buffer length %d", position, bufLen,
+	)
+
+	newBuffer := make([]rune, bufLen+insLen)
+
+	copy(newBuffer[:position], buffer[:position])
+	copy(newBuffer[position:], insert)
+	copy(newBuffer[position+insLen:], buffer[position:])
+
+	return newBuffer
 }
 
 func Replace(
