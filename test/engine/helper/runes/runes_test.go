@@ -163,7 +163,7 @@ func TestAppendRange(t *testing.T) {
 
 func TestBackwardIndexWithOutSkip(t *testing.T) {
 	text := []rune("word1 word2  word3")
-	nextLineRunes := []runes.RuneDefinition{
+	nextLineRunes := []runes.RuneRule{
 		{Rune: ' ', Skip: false},
 	}
 
@@ -191,7 +191,7 @@ func TestBackwardIndexWithOutSkip(t *testing.T) {
 
 func TestBackwardIndexWithSkip(t *testing.T) {
 	text := []rune("Line1\nline2\n\nline3")
-	nextLineRunes := []runes.RuneDefinition{
+	nextLineRunes := []runes.RuneRule{
 		{Rune: '\n', Skip: true},
 	}
 
@@ -216,7 +216,7 @@ func TestBackwardIndexWithSkip(t *testing.T) {
 
 func TestBackwardIndexWithLimit(t *testing.T) {
 	text := []rune("line1\nline2\nline3")
-	nextLineRunes := []runes.RuneDefinition{
+	nextLineRunes := []runes.RuneRule{
 		{Rune: '\n', Skip: true},
 	}
 
@@ -240,7 +240,7 @@ func TestBackwardIndexWithLimit(t *testing.T) {
 
 func TestForwardIndexWithLimit(t *testing.T) {
 	text := []rune("line1\nline2\nline3")
-	nextLineRunes := []runes.RuneDefinition{
+	nextLineRunes := []runes.RuneRule{
 		{Rune: '\n', Skip: true},
 	}
 

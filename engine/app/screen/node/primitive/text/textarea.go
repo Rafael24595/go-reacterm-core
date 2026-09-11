@@ -406,7 +406,7 @@ func (n *TextArea) moveHome(uiState *state.UIState, event screen.Event) screen.R
 		return result
 	}
 
-	caret := runes.BackwardIndexWithLimit(buffer, runes.NextLineRunes, n.caret.Caret())
+	caret := runes.BackwardIndexWithLimit(buffer, runes.LineDelimiters, n.caret.Caret())
 
 	anchor := n.caret.Anchor()
 	if event.Key.Mod.HasNone(key.ModShift) {
@@ -429,7 +429,7 @@ func (n *TextArea) moveEnd(uiState *state.UIState, event screen.Event) screen.Re
 		return result
 	}
 
-	caret := runes.ForwardIndexWithLimit(buffer, runes.NextLineRunes, n.caret.Caret())
+	caret := runes.ForwardIndexWithLimit(buffer, runes.LineDelimiters, n.caret.Caret())
 
 	anchor := n.caret.Anchor()
 	if event.Key.Mod.HasNone(key.ModShift) {
@@ -522,7 +522,7 @@ func (n *TextArea) moveBackward(uiState *state.UIState, event screen.Event) scre
 		return result
 	}
 
-	caret := runes.BackwardIndex(buffer, runes.NextWordRunes, n.caret.Caret())
+	caret := runes.BackwardIndex(buffer, runes.WordDelimiters, n.caret.Caret())
 	if event.Key.Mod.HasNone(key.ModShift) {
 		n.caret.MoveCaretTo(buffer, caret)
 		return result
@@ -551,7 +551,7 @@ func (n *TextArea) moveForward(uiState *state.UIState, event screen.Event) scree
 		return result
 	}
 
-	caret := runes.ForwardIndex(buffer, runes.NextWordRunes, n.caret.Caret())
+	caret := runes.ForwardIndex(buffer, runes.WordDelimiters, n.caret.Caret())
 	if event.Key.Mod.HasNone(key.ModShift) {
 		n.caret.MoveCaretTo(buffer, caret)
 		return result
@@ -571,7 +571,7 @@ func (n *TextArea) deleteBackward(uiState *state.UIState, word bool) screen.Resu
 	start := n.caret.SelectStart()
 
 	if word {
-		start = runes.BackwardIndex(n.buffer.Buffer(), runes.NextWordRunes, start)
+		start = runes.BackwardIndex(n.buffer.Buffer(), runes.WordDelimiters, start)
 	} else {
 		start = start.Sub(1)
 	}
@@ -596,7 +596,7 @@ func (n *TextArea) deleteForward(uiState *state.UIState, word bool) screen.Resul
 	end := n.caret.SelectEnd()
 
 	if word {
-		end = runes.ForwardIndex(n.buffer.Buffer(), runes.NextWordRunes, end)
+		end = runes.ForwardIndex(n.buffer.Buffer(), runes.WordDelimiters, end)
 		start = start.Sub(1)
 	} else {
 		end = min(n.buffer.Size(), end+1)

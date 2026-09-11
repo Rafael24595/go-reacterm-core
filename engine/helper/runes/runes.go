@@ -19,7 +19,7 @@ type measurable interface {
 
 var lineNormalizer = strings.NewReplacer("\r\n", "\n", "\r", "\n")
 
-var NextWordRunes = []RuneDefinition{
+var WordDelimiters = []RuneRule{
 	{
 		Rune: ' ',
 		Skip: false,
@@ -38,14 +38,14 @@ var NextWordRunes = []RuneDefinition{
 	},
 }
 
-var NextLineRunes = []RuneDefinition{
+var LineDelimiters = []RuneRule{
 	{
 		Rune: ascii.ENTER_LF,
 		Skip: false,
 	},
 }
 
-type RuneDefinition struct {
+type RuneRule struct {
 	Rune rune
 	Skip bool
 }
@@ -112,7 +112,7 @@ func NormalizeBuffer(buffer []rune, min uint) []rune {
 
 func BackwardIndexWithLimit[T math.Number](
 	buffer []rune,
-	definition []RuneDefinition,
+	definition []RuneRule,
 	index T,
 ) T {
 	return BackwardIndex(buffer, definition, index) + 1
@@ -120,7 +120,7 @@ func BackwardIndexWithLimit[T math.Number](
 
 func BackwardIndex[T math.Number](
 	buffer []rune,
-	definition []RuneDefinition,
+	definition []RuneRule,
 	index T,
 ) T {
 	newIndex := fixdBackwardIndex(buffer, definition, index)
@@ -145,7 +145,7 @@ func BackwardIndex[T math.Number](
 
 func fixdBackwardIndex[T math.Number](
 	buffer []rune,
-	definition []RuneDefinition,
+	definition []RuneRule,
 	index T,
 ) T {
 	newIndex := math.SubClampZero(index, 1)
@@ -165,7 +165,7 @@ func fixdBackwardIndex[T math.Number](
 
 func ForwardIndexWithLimit[T math.Number](
 	buffer []rune,
-	definition []RuneDefinition,
+	definition []RuneRule,
 	index T,
 ) T {
 	if index < T(len(buffer)) {
@@ -181,7 +181,7 @@ func ForwardIndexWithLimit[T math.Number](
 
 func ForwardIndex[T math.Number](
 	buffer []rune,
-	definition []RuneDefinition,
+	definition []RuneRule,
 	index T,
 ) T {
 	newIndex := fixForwardIndex(buffer, definition, index)
@@ -201,7 +201,7 @@ func ForwardIndex[T math.Number](
 
 func fixForwardIndex[T math.Number](
 	buffer []rune,
-	definition []RuneDefinition,
+	definition []RuneRule,
 	index T,
 ) T {
 	bufferLen := T(len(buffer))
