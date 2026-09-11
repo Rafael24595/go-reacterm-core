@@ -63,7 +63,7 @@ func TestAppendAt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := runes.AppendAt(tt.slice, tt.insert, tt.pos)
+			got := runes.Insert(tt.slice, tt.insert, tt.pos)
 
 			assert.Equal(t, tt.want, string(got))
 		})
@@ -155,7 +155,7 @@ func TestAppendRange(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := runes.AppendRange(tt.slice, tt.insert, tt.start, tt.end)
+			got := runes.Replace(tt.slice, tt.insert, tt.start, tt.end)
 			assert.Equal(t, tt.want, string(got))
 		})
 	}

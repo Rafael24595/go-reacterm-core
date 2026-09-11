@@ -123,7 +123,7 @@ func (b *RuneBuffer) commitReplace(buffer []rune, start, end offset.Offset) ([]r
 
 	deleted := b.Range(start, end)
 
-	rawBuffer := runes.AppendRange(b.buffer, buffer, start, end)
+	rawBuffer := runes.Replace(b.buffer, buffer, start, end)
 	newBuffer, newFacade := b.processor(rawBuffer)
 
 	newBufferLen := offset.Offset(len(newBuffer))

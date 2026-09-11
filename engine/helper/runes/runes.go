@@ -54,7 +54,7 @@ func NormalizeLineFeed(text string) string {
 	return lineNormalizer.Replace(text)
 }
 
-func AppendAt(
+func Insert(
 	buffer []rune,
 	insert []rune,
 	position offset.Offset,
@@ -66,13 +66,13 @@ func AppendAt(
 	return buffer
 }
 
-func AppendRange(
+func Replace(
 	buffer []rune,
 	insert []rune,
 	start, end offset.Offset,
 ) []rune {
 	if start == end {
-		return AppendAt(buffer, insert, start)
+		return Insert(buffer, insert, start)
 	}
 
 	sliceLen := offset.Offset(len(buffer))
@@ -123,7 +123,7 @@ func BackwardIndex[T math.Number](
 	definition []RuneRule,
 	index T,
 ) T {
-	newIndex := fixdBackwardIndex(buffer, definition, index)
+	newIndex := fixedBackwardIndex(buffer, definition, index)
 
 	j := math.SubClampZero(newIndex, 1)
 	for {
@@ -143,7 +143,7 @@ func BackwardIndex[T math.Number](
 	return 0
 }
 
-func fixdBackwardIndex[T math.Number](
+func fixedBackwardIndex[T math.Number](
 	buffer []rune,
 	definition []RuneRule,
 	index T,
