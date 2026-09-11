@@ -85,27 +85,24 @@ func Replace(
 		return Insert(buffer, insert, start)
 	}
 
-	sliceLen := offset.Offset(len(buffer))
-	insertLen := offset.Offset(len(insert))
+	bufLen := offset.Offset(len(buffer))
+	insLen := offset.Offset(len(insert))
 
 	assert.False(
-		sliceLen < end,
-		"range[%d - %d] is greater than slice length %d", start, end, sliceLen,
+		bufLen < end,
+		"range[%d - %d] is greater than slice length %d", start, end, bufLen,
 	)
 
-	size := sliceLen.Sub(
-		end.Sub(start),
-	)
+	selLen := end.Sub(start)
+	remLen := bufLen.Sub(selLen)
 
-	newSlice := make([]rune, size+insertLen)
+	newBuffer := make([]rune, remLen+insLen)
 
-	copy(newSlice[0:start], buffer[0:start])
-	copy(newSlice[start:], insert)
-	if end < sliceLen {
-		copy(newSlice[start+insertLen:], buffer[end:])
-	}
+	copy(newBuffer[:start], buffer[:start])
+	copy(newBuffer[start:], insert)
+	copy(newBuffer[start+insLen:], buffer[end:])
 
-	return newSlice
+	return newBuffer
 }
 
 func NormalizeBuffer(buffer []rune, min uint) []rune {
