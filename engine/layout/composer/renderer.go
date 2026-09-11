@@ -1,6 +1,8 @@
 package composer
 
 import (
+	assert "github.com/Rafael24595/go-assert/assert/runtime"
+	
 	"github.com/Rafael24595/go-reacterm-core/engine/app/pager"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable"
@@ -24,6 +26,8 @@ func pagerRenderer(
 	strategy pager.Strategy,
 	ctx *renderContext,
 ) stack.LayerRenderer {
+	assert.False(ctx == nil, "render context cannot be nil")
+
 	renderer := page.NewRenderer(strategy)
 
 	return func(size winsize.Winsize, unit drawable.Unit) ([]line.Line, bool) {
