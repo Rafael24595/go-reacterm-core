@@ -134,8 +134,8 @@ func BackwardIndex[T math.Number](
 
 	j := math.SubClampZero(newIndex, 1)
 	for {
-		for _, v := range definition {
-			if v.Rune == buffer[j] {
+		for i := range definition {
+			if definition[i].Rune == buffer[j] {
 				return j + 1
 			}
 		}
@@ -158,7 +158,8 @@ func fixedBackwardIndex[T math.Number](
 	newIndex := math.SubClampZero(index, 1)
 
 	for newIndex > 0 {
-		for _, v := range definition {
+		for i := range definition {
+			v := definition[i]
 			if v.Rune != buffer[newIndex] || !v.Skip {
 				return newIndex
 			}
