@@ -8,6 +8,169 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 )
 
+func TestInsert(t *testing.T) {
+	tests := []struct {
+		name     string
+		buffer   []rune
+		insert   []rune
+		pos      offset.Offset
+		expected string
+	}{
+		{
+			name:     "Insert at start (pos 0)",
+			buffer:   []rune{'w', 'o', 'r', 'l', 'd'},
+			insert:   []rune{'h', 'e', 'l', 'l', 'o', ' '},
+			pos:      0,
+			expected: "hello world",
+		},
+		{
+			name:     "Insert in middle",
+			buffer:   []rune{'a', 'b', 'e'},
+			insert:   []rune{'c', 'd'},
+			pos:      2,
+			expected: "abcde",
+		},
+		{
+			name:     "Insert at exact end",
+			buffer:   []rune{'g', 'o'},
+			insert:   []rune{'l', 'a', 'n', 'g'},
+			pos:      2,
+			expected: "golang",
+		},
+		{
+			name:     "Insert into empty buffer",
+			buffer:   []rune{},
+			insert:   []rune{'a', 'b', 'c'},
+			pos:      0,
+			expected: "abc",
+		},
+		{
+			name:     "Insert empty slice (no-op)",
+			buffer:   []rune{'k', 'e', 'e', 'p'},
+			insert:   []rune{},
+			pos:      2,
+			expected: "keep",
+		},
+		{
+			name:     "Insert Unicode characters",
+			buffer:   []rune{'a', 'c'},
+			insert:   []rune{'🚀'},
+			pos:      1,
+			expected: "a🚀c",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := Insert(tt.buffer, tt.insert, tt.pos)
+			assert.Equal(t, tt.expected, string(got))
+		})
+	}
+}
+
+func TestInsert_Immutability(t *testing.T) {
+	original := []rune{'a', 'b', 'd'}
+	originalCopy := append([]rune(nil), original...)
+
+	insert := []rune{'c'}
+
+	result := Insert(original, insert, 2)
+
+	result[0] = 'Z'
+
+	assert.Equal(t, "abd", string(originalCopy))
+	assert.Equal(t, "abd", string(original))
+}
+
+func TestReplace(t *testing.T) {
+	tests := []struct {
+		name     string
+		buffer   []rune
+		insert   []rune
+		start    offset.Offset
+		end      offset.Offset
+		expected string
+	}{
+		{
+			name:     "Replace sub-slice in middle (same length)",
+			buffer:   []rune{'h', 'e', 'x', 'x', 'o'},
+			insert:   []rune{'l', 'l'},
+			start:    2,
+			end:      4,
+			expected: "hello",
+		},
+		{
+			name:     "Replace range with smaller slice (shrinking buffer)",
+			buffer:   []rune{'a', 'b', 'c', 'd', 'e', 'f'},
+			insert:   []rune{'X'},
+			start:    1,
+			end:      5,
+			expected: "aXf",
+		},
+		{
+			name:     "Replace range with larger slice (expanding buffer)",
+			buffer:   []rune{'a', 'b', 'f'},
+			insert:   []rune{'c', 'd', 'e'},
+			start:    2,
+			end:      2, // Zero range, acts like AppendAt
+			expected: "abcdef",
+		},
+		{
+			name:     "Replace entire buffer",
+			buffer:   []rune{'o', 'l', 'd'},
+			insert:   []rune{'n', 'e', 'w'},
+			start:    0,
+			end:      3,
+			expected: "new",
+		},
+		{
+			name:     "Delete range by passing empty insert",
+			buffer:   []rune{'a', 'b', 'C', 'D', 'e'},
+			insert:   []rune{},
+			start:    2,
+			end:      4,
+			expected: "abe",
+		},
+		{
+			name:     "Replace prefix range",
+			buffer:   []rune{'b', 'a', 'd', 'c', 'a', 't'},
+			insert:   []rune{'g', 'o', 'o', 'd'},
+			start:    0,
+			end:      3,
+			expected: "goodcat",
+		},
+		{
+			name:     "Replace suffix range up to buffer end",
+			buffer:   []rune{'c', 'o', 'd', 'e', 'X', 'Y'},
+			insert:   []rune{'r'},
+			start:    4,
+			end:      6,
+			expected: "coder",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := Replace(tt.buffer, tt.insert, tt.start, tt.end)
+			assert.Equal(t, tt.expected, string(got))
+		})
+	}
+}
+
+func TestReplace_Immutability(t *testing.T) {
+	original := []rune{'h', 'e', 'X', 'X', 'o'}
+	originalCopy := append([]rune(nil), original...)
+
+	insert := []rune{'l', 'l'}
+
+	result := Replace(original, insert, 2, 4)
+
+	result[2] = 'Z'
+
+	assert.Equal(t, "heXXo", string(originalCopy))
+	assert.Equal(t, "heXXo", string(original))
+}
+
 func TestJoinReverse(t *testing.T) {
 	tests := []struct {
 		name string
@@ -183,21 +346,26 @@ func TestSanitizeRunes(t *testing.T) {
 	}
 }
 
-func TestMeasure(t *testing.T) {
-	tests := []struct {
-		name string
-		text string
-		want winsize.Cols
-	}{
-		{"ascii", "hello", 5},
-		{"unicode", "🙂🙂", 2},
-		{"mixed", "a🙂b", 3},
-		{"empty", "", 0},
-	}
+func TestMeasureGenerics(t *testing.T) {
+	text := "a🙂b"
+	runes := []rune{'a', '🙂', 'b'}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.want, Measure(tt.text))
-		})
-	}
+	assert.Equal(t, 3, Measure[int](text))
+	assert.Equal(t, winsize.Cols(3), Measure[winsize.Cols](text))
+	assert.Equal(t, offset.Offset(3), Measure[offset.Offset](text))
+
+	assert.Equal(t, 3, MeasureRunes[int](runes))
+	assert.Equal(t, winsize.Cols(3), MeasureRunes[winsize.Cols](runes))
+	assert.Equal(t, offset.Offset(3), MeasureRunes[offset.Offset](runes))
+}
+
+func TestMeasureWrappers(t *testing.T) {
+	text := "hello"
+	runes := []rune{'h', 'e', 'l', 'l', 'o'}
+
+	assert.Equal(t, winsize.Cols(5), MeasureCols(text))
+	assert.Equal(t, winsize.Cols(5), MeasureColsRunes(runes))
+
+	assert.Equal(t, offset.Offset(5), MeasureOffset(text))
+	assert.Equal(t, offset.Offset(5), MeasureOffsetRunes(runes))
 }
