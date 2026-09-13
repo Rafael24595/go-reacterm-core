@@ -8,6 +8,10 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
+const (
+	ErrorTooLowResolution = "Too low resolution"
+)
+
 func Standard(
 	uiState *state.UIState,
 	size winsize.Winsize,
@@ -27,7 +31,7 @@ func Standard(
 
 	if staticRows > size.Rows {
 		return uiState, []line.Line{
-			line.FromString("Too low resolution"),
+			line.FromString(ErrorTooLowResolution),
 		}
 	}
 
