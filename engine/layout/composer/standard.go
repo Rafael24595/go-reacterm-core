@@ -36,7 +36,6 @@ func Standard(
 	}
 
 	ctx := newRenderContext()
-
 	renderer := pagerRenderer(uiState, *vm.Pager, ctx)
 
 	kernel := vm.Kernel.
@@ -50,9 +49,9 @@ func Standard(
 		size.Cols,
 	)
 
-	kernelLines := make([]line.Line, dynamicSize.Rows)
-
 	renderedLines, _ := kernel.Drawable.Draw(dynamicSize)
+	
+	kernelLines := make([]line.Line, dynamicSize.Rows)
 	copy(kernelLines, renderedLines)
 
 	uiState = syncUIState(uiState, ctx)
