@@ -19,6 +19,27 @@ import (
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
+func TestStandard_TooLowResolution(t *testing.T) {
+	size := winsize.Winsize{Rows: 3, Cols: 20}
+
+	vm := viewmodel.New()
+	vm.Header.Push(drain.UnitFromLines(
+		line.TextSpec("H1", spec.AlignLeft()),
+		line.TextSpec("H2", spec.AlignLeft()),
+	))
+
+	vm.Footer.Push(drain.UnitFromLines(
+		line.TextSpec("F1", spec.AlignLeft()),
+		line.TextSpec("F2", spec.AlignLeft()),
+	))
+
+	uiState := state.NewUIState()
+	_, lines := Standard(uiState, size, *vm)
+
+	assert.Size(t, 1, lines)
+	assert.Equal(t, ErrorTooLowResolution, lines[0].AtOrZero(0).Text())
+}
+
 func TestStandard_FixedAndPaged(t *testing.T) {
 	ws := winsize.New(6, 10)
 	us := state.NewUIState()
