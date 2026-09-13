@@ -9,9 +9,11 @@ import (
 )
 
 const (
+	// ErrorTooLowResolution is the error message displayed when the terminal resolution is too low to render the UI.
 	ErrorTooLowResolution = "Too low resolution"
 )
 
+// Standard composes the UI by rendering Header, Kernel (with Pager), and Footer into a final slice of lines.
 func Standard(
 	uiState *state.UIState,
 	size winsize.Winsize,
