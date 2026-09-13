@@ -13,7 +13,6 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/stream/pipeline/drain"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 
 	drawable_test "github.com/Rafael24595/go-reacterm-core/test/engine/layout/drawable"
@@ -21,9 +20,16 @@ import (
 )
 
 func TestStandard_FixedAndPaged(t *testing.T) {
-	size := winsize.Winsize{Rows: 6, Cols: 10}
-
+	ws := winsize.New(6, 10)
+	us := state.NewUIState()
 	vm := viewmodel.New()
+
+	mock := &drawable_test.MockUnit{
+		Status: false,
+		Lines: []line.Line{
+			line.FromString("INPUT"),
+		},
+	}
 
 	vm.Header.Push(
 		drain.UnitFromLines(
@@ -40,25 +46,15 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 		),
 	)
 
-	frg := frag.FromStrings("INPUT")
-	mock := &drawable_test.MockUnit{
-		Status: false,
-		Lines: []line.Line{
-			line.FromFrags(frg...),
-		},
-	}
-
 	vm.Footer.Unshift(
 		inputline.Wrap(
 			mock.ToUnit(),
 		),
 	)
 
-	state := &state.UIState{}
+	_, lines := Standard(us, ws, *vm)
 
-	_, lines := Standard(state, size, *vm)
-
-	assert.Size(t, int(size.Rows), lines)
+	assert.Size(t, ws.Rows, lines)
 	assert.Equal(t, "HEADER", lines[0].AtOrZero(0).Text())
 
 	inputLine := lines[len(lines)-1]
@@ -66,18 +62,23 @@ func TestStandard_FixedAndPaged(t *testing.T) {
 
 	assert.Equal(t, expectedInput, text_test.LineToString(inputLine))
 
-	for i := 1; i < len(lines)-1; i++ {
+	for i := range len(lines) {
 		width := line.Measure(lines[i], 0)
-		assert.LessOrEqual(t, size.Cols, width)
+		assert.LessOrEqual(t, ws.Cols, width)
 	}
 }
 
 func TestStandard_InitializeLayers(t *testing.T) {
-	size := winsize.Winsize{Rows: 5, Cols: 8}
-
-	uiState := state.NewUIState()
-
+	ws := winsize.New(5, 8)
+	us := state.NewUIState()
 	vm := viewmodel.New()
+
+	mock := &drawable_test.MockUnit{
+		Status: false,
+		Lines: []line.Line{
+			line.FromString("X"),
+		},
+	}
 
 	vm.Header.PushWithOpts(
 		drain.UnitFromLines(
@@ -85,26 +86,20 @@ func TestStandard_InitializeLayers(t *testing.T) {
 		),
 		layer.Fixed[winsize.Rows](1),
 	)
+
 	vm.Kernel.PushWithOpts(
 		lines.UnitFromLines(
 			line.TextSpec("rust", spec.AlignRight()),
 		),
 		layer.Fixed[winsize.Rows](1),
 	)
+
 	vm.Footer.PushWithOpts(
 		drain.UnitFromLines(
 			line.TextSpec("Ziglang", spec.AlignRight()),
 		),
 		layer.Fixed[winsize.Rows](1),
 	)
-
-	frag := frag.FromStrings("X")
-	mock := &drawable_test.MockUnit{
-		Status: false,
-		Lines: []line.Line{
-			line.FromFrags(frag...),
-		},
-	}
 
 	vm.Footer.Unshift(
 		inputline.Wrap(
@@ -116,7 +111,7 @@ func TestStandard_InitializeLayers(t *testing.T) {
 	assert.True(t, vm.Kernel.HasNext())
 	assert.True(t, vm.Footer.HasNext())
 
-	Standard(uiState, size, *vm)
+	Standard(us, ws, *vm)
 
 	assert.False(t, vm.Header.HasNext())
 	assert.False(t, vm.Kernel.HasNext())
