@@ -18,11 +18,7 @@ type RuneBuffer struct {
 
 func NewRuneBuffer() *RuneBuffer {
 	return &RuneBuffer{
-		buffer:    make([]rune, 0),
-		facade:    make([]rune, 0),
-		rules:     make([]rule.Rule, 0),
 		processor: processor.Identity,
-		version:   0,
 	}
 }
 
@@ -32,7 +28,9 @@ func (b *RuneBuffer) PushRules(rules ...rule.Rule) *RuneBuffer {
 }
 
 func (b *RuneBuffer) Processor(processor processor.Processor) *RuneBuffer {
-	b.processor = processor
+	if processor != nil {
+		b.processor = processor
+	}
 	return b
 }
 
@@ -49,19 +47,38 @@ func (b *RuneBuffer) Empty() bool {
 }
 
 func (b *RuneBuffer) Buffer() []rune {
-	return b.buffer
+	if len(b.buffer) == 0 {
+		return nil
+	}
+
+	out := make([]rune, len(b.buffer))
+	copy(out, b.buffer)
+	return out
 }
 
 func (b *RuneBuffer) Facade() []rune {
-	return b.facade
-}
-
-func (b *RuneBuffer) Range(start offset.Offset, end offset.Offset) []rune {
-	if end < start {
-		return make([]rune, 0)
+	if len(b.facade) == 0 {
+		return nil
 	}
 
-	return b.buffer[start:end]
+	out := make([]rune, len(b.facade))
+	copy(out, b.facade)
+	return out
+}
+
+func (b *RuneBuffer) Range(start, end offset.Offset) []rune {
+	if end < start {
+		return nil
+	}
+
+	buffLen := offset.Offset(len(b.buffer))
+	if end > buffLen {
+		end = buffLen
+	}
+
+	out := make([]rune, end-start)
+	copy(out, b.buffer[start:end])
+	return out
 }
 
 func (b *RuneBuffer) Append(buffer []rune) *RuneBuffer {
@@ -69,29 +86,24 @@ func (b *RuneBuffer) Append(buffer []rune) *RuneBuffer {
 	return b
 }
 
-func (b *RuneBuffer) Clean() *RuneBuffer {
-	b.buffer = make([]rune, 0)
-	b.facade = make([]rune, 0)
-
-	b.version += 1
-
-	return b
-}
-
-func (b *RuneBuffer) Replace(buffer []rune, start offset.Offset, end offset.Offset) ([]rune, []rune) {
+func (b *RuneBuffer) Replace(
+	buffer []rune,
+	start, end offset.Offset,
+) ([]rune, []rune) {
 	if end < start {
-		zero := make([]rune, 0)
-		return zero, zero
+		return nil, nil
 	}
 
 	buffer = runes.SanitizeRunes(buffer)
 	return b.commitReplace(buffer, start, end)
 }
 
-func (b *RuneBuffer) ReplaceWithRules(buffer []rune, start offset.Offset, end offset.Offset) ([]rune, []rune) {
+func (b *RuneBuffer) ReplaceWithRules(
+	buffer []rune,
+	start, end offset.Offset,
+) ([]rune, []rune) {
 	if end < start {
-		zero := make([]rune, 0)
-		return zero, zero
+		return nil, nil
 	}
 
 	buffer = runes.SanitizeRunes(buffer)
@@ -99,7 +111,11 @@ func (b *RuneBuffer) ReplaceWithRules(buffer []rune, start offset.Offset, end of
 	return b.commitReplace(buffer, start, end)
 }
 
-func (b *RuneBuffer) applyRules(buffer []rune, start, end offset.Offset, buff []rune) []rune {
+func (b *RuneBuffer) applyRules(
+	buffer []rune,
+	start, end offset.Offset,
+	buff []rune,
+) []rune {
 	for _, rule := range b.rules {
 		if text, ok := rule(buffer, start, end, buff); ok {
 			return text
@@ -108,18 +124,32 @@ func (b *RuneBuffer) applyRules(buffer []rune, start, end offset.Offset, buff []
 	return buffer
 }
 
-func (b *RuneBuffer) Delete(start offset.Offset, end offset.Offset) []rune {
+func (b *RuneBuffer) Delete(start, end offset.Offset) []rune {
 	if end < start {
-		return make([]rune, 0)
+		return nil
 	}
 
-	rns := make([]rune, 0)
-	_, deleted := b.Replace(rns, start, end)
+	_, deleted := b.Replace(nil, start, end)
 	return deleted
 }
 
-func (b *RuneBuffer) commitReplace(buffer []rune, start, end offset.Offset) ([]rune, []rune) {
-	end = min(end, offset.Offset(len(b.buffer)))
+func (b *RuneBuffer) commitReplace(
+	buffer []rune,
+	start, end offset.Offset,
+) ([]rune, []rune) {
+	buffLen := offset.Offset(len(b.buffer))
+
+	if start > buffLen {
+		start = buffLen
+	}
+
+	if end < start {
+		end = start
+	}
+
+	if end > buffLen {
+		end = buffLen
+	}
 
 	deleted := b.Range(start, end)
 
@@ -132,10 +162,12 @@ func (b *RuneBuffer) commitReplace(buffer []rune, start, end offset.Offset) ([]r
 		len(newBuffer) - (len(b.buffer) - len(deleted)),
 	)
 
-	fixedInsert := make([]rune, 0)
-	if insertSize > 0 {
+	var fixedInsert []rune
+	if insertSize > 0 && start <= newBufferLen {
 		endInsert := min(start+insertSize, newBufferLen)
-		fixedInsert = newBuffer[start:endInsert]
+
+		fixedInsert = make([]rune, endInsert-start)
+		copy(fixedInsert, newBuffer[start:endInsert])
 	}
 
 	b.buffer = newBuffer
@@ -152,6 +184,15 @@ func (b *RuneBuffer) ApplyDelta(d *delta.Delta) *RuneBuffer {
 
 	b.buffer = buffer
 	b.facade = facade
+
+	b.version += 1
+
+	return b
+}
+
+func (b *RuneBuffer) Clean() *RuneBuffer {
+	b.buffer = nil
+	b.facade = nil
 
 	b.version += 1
 
