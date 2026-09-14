@@ -4,15 +4,21 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 )
 
+// Value represents the underlying buffer of a text input.
 type Value []rune
+
+// Facade represents the display version of the buffer, which may differ from the underlying value (e.g., for masked inputs).
 type Facade []rune
 
+// Processor defines a function that receives an input buffer and returns the underlying buffer and its display facade.
 type Processor func([]rune) (Value, Facade)
 
+// Identity returns the buffer unmodified both as value and facade.
 func Identity(buffer []rune) (Value, Facade) {
 	return buffer, buffer
 }
 
+// Numeric filters non-numeric runes, allowing a single sign at the start and a single decimal separator (comma or dot).
 func Numeric(buffer []rune) (Value, Facade) {
 	fixedBuffer := make([]rune, 0, len(buffer))
 	hasSeparator := false
@@ -41,6 +47,7 @@ func Numeric(buffer []rune) (Value, Facade) {
 	return fixedBuffer, fixedBuffer
 }
 
+// Masked obscures non-whitespace characters with asterisks for password/secret inputs.
 func Masked(buffer []rune) (Value, Facade) {
 	fixedBuffer := make([]rune, len(buffer))
 
@@ -56,6 +63,7 @@ func Masked(buffer []rune) (Value, Facade) {
 	return buffer, fixedBuffer
 }
 
+// Flatten transforms multiline text into single-line by replacing newlines with spaces.
 func Flatten(buffer []rune) (Value, Facade) {
 	fixedBuffer := make([]rune, len(buffer))
 
@@ -71,6 +79,7 @@ func Flatten(buffer []rune) (Value, Facade) {
 	return fixedBuffer, fixedBuffer
 }
 
+// Limit creates a decorator Processor that truncates both buffer and facade to max columns.
 func Limit(
 	limit winsize.Cols,
 	processor Processor,
