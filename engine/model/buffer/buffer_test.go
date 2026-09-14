@@ -11,7 +11,7 @@ import (
 
 func TestRuneBuffer_NumberFilter(t *testing.T) {
 	rb := NewRuneBuffer().
-		Processor(processor.Number)
+		Processor(processor.Numeric)
 
 	inserted, deleted := rb.Replace([]rune("1A2"), 0, 0)
 

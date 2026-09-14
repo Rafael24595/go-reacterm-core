@@ -13,7 +13,7 @@ func Identity(buffer []rune) (Value, Facade) {
 	return buffer, buffer
 }
 
-func Number(buffer []rune) (Value, Facade) {
+func Numeric(buffer []rune) (Value, Facade) {
 	fixedBuffer := make([]rune, 0, len(buffer))
 	hasSeparator := false
 
@@ -41,7 +41,7 @@ func Number(buffer []rune) (Value, Facade) {
 	return fixedBuffer, fixedBuffer
 }
 
-func Hidden(buffer []rune) (Value, Facade) {
+func Masked(buffer []rune) (Value, Facade) {
 	fixedBuffer := make([]rune, len(buffer))
 
 	for i, r := range buffer {
@@ -56,7 +56,7 @@ func Hidden(buffer []rune) (Value, Facade) {
 	return buffer, fixedBuffer
 }
 
-func Inline(buffer []rune) (Value, Facade) {
+func Flatten(buffer []rune) (Value, Facade) {
 	fixedBuffer := make([]rune, len(buffer))
 
 	for i, r := range buffer {
@@ -71,7 +71,10 @@ func Inline(buffer []rune) (Value, Facade) {
 	return fixedBuffer, fixedBuffer
 }
 
-func Limit(limit winsize.Cols, processor Processor) Processor {
+func Limit(
+	limit winsize.Cols,
+	processor Processor,
+) Processor {
 	if limit == 0 {
 		return processor
 	}
@@ -82,7 +85,10 @@ func Limit(limit winsize.Cols, processor Processor) Processor {
 	}
 }
 
-func trimBuffer(limit winsize.Cols, facade, buffer []rune) (Value, Facade) {
+func trimBuffer(
+	limit winsize.Cols,
+	facade, buffer []rune,
+) (Value, Facade) {
 	if limit == 0 {
 		return buffer, facade
 	}

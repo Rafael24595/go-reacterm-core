@@ -15,7 +15,7 @@ func TestProcessor_Identity(t *testing.T) {
 	assert.Equal(t, "Hello Golang", string(facade))
 }
 
-func TestProcessor_Number(t *testing.T) {
+func TestProcessor_Numeric(t *testing.T) {
 	cases := []struct {
 		input    string
 		expected string
@@ -30,16 +30,16 @@ func TestProcessor_Number(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		buff, facade := Number([]rune(c.input))
+		buff, facade := Numeric([]rune(c.input))
 		assert.Equal(t, c.expected, string(buff))
 		assert.Equal(t, c.expected, string(facade))
 	}
 }
 
-func TestProcessor_Hidden(t *testing.T) {
+func TestProcessor_Masked(t *testing.T) {
 	input := []rune("password123")
 
-	buff, facade := Hidden(input)
+	buff, facade := Masked(input)
 
 	assert.Equal(t, "password123", string(buff))
 	assert.Equal(t, "***********", string(facade))
@@ -53,13 +53,13 @@ func TestProcessor_Limit(t *testing.T) {
 	buff, facade := handler(input)
 
 	assert.Size(t, 6, buff)
-	
+
 	assert.Equal(t, "Golang", string(buff))
 	assert.Equal(t, "Golang", string(facade))
 }
 
-func TestProcessor_NumberLimited(t *testing.T) {
-	handler := Limit(3, Number)
+func TestProcessor_NumericLimited(t *testing.T) {
+	handler := Limit(3, Numeric)
 
 	input := []rune("1a2b3c4d5")
 	buff, _ := handler(input)
@@ -67,10 +67,10 @@ func TestProcessor_NumberLimited(t *testing.T) {
 	assert.Equal(t, "123", string(buff))
 }
 
-func TestProcessor_Inline(t *testing.T) {
+func TestProcessor_Flatten(t *testing.T) {
 	input := []rune("\nHello\nGolang\n")
 
-	buff, facade := Inline(input)
+	buff, facade := Flatten(input)
 
 	assert.Equal(t, " Hello Golang ", string(buff))
 	assert.Equal(t, " Hello Golang ", string(facade))

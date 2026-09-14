@@ -38,7 +38,7 @@ type TextInput struct {
 func NewInput() *TextInput {
 	processor := processor.Limit(
 		input_limit,
-		processor.Inline,
+		processor.Flatten,
 	)
 
 	area := NewArea().SetName(NameInput)
