@@ -9,6 +9,16 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/buffer/processor"
 )
 
+func TestRuneBuffer_DefensiveCopyOnBuffer(t *testing.T) {
+	rb := NewRuneBuffer()
+	rb.Append([]rune("Golang"))
+
+	buf := rb.Buffer()
+	buf[0] = 'Z'
+
+	assert.Equal(t, "Golang", string(rb.Buffer()))
+}
+
 func TestRuneBuffer_NumberFilter(t *testing.T) {
 	rb := NewRuneBuffer().
 		WithProcessor(processor.Numeric)
