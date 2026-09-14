@@ -41,7 +41,7 @@ type TextArea struct {
 
 func NewArea() *TextArea {
 	runeBuffer := buffer.NewRuneBuffer().
-		PushRules(rule.Full...)
+		PushRules(rule.Standard...)
 
 	return &TextArea{
 		reference:  NameArea,

@@ -6,8 +6,8 @@ import (
 	assert "github.com/Rafael24595/go-assert/assert/test"
 )
 
-func TestAddSpaceAfter_AddsSpace(t *testing.T) {
-	text, ok := AppendSpaceAfter(
+func TestAutoSpace_AddsSpace(t *testing.T) {
+	text, ok := AutoSpace(
 		[]rune{','},
 		5,
 		5,
@@ -18,8 +18,8 @@ func TestAddSpaceAfter_AddsSpace(t *testing.T) {
 	assert.Equal(t, ", ", string(text))
 }
 
-func TestAddSpaceAfter_IgnoresOtherRunes(t *testing.T) {
-	text, ok := AppendSpaceAfter(
+func TestAutoSpace_IgnoresOtherRunes(t *testing.T) {
+	text, ok := AutoSpace(
 		[]rune{'a'},
 		1,
 		1,
@@ -30,10 +30,10 @@ func TestAddSpaceAfter_IgnoresOtherRunes(t *testing.T) {
 	assert.Equal(t, "a", string(text))
 }
 
-func TestWrapSelection_WrapsSelectionWithBrackets(t *testing.T) {
+func TestAutoWrap_WrapsSelectionWithBrackets(t *testing.T) {
 	buffer := []rune("hello")
 
-	text, ok := WrapSelection(
+	text, ok := AutoWrap(
 		[]rune{'('},
 		0,
 		5,
@@ -44,10 +44,10 @@ func TestWrapSelection_WrapsSelectionWithBrackets(t *testing.T) {
 	assert.Equal(t, "(hello)", string(text))
 }
 
-func TestWrapSelection_DoesNothingIfRuneIsNotWrapper(t *testing.T) {
+func TestAutoWrap_DoesNothingIfRuneIsNotWrapper(t *testing.T) {
 	buffer := []rune("hello")
 
-	text, ok := WrapSelection(
+	text, ok := AutoWrap(
 		[]rune{'a'},
 		1,
 		4,

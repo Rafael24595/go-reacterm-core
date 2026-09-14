@@ -26,11 +26,11 @@ type Rule func(
 	buff []rune,
 ) ([]rune, bool)
 
-var Full = []Rule{
-	AppendSpaceAfter, WrapSelection,
+var Standard = []Rule{
+	AutoSpace, AutoWrap,
 }
 
-func WrapSelection(
+func AutoWrap(
 	input []rune,
 	start, end offset.Offset,
 	buffer []rune,
@@ -62,7 +62,7 @@ func WrapSelection(
 	return result, true
 }
 
-func AppendSpaceAfter(
+func AutoSpace(
 	input []rune,
 	start, end offset.Offset,
 	_ []rune,

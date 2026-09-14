@@ -25,7 +25,7 @@ func NewDemoTextArea() screen.Node {
 	node := text_screen.NewArea().
 		SetName("textarea - amet").
 		SetBuffer(buffer.NewRuneBuffer().
-			PushRules(rule.Full...).
+			PushRules(rule.Standard...).
 			Processor(processor.Identity)).
 		SetPlaceholder("Type here...").
 		EnableBlinking().
