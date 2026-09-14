@@ -11,10 +11,10 @@ func Identity(buffer []rune) ([]rune, []rune) {
 }
 
 func Number(buffer []rune) ([]rune, []rune) {
-	var fixedBuffer []rune
+	fixedBuffer := make([]rune, 0, len(buffer))
 	hasSeparator := false
 
-	for i, v := range buffer {
+	for _, v := range buffer {
 		if v >= '0' && v <= '9' {
 			fixedBuffer = append(fixedBuffer, v)
 			continue
@@ -29,14 +29,9 @@ func Number(buffer []rune) ([]rune, []rune) {
 		if v == '-' && len(fixedBuffer) == 0 {
 			fixedBuffer = append(fixedBuffer, v)
 		}
-
-		if fixedBuffer == nil {
-			fixedBuffer = make([]rune, 0, len(buffer))
-			fixedBuffer = append(fixedBuffer, buffer[:i]...)
-		}
 	}
 
-	if fixedBuffer == nil {
+	if len(fixedBuffer) == len(buffer) {
 		return buffer, buffer
 	}
 
