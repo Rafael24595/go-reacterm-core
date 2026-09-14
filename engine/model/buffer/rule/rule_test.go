@@ -57,3 +57,16 @@ func TestAutoWrap_DoesNothingIfRuneIsNotWrapper(t *testing.T) {
 	assert.False(t, ok)
 	assert.Equal(t, "a", string(text))
 }
+
+func TestAutoWrap_OutOfBoundsReturnsFalse(t *testing.T) {
+	buffer := []rune("hello")
+
+	assert.Panic(t, func() {
+		AutoWrap(
+			[]rune{'('},
+			0,
+			10,
+			buffer,
+		)
+	})
+}
