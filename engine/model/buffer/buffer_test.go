@@ -11,12 +11,12 @@ import (
 
 func TestRuneBuffer_NumberFilter(t *testing.T) {
 	rb := NewRuneBuffer().
-		Processor(processor.Numeric)
+		WithProcessor(processor.Numeric)
 
 	inserted, deleted := rb.Replace([]rune("1A2"), 0, 0)
 
 	assert.Empty(t, deleted)
-	
+
 	assert.Equal(t, "12", string(rb.Buffer()))
 	assert.Equal(t, "12", string(inserted))
 	assert.Equal(t, 2, rb.Size())
@@ -25,7 +25,7 @@ func TestRuneBuffer_NumberFilter(t *testing.T) {
 func TestRuneBuffer_Limit(t *testing.T) {
 	handler := processor.Limit(5, processor.Identity)
 	rb := NewRuneBuffer().
-		Processor(handler)
+		WithProcessor(handler)
 
 	rb.Replace([]rune("123"), 0, 0)
 
@@ -126,14 +126,14 @@ func TestRuneBuffer_DeleteIncrementsVersion(t *testing.T) {
 	assert.Equal(t, before+1, buffer.Version())
 }
 
-func TestRuneBuffer_CleanIncrementsVersion(t *testing.T) {
+func TestRuneBuffer_ClearIncrementsVersion(t *testing.T) {
 	buffer := NewRuneBuffer()
 
 	buffer.Append([]rune("hello"))
 
 	before := buffer.Version()
 
-	buffer.Clean()
+	buffer.Clear()
 
 	assert.Equal(t, before+1, buffer.Version())
 }

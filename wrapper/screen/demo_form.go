@@ -325,8 +325,8 @@ func makeTextArea(service *mockTalkService) screen.Node {
 	textArea := text_screen.NewArea().
 		SetName("textarea-form - amet").
 		SetBuffer(buffer.NewRuneBuffer().
-			PushRules(rule.Standard...).
-			Processor(processor.Identity)).
+			WithRules(rule.Standard...).
+			WithProcessor(processor.Identity)).
 		AddText(string(service.text)).
 		EnableBlinking().
 		ToNode()

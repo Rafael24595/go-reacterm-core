@@ -42,7 +42,7 @@ func NewInput() *TextInput {
 	)
 
 	area := NewArea().SetName(NameInput)
-	area.buffer.Processor(processor)
+	area.buffer.WithProcessor(processor)
 
 	return &TextInput{
 		limit:    input_limit,
@@ -73,7 +73,7 @@ func (n *TextInput) SetProcessor(limit winsize.Cols, process processor.Processor
 
 	n.limit = limit
 
-	n.textarea.buffer.Processor(
+	n.textarea.buffer.WithProcessor(
 		processor.Limit(limit, process),
 	)
 

@@ -22,12 +22,12 @@ func NewRuneBuffer() *RuneBuffer {
 	}
 }
 
-func (b *RuneBuffer) PushRules(rules ...rule.Rule) *RuneBuffer {
+func (b *RuneBuffer) WithRules(rules ...rule.Rule) *RuneBuffer {
 	b.rules = append(b.rules, rules...)
 	return b
 }
 
-func (b *RuneBuffer) Processor(processor processor.Processor) *RuneBuffer {
+func (b *RuneBuffer) WithProcessor(processor processor.Processor) *RuneBuffer {
 	if processor != nil {
 		b.processor = processor
 	}
@@ -190,7 +190,7 @@ func (b *RuneBuffer) ApplyDelta(d *delta.Delta) *RuneBuffer {
 	return b
 }
 
-func (b *RuneBuffer) Clean() *RuneBuffer {
+func (b *RuneBuffer) Clear() *RuneBuffer {
 	b.buffer = nil
 	b.facade = nil
 

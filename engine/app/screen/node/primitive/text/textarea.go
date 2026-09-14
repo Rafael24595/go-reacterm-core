@@ -41,7 +41,7 @@ type TextArea struct {
 
 func NewArea() *TextArea {
 	runeBuffer := buffer.NewRuneBuffer().
-		PushRules(rule.Standard...)
+		WithRules(rule.Standard...)
 
 	return &TextArea{
 		reference:  NameArea,
@@ -176,7 +176,7 @@ func (n *TextArea) loadFromStore(uiState state.UIState) {
 	}
 
 	if sync.Buffer != nil {
-		n.buffer.Clean().Append(*sync.Buffer)
+		n.buffer.Clear().Append(*sync.Buffer)
 	}
 
 	buffer := n.buffer.Buffer()
