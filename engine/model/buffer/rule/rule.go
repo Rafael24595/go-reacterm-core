@@ -1,6 +1,9 @@
 package rule
 
-import "github.com/Rafael24595/go-reacterm-core/engine/model/offset"
+import (
+	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
+	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
+)
 
 var wrapperMap = map[rune]rune{
 	'{': '}',
@@ -9,11 +12,11 @@ var wrapperMap = map[rune]rune{
 	'<': '>',
 }
 
-var runesRequiringTrailingSpace = []rune{
+var trailingSpaceRunes = set.From(
 	',',
 	'.',
 	';',
-}
+)
 
 type Rule func(
 	text []rune,
@@ -51,24 +54,19 @@ func WrapSelection(
 }
 
 func AppendSpaceAfter(
-	text []rune,
+	input []rune,
 	start, end offset.Offset,
 	_ []rune,
 ) ([]rune, bool) {
-	size := len(text)
-	if size < 1 || size > 1 {
-		return text, false
+	if len(input) != 1 {
+		return input, false
 	}
 
-	focus := text[0]
-	for _, r := range runesRequiringTrailingSpace {
-		if focus != r {
-			continue
-		}
-
-		text = append(text, ' ')
-		return text, true
+	inputRune := input[0]
+	if !trailingSpaceRunes.Has(inputRune) {
+		return input, false
 	}
 
-	return text, false
+	result := []rune{input[0], ' '}
+	return result, true
 }
