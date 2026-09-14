@@ -4,13 +4,16 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 )
 
-type Processor func([]rune) ([]rune, []rune)
+type Value []rune
+type Facade []rune
 
-func Identity(buffer []rune) ([]rune, []rune) {
+type Processor func([]rune) (Value, Facade)
+
+func Identity(buffer []rune) (Value, Facade) {
 	return buffer, buffer
 }
 
-func Number(buffer []rune) ([]rune, []rune) {
+func Number(buffer []rune) (Value, Facade) {
 	fixedBuffer := make([]rune, 0, len(buffer))
 	hasSeparator := false
 
@@ -38,7 +41,7 @@ func Number(buffer []rune) ([]rune, []rune) {
 	return fixedBuffer, fixedBuffer
 }
 
-func Hidden(buffer []rune) ([]rune, []rune) {
+func Hidden(buffer []rune) (Value, Facade) {
 	fixedBuffer := make([]rune, len(buffer))
 
 	for i, r := range buffer {
@@ -53,7 +56,7 @@ func Hidden(buffer []rune) ([]rune, []rune) {
 	return buffer, fixedBuffer
 }
 
-func Inline(buffer []rune) ([]rune, []rune) {
+func Inline(buffer []rune) (Value, Facade) {
 	fixedBuffer := make([]rune, len(buffer))
 
 	for i, r := range buffer {
@@ -73,13 +76,13 @@ func Limit(limit winsize.Cols, processor Processor) Processor {
 		return processor
 	}
 
-	return func(buffer []rune) ([]rune, []rune) {
+	return func(buffer []rune) (Value, Facade) {
 		buffer, facade := processor(buffer)
 		return trimBuffer(limit, facade, buffer)
 	}
 }
 
-func trimBuffer(limit winsize.Cols, facade, buffer []rune) ([]rune, []rune) {
+func trimBuffer(limit winsize.Cols, facade, buffer []rune) (Value, Facade) {
 	if limit == 0 {
 		return buffer, facade
 	}
