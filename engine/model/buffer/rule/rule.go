@@ -1,11 +1,13 @@
 package rule
 
 import (
+	assert "github.com/Rafael24595/go-assert/assert/runtime"
+	
 	"github.com/Rafael24595/go-reacterm-core/engine/commons/structure/set"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 )
 
-var wrapperMap = map[rune]rune{
+var wrappers = map[rune]rune{
 	'{': '}',
 	'(': ')',
 	'[': ']',
@@ -29,28 +31,35 @@ var Full = []Rule{
 }
 
 func WrapSelection(
-	text []rune,
+	input []rune,
 	start, end offset.Offset,
-	buff []rune,
+	buffer []rune,
 ) ([]rune, bool) {
-	size := len(text)
-	if size < 1 || size > 1 {
-		return text, false
+	if len(input) != 1 {
+		return input, false
 	}
 
-	focus := text[0]
-
-	close, ok := wrapperMap[focus]
+	openRune := input[0]
+	
+	closeRune, ok := wrappers[openRune]
 	if !ok {
-		return text, false
+		return input, false
 	}
 
-	text = make([]rune, 0)
-	text = append(text, focus)
-	text = append(text, buff[start:end]...)
-	text = append(text, close)
+	buffLen := offset.Offset(len(buffer))
+	if start > end || start > buffLen || end > buffLen {
+		assert.Unreachable("Invalid offset values: start=%d, end=%d, buffer length=%d", start, end, buffLen)
+		return input, false
+	}
 
-	return text, true
+	selected := buffer[start:end]
+
+	result := make([]rune, 0, len(selected)+2)
+	result = append(result, openRune)
+	result = append(result, selected...)
+	result = append(result, closeRune)
+
+	return result, true
 }
 
 func AppendSpaceAfter(
