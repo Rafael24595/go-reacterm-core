@@ -20,16 +20,19 @@ var trailingSpaceRunes = set.From(
 	';',
 )
 
+// Rule evaluates input text against current selection bounds and buffer context, returning modified text and a boolean indicating if the rule matched.
 type Rule func(
-	text []rune,
+	input []rune,
 	start, end offset.Offset,
-	buff []rune,
+	buffer []rune,
 ) ([]rune, bool)
 
+// Standard provides the standard sequence of active auto-formatting rules.
 var Standard = []Rule{
 	AutoSpace, AutoWrap,
 }
 
+// AutoWrap wraps the selected buffer text with matching closing brackets when an opening bracket is typed.
 func AutoWrap(
 	input []rune,
 	start, end offset.Offset,
@@ -62,6 +65,7 @@ func AutoWrap(
 	return result, true
 }
 
+// AutoSpace automatically appends a trailing space when typing punctuation marks like ',', '.', or ';'.
 func AutoSpace(
 	input []rune,
 	start, end offset.Offset,
