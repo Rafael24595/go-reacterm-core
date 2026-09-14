@@ -12,7 +12,7 @@ func (c *Clipboard) Size() uint {
 	return uint(len(c.buffer))
 }
 
-func (c *Clipboard) Buffer() []rune {
+func (c *Clipboard) Read() []rune {
 	if len(c.buffer) == 0 {
 		return nil
 	}
@@ -22,7 +22,7 @@ func (c *Clipboard) Buffer() []rune {
 	return result
 }
 
-func (c *Clipboard) Put(rns []rune) *Clipboard {
+func (c *Clipboard) Write(rns []rune) *Clipboard {
 	c.buffer = make([]rune, len(rns))
 	copy(c.buffer, rns)
 	return c

@@ -373,10 +373,13 @@ func (n *TextArea) copyCut(uiState *state.UIState, cut bool) screen.Result {
 	start := n.caret.SelectStart().Sub(1)
 	end := n.caret.SelectEnd()
 
-	n.clipboard.Put(n.buffer.Range(start, end))
+	n.clipboard.Write(
+		n.buffer.Range(start, end),
+	)
 
 	if cut {
-		n.history.PushEvent(event.Cut, start, end, string(n.clipboard.Buffer()), "")
+		text := string(n.clipboard.Read())
+		n.history.PushEvent(event.Cut, start, end, text, "")
 		n.buffer.Delete(start, end)
 		n.caret.MoveCaretTo(n.buffer.Buffer(), start)
 	}
@@ -387,7 +390,7 @@ func (n *TextArea) copyCut(uiState *state.UIState, cut bool) screen.Result {
 func (n *TextArea) paste(uiState *state.UIState) screen.Result {
 	start, end, fixEnd := n.insertSelection()
 
-	insert, delete := n.buffer.Replace(n.clipboard.Buffer(), start, end)
+	insert, delete := n.buffer.Replace(n.clipboard.Read(), start, end)
 	n.history.PushEvent(event.Paste, start, fixEnd, string(delete), string(insert))
 
 	position := start + offset.Offset(len(insert))
