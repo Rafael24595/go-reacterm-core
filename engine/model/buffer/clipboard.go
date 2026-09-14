@@ -27,3 +27,7 @@ func (c *Clipboard) Put(rns []rune) *Clipboard {
 	copy(c.buffer, rns)
 	return c
 }
+
+func (c *Clipboard) Clear() {
+	c.buffer = nil
+}
