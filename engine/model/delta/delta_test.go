@@ -14,6 +14,12 @@ func TestDeltaMeasure(t *testing.T) {
 	assert.Equal(t, 3, d.Measure())
 }
 
+func TestApplyNilSafety(t *testing.T) {
+	buffer := []rune("hello")
+	result := Apply(buffer, nil)
+	assert.Equal(t, "hello", string(result))
+}
+
 func TestApplyBasic(t *testing.T) {
 	buffer := []rune("hello")
 

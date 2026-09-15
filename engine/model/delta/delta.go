@@ -16,7 +16,7 @@ func (d Delta) Measure() offset.Offset {
 }
 
 func Apply(buffer []rune, delta *Delta) []rune {
-	if delta.Start > delta.End {
+	if delta == nil || delta.Start > delta.End {
 		return buffer
 	}
 
