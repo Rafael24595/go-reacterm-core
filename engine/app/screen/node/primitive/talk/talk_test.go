@@ -21,18 +21,10 @@ func TestTalk_ToNode(t *testing.T) {
 
 func TestTalk_Boot(t *testing.T) {
 	messges := []chat.Message{
-		{
-			Message: "message_03",
-		},
-		{
-			Message: "message_01",
-		},
-		{
-			Message: "message_03",
-		},
-		{
-			Message: "message_04",
-		},
+		chat.NewMessage("", "message_03"),
+		chat.NewMessage("", "message_01"),
+		chat.NewMessage("", "message_03"),
+		chat.NewMessage("", "message_04"),
 	}
 
 	talk := New().AddMessage(messges...)
@@ -45,9 +37,8 @@ func TestTalk_Boot(t *testing.T) {
 
 	cursor := uint16(4)
 	newMessages := append(messges,
-		chat.Message{
-			Message: "message_05",
-		})
+		chat.NewMessage("", "message_05"),
+	)
 
 	KeySync.Set(
 		uiState.Store,

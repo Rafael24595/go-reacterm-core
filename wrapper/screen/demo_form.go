@@ -73,18 +73,18 @@ type mockMessageService struct {
 func (s *mockMessageService) randMessage() chat.Message {
 	messagesLen := len(s.messages)
 	if messagesLen == 0 {
-		return chat.Message{
-			Time:    time.Now().UnixMilli(),
-			Owner:   "System",
-			Message: "Empty messages buffer",
-		}
+		return chat.NewMessage(
+			"System", "Empty messages buffer",
+		)
 	}
 
 	index := s.clock.rng.Intn(messagesLen)
 	message := s.messages[index]
-	message.Time = time.Now().UnixMilli()
 
-	return message
+	return chat.NewMessage(
+		message.Owner,
+		message.Message,
+	)
 }
 
 type mockTalkService struct {
@@ -170,56 +170,56 @@ func initTalkService() *mockTalkService {
 		owner:    "human_001",
 		text:     []rune("Hello Golang!"),
 		chat: []chat.Message{
-			{
-				Time:    time.Now().Add(-15 * time.Minute).UnixMilli(),
-				Owner:   "human_001",
-				Message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit?",
-			},
-			{
-				Time:    time.Now().Add(-14 * time.Minute).UnixMilli(),
-				Owner:   "human_002",
-				Message: "Morbi ac ex sit amet diam euismod vulputate ut eu leo.",
-			},
-			{
-				Time:    time.Now().Add(-12 * time.Minute).UnixMilli(),
-				Owner:   "human_001",
-				Message: "Ok.",
-			},
-			{
-				Time:    time.Now().Add(-10 * time.Minute).UnixMilli(),
-				Owner:   "human_001",
-				Message: "Nullam quis ante sodales, aliquet turpis ut, suscipit erat. Cras nec viverra dolor, non egestas erat. Vivamus ac pretium lectus. Proin id ligula scelerisque, condimentum elit sit amet, imperdiet magna.",
-			},
-			{
-				Time:    time.Now().Add(-8 * time.Minute).UnixMilli(),
-				Owner:   "human_002",
-				Message: "Wow! Nunc imperdiet, turpis vel dictum pretium, sem nibh sodales est, nec pulvinar diam leo ac augue.",
-			},
-			{
-				Time:    time.Now().Add(-7 * time.Minute).UnixMilli(),
-				Owner:   "human_002",
-				Message: "Quisque facilisis nisl nec ex feugiat, non tristique sem finibus.",
-			},
-			{
-				Time:    time.Now().Add(-5 * time.Minute).UnixMilli(),
-				Owner:   "human_001",
-				Message: "Sed hendrerit elementum lorem, vel interdum velit. Vestibulum rhoncus rhoncus mi, in efficitur elit. Duis imperdiet dictum erat, vel laoreet lorem hendrerit eu.",
-			},
-			{
-				Time:    time.Now().Add(-4 * time.Minute).UnixMilli(),
-				Owner:   "human_001",
-				Message: "Aenean lacinia porta dictum. Ut sed pulvinar purus, eget pretium tellus. In pretium finibus eros id pretium. Aliquam id interdum magna. Proin feugiat, turpis quis tincidunt elementum, neque justo efficitur elit, ac egestas ex lacus ac ante.",
-			},
-			{
-				Time:    time.Now().Add(-2 * time.Minute).UnixMilli(),
-				Owner:   "human_002",
-				Message: "Entendido. Proin sollicitudin mi ac arcu dictum, eleifend varius tellus ultrices.",
-			},
-			{
-				Time:    time.Now().Add(-1 * time.Minute).UnixMilli(),
-				Owner:   "human_001",
-				Message: "Donec id elit non mi porta gravida at eget metus. Nulli magna feugiat purus, ac porttitor elit sem id tellus. Aliquam erat volutpat.",
-			},
+			chat.NewMessageWithTimestamp(
+				"human_001",
+				"Lorem ipsum dolor sit amet, consectetur adipiscing elit?",
+				time.Now().Add(-15*time.Minute).UnixMilli(),
+			),
+			chat.NewMessageWithTimestamp(
+				"human_002",
+				"Morbi ac ex sit amet diam euismod vulputate ut eu leo.",
+				time.Now().Add(-14*time.Minute).UnixMilli(),
+			),
+			chat.NewMessageWithTimestamp(
+				"human_001",
+				"Ok.",
+				time.Now().Add(-12*time.Minute).UnixMilli(),
+			),
+			chat.NewMessageWithTimestamp(
+				"human_001",
+				"Nullam quis ante sodales, aliquet turpis ut, suscipit erat. Cras nec viverra dolor, non egestas erat. Vivamus ac pretium lectus. Proin id ligula scelerisque, condimentum elit sit amet, imperdiet magna.",
+				time.Now().Add(-10*time.Minute).UnixMilli(),
+			),
+			chat.NewMessageWithTimestamp(
+				"human_002",
+				"Wow! Nunc imperdiet, turpis vel dictum pretium, sem nibh sodales est, nec pulvinar diam leo ac augue.",
+				time.Now().Add(-8*time.Minute).UnixMilli(),
+			),
+			chat.NewMessageWithTimestamp(
+				"human_002",
+				"Quisque facilisis nisl nec ex feugiat, non tristique sem finibus.",
+				time.Now().Add(-7*time.Minute).UnixMilli(),
+			),
+			chat.NewMessageWithTimestamp(
+				"human_001",
+				"Sed hendrerit elementum lorem, vel interdum velit. Vestibulum rhoncus rhoncus mi, in efficitur elit. Duis imperdiet dictum erat, vel laoreet lorem hendrerit eu.",
+				time.Now().Add(-5*time.Minute).UnixMilli(),
+			),
+			chat.NewMessageWithTimestamp(
+				"human_001",
+				"Aenean lacinia porta dictum. Ut sed pulvinar purus, eget pretium tellus. In pretium finibus eros id pretium. Aliquam id interdum magna. Proin feugiat, turpis quis tincidunt elementum, neque justo efficitur elit, ac egestas ex lacus ac ante.",
+				time.Now().Add(-4*time.Minute).UnixMilli(),
+			),
+			chat.NewMessageWithTimestamp(
+				"human_002",
+				"Entendido. Proin sollicitudin mi ac arcu dictum, eleifend varius tellus ultrices.",
+				time.Now().Add(-2*time.Minute).UnixMilli(),
+			),
+			chat.NewMessageWithTimestamp(
+				"human_001",
+				"Donec id elit non mi porta gravida at eget metus. Nulli magna feugiat purus, ac porttitor elit sem id tellus. Aliquam erat volutpat.",
+				time.Now().Add(-1*time.Minute).UnixMilli(),
+			),
 		},
 	}
 }
@@ -266,11 +266,12 @@ func initMessagesService() *mockMessageService {
 	messages := make([]chat.Message, 500)
 
 	for i := range messages {
-		messages[i] = chat.Message{
-			Time:    0,
-			Owner:   users[r.Intn(len(users))],
-			Message: texts[r.Intn(len(texts))],
-		}
+
+		messages[i] = chat.NewMessageWithTimestamp(
+			users[r.Intn(len(users))],
+			texts[r.Intn(len(texts))],
+			0,
+		)
 	}
 
 	return &mockMessageService{
@@ -399,11 +400,9 @@ func onKeyEnter(service *mockTalkService) tick.Middleware {
 			context.Target.Name,
 		); ok {
 			service.chat = append(service.chat,
-				chat.Message{
-					Time:    time.Now().UnixMilli(),
-					Owner:   service.owner,
-					Message: string(state.Buffer),
-				},
+				chat.NewMessage(
+					service.owner, string(state.Buffer),
+				),
 			)
 		}
 
