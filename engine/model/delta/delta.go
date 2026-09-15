@@ -11,6 +11,14 @@ type Delta struct {
 	Text  string
 }
 
+func New(start, end offset.Offset, text string) Delta {
+	return Delta{
+		Start: start,
+		End:   end,
+		Text:  text,
+	}
+}
+
 func (d Delta) Measure() offset.Offset {
 	return runes.MeasureOffset(d.Text)
 }
