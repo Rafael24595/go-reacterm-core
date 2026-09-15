@@ -122,7 +122,7 @@ func (u *TalkUnit) makeLines(
 	ownerLines := wrap.Lines(
 		size.Cols.Sub(3),
 		line.FromFrags(
-			frag.FromString(message.Owner),
+			frag.FromString(message.Owner()),
 			frag.FromString(":"),
 		),
 	)
@@ -141,7 +141,7 @@ func (u *TalkUnit) makeLines(
 	messageLines := wrap.Lines(
 		size.Cols.Sub(5),
 		line.FromFrags(
-			frag.FromString(message.Message),
+			frag.FromString(message.Content()),
 		),
 	)
 

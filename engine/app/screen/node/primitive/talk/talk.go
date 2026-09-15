@@ -212,7 +212,7 @@ func (n *Talk) view(uiState state.UIState) viewmodel.ViewModel {
 		)
 
 		text := fmt.Sprintf(
-			"%d - %s", n.cursor, n.messages[index].Owner,
+			"%d - %s", n.cursor, n.messages[index].Owner(),
 		)
 
 		vm.Footer.Push(

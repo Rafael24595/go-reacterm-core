@@ -82,8 +82,8 @@ func (s *mockMessageService) randMessage() chat.Message {
 	message := s.messages[index]
 
 	return chat.NewMessage(
-		message.Owner,
-		message.Message,
+		message.Owner(),
+		message.Content(),
 	)
 }
 

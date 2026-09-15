@@ -5,9 +5,9 @@ import (
 )
 
 type Message struct {
-	Time    int64
-	Owner   string
-	Message string
+	timestamp int64
+	owner     string
+	content   string
 }
 
 func NewMessage(owner, content string) Message {
@@ -30,8 +30,20 @@ func NewMessageWithTimestamp(
 	timestamp int64,
 ) Message {
 	return Message{
-		Time:    timestamp,
-		Owner:   owner,
-		Message: content,
+		timestamp: timestamp,
+		owner:     owner,
+		content:   content,
 	}
+}
+
+func (m Message) Timestamp() int64 {
+	return m.timestamp
+}
+
+func (m Message) Owner() string {
+	return m.owner
+}
+
+func (m Message) Content() string {
+	return m.content
 }
