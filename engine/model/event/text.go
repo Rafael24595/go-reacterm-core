@@ -16,44 +16,6 @@ const expires_ms = 1000
 const event_limit = 200
 const action_limit = 2000
 
-type ActionKind int
-
-const (
-	Insert ActionKind = iota
-
-	DeleteBackward
-	DeleteForward
-
-	Cut
-	Paste
-)
-
-type textAction struct {
-	kind      ActionKind
-	start     offset.Offset
-	end       offset.Offset
-	delete    string
-	insert    string
-	timestamp int64
-}
-
-type mergeAction struct {
-	kind   ActionKind
-	origin offset.Offset
-	extent offset.Offset
-	probe  offset.Offset
-	delete []string
-	insert []string
-}
-
-func (m *mergeAction) len() offset.Offset {
-	var n offset.Offset
-	for _, t := range m.insert {
-		n += runes.MeasureOffset(t)
-	}
-	return n
-}
-
 type textEvent struct {
 	start  offset.Offset
 	insert string
