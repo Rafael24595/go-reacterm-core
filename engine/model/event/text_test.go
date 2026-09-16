@@ -223,6 +223,18 @@ func TestShouldFlush_NoActions(t *testing.T) {
 	assert.False(t, ok)
 }
 
+func TestShouldFlush_ExceedsActionLimit(t *testing.T) {
+	svc := NewTextEventService()
+
+	for i := range 2000 {
+		svc.PushEvent(Insert, offset.Offset(i), offset.Offset(i), "", "a")
+	}
+
+	ok := svc.shouldFlush(Insert, "b")
+
+	assert.True(t, ok)
+}
+
 func TestShouldFlush_SameAction_NoSpace_NotExpired(t *testing.T) {
 	s := NewTextEventService()
 
