@@ -22,6 +22,7 @@ type textEvent struct {
 	delete string
 }
 
+// TextEventService manages user text actions, grouping them into events for undo/redo history.
 type TextEventService struct {
 	clock   clock.Clock
 	actions []textAction
@@ -29,10 +30,12 @@ type TextEventService struct {
 	cursor  int
 }
 
+// NewTextEventService initializes a new service with default system clock.
 func NewTextEventService() *TextEventService {
 	return NewTextEventServiceWithClock(clock.UnixMilliClock)
 }
 
+// NewTextEventServiceWithClock initializes a service with a custom clock provider.
 func NewTextEventServiceWithClock(clk clock.Clock) *TextEventService {
 	return &TextEventService{
 		clock:   clk,
@@ -41,6 +44,7 @@ func NewTextEventServiceWithClock(clk clock.Clock) *TextEventService {
 	}
 }
 
+// PushEvent records a new text action, potentially flushing and merging previous actions into events.
 func (s *TextEventService) PushEvent(
 	action ActionKind,
 	start, end offset.Offset,
@@ -87,6 +91,7 @@ func (s *TextEventService) shouldFlush(action ActionKind, text string) bool {
 	return elapsed >= expiresMS
 }
 
+// Undo reverts the most recent text event, returning a delta representing the change.
 func (s *TextEventService) Undo() *delta.Delta {
 	s.flushAndLimit()
 
@@ -105,6 +110,7 @@ func (s *TextEventService) Undo() *delta.Delta {
 	}
 }
 
+// Redo reapplies the next text event, returning a delta representing the change.
 func (s *TextEventService) Redo() *delta.Delta {
 	s.flushAndLimit()
 
