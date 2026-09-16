@@ -290,7 +290,7 @@ func TestShouldFlush_Expired(t *testing.T) {
 	s.actions = []textAction{
 		{
 			kind:      Insert,
-			timestamp: time.Now().UnixMilli() - expires_ms - 1,
+			timestamp: time.Now().UnixMilli() - expiresMS - 1,
 		},
 	}
 
@@ -336,7 +336,7 @@ func TestPushEvent_FlushOnExpire(t *testing.T) {
 		{
 			kind:      Insert,
 			insert:    "a",
-			timestamp: time.Now().UnixMilli() - expires_ms - 1,
+			timestamp: time.Now().UnixMilli() - expiresMS - 1,
 		},
 	}
 
@@ -364,7 +364,7 @@ func TestPushEvent_Typing(t *testing.T) {
 
 	for _, v := range "Zig" {
 		s.PushEvent(Insert, i, i, "", string(v))
-		clock.Advance(expires_ms + 1)
+		clock.Advance(expiresMS + 1)
 		i++
 	}
 
@@ -395,7 +395,7 @@ func TestPushEvent_UndoAndRedo(t *testing.T) {
 	s.PushEvent(Insert, i, i, "", " ")
 	i++
 
-	clock.Advance(expires_ms + 1)
+	clock.Advance(expiresMS + 1)
 
 	for _, v := range "Zig" {
 		s.PushEvent(Insert, i, i, "", string(v))
@@ -433,7 +433,7 @@ func TestPushEvent_UndoRedoTruncateHistory(t *testing.T) {
 		i++
 	}
 
-	clock.Advance(expires_ms + 1)
+	clock.Advance(expiresMS + 1)
 	for _, v := range "Zig" {
 		s.PushEvent(Insert, i, i, "", string(v))
 		clock.Advance(100)
@@ -503,7 +503,7 @@ func TestShouldFlush_Expired_WithClock(t *testing.T) {
 	s.actions = []textAction{
 		{
 			kind:      Insert,
-			timestamp: 1000 - expires_ms - 1,
+			timestamp: 1000 - expiresMS - 1,
 		},
 	}
 
@@ -515,7 +515,7 @@ func TestShouldFlush_Expired_WithClock(t *testing.T) {
 func TestTextEventService_LimitLogic(t *testing.T) {
 	s := NewTextEventService()
 
-	totalPush := event_limit + 50
+	totalPush := eventLimit + 50
 	for i := range totalPush {
 		content := fmt.Sprintf("%d", i)
 		s.events = append(s.events, textEvent{
@@ -528,8 +528,8 @@ func TestTextEventService_LimitLogic(t *testing.T) {
 
 	s.limitEvents()
 
-	assert.Size(t, event_limit, s.events)
-	assert.Equal(t, event_limit, s.cursor)
+	assert.Size(t, eventLimit, s.events)
+	assert.Equal(t, eventLimit, s.cursor)
 	assert.Equal(t, "50", s.events[0].delete)
 
 	undoResult := s.Undo()
@@ -540,13 +540,13 @@ func TestTextEventService_LimitLogic(t *testing.T) {
 func TestTextEventService_LimitLogicWithPush(t *testing.T) {
 	s := NewTextEventService()
 
-	for i := range event_limit + 50 {
+	for i := range eventLimit + 50 {
 		content := fmt.Sprintf("%d", i)
 		s.PushEvent(Insert, offset.Offset(i), offset.Offset(i), content, " ")
 	}
 
-	assert.Size(t, event_limit, s.events)
-	assert.Equal(t, event_limit, s.cursor)
+	assert.Size(t, eventLimit, s.events)
+	assert.Equal(t, eventLimit, s.cursor)
 	assert.Equal(t, "49", s.events[0].delete)
 
 	undoResult := s.Undo()
@@ -557,7 +557,7 @@ func TestTextEventService_LimitLogicWithPush(t *testing.T) {
 func TestLimitWithCursorAtZero(t *testing.T) {
 	s := NewTextEventService()
 
-	for i := range event_limit {
+	for i := range eventLimit {
 		s.events = append(s.events, textEvent{
 			delete: fmt.Sprintf("%d", i)},
 		)
@@ -565,7 +565,7 @@ func TestLimitWithCursorAtZero(t *testing.T) {
 		s.cursor++
 	}
 
-	for range event_limit {
+	for range eventLimit {
 		s.Undo()
 	}
 

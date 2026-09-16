@@ -11,10 +11,10 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/platform/clock"
 )
 
-const expires_ms = 1000
+const expiresMS = 1000
 
-const event_limit = 200
-const action_limit = 2000
+const eventLimit = 200
+const actionLimit = 2000
 
 type textEvent struct {
 	start  offset.Offset
@@ -30,11 +30,121 @@ type TextEventService struct {
 }
 
 func NewTextEventService() *TextEventService {
+	return NewTextEventServiceWithClock(clock.UnixMilliClock)
+}
+
+func NewTextEventServiceWithClock(clk clock.Clock) *TextEventService {
 	return &TextEventService{
-		clock:   clock.UnixMilliClock,
+		clock:   clk,
 		actions: make([]textAction, 0),
-		events:  make([]textEvent, 0, event_limit),
+		events:  make([]textEvent, 0, eventLimit),
 	}
+}
+
+func (s *TextEventService) PushEvent(
+	action ActionKind,
+	start, end offset.Offset,
+	delete, insert string,
+) {
+	s.events = s.events[:s.cursor]
+
+	if s.shouldFlush(action, insert) {
+		s.flushAndLimit()
+	}
+
+	now := s.clock()
+
+	s.actions = append(s.actions, textAction{
+		kind:      action,
+		start:     start,
+		end:       end,
+		delete:    delete,
+		insert:    insert,
+		timestamp: now,
+	})
+}
+
+func (s *TextEventService) shouldFlush(action ActionKind, text string) bool {
+	actionsLen := len(s.actions)
+	if actionsLen == 0 {
+		return false
+	}
+
+	if actionsLen >= actionLimit {
+		return true
+	}
+
+	if strings.ContainsAny(text, " \n") {
+		return true
+	}
+
+	last := s.actions[actionsLen-1]
+	if last.kind != action {
+		return true
+	}
+
+	elapsed := s.clock() - last.timestamp
+	return elapsed >= expiresMS
+}
+
+func (s *TextEventService) Undo() *delta.Delta {
+	s.flushAndLimit()
+
+	if len(s.events) == 0 || s.cursor == 0 {
+		return nil
+	}
+
+	s.decrementCursor()
+
+	event := s.events[s.cursor]
+
+	return &delta.Delta{
+		Start: event.start,
+		End:   event.start + runes.MeasureOffset(event.insert),
+		Text:  event.delete,
+	}
+}
+
+func (s *TextEventService) Redo() *delta.Delta {
+	s.flushAndLimit()
+
+	if len(s.events) == 0 || s.cursor >= len(s.events) {
+		return nil
+	}
+
+	event := s.events[s.cursor]
+
+	s.incrementCursor()
+
+	return &delta.Delta{
+		Start: event.start,
+		End:   event.start + runes.MeasureOffset(event.delete),
+		Text:  event.insert,
+	}
+}
+
+func (s *TextEventService) incrementCursor() {
+	s.cursor = min(len(s.events), s.cursor+1)
+}
+
+func (s *TextEventService) decrementCursor() {
+	s.cursor = max(0, s.cursor-1)
+}
+
+func (s *TextEventService) flushAndLimit() {
+	s.flushActions()
+	s.limitEvents()
+}
+
+func (s *TextEventService) flushActions() {
+	if len(s.actions) == 0 {
+		return
+	}
+
+	events := s.mergeActions(s.actions)
+	s.events = append(s.events, events...)
+	s.cursor = len(s.events)
+	s.actions = nil
 }
 
 func (s *TextEventService) mergeActions(actions []textAction) []textEvent {
@@ -125,121 +235,14 @@ func (s *TextEventService) forgeEvent(action mergeAction) textEvent {
 	}
 }
 
-func (s *TextEventService) PushEvent(
-	action ActionKind,
-	start offset.Offset,
-	end offset.Offset,
-	delete, insert string,
-) {
-	s.events = s.events[:s.cursor]
-
-	if s.shouldFlush(action, insert) {
-		s.flushAndLimit()
-	}
-
-	now := s.clock()
-
-	s.actions = append(s.actions, textAction{
-		kind:      action,
-		start:     start,
-		end:       end,
-		delete:    delete,
-		insert:    insert,
-		timestamp: now,
-	})
-}
-
-func (s *TextEventService) Undo() *delta.Delta {
-	s.flushAndLimit()
-
-	if len(s.events) == 0 || s.cursor == 0 {
-		return nil
-	}
-
-	s.decrementCursor()
-
-	event := s.events[s.cursor]
-
-	return &delta.Delta{
-		Start: event.start,
-		End:   event.start + runes.MeasureOffset(event.insert),
-		Text:  event.delete,
-	}
-}
-
-func (s *TextEventService) Redo() *delta.Delta {
-	s.flushAndLimit()
-
-	if len(s.events) == 0 || s.cursor >= len(s.events) {
-		return nil
-	}
-
-	event := s.events[s.cursor]
-
-	s.incrementCursor()
-
-	return &delta.Delta{
-		Start: event.start,
-		End:   event.start + runes.MeasureOffset(event.delete),
-		Text:  event.insert,
-	}
-}
-
-func (s *TextEventService) incrementCursor() {
-	s.cursor = min(len(s.events), s.cursor+1)
-}
-
-func (s *TextEventService) decrementCursor() {
-	s.cursor = max(0, s.cursor-1)
-}
-
-func (s *TextEventService) flushAndLimit() {
-	s.flushActions()
-	s.limitEvents()
-}
-
-func (s *TextEventService) flushActions() {
-	if len(s.actions) == 0 {
-		return
-	}
-
-	events := s.mergeActions(s.actions)
-	s.events = append(s.events, events...)
-	s.cursor = len(s.events)
-	s.actions = nil
-}
-
-func (s *TextEventService) shouldFlush(action ActionKind, text string) bool {
-	actionsLen := len(s.actions)
-	if actionsLen == 0 {
-		return false
-	}
-
-	if actionsLen >= actionLimit {
-		return true
-	}
-
-	if strings.ContainsAny(text, " \n") {
-		return true
-	}
-
-	last := s.actions[actionsLen-1]
-	if last.kind != action {
-		return true
-	}
-
-	elapsed := s.clock() - last.timestamp
-	return elapsed >= expiresMS
-}
-
 func (s *TextEventService) limitEvents() {
-	if len(s.events) <= event_limit {
+	if len(s.events) <= eventLimit {
 		return
 	}
 
-	buff := make([]textEvent, event_limit)
+	buff := make([]textEvent, eventLimit)
 
-	excess := len(s.events) - event_limit
+	excess := len(s.events) - eventLimit
 	copy(buff, s.events[excess:])
 
 	s.events = buff
