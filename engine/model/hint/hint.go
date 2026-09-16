@@ -35,6 +35,11 @@ func Maximize[T math.Number]() Size[T] {
 }
 
 func (h Size[T]) Min(max T) T {
+	if h.provider == nil {
+		assert.Unreachable("the size provider cannot be nil")
+		return 0
+	}
+
 	return min(
 		h.provider(max), max,
 	)
