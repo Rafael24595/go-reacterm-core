@@ -46,7 +46,7 @@ func New[T any]() *Table[T] {
 		loaded:     false,
 		bindings:   defaultBindings,
 		definition: rw.EmptyDefinition(),
-		action:     input.NewTableAction(),
+		action:     input.DefaultTableAction(),
 		table:      table.NewTable(),
 		cursor:     input.NewMatrixCursor(0, 0, false),
 		positionY:  style.Middle,
@@ -80,12 +80,12 @@ func (n *Table[T]) WithReadBindings(overrides *keymap.Bindings[CommandRead]) *Ta
 }
 
 func (n *Table[T]) EnableAction() *Table[T] {
-	n.action.EnableMode = true
+	n.action.EnableNavigation()
 	return n
 }
 
 func (n *Table[T]) DisableAction() *Table[T] {
-	n.action.EnableMode = false
+	n.action.DisableNavigation()
 	return n
 }
 
@@ -95,7 +95,7 @@ func (n *Table[T]) SetActionHandler(handler input.TableActionHandler) *Table[T] 
 		return n
 	}
 
-	n.action.Handler = handler
+	n.action.WithHandler(handler)
 	return n
 }
 
@@ -179,20 +179,20 @@ func (n *Table[T]) loadFromStore(uiState state.UIState) {
 }
 
 func (n *Table[T]) keys() screen.Definition {
-	if !n.action.EnableMode {
+	if !n.action.IsNavigable() {
 		return screen.EmptyDefinition()
 	}
-	return n.definition.Get(n.action.WriteMode)
+	return n.definition.Get(n.action.InEditMode())
 }
 
 func (n *Table[T]) tick(uiState *state.UIState, event screen.Event) screen.Result {
 	uiState.Pager.ForceShow = true
 
-	if !n.action.EnableMode {
+	if !n.action.IsNavigable() {
 		return screen.ResultFromUIState(uiState)
 	}
 
-	if !n.action.WriteMode {
+	if !n.action.InEditMode() {
 		return n.tickRead(uiState, event)
 	}
 	return n.tickWrite(uiState, event)
@@ -201,8 +201,8 @@ func (n *Table[T]) tick(uiState *state.UIState, event screen.Event) screen.Resul
 func (n *Table[T]) tickWrite(uiState *state.UIState, event screen.Event) screen.Result {
 	switch n.bindings.Write.Command(event.Key.Code) {
 	case CmdWriteReadMode:
-		n.action.WriteMode = false
-		n.cursor.Show = n.action.WriteMode
+		n.action.AsView()
+		n.cursor.Show = n.action.InEditMode()
 	case CmdWriteMoveLeft:
 		n.cursor.DecCol()
 		n.tickToStore(uiState)
@@ -227,8 +227,8 @@ func (n *Table[T]) tickWrite(uiState *state.UIState, event screen.Event) screen.
 func (n *Table[T]) tickRead(uiState *state.UIState, event screen.Event) screen.Result {
 	switch n.bindings.Read.Command(event.Key.Code) {
 	case CmdReadWriteMode:
-		n.action.WriteMode = true
-		n.cursor.Show = n.action.WriteMode
+		n.action.AsEdit()
+		n.cursor.Show = n.action.InEditMode()
 	}
 
 	return screen.ResultFromUIState(uiState)
@@ -268,7 +268,7 @@ func (n *Table[T]) view(uiState state.UIState) viewmodel.ViewModel {
 	vm.Kernel.Push(position)
 
 	preficate := rule.OnPage()
-	if n.action.EnableMode && n.action.WriteMode {
+	if n.action.IsNavigable() && n.action.InEditMode() {
 		preficate = rule.OnFocus()
 
 		cell, _ := n.table.FindCellByCoords(n.cursor.Row, n.cursor.Col)
