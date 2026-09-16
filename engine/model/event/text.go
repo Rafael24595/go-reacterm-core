@@ -248,25 +248,26 @@ func (s *TextEventService) flushActions() {
 }
 
 func (s *TextEventService) shouldFlush(action ActionKind, text string) bool {
-	if len(s.actions) > action_limit {
+	actionsLen := len(s.actions)
+	if actionsLen == 0 {
 		return false
 	}
 
-	if len(s.actions) == 0 {
-		return false
+	if actionsLen >= actionLimit {
+		return true
 	}
 
 	if strings.ContainsAny(text, " \n") {
 		return true
 	}
 
-	last := s.actions[len(s.actions)-1]
+	last := s.actions[actionsLen-1]
 	if last.kind != action {
 		return true
 	}
 
-	time := s.clock() - last.timestamp
-	return time >= expires_ms
+	elapsed := s.clock() - last.timestamp
+	return elapsed >= expiresMS
 }
 
 func (s *TextEventService) limitEvents() {
