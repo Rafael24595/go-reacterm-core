@@ -45,7 +45,7 @@ func New() *CheckMenu {
 		bindings:   defaultBindings,
 		definition: rw.EmptyDefinition(),
 		clock:      clock.UnixMilliClock,
-		action:     input.EmptyCheckAction(),
+		action:     input.DefaultCheckAction(),
 		meta:       marker.BracketsCheck,
 		options:    make([]input.CheckOption, 0),
 		limit:      0,
@@ -94,7 +94,7 @@ func (n *CheckMenu) ActionHandler(handler input.CheckActionHandler) *CheckMenu {
 		return n
 	}
 
-	n.action.Handler = handler
+	n.action.WithHandler(handler)
 	return n
 }
 
@@ -165,11 +165,11 @@ func (n *CheckMenu) loadFromStore(uiState state.UIState) {
 }
 
 func (n *CheckMenu) keys() screen.Definition {
-	return n.definition.Get(n.action.WriteMode)
+	return n.definition.Get(n.action.InEditMode())
 }
 
 func (n *CheckMenu) tick(uiState *state.UIState, event screen.Event) screen.Result {
-	if !n.action.WriteMode {
+	if !n.action.InEditMode() {
 		return n.tickRead(uiState, event)
 	}
 	return n.tickWrite(uiState, event)
@@ -180,7 +180,7 @@ func (n *CheckMenu) tickWrite(uiState *state.UIState, event screen.Event) screen
 
 	switch n.bindings.Write.Command(event.Key.Code) {
 	case CmdWriteReadMode:
-		n.action.WriteMode = false
+		n.action.AsView()
 	case CmdWriteSwitchState:
 		n.switchState(n.cursor)
 		n.applyLimit()
@@ -211,7 +211,7 @@ func (n *CheckMenu) tickToStore(uiState *state.UIState) {
 func (n *CheckMenu) tickRead(uiState *state.UIState, event screen.Event) screen.Result {
 	switch n.bindings.Read.Command(event.Key.Code) {
 	case CmdReadWriteMode:
-		n.action.WriteMode = true
+		n.action.AsEdit()
 	}
 
 	return screen.ResultFromUIState(uiState)
@@ -280,7 +280,7 @@ func (n *CheckMenu) view(uiState state.UIState) viewmodel.ViewModel {
 	n.loadFromStore(uiState)
 
 	indexmenu := checkmenu.New(n.options).
-		WriteMode(n.action.WriteMode).
+		WriteMode(n.action.InEditMode()).
 		Meta(n.meta).
 		Cursor(n.cursor)
 
