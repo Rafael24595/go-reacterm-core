@@ -28,7 +28,7 @@ func TestTextAreaUnit_ResolveFrags(t *testing.T) {
 		resolveFrags()
 
 	assert.Size(t, 1, got)
-	assert.Equal(t, string(text), text_test.FragsToString(got))
+	assert.Equal(t, string(text), text_test.FragsToString(got...))
 }
 
 func TestTextAreaUnit_ResolveFrags_WithEmptyBuffer(t *testing.T) {
@@ -42,7 +42,7 @@ func TestTextAreaUnit_ResolveFrags_WithEmptyBuffer(t *testing.T) {
 			resolveFrags()
 
 		assert.Size(t, 1, got)
-		assert.Equal(t, marker.DefaultPaddingText, text_test.FragsToString(got))
+		assert.Equal(t, marker.DefaultPaddingText, text_test.FragsToString(got...))
 	})
 
 	t.Run("uses placeholder when buffer is empty and placeholder is present", func(t *testing.T) {
@@ -58,7 +58,7 @@ func TestTextAreaUnit_ResolveFrags_WithEmptyBuffer(t *testing.T) {
 
 		assert.Size(t, 1, got)
 		assert.True(t, got[0].Atom().HasAny(atom.Dim))
-		assert.Equal(t, placeholder, text_test.FragsToString(got))
+		assert.Equal(t, placeholder, text_test.FragsToString(got...))
 	})
 
 	t.Run("ignores placeholder when buffer contains text", func(t *testing.T) {
@@ -74,6 +74,6 @@ func TestTextAreaUnit_ResolveFrags_WithEmptyBuffer(t *testing.T) {
 
 		assert.Size(t, 1, got)
 		assert.False(t, got[0].Atom().HasAny(atom.Dim))
-		assert.Equal(t, string(text), text_test.FragsToString(got))
+		assert.Equal(t, string(text), text_test.FragsToString(got...))
 	})
 }

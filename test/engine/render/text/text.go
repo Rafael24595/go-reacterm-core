@@ -7,7 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-func FragsToString(frags []frag.Frag) string {
+func FragsToString(frags ...frag.Frag) string {
 	var s strings.Builder
 	for _, f := range frags {
 		s.WriteString(f.Text())
@@ -16,5 +16,5 @@ func FragsToString(frags []frag.Frag) string {
 }
 
 func LineToString(line line.Line) string {
-	return FragsToString(line.Slice())
+	return FragsToString(line.Slice()...)
 }
