@@ -116,7 +116,7 @@ func (n *IndexMenu) loadFromStore(uiState state.UIState) {
 	}
 
 	for i, o := range n.options {
-		if o.Id == option {
+		if o.Id() == option {
 			n.cursor = uint16(i)
 			break
 		}
@@ -168,14 +168,16 @@ func (n *IndexMenu) tickToStore(uiState *state.UIState) {
 	KeyState.Set(
 		uiState.Store,
 		n.reference,
-		n.options[n.cursor].Id,
+		n.options[n.cursor].Id(),
 	)
 }
 
 func (n *IndexMenu) actionEnter() screen.Result {
-	return screen.ResultFromNode(
-		n.options[n.cursor].Action(),
-	)
+	node, ok := n.options[n.cursor].Exec()
+	if !ok {
+		return screen.EmptyResult()
+	}
+	return screen.ResultFromNode(node)
 }
 
 func (n *IndexMenu) view(uiState state.UIState) viewmodel.ViewModel {
@@ -198,7 +200,7 @@ func (n *IndexMenu) view(uiState state.UIState) viewmodel.ViewModel {
 
 	index := math.SubClampZeroAs[int, uint16](len(n.options), 1)
 	option := min(index, n.cursor)
-	text := n.options[option].Label.Text()
+	text := n.options[option].Label().Text()
 
 	vm.Footer.Push(
 		inputline.FromString(text),

@@ -9,32 +9,41 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 )
 
-type MenuOptionAction = func() screen.Node
+type MenuOptionHandler = func() screen.Node
 
 type MenuOption struct {
-	Id     string
-	Label  frag.Frag
-	Action MenuOptionAction
+	id      string
+	label   frag.Frag
+	handler MenuOptionHandler
 }
 
-func NewMenuOption(id string, option frag.Frag) MenuOption {
+func NewMenuOption(id string, label frag.Frag) MenuOption {
 	return MenuOption{
-		Id:     id,
-		Label:  option,
+		id:    id,
+		label: label,
 	}
 }
-func (o MenuOption) WithAction(action MenuOptionAction) MenuOption {
-	if action == nil {
+
+func (o MenuOption) WithHandler(handler MenuOptionHandler) MenuOption {
+	if handler == nil {
 		return o
 	}
 
-	o.Action = action
+	o.handler = handler
 	return o
 }
 
+func (o MenuOption) Id() string {
+	return o.id
+}
+
+func (o MenuOption) Label() frag.Frag {
+	return o.label
+}
+
 func (o MenuOption) Exec() (screen.Node, bool) {
-	if o.Action != nil {
-		return o.Action(), true
+	if o.handler != nil {
+		return o.handler(), true
 	}
 	return screen.Node{}, false
 }
@@ -53,14 +62,14 @@ func NormalizeMenuOptions(options ...MenuOption) []MenuOption {
 
 	for i, o := range options {
 		index := uint(1)
-		if cacheIndex, ok := cache[o.Id]; ok {
-			assert.Unreachable("option id '%s' is duplicated", o.Id)
+		if cacheIndex, ok := cache[o.id]; ok {
+			assert.Unreachable("option id '%s' is duplicated", o.id)
 
-			o.Id = fmt.Sprintf("%s_%d", o.Id, cacheIndex)
+			o.id = fmt.Sprintf("%s_%d", o.id, cacheIndex)
 			index = cacheIndex + 1
 		}
 
-		cache[options[i].Id] = index
+		cache[o.id] = index
 		normalized[i] = o
 	}
 
