@@ -54,6 +54,17 @@ func SubClampZero[T Number](a, b T) T {
 	return a - b
 }
 
+// AddClampLimit adds a and b, returning limit if the result would exceed limit.
+func AddClampLimit[T Number](a, b, limit T) T {
+	if a >= limit {
+		return limit
+	}
+	if b > limit-a {
+		return limit
+	}
+	return a + b
+}
+
 // SubClampZeroAs subtracts b from a (clamped to zero) and casts the result to type K.
 func SubClampZeroAs[T Number, K Number](a, b T) K {
 	return K(SubClampZero(a, b))

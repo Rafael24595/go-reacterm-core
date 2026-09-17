@@ -29,6 +29,15 @@ func TestSubClampZero(t *testing.T) {
 	assert.Equal(t, 5, SubClampZero(10, 5))
 }
 
+func TestAddClampLimit(t *testing.T) {
+	assert.Equal(t, 15, AddClampLimit(10, 5, 20))
+	assert.Equal(t, 20, AddClampLimit(15, 10, 20))
+	assert.Equal(t, 20, AddClampLimit(25, 5, 20))
+
+	assert.Equal(t, 200, AddClampLimit(uint8(200), uint8(100), uint8(200)))
+	assert.Equal(t, 255, AddClampLimit(uint8(200), uint8(100), uint8(255)))
+}
+
 func TestDigits(t *testing.T) {
 	assert.Equal(t, 1, Digits(0))
 	assert.Equal(t, 1, Digits(7))
