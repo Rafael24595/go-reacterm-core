@@ -34,12 +34,14 @@ func TestIndexMenu_ToNode(t *testing.T) {
 }
 
 func TestIndexMenu_Boot(t *testing.T) {
+	frg := frag.Empty()
+
 	menu := New().
 		AddOptions(
-			input.MenuOption{Id: "4"},
-			input.MenuOption{Id: "3"},
-			input.MenuOption{Id: "2"},
-			input.MenuOption{Id: "1"},
+			input.NewMenuOption("4", frg),
+			input.NewMenuOption("3", frg),
+			input.NewMenuOption("2", frg),
+			input.NewMenuOption("1", frg),
 		)
 	node := menu.ToNode()
 
