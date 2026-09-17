@@ -172,7 +172,7 @@ func (n *ModalMenu) view(uiState state.UIState) viewmodel.ViewModel {
 
 	n.loadFromStore(uiState)
 
-	frags := input.FragsFromMenuOption(n.options...)
+	frags := input.ExtractMenuOptionLabels(n.options...)
 
 	modal := modal.New().
 		AddText(n.text...).

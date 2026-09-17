@@ -39,6 +39,14 @@ func (o MenuOption) Exec() (screen.Node, bool) {
 	return screen.Node{}, false
 }
 
+func ExtractMenuOptionLabels(options ...MenuOption) []frag.Frag {
+	lines := make([]frag.Frag, len(options))
+	for i := range options {
+		lines[i] = options[i].label
+	}
+	return lines
+}
+
 func NormalizeMenuOptions(options ...MenuOption) []MenuOption {
 	normalized := make([]MenuOption, len(options))
 	cache := make(map[string]uint)

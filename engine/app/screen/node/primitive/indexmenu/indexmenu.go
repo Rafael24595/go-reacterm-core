@@ -183,7 +183,7 @@ func (n *IndexMenu) view(uiState state.UIState) viewmodel.ViewModel {
 
 	n.loadFromStore(uiState)
 
-	frags := input.FragsFromMenuOption(n.options...)
+	frags := input.ExtractMenuOptionLabels(n.options...)
 
 	pointer := indexmenu.FindPointer(n.pointer)
 
