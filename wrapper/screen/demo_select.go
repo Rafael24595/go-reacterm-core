@@ -23,18 +23,18 @@ func NewDemoSelect() screen.Node {
 		line.TextSpec("-", spec.Fill(sizeTitle)),
 	}
 
-	options := input.NewMenuOptions(
-		input.NewMenuOption("opt_art", frag.FromString("[Prim] Option Article"), NewDemoArticle),
-		input.NewMenuOption("opt_txt", frag.FromString("[Prim] Option TextArea"), NewDemoTextArea),
-		input.NewMenuOption("opt_tbl", frag.FromString("[Prim] Option Table"), NewDemoTable),
-		input.NewMenuOption("opt_mdl", frag.FromString("[Prim] Option Modal"), NewDemoModal),
-		input.NewMenuOption("opt_chk", frag.FromString("[Prim] Option Check"), NewDemoCheck),
-		input.NewMenuOption("opt_txi", frag.FromString("[Prim] Option TextInput"), NewDemoTextInput),
-		input.NewMenuOption("opt_tlk", frag.FromString("[Prim] Option Talk"), NewDemoTalk),
-		input.NewMenuOption("opt_clp", frag.FromString("[Prim] Option Clip"), NewDemoClip),
-		input.NewMenuOption("opt_frm", frag.FromString("[Comp] Option Form"), NewDemoForm),
-		input.NewMenuOption("opt_hsk", frag.FromString("[Demo] Option HStack"), NewDemoHStack),
-	)
+	options := []input.MenuOption{
+		input.NewMenuOption("opt_art", frag.FromString("[Prim] Option Article")).WithHandler(NewDemoArticle),
+		input.NewMenuOption("opt_txt", frag.FromString("[Prim] Option TextArea")).WithHandler(NewDemoTextArea),
+		input.NewMenuOption("opt_tbl", frag.FromString("[Prim] Option Table")).WithHandler(NewDemoTable),
+		input.NewMenuOption("opt_mdl", frag.FromString("[Prim] Option Modal")).WithHandler(NewDemoModal),
+		input.NewMenuOption("opt_chk", frag.FromString("[Prim] Option Check")).WithHandler(NewDemoCheck),
+		input.NewMenuOption("opt_txi", frag.FromString("[Prim] Option TextInput")).WithHandler(NewDemoTextInput),
+		input.NewMenuOption("opt_tlk", frag.FromString("[Prim] Option Talk")).WithHandler(NewDemoTalk),
+		input.NewMenuOption("opt_clp", frag.FromString("[Prim] Option Clip")).WithHandler(NewDemoClip),
+		input.NewMenuOption("opt_frm", frag.FromString("[Comp] Option Form")).WithHandler(NewDemoForm),
+		input.NewMenuOption("opt_hsk", frag.FromString("[Demo] Option HStack")).WithHandler(NewDemoHStack),
+	}
 
 	optsSize := len(options)
 
@@ -43,6 +43,7 @@ func NewDemoSelect() screen.Node {
 			input.NewMenuOption(
 				fmt.Sprintf("opt_%d", i),
 				frag.FromString(fmt.Sprintf("Option %d", i+1+optsSize)),
+			).WithHandler(
 				NewDemoTextArea,
 			),
 		)

@@ -16,10 +16,10 @@ func NewDemoModal() screen.Node {
 			line.Empty(),
 		).
 		AddOptions([]input.MenuOption{
-			input.NewMenuOption("1", frag.FromString("Option_1"), NewDemoSelect),
-			input.NewMenuOption("2", frag.FromString("Option_2"), NewDemoSelect),
-			input.NewMenuOption("3", frag.FromString("Option_3"), NewDemoSelect),
-			input.NewMenuOption("4", frag.FromString("Option_4"), NewDemoSelect),
+			input.NewMenuOption("1", frag.FromString("Option_1")).WithHandler(NewDemoSelect),
+			input.NewMenuOption("2", frag.FromString("Option_2")).WithHandler(NewDemoSelect),
+			input.NewMenuOption("3", frag.FromString("Option_3")).WithHandler(NewDemoSelect),
+			input.NewMenuOption("4", frag.FromString("Option_4")).WithHandler(NewDemoSelect),
 		}...).
 		ToNode()
 }

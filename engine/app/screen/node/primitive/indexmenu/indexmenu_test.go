@@ -17,8 +17,6 @@ import (
 	text_test "github.com/Rafael24595/go-reacterm-core/test/engine/render/text"
 )
 
-func voidAction() screen.Node { return screen.Node{} }
-
 func TestIndexMenu_ToNode(t *testing.T) {
 	node := New().
 		SetName("base").
@@ -26,7 +24,6 @@ func TestIndexMenu_ToNode(t *testing.T) {
 			input.NewMenuOption(
 				"opt_1",
 				frag.FromString("Option 1"),
-				voidAction,
 			),
 		).
 		ToNode()
@@ -82,12 +79,10 @@ func TestIndexMenu_AddTitleAndOptions(t *testing.T) {
 			input.NewMenuOption(
 				"opt_1",
 				frag.FromString("Option 1"),
-				voidAction,
 			),
 			input.NewMenuOption(
 				"opt_2",
 				frag.FromString("Option 2"),
-				voidAction,
 			),
 		)
 
@@ -100,12 +95,10 @@ func TestIndexMenu_SetCursor_Clamp(t *testing.T) {
 			input.NewMenuOption(
 				"opt_a",
 				frag.FromString("A"),
-				voidAction,
 			),
 			input.NewMenuOption(
 				"opt_b",
 				frag.FromString("B"),
-				voidAction,
 			),
 		)
 
@@ -129,12 +122,10 @@ func TestIndexMenu_CursorNavigation(t *testing.T) {
 			input.NewMenuOption(
 				"opt_a",
 				frag.FromString("A"),
-				voidAction,
 			),
 			input.NewMenuOption(
 				"opt_b",
 				frag.FromString("B"),
-				voidAction,
 			),
 		)
 
@@ -166,6 +157,7 @@ func TestIndexMenu_Action(t *testing.T) {
 			input.NewMenuOption(
 				"opt_go",
 				frag.FromString("Go"),
+			).WithHandler(
 				func() screen.Node { return expected },
 			),
 		)
@@ -186,12 +178,10 @@ func TestIndexMenu_ViewCursor(t *testing.T) {
 			input.NewMenuOption(
 				"opt_a",
 				frag.FromString("A"),
-				voidAction,
 			),
 			input.NewMenuOption(
 				"opt_b",
 				frag.FromString("B"),
-				voidAction,
 			),
 		)
 

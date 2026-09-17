@@ -17,24 +17,26 @@ type MenuOption struct {
 	Action MenuOptionAction
 }
 
-func NewMenuOption(id string, option frag.Frag, action MenuOptionAction) MenuOption {
+func NewMenuOption(id string, option frag.Frag) MenuOption {
 	return MenuOption{
 		Id:     id,
 		Label:  option,
-		Action: action,
 	}
 }
+func (o MenuOption) WithAction(action MenuOptionAction) MenuOption {
+	if action == nil {
+		return o
+	}
 
-func NewMenuOptions(options ...MenuOption) []MenuOption {
-	return options
+	o.Action = action
+	return o
 }
 
-func FragsFromMenuOption(options ...MenuOption) []frag.Frag {
-	lines := make([]frag.Frag, len(options))
-	for i := range options {
-		lines[i] = options[i].Label
+func (o MenuOption) Exec() (screen.Node, bool) {
+	if o.Action != nil {
+		return o.Action(), true
 	}
-	return lines
+	return screen.Node{}, false
 }
 
 func NormalizeMenuOptions(options ...MenuOption) []MenuOption {
