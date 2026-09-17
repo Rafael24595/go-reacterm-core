@@ -16,7 +16,7 @@ func NewCheckOption(id string, option frag.Frag) CheckOption {
 	}
 }
 
-func FragsFromCheckOption(options ...CheckOption) []frag.Frag {
+func ExtractCheckOptionLabels(options ...CheckOption) []frag.Frag {
 	lines := make([]frag.Frag, len(options))
 	for i := range options {
 		lines[i] = options[i].Label
