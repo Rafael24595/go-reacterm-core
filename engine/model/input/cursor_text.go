@@ -19,13 +19,14 @@ type TextCursor struct {
 }
 
 func NewTextCursor(blink bool) *TextCursor {
+	return NewTextCursorWithClock(blink, clock.UnixMilliClock)
+}
+
+func NewTextCursorWithClock(blink bool, clock clock.Clock) *TextCursor {
 	return &TextCursor{
-		clock:  clock.UnixMilliClock,
+		clock:  clock,
 		blink:  blink,
 		status: true,
-		time:   0,
-		caret:  0,
-		anchor: 0,
 	}
 }
 
