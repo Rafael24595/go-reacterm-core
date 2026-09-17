@@ -7,7 +7,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 )
 
-const blink_ms = 750
+const blinkMS = 750
 
 type TextCursor struct {
 	clock  clock.Clock
@@ -66,35 +66,27 @@ func (c *TextCursor) SelectEnd() offset.Offset {
 	return c.anchor
 }
 
-func (c *TextCursor) CaretToStart(buff []rune) *TextCursor {
-	c.CaretToStartWithoutTick(buff)
-	c.Tick()
-	return c
+func (c *TextCursor) MoveCaretToStart(buff []rune) *TextCursor {
+	return c.MoveCaretToStartSilent(buff).Tick()
 }
 
-func (c *TextCursor) CaretToStartWithoutTick(buff []rune) *TextCursor {
-	c.MoveCaretTo(buff, 0)
-	return c
+func (c *TextCursor) MoveCaretToStartSilent(buff []rune) *TextCursor {
+	return c.MoveCaretTo(buff, 0)
 }
 
-func (c *TextCursor) CaretToEnd(buff []rune) *TextCursor {
-	c.CaretToEndWithoutTick(buff)
-	c.Tick()
-	return c
+func (c *TextCursor) MoveCaretToEnd(buff []rune) *TextCursor {
+	return c.MoveCaretToEndSilent(buff).Tick()
 }
 
-func (c *TextCursor) CaretToEndWithoutTick(buff []rune) *TextCursor {
-	c.MoveCaretTo(buff, offset.Offset(len(buff)))
-	return c
+func (c *TextCursor) MoveCaretToEndSilent(buff []rune) *TextCursor {
+	return c.MoveCaretTo(buff, offset.Offset(len(buff)))
 }
 
 func (c *TextCursor) MoveCaretTo(buff []rune, caret offset.Offset) *TextCursor {
-	c.MoveCaretWithoutTick(buff, caret)
-	c.Tick()
-	return c
+	return c.MoveCaretSilent(buff, caret).Tick()
 }
 
-func (c *TextCursor) MoveCaretWithoutTick(buff []rune, caret offset.Offset) *TextCursor {
+func (c *TextCursor) MoveCaretSilent(buff []rune, caret offset.Offset) *TextCursor {
 	min := offset.Offset(1)
 	len := offset.Offset(len(buff))
 
@@ -109,23 +101,18 @@ func (c *TextCursor) MoveCaretWithoutTick(buff []rune, caret offset.Offset) *Tex
 }
 
 func (c *TextCursor) SelectAll(buff []rune) *TextCursor {
-	c.SelectAllWithoutTick(buff)
-	c.Tick()
-	return c
+	return c.SelectAllSilent(buff).Tick()
 }
 
-func (c *TextCursor) SelectAllWithoutTick(buff []rune) *TextCursor {
-	c.MoveSelectWithoutTick(buff, 0, offset.Offset(len(buff)))
-	return c
+func (c *TextCursor) SelectAllSilent(buff []rune) *TextCursor {
+	return c.SelectRangeSilent(buff, 0, offset.Offset(len(buff)))
 }
 
-func (c *TextCursor) MoveSelectTo(buff []rune, caret, anchor offset.Offset) *TextCursor {
-	c.MoveSelectWithoutTick(buff, caret, anchor)
-	c.Tick()
-	return c
+func (c *TextCursor) SelectRange(buff []rune, caret, anchor offset.Offset) *TextCursor {
+	return c.SelectRangeSilent(buff, caret, anchor).Tick()
 }
 
-func (c *TextCursor) MoveSelectWithoutTick(buff []rune, caret, anchor offset.Offset) *TextCursor {
+func (c *TextCursor) SelectRangeSilent(buff []rune, caret, anchor offset.Offset) *TextCursor {
 	min := offset.Offset(1)
 	len := offset.Offset(len(buff))
 
@@ -156,7 +143,7 @@ func (c *TextCursor) BlinkStyle() atom.Atom {
 	}
 
 	now := c.clock()
-	if now-c.time >= blink_ms {
+	if now-c.time >= blinkMS {
 		c.time = now
 		c.status = !c.status
 	}

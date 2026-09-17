@@ -17,18 +17,18 @@ func TestCursor_SelectionLogic(t *testing.T) {
 	assert.Equal(t, c.SelectStart(), 1)
 	assert.Equal(t, c.SelectEnd(), 6)
 
-	c.MoveSelectTo(buff, 3, 1)
+	c.SelectRange(buff, 3, 1)
 	assert.Equal(t, c.SelectStart(), 1)
 	assert.Equal(t, c.SelectEnd(), 3)
 
-	c.MoveSelectTo(buff, 1, 3)
+	c.SelectRange(buff, 1, 3)
 	assert.Equal(t, c.SelectStart(), 1)
 	assert.Equal(t, c.SelectEnd(), 3)
 
-	c.CaretToStart(buff)
+	c.MoveCaretToStart(buff)
 	assert.Equal(t, c.Caret(), 1)
 
-	c.CaretToEnd(buff)
+	c.MoveCaretToEnd(buff)
 	assert.Equal(t, c.Caret(), 6)
 }
 
@@ -38,14 +38,14 @@ func TestCursor_BlinkingLogic(t *testing.T) {
 	c := NewTextCursor(true)
 	c.clock = clock.Now
 
-	clock.Advance(blink_ms + 1)
+	clock.Advance(blinkMS + 1)
 
 	assert.Equal(t, c.BlinkStyle(), atom.Select)
 
-	clock.Advance(blink_ms + 1)
+	clock.Advance(blinkMS + 1)
 
 	assert.Equal(t, c.BlinkStyle(), atom.None)
 
-	clock.Advance(blink_ms + 1)
+	clock.Advance(blinkMS + 1)
 	assert.Equal(t, c.BlinkStyle(), atom.Select)
 }

@@ -127,7 +127,7 @@ func (n *TextArea) AddText(text string) *TextArea {
 	}
 
 	n.buffer.Append([]rune(text))
-	n.caret.CaretToEnd(n.buffer.Buffer())
+	n.caret.MoveCaretToEnd(n.buffer.Buffer())
 
 	return n
 }
@@ -182,7 +182,7 @@ func (n *TextArea) loadFromStore(uiState state.UIState) {
 	buffer := n.buffer.Buffer()
 
 	if sync.Caret == nil && sync.Anchor == nil {
-		n.caret.MoveCaretWithoutTick(buffer, n.buffer.Size())
+		n.caret.MoveCaretSilent(buffer, n.buffer.Size())
 		return
 	}
 
@@ -192,11 +192,11 @@ func (n *TextArea) loadFromStore(uiState state.UIState) {
 	}
 
 	if sync.Anchor == nil {
-		n.caret.MoveCaretWithoutTick(buffer, caret)
+		n.caret.MoveCaretSilent(buffer, caret)
 		return
 	}
 
-	n.caret.MoveSelectWithoutTick(buffer, caret, *sync.Anchor)
+	n.caret.SelectRangeSilent(buffer, caret, *sync.Anchor)
 }
 
 func (n *TextArea) keys() screen.Definition {
@@ -405,7 +405,7 @@ func (n *TextArea) moveHome(uiState *state.UIState, event screen.Event) screen.R
 	buffer := n.buffer.Buffer()
 
 	if event.Key.Mod.HasAny(key.ModCtrl) {
-		n.caret.CaretToStart(buffer)
+		n.caret.MoveCaretToStart(buffer)
 		return result
 	}
 
@@ -417,7 +417,7 @@ func (n *TextArea) moveHome(uiState *state.UIState, event screen.Event) screen.R
 		return result
 	}
 
-	n.caret.MoveSelectTo(buffer, caret, anchor)
+	n.caret.SelectRange(buffer, caret, anchor)
 
 	return result
 }
@@ -428,7 +428,7 @@ func (n *TextArea) moveEnd(uiState *state.UIState, event screen.Event) screen.Re
 	buffer := n.buffer.Buffer()
 
 	if event.Key.Mod.HasAny(key.ModCtrl) {
-		n.caret.CaretToEnd(buffer)
+		n.caret.MoveCaretToEnd(buffer)
 		return result
 	}
 
@@ -440,7 +440,7 @@ func (n *TextArea) moveEnd(uiState *state.UIState, event screen.Event) screen.Re
 		return result
 	}
 
-	n.caret.MoveSelectTo(buffer, caret, anchor)
+	n.caret.SelectRange(buffer, caret, anchor)
 
 	return result
 }
@@ -456,18 +456,18 @@ func (n *TextArea) moveUp(uiState *state.UIState, event screen.Event) screen.Res
 	prevLineStart, ok := line.FindPrevLineStart(buffer, start)
 	if !ok {
 		if event.Key.Mod.HasAny(key.ModShift) {
-			n.caret.MoveSelectTo(buffer, 0, n.caret.Anchor())
+			n.caret.SelectRange(buffer, 0, n.caret.Anchor())
 			return result
 		}
 
-		n.caret.CaretToStart(buffer)
+		n.caret.MoveCaretToStart(buffer)
 		return result
 	}
 
 	position := line.ClampToLine(buffer, prevLineStart, distance)
 
 	if event.Key.Mod.HasAny(key.ModShift) {
-		n.caret.MoveSelectTo(buffer, position, n.caret.Anchor())
+		n.caret.SelectRange(buffer, position, n.caret.Anchor())
 	} else {
 		n.caret.MoveCaretTo(buffer, position)
 	}
@@ -486,20 +486,20 @@ func (n *TextArea) moveDown(uiState *state.UIState, event screen.Event) screen.R
 	nextLineStart, ok := line.FindNextLineStart(buffer, start)
 	if !ok {
 		if event.Key.Mod.HasAny(key.ModShift) {
-			n.caret.MoveSelectTo(
+			n.caret.SelectRange(
 				buffer, n.buffer.Size(), n.caret.Anchor(),
 			)
 			return result
 		}
 
-		n.caret.CaretToEnd(buffer)
+		n.caret.MoveCaretToEnd(buffer)
 		return result
 	}
 
 	position := line.ClampToLine(buffer, nextLineStart, distance)
 
 	if event.Key.Mod.HasAny(key.ModShift) {
-		n.caret.MoveSelectTo(buffer, position, n.caret.Anchor())
+		n.caret.SelectRange(buffer, position, n.caret.Anchor())
 	} else {
 		n.caret.MoveCaretTo(buffer, position)
 	}
@@ -521,7 +521,7 @@ func (n *TextArea) moveBackward(uiState *state.UIState, event screen.Event) scre
 	anchor := n.caret.Anchor()
 	if event.Key.Mod.HasNone(key.ModCtrl) {
 		caret := n.caret.Caret().Sub(1)
-		n.caret.MoveSelectTo(buffer, caret, anchor)
+		n.caret.SelectRange(buffer, caret, anchor)
 		return result
 	}
 
@@ -531,7 +531,7 @@ func (n *TextArea) moveBackward(uiState *state.UIState, event screen.Event) scre
 		return result
 	}
 
-	n.caret.MoveSelectTo(buffer, caret, anchor)
+	n.caret.SelectRange(buffer, caret, anchor)
 	return result
 }
 
@@ -550,7 +550,7 @@ func (n *TextArea) moveForward(uiState *state.UIState, event screen.Event) scree
 	anchor := n.caret.Anchor()
 	if event.Key.Mod.HasNone(key.ModCtrl) {
 		caret := min(size, n.caret.Caret()+1)
-		n.caret.MoveSelectTo(buffer, caret, anchor)
+		n.caret.SelectRange(buffer, caret, anchor)
 		return result
 	}
 
@@ -560,7 +560,7 @@ func (n *TextArea) moveForward(uiState *state.UIState, event screen.Event) scree
 		return result
 	}
 
-	n.caret.MoveSelectTo(buffer, caret, anchor)
+	n.caret.SelectRange(buffer, caret, anchor)
 	return result
 }
 
