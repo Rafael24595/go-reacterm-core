@@ -23,12 +23,14 @@ func TestCheckMenu_ToNode(t *testing.T) {
 }
 
 func TestCheckMenu_Boot(t *testing.T) {
+	frg := frag.Empty()
+	
 	menu := New().
 		AddOptions(
-			input.CheckOption{Id: "4"},
-			input.CheckOption{Id: "3"},
-			input.CheckOption{Id: "2"},
-			input.CheckOption{Id: "1"},
+			input.NewCheckOption("4", frg),
+			input.NewCheckOption("3", frg),
+			input.NewCheckOption("2", frg),
+			input.NewCheckOption("1", frg),
 		)
 	node := menu.ToNode()
 
