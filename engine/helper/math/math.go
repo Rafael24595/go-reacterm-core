@@ -54,6 +54,11 @@ func SubClampZero[T Number](a, b T) T {
 	return a - b
 }
 
+// AddClampMax adds a and b, returning the maximum value of type T if the result would overflow.
+func AddClampMax[T Number](a, b T) T {
+	return AddClampLimit(a, b, ^T(0))
+}
+
 // AddClampLimit adds a and b, returning limit if the result would exceed limit.
 func AddClampLimit[T Number](a, b, limit T) T {
 	if a >= limit {

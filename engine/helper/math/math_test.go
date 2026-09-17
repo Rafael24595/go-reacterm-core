@@ -29,6 +29,11 @@ func TestSubClampZero(t *testing.T) {
 	assert.Equal(t, 5, SubClampZero(10, 5))
 }
 
+func TestAddClampMax(t *testing.T) {
+	assert.Equal(t, 255, AddClampMax(uint8(200), uint8(100)))
+	assert.Equal(t, 150, AddClampMax(uint8(100), uint8(50)))
+}
+
 func TestAddClampLimit(t *testing.T) {
 	assert.Equal(t, 15, AddClampLimit(10, 5, 20))
 	assert.Equal(t, 20, AddClampLimit(15, 10, 20))
