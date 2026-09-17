@@ -63,7 +63,7 @@ func (a *TableAction) AsEdit() *TableAction {
 	return a
 }
 
-// SetHandler updates the underlying callback handler and enables the action.
+// WithHandler updates the underlying callback handler and enables the action.
 func (a *TableAction) WithHandler(handler TableActionHandler) *TableAction {
 	if handler == nil {
 		return a
