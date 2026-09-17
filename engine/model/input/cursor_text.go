@@ -139,9 +139,10 @@ func (c *TextCursor) MoveSelectWithoutTick(buff []rune, caret, anchor offset.Off
 	return c
 }
 
-func (c *TextCursor) Tick() {
+func (c *TextCursor) Tick() *TextCursor {
 	c.status = true
 	c.time = c.clock()
+	return c
 }
 
 func (c *TextCursor) BlinkStyle() atom.Atom {
