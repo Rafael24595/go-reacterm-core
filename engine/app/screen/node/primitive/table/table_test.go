@@ -55,8 +55,8 @@ func TestIndexMenu_Boot(t *testing.T) {
 
 	assert.False(t, ok)
 
-	assert.Equal(t, row, menu.cursor.Row)
-	assert.Equal(t, col, menu.cursor.Col)
+	assert.Equal(t, row, menu.cursor.Row())
+	assert.Equal(t, col, menu.cursor.Col())
 }
 
 func TestTable_Stack(t *testing.T) {

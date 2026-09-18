@@ -158,7 +158,7 @@ func TestRendererResolve(t *testing.T) {
 			)
 
 			caret := input.NewTextCursor(false)
-			caret.MoveSelectTo(buffer, tt.caret, tt.anchor)
+			caret.SelectRange(buffer, tt.caret, tt.anchor)
 
 			if tt.start == tt.end {
 				assert.Panic(t, func() {
