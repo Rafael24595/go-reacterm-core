@@ -170,11 +170,15 @@ func (n *Table[T]) loadFromStore(uiState state.UIState) {
 	}
 
 	if sync.Row != nil {
-		n.cursor.Row = min(n.table.RowCount(), *sync.Row)
+		n.cursor.SetRow(
+			min(n.table.RowCount(), *sync.Row),
+		)
 	}
 
 	if sync.Col != nil {
-		n.cursor.Col = min(n.table.ColCount(), *sync.Col)
+		n.cursor.SetCol(
+			min(n.table.ColCount(), *sync.Col),
+		)
 	}
 }
 
@@ -202,7 +206,9 @@ func (n *Table[T]) tickWrite(uiState *state.UIState, event screen.Event) screen.
 	switch n.bindings.Write.Command(event.Key.Code) {
 	case CmdWriteReadMode:
 		n.action.AsView()
-		n.cursor.Show = n.action.InEditMode()
+		n.cursor.WithVisibility(
+			n.action.InEditMode(),
+		)
 	case CmdWriteMoveLeft:
 		n.cursor.DecCol()
 		n.tickToStore(uiState)
@@ -228,7 +234,9 @@ func (n *Table[T]) tickRead(uiState *state.UIState, event screen.Event) screen.R
 	switch n.bindings.Read.Command(event.Key.Code) {
 	case CmdReadWriteMode:
 		n.action.AsEdit()
-		n.cursor.Show = n.action.InEditMode()
+		n.cursor.WithVisibility(
+			n.action.InEditMode(),
+		)
 	}
 
 	return screen.ResultFromUIState(uiState)
@@ -236,8 +244,8 @@ func (n *Table[T]) tickRead(uiState *state.UIState, event screen.Event) screen.R
 
 func (n *Table[T]) tickToStore(uiState *state.UIState) {
 	state := State{
-		Row: n.cursor.Row,
-		Col: n.cursor.Col,
+		Row: n.cursor.Row(),
+		Col: n.cursor.Col(),
 	}
 
 	KeyState.Set(
@@ -271,7 +279,9 @@ func (n *Table[T]) view(uiState state.UIState) viewmodel.ViewModel {
 	if n.action.IsNavigable() && n.action.InEditMode() {
 		preficate = rule.OnFocus()
 
-		cell, _ := n.table.FindCellByCoords(n.cursor.Row, n.cursor.Col)
+		cell, _ := n.table.FindCellByCoords(
+			n.cursor.Row(), n.cursor.Col(),
+		)
 
 		vm.Footer.Push(
 			inputline.Wrap(

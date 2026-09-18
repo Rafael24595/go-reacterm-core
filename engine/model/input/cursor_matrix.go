@@ -5,17 +5,48 @@ import (
 )
 
 type MatrixCursor struct {
-	Row  uint16
-	Col  uint16
-	Show bool
+	row uint16
+	col uint16
+	show bool
 }
 
-func NewMatrixCursor(row, col uint16, show bool) *MatrixCursor {
+func NewMatrixCursor(
+	row, col uint16,
+	show bool,
+) *MatrixCursor {
 	return &MatrixCursor{
-		Row:  row,
-		Col:  col,
-		Show: show,
+		row:  row,
+		col:  col,
+		show: show,
 	}
+}
+
+func (c *MatrixCursor) IsVisible() bool {
+	return c.show
+}
+
+func (c *MatrixCursor) WithVisibility(show bool) *MatrixCursor {
+	c.show = show
+	return c
+}
+
+func (c *MatrixCursor) Show() *MatrixCursor {
+	c.show = true
+	return c
+}
+
+func (c *MatrixCursor) Hide() *MatrixCursor {
+	c.show = false
+	return c
+}
+
+func (c *MatrixCursor) Row() uint16 {
+	return c.row
+}
+
+func (c *MatrixCursor) SetRow(row uint16) *MatrixCursor {
+	c.row = row
+	return c
 }
 
 func (c *MatrixCursor) IncRow(limit uint16) *MatrixCursor {
@@ -24,7 +55,16 @@ func (c *MatrixCursor) IncRow(limit uint16) *MatrixCursor {
 }
 
 func (c *MatrixCursor) DecRow() *MatrixCursor {
-	c.Row = math.SubClampZero(c.Row, 1)
+	c.row = math.SubClampZero(c.row, 1)
+	return c
+}
+
+func (c *MatrixCursor) Col() uint16 {
+	return c.col
+}
+
+func (c *MatrixCursor) SetCol(col uint16) *MatrixCursor {
+	c.col = col
 	return c
 }
 
@@ -34,14 +74,13 @@ func (c *MatrixCursor) IncCol(limit uint16) *MatrixCursor {
 }
 
 func (c *MatrixCursor) DecCol() *MatrixCursor {
-	c.Col = math.SubClampZero(c.Col, 1)
+	c.col = math.SubClampZero(c.col, 1)
 	return c
 }
 
 func (c *MatrixCursor) IsAt(row, col uint16) bool {
-	if !c.Show {
+	if !c.show {
 		return false
 	}
-	return c.Row == row && c.Col == col
+	return c.row == row && c.col == col
 }
-

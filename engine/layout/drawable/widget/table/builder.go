@@ -217,7 +217,7 @@ func (b builder) filterHeaders(
 	headers []string,
 	maxCols table.MaxCols,
 ) ([]string, *input.MatrixCursor) {
-	cursor := int(b.cursor.Col)
+	cursor := int(b.cursor.Col())
 
 	var fixCursor *input.MatrixCursor
 	var fixedCol uint16
@@ -231,9 +231,9 @@ func (b builder) filterHeaders(
 		filtered = append(filtered, header)
 		if i == cursor {
 			fixCursor = input.NewMatrixCursor(
-				b.cursor.Row,
+				b.cursor.Row(),
 				fixedCol,
-				b.cursor.Show,
+				b.cursor.IsVisible(),
 			)
 		}
 
