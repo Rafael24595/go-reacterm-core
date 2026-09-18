@@ -120,3 +120,13 @@ func (t *Table) ColCount() uint16 {
 func (t *Table) RowCount() uint16 {
 	return RowCount(t.headers, t.cols)
 }
+
+func RowCount(headers []string, cols map[string][]string) uint16 {
+	maxRows := 0
+	for _, h := range headers {
+		maxRows = max(
+			maxRows, len(cols[h]),
+		)
+	}
+	return uint16(maxRows)
+}
