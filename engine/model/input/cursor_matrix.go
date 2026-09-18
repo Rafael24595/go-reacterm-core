@@ -19,7 +19,7 @@ func NewMatrixCursor(row, col uint16, show bool) *MatrixCursor {
 }
 
 func (c *MatrixCursor) IncRow(limit uint16) *MatrixCursor {
-	c.Row = min(limit, c.Row+1)
+	c.row = math.AddClampLimit(c.row, 1, limit)
 	return c
 }
 
@@ -29,7 +29,7 @@ func (c *MatrixCursor) DecRow() *MatrixCursor {
 }
 
 func (c *MatrixCursor) IncCol(limit uint16) *MatrixCursor {
-	c.Col = min(limit, c.Col+1)
+	c.col = math.AddClampLimit(c.col, 1, limit)
 	return c
 }
 
