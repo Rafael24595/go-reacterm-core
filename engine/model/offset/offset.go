@@ -4,6 +4,10 @@ import "github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 
 type Offset uint32
 
-func (r Offset) Sub(o Offset) Offset {
-	return math.SubClampZero(r, o)
+func (o Offset) Add(of Offset) Offset {
+	return math.AddClampMax(o, of)
+}
+
+func (o Offset) Sub(of Offset) Offset {
+	return math.SubClampZero(o, of)
 }
