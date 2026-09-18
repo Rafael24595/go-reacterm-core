@@ -33,6 +33,19 @@ func TestPulse_Reception(t *testing.T) {
 	}
 }
 
+func TestPulse_DisabledDoesNotReceive(t *testing.T) {
+	p := New(10 * time.Millisecond)
+	defer p.Exit()
+
+	assert.Nil(t, p.Listen())
+
+	select {
+	case <-p.Listen():
+		assert.Unreachable(t, "pulse received tick while disabled")
+	case <-time.After(30 * time.Millisecond):
+	}
+}
+
 func TestPulse_Exit(t *testing.T) {
 	p := New(10 * time.Millisecond)
 
