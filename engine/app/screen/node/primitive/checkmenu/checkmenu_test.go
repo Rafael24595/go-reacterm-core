@@ -48,10 +48,10 @@ func TestCheckMenu_Boot(t *testing.T) {
 
 	assert.False(t, ok)
 
-	assert.True(t, menu.options[0].Status)
-	assert.False(t, menu.options[1].Status)
-	assert.True(t, menu.options[2].Status)
-	assert.False(t, menu.options[3].Status)
+	assert.True(t, menu.options[0].Status())
+	assert.False(t, menu.options[1].Status())
+	assert.True(t, menu.options[2].Status())
+	assert.False(t, menu.options[3].Status())
 }
 
 func TestCheckMenu_Stack(t *testing.T) {
@@ -73,34 +73,34 @@ func TestCheckMenu_SwitchState_WithLimit(t *testing.T) {
 
 	menu.clock = clock.Now
 
-	assert.False(t, menu.options[0].Status)
-	assert.False(t, menu.options[1].Status)
-	assert.False(t, menu.options[2].Status)
+	assert.False(t, menu.options[0].Status())
+	assert.False(t, menu.options[1].Status())
+	assert.False(t, menu.options[2].Status())
 
 	clock.Advance(1000)
 
 	menu.cursor = 0
 	menu.switchState(menu.cursor).applyLimit()
 
-	assert.True(t, menu.options[0].Status)
-	assert.False(t, menu.options[1].Status)
-	assert.False(t, menu.options[2].Status)
+	assert.True(t, menu.options[0].Status())
+	assert.False(t, menu.options[1].Status())
+	assert.False(t, menu.options[2].Status())
 
 	clock.Advance(1000)
 
 	menu.cursor = 1
 	menu.switchState(menu.cursor).applyLimit()
 
-	assert.True(t, menu.options[0].Status)
-	assert.True(t, menu.options[1].Status)
-	assert.False(t, menu.options[2].Status)
+	assert.True(t, menu.options[0].Status())
+	assert.True(t, menu.options[1].Status())
+	assert.False(t, menu.options[2].Status())
 
 	clock.Advance(1000)
 
 	menu.cursor = 2
 	menu.switchState(menu.cursor).applyLimit()
 
-	assert.False(t, menu.options[0].Status)
-	assert.True(t, menu.options[1].Status)
-	assert.True(t, menu.options[2].Status)
+	assert.False(t, menu.options[0].Status())
+	assert.True(t, menu.options[1].Status())
+	assert.True(t, menu.options[2].Status())
 }

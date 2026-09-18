@@ -120,18 +120,18 @@ func (u *CheckMenuUnit) addStyles() []frag.Frag {
 
 	for i := range frags {
 		status := u.meta.Unchecked
-		if u.options[i].Status {
+		if u.options[i].Status() {
 			status = u.meta.Checked
 		}
 
-		label := u.options[i].Label.Text()
+		label := u.options[i].Label().Text()
 		if len(label) > 0 {
 			label = marker.DefaultPaddingText + label
 		}
 
 		frg := frag.NewBuilder().
 			AddText(u.meta.Open + status + u.meta.Close + label).
-			WithMeta(u.options[i].Label)
+			WithMeta(u.options[i].Label())
 
 		if u.writeMode && i == int(u.cursor) {
 			frg.AddAtom(atom.Select, atom.Focus)

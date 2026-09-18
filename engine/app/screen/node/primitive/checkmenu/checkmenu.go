@@ -156,7 +156,7 @@ func (n *CheckMenu) loadFromStore(uiState state.UIState) {
 	}
 
 	for i, o := range n.options {
-		if options.Has(o.Id) {
+		if options.Has(o.Id()) {
 			n.switchState(uint16(i), true)
 		}
 	}
@@ -222,16 +222,12 @@ func (n *CheckMenu) switchState(cursor uint16, state ...bool) *CheckMenu {
 		return n
 	}
 
-	newState := !n.options[cursor].Status
+	newState := !n.options[cursor].Status()
 	if len(state) > 0 {
 		newState = state[0]
 	}
 
-	n.options[cursor].Status = newState
-
-	if n.options[cursor].Status {
-		n.options[cursor].Timestamp = n.clock()
-	}
+	n.options[cursor].WithCheck(newState, n.clock)
 
 	return n
 }
@@ -243,7 +239,7 @@ func (n *CheckMenu) applyLimit() *CheckMenu {
 
 	active := make([]*input.CheckOption, 0, len(n.options))
 	for i := range n.options {
-		if n.options[i].Status {
+		if n.options[i].Status() {
 			active = append(active, &n.options[i])
 		}
 	}
@@ -253,12 +249,12 @@ func (n *CheckMenu) applyLimit() *CheckMenu {
 	}
 
 	sort.Slice(active, func(i, j int) bool {
-		return active[i].Timestamp < active[j].Timestamp
+		return active[i].Timestamp() < active[j].Timestamp()
 	})
 
 	excess := len(active) - int(n.limit)
 	for i := range excess {
-		active[i].Status = false
+		active[i].Uncheck()
 	}
 
 	return n
@@ -267,8 +263,8 @@ func (n *CheckMenu) applyLimit() *CheckMenu {
 func (n *CheckMenu) activeIds() set.Set[string] {
 	result := set.New[string]()
 	for _, v := range n.options {
-		if v.Status {
-			result.Add(v.Id)
+		if v.Status() {
+			result.Add(v.Id())
 		}
 	}
 	return result
@@ -294,7 +290,7 @@ func (n *CheckMenu) view(uiState state.UIState) viewmodel.ViewModel {
 
 	index := math.SubClampZeroAs[int, uint16](len(n.options), 1)
 	option := min(index, n.cursor)
-	text := n.options[option].Label.Text()
+	text := n.options[option].Label().Text()
 
 	vm.Footer.Push(
 		inputline.Wrap(
