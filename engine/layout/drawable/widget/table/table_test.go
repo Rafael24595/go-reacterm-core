@@ -23,7 +23,7 @@ func TestTable_UnitBasicSuite(t *testing.T) {
 func TestTable_LazyBoot(t *testing.T) {
 	unit := New(
 		*table.NewTable().
-			SetHeaders("lang").
+			AddHeaders("lang").
 			SetCell("lang", 0, "golang"),
 		*input.NewMatrixCursor(0, 0, false),
 	)

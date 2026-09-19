@@ -22,7 +22,7 @@ var separator = marker.TableSeparatorMeta{
 }
 
 func TestBuilder_FilterHeaders_FiltersCorrectly(t *testing.T) {
-	maxCols := table.MaxCols{
+	maxCols := table.ColWidths{
 		"id":   5,
 		"name": 10,
 	}
@@ -37,7 +37,7 @@ func TestBuilder_FilterHeaders_FiltersCorrectly(t *testing.T) {
 }
 
 func TestBuilder_RenderHeaders_Basic(t *testing.T) {
-	maxCols := table.MaxCols{
+	maxCols := table.ColWidths{
 		"id":   4,
 		"name": 6,
 	}
@@ -50,7 +50,7 @@ func TestBuilder_RenderHeaders_Basic(t *testing.T) {
 }
 
 func TestBuilder_RenderHeaders_Structure(t *testing.T) {
-	maxCols := table.MaxCols{
+	maxCols := table.ColWidths{
 		"id":   4,
 		"name": 6,
 	}
@@ -80,7 +80,7 @@ func TestBuilder_RenderHeaders_Structure(t *testing.T) {
 }
 
 func TestBuilder_RenderBody_Basic(t *testing.T) {
-	maxCols := table.MaxCols{
+	maxCols := table.ColWidths{
 		"id":   4,
 		"name": 6,
 	}
@@ -88,7 +88,7 @@ func TestBuilder_RenderBody_Basic(t *testing.T) {
 	headers := []string{"id", "name"}
 
 	table := table.NewTable().
-		SetHeaders(headers...).
+		AddHeaders(headers...).
 		SetCell("id", 0, "1").
 		SetCell("id", 1, "2").
 		SetCell("name", 0, "golang").
@@ -106,8 +106,8 @@ func TestBuilder_RenderBody_Basic(t *testing.T) {
 
 func TestBuilder_EvalMaxCols_NoReductionNeeded(t *testing.T) {
 	table := table.NewTable().
-		SetSeparator(separator).
-		SetHeaders("A", "B").
+		WithSeparator(separator).
+		AddHeaders("A", "B").
 		SetCell("A", 0, strings.Repeat("0", 5)).
 		SetCell("B", 0, strings.Repeat("0", 5))
 
@@ -127,8 +127,8 @@ func TestBuilder_EvalMaxCols_NoReductionNeeded(t *testing.T) {
 
 func TestBuilder_EvalMaxCols_ReducesLargestColumn(t *testing.T) {
 	table := table.NewTable().
-		SetSeparator(separator).
-		SetHeaders("A", "B").
+		WithSeparator(separator).
+		AddHeaders("A", "B").
 		SetCell("A", 0, strings.Repeat("0", 10)).
 		SetCell("B", 0, strings.Repeat("0", 5))
 
@@ -148,8 +148,8 @@ func TestBuilder_EvalMaxCols_ReducesLargestColumn(t *testing.T) {
 
 func TestBuilder_EvalMaxCols_RespectsMinWidth(t *testing.T) {
 	table := table.NewTable().
-		SetSeparator(separator).
-		SetHeaders("A", "B").
+		WithSeparator(separator).
+		AddHeaders("A", "B").
 		SetCell("A", 0, strings.Repeat("0", 4)).
 		SetCell("B", 0, strings.Repeat("0", 4))
 
@@ -177,8 +177,8 @@ func TestBuilder_EvalMaxCols_ExactFit(t *testing.T) {
 	totalMeasure := aMeasure + bMeasure + sepMeasure
 
 	table := table.NewTable().
-		SetSeparator(separator).
-		SetHeaders("A", "B").
+		WithSeparator(separator).
+		AddHeaders("A", "B").
 		SetCell("A", 0, strings.Repeat("0", int(aMeasure))).
 		SetCell("B", 0, strings.Repeat("0", int(bMeasure)))
 
@@ -198,8 +198,8 @@ func TestBuilder_EvalMaxCols_ExactFit(t *testing.T) {
 
 func TestBuilder_EvalMaxCols_MultipleColumnsReduction(t *testing.T) {
 	table := table.NewTable().
-		SetSeparator(separator).
-		SetHeaders("A", "B", "C").
+		WithSeparator(separator).
+		AddHeaders("A", "B", "C").
 		SetCell("A", 0, strings.Repeat("0", 10)).
 		SetCell("B", 0, strings.Repeat("0", 9)).
 		SetCell("C", 0, strings.Repeat("0", 8))
@@ -224,8 +224,8 @@ func TestBuilder_EvalMaxCols_MultipleColumnsReduction(t *testing.T) {
 
 func TestBuilder_MaxColsChunks_FitsInOne(t *testing.T) {
 	table := table.NewTable().
-		SetSeparator(separator).
-		SetHeaders("A", "B", "C").
+		WithSeparator(separator).
+		AddHeaders("A", "B", "C").
 		SetCell("A", 0, strings.Repeat("0", 10)).
 		SetCell("B", 0, strings.Repeat("0", 20)).
 		SetCell("C", 0, strings.Repeat("0", 10))
@@ -247,8 +247,8 @@ func TestBuilder_MaxColsChunks_FitsInOne(t *testing.T) {
 
 func TestBuilder_MaxColsChunks_MustSplit(t *testing.T) {
 	table := table.NewTable().
-		SetSeparator(separator).
-		SetHeaders("A", "B", "C", "D").
+		WithSeparator(separator).
+		AddHeaders("A", "B", "C", "D").
 		SetCell("A", 0, strings.Repeat("0", 20)).
 		SetCell("B", 0, strings.Repeat("0", 10)).
 		SetCell("C", 0, strings.Repeat("0", 15)).
@@ -276,8 +276,8 @@ func TestBuilder_MaxColsChunks_MustSplit(t *testing.T) {
 
 func TestBuilder_MaxColsChunks_ColumnWiderThanTerminal(t *testing.T) {
 	table := table.NewTable().
-		SetSeparator(separator).
-		SetHeaders("XL").
+		WithSeparator(separator).
+		AddHeaders("XL").
 		SetCell("XL", 0, strings.Repeat("0", 100))
 
 	builder := builder{
@@ -300,7 +300,7 @@ func TestBuilder_MaxColsChunks_ColumnWiderThanTerminal(t *testing.T) {
 
 func TestBuilder_MaxColsChunks_EmptyMap(t *testing.T) {
 	table := table.NewTable().
-		SetSeparator(separator)
+		WithSeparator(separator)
 
 	builder := builder{
 		table:   *table,
@@ -316,8 +316,8 @@ func TestAdjustSize_Deterministic(t *testing.T) {
 	headers := []string{"A", "B", "C", "D", "E", "F", "G"}
 
 	table := table.NewTable().
-		SetSeparator(separator).
-		SetHeaders(headers...).
+		WithSeparator(separator).
+		AddHeaders(headers...).
 		SetCell("A", 0, strings.Repeat("0", 12)).
 		SetCell("B", 0, strings.Repeat("0", 10)).
 		SetCell("C", 0, strings.Repeat("0", 8)).

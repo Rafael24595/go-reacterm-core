@@ -9,7 +9,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 )
 
-type MaxCols map[string]winsize.Cols
+type ColWidths map[string]winsize.Cols
 
 type Table struct {
 	cols      map[string][]string
@@ -25,20 +25,20 @@ func NewTable() *Table {
 	}
 }
 
-func (t *Table) GetSeparator() marker.TableSeparatorMeta {
+func (t *Table) Separator() marker.TableSeparatorMeta {
 	return t.separator
 }
 
-func (t *Table) SetSeparator(separator marker.TableSeparatorMeta) *Table {
+func (t *Table) WithSeparator(separator marker.TableSeparatorMeta) *Table {
 	t.separator = separator
 	return t
 }
 
-func (t *Table) GetHeaders() []string {
+func (t *Table) Headers() []string {
 	return t.headers
 }
 
-func (t *Table) SetHeaders(headers ...string) *Table {
+func (t *Table) AddHeaders(headers ...string) *Table {
 	for _, v := range headers {
 		if slices.Contains(t.headers, v) {
 			continue
@@ -51,7 +51,7 @@ func (t *Table) SetHeaders(headers ...string) *Table {
 	return t
 }
 
-func (t *Table) GetColumns() map[string][]string {
+func (t *Table) Columns() map[string][]string {
 	return t.cols
 }
 
@@ -68,15 +68,7 @@ func (t *Table) FindCellByCoords(row, col uint16) (string, bool) {
 	if col >= uint16(len(t.headers)) {
 		return "", false
 	}
-
-	header := t.headers[col]
-
-	cols, ok := t.cols[header]
-	if !ok || row > uint16(len(cols)) {
-		return "", false
-	}
-
-	return cols[row], true
+	return t.FindCell(t.headers[col], row)
 }
 
 func (t *Table) SetCell(header string, row uint16, data any) *Table {
@@ -98,8 +90,8 @@ func (t *Table) SetCell(header string, row uint16, data any) *Table {
 	return t
 }
 
-func (t *Table) MaxCols() MaxCols {
-	size := make(MaxCols)
+func (t *Table) MeasureColWidths() ColWidths {
+	size := make(ColWidths)
 	for _, h := range t.headers {
 		if _, ok := size[h]; !ok {
 			size[h] = runes.MeasureCols(h)

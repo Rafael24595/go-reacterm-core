@@ -116,7 +116,7 @@ func (n *Table[T]) SetHeaders(headers ...string) *Table[T] {
 	}
 
 	n.table = table.NewTable()
-	n.table.SetHeaders(headers...)
+	n.table.AddHeaders(headers...)
 	return n
 }
 

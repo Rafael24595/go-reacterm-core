@@ -50,8 +50,8 @@ func (b *builder) setMinSize(size winsize.Cols) *builder {
 func (b builder) render(size winsize.Winsize) []section {
 	sections := make([]section, 0)
 
-	separator := b.table.GetSeparator()
-	headers := b.table.GetHeaders()
+	separator := b.table.Separator()
+	headers := b.table.Headers()
 
 	chunks := b.maxColsChunks(size)
 
@@ -95,18 +95,18 @@ func (b builder) render(size winsize.Winsize) []section {
 	return sections
 }
 
-func (b builder) maxColsChunks(size winsize.Winsize) []table.MaxCols {
+func (b builder) maxColsChunks(size winsize.Winsize) []table.ColWidths {
 	maxCols, fits := b.evalMaxCols(size)
 	if fits {
-		return []table.MaxCols{maxCols}
+		return []table.ColWidths{maxCols}
 	}
 
 	return b.splitMaxCols(maxCols, size)
 }
 
-func (b builder) evalMaxCols(size winsize.Winsize) (table.MaxCols, bool) {
-	headers := b.table.GetHeaders()
-	maxCols := b.table.MaxCols()
+func (b builder) evalMaxCols(size winsize.Winsize) (table.ColWidths, bool) {
+	headers := b.table.Headers()
+	maxCols := b.table.MeasureColWidths()
 
 	capacity := b.calcRowCapacity(maxCols)
 	if capacity <= size.Cols {
@@ -137,7 +137,7 @@ func (b builder) evalMaxCols(size winsize.Winsize) (table.MaxCols, bool) {
 		heap.Push(col)
 	}
 
-	fixedMaxCols := make(table.MaxCols)
+	fixedMaxCols := make(table.ColWidths)
 	for heap.Len() > 0 {
 		c, _ := heap.Pop()
 		fixedMaxCols[c.name] = c.size
@@ -146,11 +146,11 @@ func (b builder) evalMaxCols(size winsize.Winsize) (table.MaxCols, bool) {
 	return fixedMaxCols, excess == 0
 }
 
-func (b builder) splitMaxCols(maxCols table.MaxCols, size winsize.Winsize) []table.MaxCols {
-	chunks := make([]table.MaxCols, 0)
+func (b builder) splitMaxCols(maxCols table.ColWidths, size winsize.Winsize) []table.ColWidths {
+	chunks := make([]table.ColWidths, 0)
 
-	separator := b.table.GetSeparator()
-	headers := b.table.GetHeaders()
+	separator := b.table.Separator()
+	headers := b.table.Headers()
 
 	leftLen := runes.MeasureCols(separator.Left)
 	centerLen := runes.MeasureCols(separator.Center)
@@ -158,7 +158,7 @@ func (b builder) splitMaxCols(maxCols table.MaxCols, size winsize.Winsize) []tab
 
 	headersLen := len(headers)
 
-	chunk := make(table.MaxCols)
+	chunk := make(table.ColWidths)
 	count := leftLen
 
 	flush := func() {
@@ -168,7 +168,7 @@ func (b builder) splitMaxCols(maxCols table.MaxCols, size winsize.Winsize) []tab
 
 		chunks = append(chunks, chunk)
 
-		chunk = make(table.MaxCols)
+		chunk = make(table.ColWidths)
 		count = leftLen
 	}
 
@@ -193,10 +193,10 @@ func (b builder) splitMaxCols(maxCols table.MaxCols, size winsize.Winsize) []tab
 	return chunks
 }
 
-func (b builder) calcRowCapacity(maxCols table.MaxCols) winsize.Cols {
+func (b builder) calcRowCapacity(maxCols table.ColWidths) winsize.Cols {
 	cols := max(0, len(maxCols)-1)
 
-	separator := b.table.GetSeparator()
+	separator := b.table.Separator()
 
 	centerMeasure := runes.MeasureCols(separator.Center)
 	leftMeasure := runes.MeasureCols(separator.Left)
@@ -215,7 +215,7 @@ func (b builder) calcRowCapacity(maxCols table.MaxCols) winsize.Cols {
 
 func (b builder) filterHeaders(
 	headers []string,
-	maxCols table.MaxCols,
+	maxCols table.ColWidths,
 ) ([]string, *input.MatrixCursor) {
 	cursor := int(b.cursor.Col())
 
@@ -244,7 +244,7 @@ func (b builder) filterHeaders(
 }
 
 func (b builder) renderHeaders(
-	maxCols table.MaxCols,
+	maxCols table.ColWidths,
 	headers []string,
 	separator marker.TableSeparatorMeta,
 ) line.Line {
@@ -265,13 +265,13 @@ func (b builder) renderHeaders(
 }
 
 func (b builder) renderBody(
-	maxCols table.MaxCols,
+	maxCols table.ColWidths,
 	headers []string,
 	separator marker.TableSeparatorMeta,
 	cursor *input.MatrixCursor,
 ) []line.Line {
 	rows := table.RowCount(
-		headers, b.table.GetColumns(),
+		headers, b.table.Columns(),
 	)
 
 	lines := make([]line.Line, rows)
