@@ -155,3 +155,47 @@ func TestFindCell_WithDynamicallyExpandedCell_ShouldReturnEmptyStringAndTrue(t *
 	assert.True(t, ok)
 	assert.Equal(t, "", val)
 }
+
+func TestFindCellByCoords_ShouldReturnContent(t *testing.T) {
+	tbl := NewTable()
+	tbl.AddHeaders("ID", "Name")
+	tbl.SetCell("Name", 0, "Go")
+
+	val, ok := tbl.FindCellByCoords(0, 1)
+
+	assert.True(t, ok)
+	assert.Equal(t, "Go", val)
+}
+
+func TestFindCellByCoords_OutOfBounds_ShouldReturnFalse(t *testing.T) {
+	tbl := NewTable()
+	tbl.AddHeaders("Name")
+	tbl.SetCell("Name", 0, "Go")
+
+	_, okCol := tbl.FindCellByCoords(0, 5)
+	assert.False(t, okCol)
+
+	_, okRow := tbl.FindCellByCoords(1, 0)
+	assert.False(t, okRow)
+}
+
+func TestRowCount_Empty(t *testing.T) {
+	headers := []string{"ID", "Name"}
+	cols := map[string][]string{
+		"ID":   {},
+		"Name": {},
+	}
+
+	assert.Equal(t, 0, RowCount(headers, cols))
+}
+
+func TestRowCount_UnevenColumns(t *testing.T) {
+	headers := []string{"ID", "Name", "Date"}
+	cols := map[string][]string{
+		"ID":   {"1", "2"},
+		"Name": {"Golang", "Zig", "Rust"},
+		"Date": {"1257807600"},
+	}
+
+	assert.Equal(t, 3, RowCount(headers, cols))
+}
