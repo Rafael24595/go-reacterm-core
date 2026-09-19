@@ -63,7 +63,7 @@ func TestSize_ShouldCalculateMaxWidth(t *testing.T) {
 
 	maxCols := tbl.MeasureColWidths()
 
-	assert.Size(t, int(maxCols["Name"]), []rune("golang"))
+	assert.Size(t, maxCols["Name"], "golang")
 }
 
 func TestSize_ShouldConsiderHeaderLength(t *testing.T) {
@@ -74,7 +74,7 @@ func TestSize_ShouldConsiderHeaderLength(t *testing.T) {
 
 	maxCols := tbl.MeasureColWidths()
 
-	assert.Size(t, int(maxCols["VeryLongHeader"]), []rune("VeryLongHeader"))
+	assert.Size(t, maxCols["VeryLongHeader"], "VeryLongHeader")
 }
 
 func TestCols_ShouldReturnHeaderCount(t *testing.T) {
@@ -118,7 +118,7 @@ func TestFindCell_ShouldReturnContentWhenCellExists(t *testing.T) {
 
 	val, ok := tbl.FindCell("Name", 0)
 
-	assert.Equal(t, true, ok)
+	assert.True(t, ok)
 	assert.Equal(t, "Golang", val)
 }
 
@@ -129,7 +129,7 @@ func TestFindCell_WithInvalidHeader_ShouldReturnFalse(t *testing.T) {
 
 	val, ok := tbl.FindCell("Invalid", 0)
 
-	assert.Equal(t, false, ok)
+	assert.False(t, ok)
 	assert.Equal(t, "", val)
 }
 
@@ -140,7 +140,7 @@ func TestFindCell_WithRowOutOfBounds_ShouldReturnFalse(t *testing.T) {
 
 	val, ok := tbl.FindCell("Name", 1)
 
-	assert.Equal(t, false, ok)
+	assert.False(t, ok)
 	assert.Equal(t, "", val)
 }
 
@@ -152,6 +152,6 @@ func TestFindCell_WithDynamicallyExpandedCell_ShouldReturnEmptyStringAndTrue(t *
 
 	val, ok := tbl.FindCell("Name", 1)
 
-	assert.Equal(t, true, ok)
+	assert.True(t, ok)
 	assert.Equal(t, "", val)
 }
