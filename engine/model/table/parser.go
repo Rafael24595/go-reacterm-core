@@ -1,12 +1,19 @@
 package table
 
-import "reflect"
+import (
+	"reflect"
+	"strings"
+)
 
+// Field represents a single struct field's header name and value.
 type Field struct {
+	// Header is the name of the struct field.
 	Header string
-	Value  any
+	// Value is the value of the struct field.
+	Value any
 }
 
+// StructHeaders extracts the column header names for a generic struct type T.
 func StructHeaders[T any]() []string {
 	var zero T
 
@@ -18,6 +25,8 @@ func StructHeaders[T any]() []string {
 	return headers
 }
 
+// StructFields inspects a struct or a pointer to a struct and extracts its exported fields.
+// It checks for a `table` tag first, falling back to the struct field name.
 func StructFields(s any) []Field {
 	if s == nil {
 		return make([]Field, 0)
