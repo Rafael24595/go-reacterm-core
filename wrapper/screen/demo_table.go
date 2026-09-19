@@ -66,7 +66,7 @@ var rowsData = []Language{
 }
 
 func marshal(lang Language) []table.Field {
-	return table.StructFieds(lang)
+	return table.StructFields(lang)
 }
 
 func NewDemoTable() screen.Node {

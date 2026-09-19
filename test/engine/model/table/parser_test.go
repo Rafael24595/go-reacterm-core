@@ -27,7 +27,7 @@ func TestStructFieds_ShouldReturnAllFields(t *testing.T) {
 		Project: true,
 	}
 
-	fields := table.StructFieds(s)
+	fields := table.StructFields(s)
 
 	assert.Size(t, 3, fields)
 
@@ -46,7 +46,7 @@ func TestStructFieds_ShouldWorkWithPointer(t *testing.T) {
 		Lang: "ziglang",
 	}
 
-	fields := table.StructFieds(s)
+	fields := table.StructFields(s)
 
 	assert.Size(t, 1, fields)
 	assert.Equal(t, "Lang", fields[0].Header)
@@ -56,7 +56,7 @@ func TestStructFieds_ShouldWorkWithPointer(t *testing.T) {
 func TestStructFieds_EmptyStruct_ShouldReturnEmptySlice(t *testing.T) {
 	s := emptyStruct{}
 
-	fields := table.StructFieds(s)
+	fields := table.StructFields(s)
 
 	assert.Empty(t, fields)
 }
@@ -75,12 +75,12 @@ func TestStructFieds_Nil_ShouldReturnEmpty(t *testing.T) {
 	var s *pointerStruct
 
 	assert.NotPanic(t, func() {
-		table.StructFieds(s)
+		table.StructFields(s)
 	})
 }
 
 func TestStructFieds_NonStruct_ShouldReturnNil(t *testing.T) {
-	fields := table.StructFieds(123)
+	fields := table.StructFields(123)
 
 	assert.Empty(t, fields)
 }

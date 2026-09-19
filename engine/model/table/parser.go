@@ -11,14 +11,14 @@ func StructHeaders[T any]() []string {
 	var zero T
 
 	headers := make([]string, 0)
-	for _, v := range StructFieds(zero) {
-		headers = append(headers, v.Header)
+	for _, f := range StructFields(zero) {
+		headers = append(headers, f.Header)
 	}
 
 	return headers
 }
 
-func StructFieds(s any) []Field {
+func StructFields(s any) []Field {
 	if s == nil {
 		return make([]Field, 0)
 	}
@@ -42,10 +42,19 @@ func StructFieds(s any) []Field {
 
 	for i := 0; i < t.NumField(); i++ {
 		field := t.Field(i)
+		if !field.IsExported() {
+			continue
+		}
+
+		header := field.Name
+		if tag := field.Tag.Get("table"); tag != "" && tag != "-" {
+			header = strings.Split(tag, ",")[0]
+		}
+
 		value := v.Field(i).Interface()
 
 		result = append(result, Field{
-			Header: field.Name,
+			Header: header,
 			Value:  value,
 		})
 	}
