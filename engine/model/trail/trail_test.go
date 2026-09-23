@@ -124,3 +124,22 @@ func TestTrail_PeekDoesNotConsume(t *testing.T) {
 	back, _ := trail.Back()
 	assert.Equal(t, "A", back.Name)
 }
+
+func TestTrail_Snapshot(t *testing.T) {
+	mockA := screen_test.MockByName("A")
+	mockB := screen_test.MockByName("B")
+	mockC := screen_test.MockByName("C")
+
+	tr := New(3, mockA)
+	tr.GoTo(mockB)
+	tr.GoTo(mockC)
+	tr.Back()
+
+	snap := tr.Snapshot()
+
+	assert.Equal(t, "B", snap.Current.Name)
+	assert.Size(t, 1, snap.Previous)
+	assert.Equal(t, "A", snap.Previous[0].Name)
+	assert.Size(t, 1, snap.Next)
+	assert.Equal(t, "C", snap.Next[0].Name)
+}
