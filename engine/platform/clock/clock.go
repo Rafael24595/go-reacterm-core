@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-var globalCounter int64
+var globalCounter atomic.Int64
 
 type Clock func() int64
 
@@ -14,6 +14,10 @@ func UnixMilliClock() int64 {
 }
 
 func GlobalCounterClock() int64 {
-	return atomic.AddInt64(&globalCounter, 1)
+	return globalCounter.Add(1)
 
+}
+
+func resetGlobalCounter() {
+	globalCounter.Store(0)
 }
