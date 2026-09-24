@@ -9,6 +9,12 @@ type Snapshot struct {
 }
 
 func (s Snapshot) ToSlice() []screen.Node {
-	items := append(s.Previous, s.Current)
-	return append(items, s.Next...)
+	total := len(s.Previous) + 1 + len(s.Next)
+	result := make([]screen.Node, 0, total)
+
+	result = append(result, s.Previous...)
+	result = append(result, s.Current)
+	result = append(result, s.Next...)
+
+	return result
 }
