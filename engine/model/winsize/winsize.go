@@ -29,5 +29,5 @@ func New(rows Rows, cols Cols) Winsize {
 }
 
 func (w Winsize) Eq(other Winsize) bool {
-	return w.Rows == other.Rows && w.Cols == other.Cols
+	return w == other
 }
