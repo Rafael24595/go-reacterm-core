@@ -12,3 +12,15 @@ func WithMargin(rows winsize.Rows, cols winsize.Cols) winsize.Transformer {
 		)
 	}
 }
+
+func Compose(transformers ...winsize.Transformer) winsize.Transformer {
+	return func(w winsize.Winsize) winsize.Winsize {
+		result := w
+		for _, tf := range transformers {
+			if tf != nil {
+				result = tf(result)
+			}
+		}
+		return result
+	}
+}
