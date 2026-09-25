@@ -511,7 +511,7 @@ func BenchmarkWrapNormalizeCached(b *testing.B) {
 	wrapper := NewWrapper(
 		WithProcessors(
 			processor.LineFeed,
-			processor.Chunk(chunk.DefaultChunk),
+			processor.Chunk(chunk.DefaultMeasure),
 		),
 		WithSplitter(
 			splitter.SplitLineWithCache(splitter.NewFragCache()),

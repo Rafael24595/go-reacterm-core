@@ -22,7 +22,7 @@ func benchmarkLine(size int) line.Line {
 func TestLine_Empty(t *testing.T) {
 	src := line.Empty()
 
-	dst := Line(src, DefaultChunk)
+	dst := Line(src, DefaultMeasure)
 
 	assert.Equal(t, 0, dst.Size())
 	assert.Equal(t, src.Hash(), dst.Hash())
@@ -144,10 +144,11 @@ func TestSplitAt_NoSplit(t *testing.T) {
 		AddText("Hello").
 		Frag()
 
-	head, tail := splitAt(src, 64)
+	head, tail, hasTail := splitAt(src, 64)
 
 	assert.Equal(t, "Hello", head.Text())
-	assert.Nil(t, tail)
+	assert.False(t, hasTail)
+	assert.DeepEqual(t, frag.Frag{}, tail)
 }
 
 func TestSplitAt_Split(t *testing.T) {
@@ -155,10 +156,10 @@ func TestSplitAt_Split(t *testing.T) {
 		AddText("abcdefghij").
 		Frag()
 
-	head, tail := splitAt(src, 4)
+	head, tail, hasTail := splitAt(src, 4)
 
 	assert.Equal(t, "abcd", head.Text())
-	assert.NotNil(t, tail)
+	assert.True(t, hasTail)
 	assert.Equal(t, "efghij", tail.Text())
 }
 
@@ -167,10 +168,10 @@ func TestSplitAt_Unicode(t *testing.T) {
 		AddText("áéíóú😀🚀").
 		Frag()
 
-	head, tail := splitAt(src, offset.Offset(4))
+	head, tail, hasTail := splitAt(src, offset.Offset(4))
 
 	assert.Equal(t, "áéíó", head.Text())
-	assert.NotNil(t, tail)
+	assert.True(t, hasTail)
 	assert.Equal(t, "ú😀🚀", tail.Text())
 }
 
@@ -179,10 +180,10 @@ func TestSplitAt_Emoji(t *testing.T) {
 		AddText("😀😀😀😀😀").
 		Frag()
 
-	head, tail := splitAt(src, 3)
+	head, tail, hasTail := splitAt(src, 3)
 
 	assert.Equal(t, "😀😀😀", head.Text())
-	assert.NotNil(t, tail)
+	assert.True(t, hasTail)
 	assert.Equal(t, "😀😀", tail.Text())
 }
 
@@ -192,7 +193,7 @@ func BenchmarkShort(b *testing.B) {
 	b.ReportAllocs()
 
 	for b.Loop() {
-		_ = Line(src, DefaultChunk)
+		_ = Line(src, DefaultMeasure)
 	}
 }
 
@@ -202,7 +203,7 @@ func BenchmarkExactChunk(b *testing.B) {
 	b.ReportAllocs()
 
 	for b.Loop() {
-		_ = Line(src, DefaultChunk)
+		_ = Line(src, DefaultMeasure)
 	}
 }
 
@@ -212,7 +213,7 @@ func Benchmark1KB(b *testing.B) {
 	b.ReportAllocs()
 
 	for b.Loop() {
-		_ = Line(src, DefaultChunk)
+		_ = Line(src, DefaultMeasure)
 	}
 }
 
@@ -222,7 +223,7 @@ func Benchmark10KB(b *testing.B) {
 	b.ReportAllocs()
 
 	for b.Loop() {
-		_ = Line(src, DefaultChunk)
+		_ = Line(src, DefaultMeasure)
 	}
 }
 
@@ -232,7 +233,7 @@ func Benchmark100KB(b *testing.B) {
 	b.ReportAllocs()
 
 	for b.Loop() {
-		_ = Line(src, DefaultChunk)
+		_ = Line(src, DefaultMeasure)
 	}
 }
 
@@ -244,7 +245,7 @@ func BenchmarkUnicode(b *testing.B) {
 	b.ReportAllocs()
 
 	for b.Loop() {
-		_ = Line(src, offset.Offset(DefaultChunk))
+		_ = Line(src, offset.Offset(DefaultMeasure))
 	}
 }
 
@@ -260,6 +261,6 @@ func BenchmarkManyFragments(b *testing.B) {
 	b.ReportAllocs()
 
 	for b.Loop() {
-		_ = Line(src, DefaultChunk)
+		_ = Line(src, DefaultMeasure)
 	}
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-const DefaultChunk = 64
+const DefaultMeasure = 64
 
 func Line(src line.Line, limit offset.Offset) line.Line {
 	if limit == 0 {
@@ -35,30 +35,30 @@ func split(
 	limit offset.Offset,
 ) {
 	for {
-		head, tail := splitAt(frg, limit)
+		head, tail, hasTail := splitAt(frg, limit)
 		builder.PushFrags(head)
 
-		if tail == nil {
+		if !hasTail {
 			break
 		}
 
-		frg = *tail
+		frg = tail
 	}
 }
 
 // TODO: Handle special atoms?
-func splitAt(frg frag.Frag, limit offset.Offset) (frag.Frag, *frag.Frag) {
+func splitAt(frg frag.Frag, limit offset.Offset) (frag.Frag, frag.Frag, bool) {
 	text := frg.Text()
 
 	byteIndex, canBreak := runes.RuneIndexToByteIndex(text, limit)
 	if !canBreak || int(byteIndex) >= len(text) {
-		return frg, nil
+		return frg, frag.Frag{}, false
 	}
 
 	head := clone(frg, text[:byteIndex])
 	tail := clone(frg, text[byteIndex:])
 
-	return head, &tail
+	return head, tail, true
 }
 
 func clone(frg frag.Frag, text string) frag.Frag {

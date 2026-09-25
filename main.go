@@ -142,7 +142,7 @@ func makeWrapper(cache system_cache.Cache[hash.Hash, delta.Delta]) wrap.Wrapper 
 	return wrap.FromWrapper(
 		wrap.DefaultWrapper(),
 		wrap.WithProcessors(
-			wrap_processor.Chunk(chunk.DefaultChunk),
+			wrap_processor.Chunk(chunk.DefaultMeasure),
 		),
 		wrap.WithSplitter(
 			wrap_splitter.SplitLineWithCache(cache),
