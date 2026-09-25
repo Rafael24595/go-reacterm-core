@@ -20,7 +20,7 @@ const Name = "index_menu_unit"
 type IndexMenuUnit struct {
 	loaded  bool
 	pointer Pointer
-	meta    marker.IndexMeta
+	indexer format.IndexProvider
 	options []frag.Frag
 	cursor  uint16
 	unit    drawable.Unit
@@ -33,7 +33,7 @@ func New(options []frag.Frag) *IndexMenuUnit {
 	return &IndexMenuUnit{
 		loaded:  false,
 		pointer: pointerSelect,
-		meta:    marker.HyphenIndex,
+		indexer: format.HyphenIndex,
 		options: clone,
 		cursor:  0,
 		unit:    drawable.Unit{},
@@ -49,8 +49,8 @@ func (u *IndexMenuUnit) Pointer(pointer Pointer) *IndexMenuUnit {
 	return u
 }
 
-func (u *IndexMenuUnit) Meta(meta marker.IndexMeta) *IndexMenuUnit {
-	u.meta = meta
+func (u *IndexMenuUnit) Indexer(indexer format.IndexProvider) *IndexMenuUnit {
+	u.indexer = indexer
 	return u
 }
 
@@ -74,6 +74,7 @@ func (u *IndexMenuUnit) boot() {
 	lines := make([]line.Line, 0)
 
 	digits := math.Digits(len(u.options))
+	generator := u.indexer(winsize.Cols(digits))
 
 	for i, o := range u.options {
 		focusAtom := atom.None
@@ -87,7 +88,7 @@ func (u *IndexMenuUnit) boot() {
 
 		alignFrag := frag.FromSpec(spec.JustifyRight(2))
 
-		indexFrag := u.makeIndex(i, winsize.Cols(digits)).
+		indexFrag := u.makeIndex(i, generator).
 			AddAtom(selectAtom).
 			Frag()
 
@@ -115,50 +116,10 @@ func (u *IndexMenuUnit) boot() {
 	u.unit = unit
 }
 
-func (u *IndexMenuUnit) makeIndex(cursor int, digits winsize.Cols) *frag.Builder {
-	if u.meta.Kind == marker.Numeric {
-		return u.makeNumericIndex(cursor, digits)
-	}
+func (u *IndexMenuUnit) makeIndex(cursor int, generator format.Index) *frag.Builder {
+	txt := generator(int(u.cursor), cursor)
 
-	if u.meta.Kind == marker.Alphabetic {
-		return u.makeAlphabeticIndex(cursor, digits)
-	}
-
-	return u.makeCustomIndex(cursor)
-}
-
-func (u *IndexMenuUnit) makeCustomIndex(cursor int) *frag.Builder {
-	data := u.meta.Index
-	if cursor == int(u.cursor) {
-		data = u.meta.Cursor
-	}
-
-	return frag.NewBuilder().
-		AddText(data)
-}
-
-func (u *IndexMenuUnit) makeNumericIndex(cursor int, digits winsize.Cols) *frag.Builder {
-	text := format.TextFromAny(cursor + 1)
-	return u.makeTextIndex(cursor, digits, text)
-}
-
-func (u *IndexMenuUnit) makeAlphabeticIndex(cursor int, digits winsize.Cols) *frag.Builder {
-	text := format.TextFromAny(
-		format.NumberToAlpha(cursor),
-	)
-	return u.makeTextIndex(cursor, digits, text)
-}
-
-func (u *IndexMenuUnit) makeTextIndex(cursor int, digits winsize.Cols, text format.Text) *frag.Builder {
-	filler := marker.DefaultPaddingText
-	data := format.JustifyLeft(digits, text, filler)
-	return u.makeCommonIndex(cursor, data)
-}
-
-func (u *IndexMenuUnit) makeCommonIndex(cursor int, txt string) *frag.Builder {
-	index := frag.NewBuilder().
-		AddText(txt + ".- ")
-
+	index := frag.NewBuilder().AddText(txt)
 	if u.pointer == pointerBold && cursor == int(u.cursor) {
 		index.AddAtom(atom.Bold)
 	}

@@ -6,9 +6,9 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/partial/pipeline/header"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/node/primitive/indexmenu"
+	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/runes"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
@@ -51,7 +51,7 @@ func NewDemoSelect() screen.Node {
 
 	node := indexmenu.New().
 		SetName("indexmenu - tortor").
-		SetMeta(marker.NumericIndex).
+		WithIndexer(format.NumericListIndex()).
 		AddOptions(options...).
 		SetCursor(0).
 		ToNode()

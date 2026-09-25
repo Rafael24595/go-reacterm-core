@@ -8,11 +8,11 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/app/screen/keymap"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/state"
 	"github.com/Rafael24595/go-reacterm-core/engine/app/viewmodel"
+	"github.com/Rafael24595/go-reacterm-core/engine/format"
 	"github.com/Rafael24595/go-reacterm-core/engine/helper/math"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/decorator/inputline"
 	"github.com/Rafael24595/go-reacterm-core/engine/layout/drawable/widget/indexmenu"
 	"github.com/Rafael24595/go-reacterm-core/engine/model/input"
-	"github.com/Rafael24595/go-reacterm-core/engine/render/marker"
 )
 
 const Name = "index_menu"
@@ -23,7 +23,7 @@ type IndexMenu struct {
 	bindings   *keymap.Bindings[Command]
 	definition screen.Definition
 	pointer    uint8
-	meta       marker.IndexMeta
+	indexer    format.IndexProvider
 	options    []input.MenuOption
 	cursor     uint16
 }
@@ -35,7 +35,7 @@ func New() *IndexMenu {
 		bindings:   defaultBindings,
 		definition: screen.EmptyDefinition(),
 		pointer:    0,
-		meta:       marker.HyphenIndex,
+		indexer:    format.HyphenIndex,
 		options:    make([]input.MenuOption, 0),
 		cursor:     0,
 	}
@@ -56,13 +56,13 @@ func (n *IndexMenu) WithBindings(overrides *keymap.Bindings[Command]) *IndexMenu
 	return n
 }
 
-func (n *IndexMenu) SetMeta(meta marker.IndexMeta) *IndexMenu {
+func (n *IndexMenu) WithIndexer(indexer format.IndexProvider) *IndexMenu {
 	if n.loaded {
 		assert.Unreachable(screen.MessageModified)
 		return n
 	}
 
-	n.meta = meta
+	n.indexer = indexer
 	return n
 }
 
@@ -191,7 +191,7 @@ func (n *IndexMenu) view(uiState state.UIState) viewmodel.ViewModel {
 
 	indexmenu := indexmenu.New(frags).
 		Pointer(pointer).
-		Meta(n.meta).
+		Indexer(n.indexer).
 		Cursor(n.cursor)
 
 	vm.Kernel.Push(
