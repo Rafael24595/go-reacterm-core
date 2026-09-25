@@ -8,8 +8,10 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
+// DefaultMeasure represents the default maximum fragment width in character cells.
 const DefaultMeasure = 64
 
+// Line partitions a line's fragments so that no individual fragment exceeds the specified offset limit.
 func Line(src line.Line, limit offset.Offset) line.Line {
 	if limit == 0 {
 		return src
