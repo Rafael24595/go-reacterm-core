@@ -11,24 +11,24 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-type Standard struct {
+type standard struct {
 	atom styler.Atom
 	spec styler.Spec
 }
 
-func New(atom styler.Atom, spec styler.Spec) Standard {
-	return Standard{
+func New(atom styler.Atom, spec styler.Spec) standard {
+	return standard{
 		atom: atom,
 		spec: spec,
 	}
 }
 
-func (r Standard) Render(lines []line.Line, size winsize.Winsize) string {
+func (r standard) Render(lines []line.Line, size winsize.Winsize) string {
 	buffer := r.RawRender(lines, size)
 	return strings.Join(buffer, "\n")
 }
 
-func (r Standard) RawRender(lines []line.Line, size winsize.Winsize) []string {
+func (r standard) RawRender(lines []line.Line, size winsize.Winsize) []string {
 	buffer := make([]string, len(lines))
 
 	for i, lne := range lines {
@@ -43,7 +43,7 @@ func (r Standard) RawRender(lines []line.Line, size winsize.Winsize) []string {
 	return buffer
 }
 
-func (r Standard) renderLineFrags(line line.Line, size winsize.Winsize) string {
+func (r standard) renderLineFrags(line line.Line, size winsize.Winsize) string {
 	var buffer strings.Builder
 
 	frags := ""
