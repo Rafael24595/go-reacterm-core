@@ -29,6 +29,10 @@ func (r standard) Render(lines []line.Line, size winsize.Winsize) string {
 }
 
 func (r standard) RawRender(lines []line.Line, size winsize.Winsize) []string {
+	if len(lines) == 0 {
+		return []string{}
+	}
+
 	buffer := make([]string, len(lines))
 
 	for i, lne := range lines {
@@ -44,10 +48,10 @@ func (r standard) RawRender(lines []line.Line, size winsize.Winsize) []string {
 }
 
 func (r standard) renderLineFrags(line line.Line, size winsize.Winsize) string {
-	var buffer strings.Builder
+	var lineBuffer strings.Builder
+	var fragBuffer strings.Builder
 
-	frags := ""
-	atoms := atom.None
+	currentAtom := atom.None
 
 	lineSize := winsize.New(
 		size.Rows,
@@ -65,24 +69,21 @@ func (r standard) renderLineFrags(line line.Line, size winsize.Winsize) string {
 		fragSize := frag.Measure(size.Cols, *f)
 		lineSize.Cols = lineSize.Cols.Sub(fragSize)
 
-		if atoms != f.Atom() && len(frags) != 0 {
-			atom := r.atom.Apply(frags, atoms)
-			buffer.WriteString(atom)
+		if currentAtom != f.Atom() && fragBuffer.Len() != 0 {
+			atom := r.atom.Apply(fragBuffer.String(), currentAtom)
+			lineBuffer.WriteString(atom)
 
-			frags = spec
-			atoms = f.Atom()
-
-			continue
+			fragBuffer.Reset()
 		}
 
-		frags += spec
-		atoms = f.Atom()
+		fragBuffer.WriteString(spec)
+		currentAtom = f.Atom()
 	}
 
-	if len(frags) != 0 {
-		atom := r.atom.Apply(frags, atoms)
-		buffer.WriteString(atom)
+	if fragBuffer.Len() != 0 {
+		atom := r.atom.Apply(fragBuffer.String(), currentAtom)
+		lineBuffer.WriteString(atom)
 	}
 
-	return buffer.String()
+	return lineBuffer.String()
 }
