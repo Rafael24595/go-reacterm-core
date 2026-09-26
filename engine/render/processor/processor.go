@@ -41,15 +41,19 @@ func WithPadding(
 
 		index := topPadding
 		for _, line := range content {
-			fixed := format.PatternRight(
-				leftPadding, format.TextFromString(filler),
-			)
+			fixed := ""
+			if leftPadding > 0 {
+				fixed = format.PatternRight(
+					leftPadding, format.TextFromString(filler),
+				)
+			}
 
 			buffer[index] = format.JustifyLeft(
 				size.Cols,
 				format.TextFromString(fixed+line),
 				filler,
 			)
+			
 			index += 1
 		}
 
