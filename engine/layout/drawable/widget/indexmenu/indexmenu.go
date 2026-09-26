@@ -119,7 +119,7 @@ func (u *IndexMenuUnit) boot() {
 func (u *IndexMenuUnit) makeIndex(cursor int, generator format.Index) *frag.Builder {
 	txt := generator(int(u.cursor), cursor)
 
-	index := frag.NewBuilder().AddText(txt)
+	index := frag.NewBuilder(txt)
 	if u.pointer == pointerBold && cursor == int(u.cursor) {
 		index.AddAtom(atom.Bold)
 	}

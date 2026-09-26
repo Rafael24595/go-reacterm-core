@@ -145,8 +145,8 @@ func TestBuilderUnshiftFrags(t *testing.T) {
 }
 
 func TestBuilderSetBuilder(t *testing.T) {
-	fb1 := frag.NewBuilder().AddText("A")
-	fb2 := frag.NewBuilder().AddText("B")
+	fb1 := frag.NewBuilder("A")
+	fb2 := frag.NewBuilder("B")
 
 	b := NewBuilder().
 		PushText("Old").
@@ -175,11 +175,11 @@ func TestBuilderPushBuilder(t *testing.T) {
 func TestBuilderUnshiftBuilder(t *testing.T) {
 	builder := NewBuilder().
 		PushBuilder(
-			frag.NewBuilder().AddText("C"),
+			frag.NewBuilder("C"),
 		).
 		UnshiftBuilder(
-			frag.NewBuilder().AddText("A"),
-			frag.NewBuilder().AddText("B"),
+			frag.NewBuilder("A"),
+			frag.NewBuilder("B"),
 		)
 
 	assert.Equal(t, "A", builder.Text[0].Text())

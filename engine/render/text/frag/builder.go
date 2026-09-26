@@ -1,6 +1,8 @@
 package frag
 
 import (
+	"strings"
+
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 )
@@ -11,9 +13,9 @@ type Builder struct {
 	Spec spec.Spec
 }
 
-func NewBuilder() *Builder {
+func NewBuilder(text ...string) *Builder {
 	return &Builder{
-		Text: "",
+		Text: strings.Join(text, ""),
 		Atom: atom.None,
 		Spec: spec.Empty(),
 	}
