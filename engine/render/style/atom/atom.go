@@ -1,5 +1,7 @@
 package atom
 
+import "strings"
+
 type Atom uint16
 
 const (
@@ -48,15 +50,53 @@ func Erase(target, styles Atom) Atom {
 	return target
 }
 
-func (s Atom) HasAny(styles ...Atom) bool {
+func (a Atom) HasAny(styles ...Atom) bool {
 	for _, style := range styles {
-		if s&style != 0 {
+		if a&style != 0 {
 			return true
 		}
 	}
 	return false
 }
 
+func (a Atom) HasAll(styles ...Atom) bool {
+	for _, style := range styles {
+		if a&style != style {
+			return false
+		}
+	}
+	return true
+}
+
 func (s Atom) HasNone(styles ...Atom) bool {
 	return !s.HasAny(styles...)
+}
+
+func (a Atom) String() string {
+	if a == None {
+		return "None"
+	}
+
+	var parts []string
+	flags := []struct {
+		flag Atom
+		name string
+	}{
+		{Upper, "Upper"},
+		{Lower, "Lower"},
+		{Bold, "Bold"},
+		{Dim, "Dim"},
+		{Select, "Select"},
+		{Focus, "Focus"},
+		{Wrap, "Wrap"},
+		{Break, "Break"},
+	}
+
+	for _, f := range flags {
+		if a.HasAny(f.flag) {
+			parts = append(parts, f.name)
+		}
+	}
+
+	return strings.Join(parts, "|")
 }
