@@ -8,7 +8,7 @@ const (
 	// Text atoms:
 
 	// Upper renders the element in uppercase.
-	Upper Atom = 1 << iota
+	Upper Atom = 1 << (iota - 1)
 	// Lower renders the element in lowercase.
 	Lower
 
