@@ -15,10 +15,21 @@ type sinkRule struct {
 	fn   sinkFn
 }
 
-var sinkipeline = [...]sinkRule{
+var sinkPipeline = [...]sinkRule{
 	{spec.KindJustifyRight, sinkLinePaddingLeft},
 	{spec.KindJustifyLeft, sinkLinePaddingRight},
 	{spec.KindJustifyCenter, sinkLinePaddingCenter},
+}
+
+// ApplySinks evaluates and converts line-level alignment specs into padding fragments.
+func ApplySinks(line line.Line, cols winsize.Cols) line.Line {
+	for _, t := range sinkPipeline {
+		if !line.Spec().Kind().HasAny(t.kind) {
+			continue
+		}
+		line = t.fn(t.kind, line, cols)
+	}
+	return line
 }
 
 func sinkLinePaddingLeft(style spec.Kind, lne line.Line, _ winsize.Cols) line.Line {
@@ -82,14 +93,4 @@ func sinkLinePaddingCenter(style spec.Kind, lne line.Line, cols winsize.Cols) li
 	}
 
 	return builder.Line()
-}
-
-func ApplySinks(line line.Line, cols winsize.Cols) line.Line {
-	for _, t := range sinkipeline {
-		if !line.Spec().Kind().HasAny(t.kind) {
-			continue
-		}
-		line = t.fn(t.kind, line, cols)
-	}
-	return line
 }
