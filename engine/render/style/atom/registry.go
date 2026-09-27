@@ -2,15 +2,18 @@ package atom
 
 import "iter"
 
+// Descriptor holds metadata associating an Atom bitmask flag with its textual name.
 type Descriptor struct {
 	atom Atom
 	name string
 }
 
+// Atom returns the Atom flag associated with this descriptor.
 func (d Descriptor) Atom() Atom {
 	return d.atom
 }
 
+// Name returns the textual representation/name of the Atom flag.
 func (d Descriptor) Name() string {
 	return d.name
 }
@@ -60,11 +63,13 @@ var registry = [...]Descriptor{
 	},
 }
 
+// Lookup searches for a registered Descriptor corresponding to the given Atom flag.
 func Lookup(atom Atom) (Descriptor, bool) {
 	desc, ok := lookup[atom]
 	return desc, ok
 }
 
+// Registry returns an iterator yielding all registered Atom descriptors in order.
 func Registry() iter.Seq[*Descriptor] {
 	return func(yield func(*Descriptor) bool) {
 		for i := range registry {
