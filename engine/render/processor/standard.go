@@ -16,6 +16,7 @@ type standard struct {
 	spec styler.Spec
 }
 
+// New constructs a standard processor with the given atom and spec styling rules.
 func New(atom styler.Atom, spec styler.Spec) standard {
 	return standard{
 		atom: atom,
@@ -23,11 +24,13 @@ func New(atom styler.Atom, spec styler.Spec) standard {
 	}
 }
 
+// Render processes all lines and returns a single newline-delimited string ready for output.
 func (r standard) Render(lines []line.Line, size winsize.Winsize) string {
 	buffer := r.RawRender(lines, size)
 	return strings.Join(buffer, "\n")
 }
 
+// RawRender converts each line into its corresponding styled string representation.
 func (r standard) RawRender(lines []line.Line, size winsize.Winsize) []string {
 	if len(lines) == 0 {
 		return []string{}
