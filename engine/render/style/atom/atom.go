@@ -2,6 +2,7 @@ package atom
 
 import "strings"
 
+// Atom represents a bitmask combination of style, text, and structural flags.
 type Atom uint16
 
 const (
@@ -33,10 +34,12 @@ const (
 	Break
 )
 
+// Uint16 returns the underlying uint16 representation of the Atom bitmask.
 func (s Atom) Uint16() uint16 {
 	return uint16(s)
 }
 
+// Merge combines multiple Atom bitmasks into a single composite Atom using bitwise OR.
 func Merge(styles ...Atom) Atom {
 	var merged Atom
 	for _, style := range styles {
@@ -45,11 +48,13 @@ func Merge(styles ...Atom) Atom {
 	return merged
 }
 
+// Erase removes the specified style flags from the target Atom bitmask using bitwise AND NOT.
 func Erase(target, styles Atom) Atom {
 	target &= ^styles
 	return target
 }
 
+// HasAny returns true if the Atom contains at least one of the provided style flags.
 func (a Atom) HasAny(styles ...Atom) bool {
 	for _, style := range styles {
 		if a&style != 0 {
@@ -59,6 +64,7 @@ func (a Atom) HasAny(styles ...Atom) bool {
 	return false
 }
 
+// HasAll returns true if the Atom contains ALL of the provided style flags.
 func (a Atom) HasAll(styles ...Atom) bool {
 	for _, style := range styles {
 		if a&style != style {
@@ -68,10 +74,12 @@ func (a Atom) HasAll(styles ...Atom) bool {
 	return true
 }
 
+// HasNone returns true if the Atom contains NONE of the provided style flags.
 func (s Atom) HasNone(styles ...Atom) bool {
 	return !s.HasAny(styles...)
 }
 
+// String returns a human-readable representation of active flags for debugging.
 func (a Atom) String() string {
 	if a == None {
 		return "None"
