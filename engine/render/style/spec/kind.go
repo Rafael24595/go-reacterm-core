@@ -47,6 +47,15 @@ func (s Kind) HasAny(styles ...Kind) bool {
 	return false
 }
 
+func (s Kind) HasAll(styles ...Kind) bool {
+	for _, style := range styles {
+		if s&style == 0 {
+			return false
+		}
+	}
+	return true
+}
+
 func (s Kind) HasNone(styles ...Kind) bool {
 	return !s.HasAny(styles...)
 }
