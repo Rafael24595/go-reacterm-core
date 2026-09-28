@@ -39,6 +39,7 @@ var lookup map[Kind]Descriptor
 var registry = [...]Descriptor{
 	{
 		kind: KindJustifyRight,
+		name: "JustifyRight",
 		args: []ArgKey{
 			KeyJustifyRightSize,
 			KeyJustifyRightText,
