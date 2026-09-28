@@ -69,11 +69,9 @@ func (a *args) Copy(src args) argMap {
 func (a *args) Clone() args {
 	a.lazyInit()
 
-	args := args{}
-	for k, v := range a.items {
-		args.Set(k, v)
+	return args{
+		items: maps.Clone(a.items),
 	}
-	return args
 }
 
 func (a *args) Items() argMap {

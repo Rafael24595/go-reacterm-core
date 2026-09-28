@@ -5,9 +5,12 @@ import (
 	"testing"
 
 	assert "github.com/Rafael24595/go-assert/assert/test"
+	
 	"github.com/Rafael24595/go-reacterm-core/engine/app/hash"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/atom"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
+
+	style_test "github.com/Rafael24595/go-reacterm-core/test/engine/style"
 )
 
 func TestNew(t *testing.T) {
@@ -33,8 +36,9 @@ func TestClone(t *testing.T) {
 
 	assert.Equal(t, frg.text, clone.text)
 	assert.Equal(t, frg.atom, clone.atom)
-	assert.DeepEqual(t, frg.spec, clone.spec)
 	assert.Equal(t, frg.Hash(), clone.Hash())
+
+	style_test.SpecEquals(t, frg.spec, clone.spec)
 }
 
 func TestMeasure_Empty(t *testing.T) {

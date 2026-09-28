@@ -9,6 +9,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/style/spec"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
+	
+	style_test "github.com/Rafael24595/go-reacterm-core/test/engine/style"
 )
 
 func TestNew(t *testing.T) {
@@ -134,9 +136,10 @@ func TestClone(t *testing.T) {
 	clone := lne.Clone()
 
 	assert.Equal(t, clone.order, lne.order)
-	assert.DeepEqual(t, clone.spec, lne.spec)
 	assert.DeepEqual(t, clone.text, lne.text)
 	assert.Equal(t, lne.hash, clone.hash)
+
+	style_test.SpecEquals(t, lne.spec, clone.spec)
 }
 
 func TestHash_LazyEvaluation(t *testing.T) {
