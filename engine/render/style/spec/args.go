@@ -49,9 +49,13 @@ func (a *args) Delete(key ArgKey) (dynamic.Value, bool) {
 		return zero, false
 	}
 
-	old := a.items[key]
-	delete(a.items, key)
+	old, ok := a.items[key]
+	if !ok {
+		var zero dynamic.Value
+		return zero, false
+	}
 
+	delete(a.items, key)
 	return old, true
 }
 
