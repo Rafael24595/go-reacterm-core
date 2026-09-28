@@ -135,8 +135,8 @@ func TestArgsClone(t *testing.T) {
 
 	assert.Equal(
 		t,
-		src.Get(KeyJustifyLeftText).IntOr(0),
-		clone.Get(KeyJustifyLeftText).IntOr(0),
+		src.Get(KeyJustifyLeftText).StringOr(""),
+		clone.Get(KeyJustifyLeftText).StringOr(""),
 	)
 }
 
