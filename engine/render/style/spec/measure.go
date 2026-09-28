@@ -5,6 +5,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/model/winsize"
 )
 
+// LayoutContext provides the boundaries and current measurements required to measure layout transformations.
 type LayoutContext struct {
 	SizeCols winsize.Cols
 	TextSize winsize.Cols
@@ -77,6 +78,7 @@ func measureExtendRight(spec Spec, ctx LayoutContext) winsize.Cols {
 	return max(ctx.TextSize, arg)
 }
 
+// Measure calculates the target line size in columns after executing the pipeline of operations defined in Spec.
 func Measure(spec Spec, ctx LayoutContext) winsize.Cols {
 	for i := range measurePipeline {
 		rule := &measurePipeline[i]
@@ -89,6 +91,7 @@ func Measure(spec Spec, ctx LayoutContext) winsize.Cols {
 	return ctx.TextSize
 }
 
+// MeasureOf calculates the layout size for a single, specific Kind transformation within a Spec.
 func MeasureOf(kind Kind, spec Spec, ctx LayoutContext) winsize.Cols {
 	if fn, ok := measureLookup[kind]; ok {
 		return fn(spec, ctx)

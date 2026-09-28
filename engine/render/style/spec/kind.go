@@ -1,5 +1,6 @@
 package spec
 
+// Kind defines a bitmask representing composite visual transformation capabilities.
 type Kind uint64
 
 const (
@@ -34,10 +35,12 @@ const (
 	KindFill
 )
 
+// Uint64 returns the primitive uint64 scalar representation of the Kind flag.
 func (s Kind) Uint64() uint64 {
 	return uint64(s)
 }
 
+// HasAny reports whether any of the specified target Kind flags are set.
 func (s Kind) HasAny(styles ...Kind) bool {
 	for _, style := range styles {
 		if s&style != 0 {
@@ -47,6 +50,7 @@ func (s Kind) HasAny(styles ...Kind) bool {
 	return false
 }
 
+// HasAll reports whether all of the specified target Kind flags are set.
 func (s Kind) HasAll(styles ...Kind) bool {
 	for _, style := range styles {
 		if s&style == 0 {
@@ -56,10 +60,12 @@ func (s Kind) HasAll(styles ...Kind) bool {
 	return true
 }
 
+// HasNone reports whether none of the specified target Kind flags are set.
 func (s Kind) HasNone(styles ...Kind) bool {
 	return !s.HasAny(styles...)
 }
 
+// ArgKey identifies specific key parameters inside a Spec's argument store.
 type ArgKey uint8
 
 const (
@@ -99,6 +105,7 @@ const (
 	KeyFillSize
 )
 
+// Uint8 returns the primitive uint8 scalar representation of the ArgKey.
 func (s ArgKey) Uint8() uint8 {
 	return uint8(s)
 }

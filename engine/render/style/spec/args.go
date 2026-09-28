@@ -19,6 +19,7 @@ func (a *args) lazyInit() *args {
 	return a
 }
 
+// Get retrieves the dynamic Value associated with key, returning zero Value if absent.
 func (a *args) Get(key ArgKey) dynamic.Value {
 	if a.items == nil {
 		var zero dynamic.Value
@@ -28,6 +29,7 @@ func (a *args) Get(key ArgKey) dynamic.Value {
 	return a.items[key]
 }
 
+// TryGet attempts to retrieve the Value for key, returning the value and existence boolean.
 func (a *args) TryGet(key ArgKey) (dynamic.Value, bool) {
 	if a.items == nil {
 		var zero dynamic.Value
@@ -38,11 +40,13 @@ func (a *args) TryGet(key ArgKey) (dynamic.Value, bool) {
 	return v, ok
 }
 
+// Set stores the specified key-value pair, lazily initializing storage if needed.
 func (a *args) Set(key ArgKey, value dynamic.Value) {
 	a.lazyInit()
 	a.items[key] = value
 }
 
+// Delete removes the value for key, returning the deleted value and a boolean indicating if it existed.
 func (a *args) Delete(key ArgKey) (dynamic.Value, bool) {
 	if a.items == nil {
 		var zero dynamic.Value
@@ -59,6 +63,7 @@ func (a *args) Delete(key ArgKey) (dynamic.Value, bool) {
 	return old, true
 }
 
+// Copy merges all key-value pairs from src into current storage, returning the underlying map.
 func (a *args) Copy(src args) argMap {
 	a.lazyInit()
 
@@ -66,6 +71,7 @@ func (a *args) Copy(src args) argMap {
 	return a.items
 }
 
+// Clone creates a deep copy of the args instance, duplicating internal map entries.
 func (a *args) Clone() args {
 	a.lazyInit()
 
@@ -74,6 +80,7 @@ func (a *args) Clone() args {
 	}
 }
 
+// Items returns the internal argument map representation, initializing it lazily if unallocated.
 func (a *args) Items() argMap {
 	a.lazyInit()
 	return a.items

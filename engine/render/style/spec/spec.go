@@ -2,6 +2,7 @@ package spec
 
 import "github.com/Rafael24595/go-reacterm-core/engine/app/hash"
 
+// Spec encapsulates layout transform kinds, key-value argument metadata, and memoized hashing.
 type Spec struct {
 	kind   Kind
 	args   args
@@ -9,11 +10,39 @@ type Spec struct {
 	hashed bool
 }
 
+// New constructs a Spec instance with specified Kind flags and internal argument metadata.
 func New(kind Kind, args args) Spec {
 	return Spec{
 		kind: kind,
 		args: args,
 	}
+}
+
+// Kind returns the composite Kind bitmask flag of this Spec.
+func (s Spec) Kind() Kind {
+	return s.kind
+}
+
+// Args returns an immutable copy or map representation of internal argument values.
+func (s Spec) Args() argMap {
+	return s.args.Items()
+}
+
+// Hash returns the 64-bit hash representation of the Spec, memoizing the result lazily.
+func (s *Spec) Hash() hash.Hash {
+	if s.hashed {
+		return s.hash
+	}
+
+	s.hash = calcHash(
+		hash.New(),
+		s.kind,
+		s.args,
+	).Sum64()
+
+	s.hashed = true
+
+	return s.hash
 }
 
 func calcHash(
@@ -42,30 +71,7 @@ func calcHash(
 	return hasher
 }
 
-func (s Spec) Kind() Kind {
-	return s.kind
-}
-
-func (s Spec) Args() argMap {
-	return s.args.Items()
-}
-
-func (s *Spec) Hash() hash.Hash {
-	if s.hashed {
-		return s.hash
-	}
-
-	s.hash = calcHash(
-		hash.New(),
-		s.kind,
-		s.args,
-	).Sum64()
-
-	s.hashed = true
-
-	return s.hash
-}
-
+// Clone creates a deep copy of the Spec, duplicating internal argument stores.
 func (s Spec) Clone() Spec {
 	return Spec{
 		kind:   s.kind,
@@ -75,12 +81,14 @@ func (s Spec) Clone() Spec {
 	}
 }
 
+// Merge combines multiple Spec instances into a single unified Spec.
 func Merge(styles ...Spec) Spec {
 	return newBuilder().
 		apply(styles...).
 		build()
 }
 
+// Erase strips the specified Kind flags from the source Spec, returning the updated Spec and the deleted Spec.
 func Erase(spec Spec, kinds Kind) (Spec, Spec) {
 	builder := newBuilder(spec)
 	deleted := builder.erase(kinds)
