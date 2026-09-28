@@ -8,7 +8,7 @@ const (
 	// Alignment kinds:
 
 	// KindJustifyLeft aligns the text to the left.
-	KindJustifyLeft Kind = 1 << iota
+	KindJustifyLeft Kind = 1 << (iota - 1)
 	// KindJustifyRight aligns the text to the right.
 	KindJustifyRight
 	// KindJustifyCenter centers the text.
