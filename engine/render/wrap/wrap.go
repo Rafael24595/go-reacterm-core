@@ -13,16 +13,16 @@ import (
 )
 
 var once sync.Once
-var wrapper = NewWrapper()
+var wrapper = DefaultWrapper()
 
 type Wrapper struct {
 	processors []processor.Line
 	splitter   splitter.Line
 }
 
-func NewWrapper(opts ...Option) Wrapper {
+func NewWrapper(splitter splitter.Line, opts ...Option) Wrapper {
 	return FromWrapper(
-		DefaultWrapper(), opts...,
+		Wrapper{splitter: splitter}, opts...,
 	)
 }
 

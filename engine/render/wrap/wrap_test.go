@@ -490,11 +490,9 @@ func BenchmarkRender_StyleChange(b *testing.B) {
 
 func BenchmarkWrapNormalize(b *testing.B) {
 	wrapper := NewWrapper(
+		splitter.SplitLine,
 		WithProcessors(
 			processor.LineFeed,
-		),
-		WithSplitter(
-			splitter.SplitLine,
 		),
 	)
 
@@ -509,12 +507,10 @@ func BenchmarkWrapNormalize(b *testing.B) {
 
 func BenchmarkWrapNormalizeCached(b *testing.B) {
 	wrapper := NewWrapper(
+		splitter.SplitLineWithCache(splitter.NewFragCache()),
 		WithProcessors(
 			processor.LineFeed,
 			processor.Chunk(chunk.DefaultMeasure),
-		),
-		WithSplitter(
-			splitter.SplitLineWithCache(splitter.NewFragCache()),
 		),
 	)
 
