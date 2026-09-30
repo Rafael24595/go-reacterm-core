@@ -11,10 +11,12 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/wrap/layout"
 )
 
+// SplitLine decomposes a line into word layout metadata and fragments using default word boundaries.
 func SplitLine(line line.Line) ([]layout.Word, []layout.Frag) {
 	return SplitLineWith(SplitFragByWords, line)
 }
 
+// SplitLineWith decomposes a line into layout words and fragments using a custom fragment splitting strategy.
 func SplitLineWith(splitter Frag, lne line.Line) ([]layout.Word, []layout.Frag) {
 	builder := delta.NewBuilder()
 
@@ -33,6 +35,7 @@ func SplitLineWith(splitter Frag, lne line.Line) ([]layout.Word, []layout.Frag) 
 	return wrds, builder.Frags
 }
 
+// SplitFragByWords tokenizes a fragment text into distinct word and whitespace sub-fragments, returning delta boundaries.
 func SplitFragByWords(frg frag.Frag) delta.Delta {
 	var sb strings.Builder
 
