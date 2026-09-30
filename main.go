@@ -75,7 +75,7 @@ func main() {
 		pass.ValidateStructure,
 	}
 
-	cache := system_cache.NewMemory[hash.Hash, delta.Delta]()
+	cache := wrap_splitter.NewFragCache()
 
 	wrap.DefineWrapper(
 		makeWrapper(cache),
