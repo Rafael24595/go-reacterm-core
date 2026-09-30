@@ -15,17 +15,20 @@ import (
 var once sync.Once
 var wrapper = DefaultWrapper()
 
+// Wrapper coordinates line pre-processing, word/fragment splitting, and layout normalization.
 type Wrapper struct {
 	processors []processor.Line
 	splitter   splitter.Line
 }
 
+// NewWrapper constructs a Wrapper instance initialized with the specified line splitter and optional functional overrides.
 func NewWrapper(splitter splitter.Line, opts ...Option) Wrapper {
 	return FromWrapper(
 		Wrapper{splitter: splitter}, opts...,
 	)
 }
 
+// FromWrapper creates a new Wrapper by applying Option mutation closures to an existing base configuration.
 func FromWrapper(cfg Wrapper, opts ...Option) Wrapper {
 	for _, opt := range opts {
 		opt(&cfg)
@@ -33,6 +36,7 @@ func FromWrapper(cfg Wrapper, opts ...Option) Wrapper {
 	return cfg
 }
 
+// DefineWrapper configures the package-level default Wrapper instance once, returning true if successfully set.
 func DefineWrapper(w Wrapper) bool {
 	set := false
 	once.Do(func() {
@@ -72,14 +76,17 @@ func (w Wrapper) proccess(order bool, lines ...line.Line) []line.Line {
 	return processed
 }
 
+// NormalizeLines maps input lines to layout Line representations using the package default wrapper without ordering.
 func NormalizeLines(lines ...line.Line) []layout.Line {
 	return wrapper.normalize(false, lines...)
 }
 
+// NormalizeLinesWithOrder maps input lines to layout Line representations using the package default wrapper with ordering.
 func NormalizeLinesWithOrder(lines ...line.Line) []layout.Line {
 	return wrapper.normalize(true, lines...)
 }
 
+// MaterializeEmpty populates zero-width layout lines with placeholder text while inheriting metadata from existing fragments.
 func MaterializeEmpty(
 	size winsize.Winsize,
 	placeholder string,
@@ -112,10 +119,12 @@ func MaterializeEmpty(
 	return lines
 }
 
+// Line wraps a single text line to fit within the specified column capacity boundary.
 func Line(cols winsize.Cols, lne line.Line) []line.Line {
 	return wrapLine(cols, lne, make([]line.Line, 0, 2))
 }
 
+// Lines wraps multiple text lines to fit within specified column constraints, appending results to a unified slice.
 func Lines(cols winsize.Cols, lns ...line.Line) []line.Line {
 	result := make([]line.Line, 0, len(lns)*2)
 
@@ -142,11 +151,13 @@ func wrapLine(cols winsize.Cols, lne line.Line, dst []line.Line) []line.Line {
 	return dst
 }
 
+// NextLine wraps the primary head line within capacity limits and returns the resulting Line and remaining unparsed layout lines.
 func NextLine(cols winsize.Cols, lns []layout.Line) (*line.Line, []layout.Line) {
 	builder, remain := NextBuilder(cols, lns)
 	return builder.LinePtr(), remain
 }
 
+// NextBuilder wraps the leading layout line within specified columns and returns a Line Builder along with residual layout lines.
 func NextBuilder(cols winsize.Cols, lns []layout.Line) (*line.Builder, []layout.Line) {
 	if cols == 0 || len(lns) == 0 {
 		return nil, make([]layout.Line, 0, len(lns)*2)
