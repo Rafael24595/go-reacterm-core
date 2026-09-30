@@ -296,50 +296,6 @@ func BenchmarkSplitLine_ManyFrags(b *testing.B) {
 	}
 }
 
-func BenchmarkSplitWordsCached(b *testing.B) {
-	splitter := SplitLineWithCache(
-		NewFragCache(),
-	)
-
-	l := benchmarkLine(2000)
-
-	b.ReportAllocs()
-
-	for b.Loop() {
-		splitter(l)
-	}
-}
-
-func BenchmarkSplitWords_ColdCache(b *testing.B) {
-	cache := NewFragCache()
-
-	splitter := SplitLineWithCache(cache)
-	lne := benchmarkLine(2000)
-
-	b.ReportAllocs()
-
-	for b.Loop() {
-		cache.Cls()
-		_, _ = splitter(lne)
-	}
-}
-
-func BenchmarkSplitWords_WarmCache(b *testing.B) {
-	cache := NewFragCache()
-
-	splitter := SplitLineWithCache(cache)
-	lne := benchmarkLine(2000)
-
-	splitter(lne)
-
-	b.ResetTimer()
-	b.ReportAllocs()
-
-	for b.Loop() {
-		_, _ = splitter(lne)
-	}
-}
-
 func BenchmarkSplitLine_ASCII(b *testing.B) {
 	line := line.FromString(
 		strings.Repeat("hello world ", 300),
@@ -385,23 +341,5 @@ func BenchmarkSplitLine_ManySpaces(b *testing.B) {
 
 	for b.Loop() {
 		SplitLine(line)
-	}
-}
-
-func BenchmarkSplitLineWith_WarmCache(b *testing.B) {
-	cache := NewFragCache()
-	splitter := SplitFragWithCache(cache)
-
-	lne := benchmarkLine(2000)
-
-	for _, frg := range lne.Slice() {
-		splitter(frg)
-	}
-
-	b.ReportAllocs()
-	b.ResetTimer()
-
-	for b.Loop() {
-		_, _ = SplitLineWith(splitter, lne)
 	}
 }
