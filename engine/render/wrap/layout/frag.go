@@ -9,13 +9,17 @@ import (
 
 type measureResolver func(winsize.Cols, ...Frag) winsize.Cols
 
+// Frag represents a wrapper around a core text fragment (frag.Frag)
+// that maintains cached layout measurement state for rendering.
 type Frag struct {
+	// Base is the underlying text fragment that this layout wrapper represents.
 	Base     *frag.Frag
 	measured bool
 	cols     winsize.Cols
 	measure  winsize.Cols
 }
 
+// NewFrag constructs and initializes a new Frag instance wrapping the given base fragment.
 func NewFrag(frg *frag.Frag) *Frag {
 	return &Frag{
 		Base:     frg,
@@ -25,7 +29,8 @@ func NewFrag(frg *frag.Frag) *Frag {
 	}
 }
 
-
+// Measure calculates or returns the cached column width measurement for the fragment,
+// given the specified container column limit.
 func (w *Frag) Measure(cols winsize.Cols) winsize.Cols {
 	return w.measureWith(cols, fragMeasure)
 }
@@ -51,6 +56,8 @@ func fragMeasure(cols winsize.Cols, frags ...Frag) winsize.Cols {
 	return measure
 }
 
+// AppendToFrags appends the underlying base fragments from a layout Frag slice
+// to an existing slice of core text fragments.
 func AppendToFrags(dst []frag.Frag, src []Frag) []frag.Frag {
 	for _, f := range src {
 		dst = append(dst, *f.Base)
@@ -58,6 +65,8 @@ func AppendToFrags(dst []frag.Frag, src []Frag) []frag.Frag {
 	return dst
 }
 
+// AppendFromFrags converts a slice of core text fragments and appends them
+// to an existing layout Frag slice.
 func AppendFromFrags(dst []Frag, src []frag.Frag) []Frag {
 	for _, f := range src {
 		dst = append(dst, *NewFrag(&f))

@@ -30,6 +30,7 @@ type Line struct {
 	frags  []Frag
 }
 
+// NewLine creates a new layout Line holding references to source metadata, word definitions, and fragments.
 func NewLine(source line.Line, words []Word, frags []Frag) *Line {
 	return &Line{
 		Source: source,
@@ -38,10 +39,13 @@ func NewLine(source line.Line, words []Word, frags []Frag) *Line {
 	}
 }
 
+// Size returns the total count of words currently composing the line.
 func (l *Line) Size() uint {
 	return uint(len(l.words))
 }
 
+// FindWord retrieves the Word at the given index.
+// Returns false if idx is out of bounds.
 func (l *Line) FindWord(idx uint) (Word, bool) {
 	if idx >= uint(len(l.words)) {
 		assert.Unreachable(ErrorfWordOutOfRange, idx, len(l.words))
@@ -50,6 +54,8 @@ func (l *Line) FindWord(idx uint) (Word, bool) {
 	return l.words[idx], true
 }
 
+// FindFrag retrieves the Frag at the specified fragment index.
+// Returns false if idx is out of bounds.
 func (l *Line) FindFrag(idx uint32) (Frag, bool) {
 	if idx >= uint32(len(l.frags)) {
 		assert.Unreachable(ErrorfFragOutOfRange, idx, len(l.frags))
@@ -58,6 +64,7 @@ func (l *Line) FindFrag(idx uint32) (Frag, bool) {
 	return l.frags[idx], true
 }
 
+// FindFrags retrieves the slice of fragments corresponding to the word at index idx.
 func (l *Line) FindFrags(idx uint) []Frag {
 	if idx >= uint(len(l.words)) {
 		assert.Unreachable(ErrorfWordOutOfRange, idx, len(l.words))
@@ -68,6 +75,7 @@ func (l *Line) FindFrags(idx uint) []Frag {
 	return l.frags[word.start:word.end]
 }
 
+// PushFrags appends fragments as a single word to the layout line.
 func (l *Line) PushFrags(frags ...frag.Frag) *Line {
 	lenFrags := len(l.frags)
 
@@ -176,6 +184,7 @@ func (l *Line) splitFrag(
 	}
 }
 
+// HasAtom checks whether any fragment within the word at idx contains the specified style atom.
 func (l *Line) HasAtom(idx uint, atm atom.Atom) bool {
 	if idx >= uint(len(l.words)) {
 		assert.Unreachable(ErrorfWordOutOfRange, idx, len(l.words))
@@ -190,6 +199,7 @@ func (l *Line) HasAtom(idx uint, atm atom.Atom) bool {
 	return false
 }
 
+// Measure calculates or retrieves the cached visual width in columns for the word at index idx.
 func (l *Line) Measure(idx uint, cols winsize.Cols) winsize.Cols {
 	return l.measureWith(idx, cols, fragMeasure)
 }
@@ -230,6 +240,7 @@ func (l *Line) clone() *Line {
 	return newLine
 }
 
+// Clones creates a deep copy of a slice of layout Line instances, duplicating backing words and frags arrays.
 func Clones(lines ...Line) []Line {
 	clones := make([]Line, len(lines))
 	for i, v := range lines {
