@@ -13,8 +13,12 @@ import (
 
 // TODO: Review documentation.
 
-const errf_word_out_of_range = "index out of words range [%d] with length %d"
-const errf_frag_out_of_range = "index out of frags range [%d] with length %d"
+const (
+	// ErrorfWordOutOfRange is a format string for errors when a word index is outside the valid words slice bounds.
+	ErrorfWordOutOfRange = "index out of words range [%d] with length %d"
+	// ErrorfFragOutOfRange is a format string for errors when a fragment index is outside the valid fragments slice bounds.
+	ErrorfFragOutOfRange = "index out of frags range [%d] with length %d"
+)
 
 // Line is a mutable layout representation used during wrapping.
 //
@@ -40,7 +44,7 @@ func (l *Line) Size() uint {
 
 func (l *Line) FindWord(idx uint) (Word, bool) {
 	if idx >= uint(len(l.words)) {
-		assert.Unreachable(errf_word_out_of_range, idx, len(l.words))
+		assert.Unreachable(ErrorfWordOutOfRange, idx, len(l.words))
 		return Word{}, false
 	}
 	return l.words[idx], true
@@ -48,7 +52,7 @@ func (l *Line) FindWord(idx uint) (Word, bool) {
 
 func (l *Line) FindFrag(idx uint32) (Frag, bool) {
 	if idx >= uint32(len(l.frags)) {
-		assert.Unreachable(errf_frag_out_of_range, idx, len(l.frags))
+		assert.Unreachable(ErrorfFragOutOfRange, idx, len(l.frags))
 		return Frag{}, false
 	}
 	return l.frags[idx], true
@@ -56,7 +60,7 @@ func (l *Line) FindFrag(idx uint32) (Frag, bool) {
 
 func (l *Line) FindFrags(idx uint) []Frag {
 	if idx >= uint(len(l.words)) {
-		assert.Unreachable(errf_word_out_of_range, idx, len(l.words))
+		assert.Unreachable(ErrorfWordOutOfRange, idx, len(l.words))
 		return make([]Frag, 0)
 	}
 
@@ -83,7 +87,7 @@ func (l *Line) PushFrags(frags ...frag.Frag) *Line {
 // The operation mutates Line and retains the existing backing arrays.
 func (l *Line) SliceFromWord(idx uint) *Line {
 	if idx >= uint(len(l.words)) {
-		assert.Unreachable(errf_word_out_of_range, idx, len(l.words))
+		assert.Unreachable(ErrorfWordOutOfRange, idx, len(l.words))
 		return l
 	}
 
@@ -128,12 +132,12 @@ func (l *Line) splitFrag(
 	cols winsize.Cols,
 ) {
 	if fragIdx >= uint32(len(l.frags)) {
-		assert.Unreachable(errf_frag_out_of_range, fragIdx, len(l.words))
+		assert.Unreachable(ErrorfFragOutOfRange, fragIdx, len(l.words))
 		return
 	}
 
 	if wordIdx >= uint(len(l.words)) {
-		assert.Unreachable(errf_word_out_of_range, fragIdx, len(l.words))
+		assert.Unreachable(ErrorfWordOutOfRange, fragIdx, len(l.words))
 		return
 	}
 
@@ -174,7 +178,7 @@ func (l *Line) splitFrag(
 
 func (l *Line) HasAtom(idx uint, atm atom.Atom) bool {
 	if idx >= uint(len(l.words)) {
-		assert.Unreachable(errf_word_out_of_range, idx, len(l.words))
+		assert.Unreachable(ErrorfWordOutOfRange, idx, len(l.words))
 		return false
 	}
 
@@ -196,7 +200,7 @@ func (l *Line) measureWith(
 	resolver measureResolver,
 ) winsize.Cols {
 	if idx >= uint(len(l.words)) {
-		assert.Unreachable(errf_word_out_of_range, idx, len(l.words))
+		assert.Unreachable(ErrorfWordOutOfRange, idx, len(l.words))
 		return 0
 	}
 
