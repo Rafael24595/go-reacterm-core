@@ -25,13 +25,6 @@ func NewFrag(frg *frag.Frag) *Frag {
 	}
 }
 
-func FromFrags(frags ...frag.Frag) []Frag {
-	result := make([]Frag, len(frags))
-	for i, f := range frags {
-		result[i] = *NewFrag(&f)
-	}
-	return result
-}
 
 func (w *Frag) Measure(cols winsize.Cols) winsize.Cols {
 	return w.measureWith(cols, fragMeasure)
