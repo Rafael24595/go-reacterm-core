@@ -5,6 +5,8 @@ import (
 	"strings"
 	"testing"
 
+	assert "github.com/Rafael24595/go-assert/assert/test"
+	
 	"github.com/Rafael24595/go-reacterm-core/engine/model/offset"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/chunk"
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/frag"
@@ -30,6 +32,16 @@ func benchmarkLine(size int) line.Line {
 			benchmarkText(size),
 		)...,
 	)
+}
+
+func TestChunkProcessor(t *testing.T) {
+	inputLine := line.FromString("Hello World Go")
+	limit := offset.Offset(5)
+
+	proc := Chunk(limit)
+	lines := proc(false, inputLine)
+
+	assert.Equal(t, 3, lines[0].Size())
 }
 
 func BenchmarkChunk(b *testing.B) {
