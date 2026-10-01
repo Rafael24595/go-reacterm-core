@@ -8,6 +8,8 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
+// LineFeed scans a line for newline characters (\n, \r) and splits it into multiple line instances.
+// If order is true, sequence ordering identifiers are calculated and assigned to each generated line.
 func LineFeed(order bool, lne line.Line) []line.Line {
 	result := make([]line.Line, 0)
 
