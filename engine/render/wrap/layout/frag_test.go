@@ -63,7 +63,7 @@ func TestWordFragMeasure_CacheAfterColsChange(t *testing.T) {
 	wrd.measureWith(40, resolver)
 	wrd.measureWith(40, resolver)
 
-	assert.Equal(t, uint(2), calls)
+	assert.Equal(t, 2, calls)
 }
 
 func TestWordFragMeasure_RecalculateWhenReturningToPreviousCols(t *testing.T) {
@@ -81,7 +81,7 @@ func TestWordFragMeasure_RecalculateWhenReturningToPreviousCols(t *testing.T) {
 	wrd.measureWith(40, resolver)
 	wrd.measureWith(80, resolver)
 
-	assert.Equal(t, uint(3), calls)
+	assert.Equal(t, 3, calls)
 }
 
 func TestSplitFragAt(t *testing.T) {
