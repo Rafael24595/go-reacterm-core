@@ -5,18 +5,18 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-type Processor func([]line.Line, winsize.Winsize) string
-type RawProcessor func([]line.Line, winsize.Winsize) []string
+type StringProcessor func([]line.Line, winsize.Winsize) string
+type LinesProcessor func([]line.Line, winsize.Winsize) []string
 
 type Render struct {
-	Processor Processor
+	Processor StringProcessor
 }
 
 type RenderBuilder struct {
-	render Processor
+	render StringProcessor
 }
 
-func NewBuilder(processor Processor) *RenderBuilder {
+func NewBuilder(processor StringProcessor) *RenderBuilder {
 	return &RenderBuilder{
 		render: processor,
 	}

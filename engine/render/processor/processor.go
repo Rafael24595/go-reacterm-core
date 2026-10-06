@@ -10,7 +10,7 @@ import (
 	"github.com/Rafael24595/go-reacterm-core/engine/render/text/line"
 )
 
-// WithPadding wraps an existing RawProcessor to apply dynamic margins and central alignment.
+// WithPadding wraps an existing LinesProcessor to apply dynamic margins and central alignment.
 //
 // It executes the transform function to derive the target dimensions for the inner content,
 // clamping them to the available canvas size. The resulting content is centered horizontally
@@ -18,8 +18,8 @@ import (
 // marker.DefaultPaddingText.
 func WithPadding(
 	transform func(winsize.Winsize) winsize.Winsize,
-	inner render.RawProcessor,
-) render.Processor {
+	inner render.LinesProcessor,
+) render.StringProcessor {
 	filler := marker.DefaultPaddingText
 
 	return func(lines []line.Line, size winsize.Winsize) string {

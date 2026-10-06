@@ -7,10 +7,10 @@ import (
 )
 
 type MockRender struct {
-	Processor render.Processor
+	Processor render.StringProcessor
 }
 
-func FromProcessor(processor render.Processor) render.Render {
+func FromProcessor(processor render.StringProcessor) render.Render {
 	return MockRender{
 		Processor: processor,
 	}.ToRender()
