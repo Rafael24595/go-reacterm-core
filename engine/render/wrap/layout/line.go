@@ -103,6 +103,7 @@ func (l *Line) SliceFromWord(idx uint) *Line {
 	return l
 }
 
+// SplitWord splits a word across a terminal column boundary if it exceeds the remaining width limit.
 func (l *Line) SplitWord(
 	wordIdx uint,
 	cols winsize.Cols,
